@@ -9,5 +9,4 @@ $routes->get('/', 'Home::index');
 <<<<<<< Updated upstream
 $routes->get('/', 'dasboardh::dashboard');
 =======
-$routes->get('/', 'coba::coba');
->>>>>>> Stashed changes
+
