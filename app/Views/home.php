@@ -50,7 +50,7 @@
                 SIGAP membantu pemantauan penyakit secara terintegrasi.
             </p>
         </div>
-        <img src="<?= base_url('img/foto.png') ?>">
+        <img src="<?= base_url('img/foto3.png') ?>">
     </div>
 
     <div class="card-item">
@@ -141,8 +141,8 @@
 
 <div class="row g-4 justify-content-center">
 
-<div class="col-md-3"><div class="penyakit-card"><h6>DBD</h6><p>Penyakit yang disebabkan oleh virus dengue dan ditularkan lewat gigitan nyamuk Aedes aegypti. </p></div></div>
-<div class="col-md-3"><div class="penyakit-card"><h6>TBC</h6><p>Infeksi bakteri yang menyerang paru-paru dan menular lewat udara saat penderita batuk atau bersin.</p></div></div>
+<div class="col-md-3"><div class="penyakit-card"><h6>Demam Berdarah Dengue</h6><p>Penyakit yang disebabkan oleh virus dengue dan ditularkan lewat gigitan nyamuk Aedes aegypti. </p></div></div>
+<div class="col-md-3"><div class="penyakit-card"><h6>Tuberkulosis</h6><p>Infeksi bakteri yang menyerang paru-paru dan menular lewat udara saat penderita batuk atau bersin.</p></div></div>
 <div class="col-md-3"><div class="penyakit-card"><h6>Pneumonia</h6><p>Peradangan pada paru-paru akibat infeksi bakteri atau virus yang menyebabkan kantung udara terisi cairan</p></div></div>
 <div class="col-md-3"><div class="penyakit-card"><h6>Diare</h6><p>Kondisi buang air besar lebih dari 3 kali sehari akibat infeksi dari makanan atau minuman yang tidak bersih.</p></div></div>
 
