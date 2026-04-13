@@ -1,0 +1,70 @@
+body {
+    font-family: 'Segoe UI';
+}
+
+/* warna utama */
+.text-teal {
+    color: #20c997;
+}
+
+.btn-teal {
+    background: #20c997;
+    color: white;
+    border-radius: 10px;
+}
+
+/* hero */
+.hero {
+    padding: 60px 0;
+    background: linear-gradient(to right, #f8f9fa, #e6fffb);
+}
+
+.hero-img {
+    max-height: 300px;
+}
+
+/* menu */
+.menu-box {
+    background: #20c997;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* big card */
+.big-card {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    color: white;
+}
+
+/* map */
+#map {
+    height: 400px;
+    border-radius: 15px;
+}
+
+/* about */
+.about {
+    background: #f8f9fa;
+    padding: 50px 0;
+}
+
+/* penyakit */
+.penyakit {
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    color: white;
+    padding: 40px 0;
+}
+
+/* contact */
+.contact-box {
+    background: #f1f1f1;
+    border-radius: 15px;
+}
+
+/* footer */
+.footer {
+    background: #0fb9b1;
+}
