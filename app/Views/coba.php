@@ -1,0 +1,1 @@
+<p>Sistem Informasi Manajemen Rawat Inap</p>
