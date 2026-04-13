@@ -9,4 +9,3 @@ $routes->get('/', 'Home::index');
 <<<<<<< Updated upstream
 $routes->get('/', 'dasboardh::dashboard');
 =======
-assalamualaikum
