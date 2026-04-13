@@ -13,9 +13,11 @@
 
 <body>
 
+<?php $uri = service('uri')->getSegment(1); ?>
+
 <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
   <div class="container">
-    <a class="navbar-brand logo" href="#">LOGO</a>
+    <a class="navbar-brand logo" href="<?= base_url('/') ?>">LOGO</a>
 
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
@@ -24,24 +26,40 @@
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto align-items-center">
 
-        <li class="nav-item"><a class="nav-link">Beranda</a></li>
-        <li class="nav-item"><a class="nav-link">Tentang Kami</a></li>
+        <!-- BERANDA -->
+        <li class="nav-item">
+          <a class="nav-link <?= ($uri == '' ? 'active-menu' : '') ?>" href="<?= base_url('/') ?>">
+            Beranda
+          </a>
+        </li>
+
+        <!-- TENTANG -->
+        <li class="nav-item">
+          <a class="nav-link <?= ($uri == 'tentang' ? 'active-menu' : '') ?>" href="#">
+            Tentang Kami
+          </a>
+        </li>
 
         <!-- DROPDOWN -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle <?= ($uri == 'penyakit' ? 'active-menu' : '') ?>" data-bs-toggle="dropdown">
             Penyakit
           </a>
 
           <ul class="dropdown-menu shadow-lg p-2 border-0">
-            <li><a class="dropdown-item">Demam Berdarah</a></li>
-            <li><a class="dropdown-item">Tuberkulosis</a></li>
-            <li><a class="dropdown-item">Pneumonia</a></li>
-            <li><a class="dropdown-item">Diare</a></li>
+            <li><a class="dropdown-item" href="#">Demam Berdarah</a></li>
+            <li><a class="dropdown-item" href="#">Tuberkulosis</a></li>
+            <li><a class="dropdown-item" href="#">Pneumonia</a></li>
+            <li><a class="dropdown-item" href="#">Diare</a></li>
           </ul>
         </li>
 
-        <li class="nav-item"><a class="nav-link">Kontak</a></li>
+        <!-- KONTAK -->
+        <li class="nav-item">
+          <a class="nav-link <?= ($uri == 'kontak' ? 'active-menu' : '') ?>" href="<?= base_url('kontak') ?>">
+            Kontak
+          </a>
+        </li>
 
       </ul>
     </div>

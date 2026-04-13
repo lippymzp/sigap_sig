@@ -1,8 +1,15 @@
+/* =========================
+   GLOBAL
+========================= */
 body {
     font-family: 'Segoe UI';
+    scroll-behavior: smooth;
+    background: #ffffff;
 }
 
-/* warna utama */
+/* =========================
+   WARNA UTAMA
+========================= */
 .text-teal {
     color: #20c997;
 }
@@ -11,9 +18,51 @@ body {
     background: #20c997;
     color: white;
     border-radius: 10px;
+    transition: 0.3s;
 }
 
-/* hero */
+.btn-teal:hover {
+    background: #17b89c;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+    backdrop-filter: blur(10px);
+}
+
+.nav-link {
+    color: #333;
+    transition: 0.3s;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #20c997;
+}
+
+/* ACTIVE MENU */
+.active-menu {
+    color: #20c997 !important;
+    font-weight: 600;
+}
+
+/* garis bawah */
+.active-menu::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 3px;
+    background: #20c997;
+    border-radius: 10px;
+}
+
+/* =========================
+   HERO
+========================= */
 .hero {
     padding: 60px 0;
     background: linear-gradient(to right, #f8f9fa, #e6fffb);
@@ -23,48 +72,294 @@ body {
     max-height: 300px;
 }
 
-/* menu */
+/* =========================
+   MENU BOX
+========================= */
 .menu-box {
     background: #20c997;
     color: white;
     padding: 12px 20px;
     border-radius: 20px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-/* big card */
-.big-card {
-    border-radius: 20px;
+.menu-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* =========================
+   SLIDER HORIZONTAL
+========================= */
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+/* hide scrollbar */
+.horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.horizontal-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* CARD */
+.scroll-card {
+    min-width: 300px;
     background: linear-gradient(135deg, #20c997, #0dcaf0);
     color: white;
+    padding: 20px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
 }
 
-/* map */
+.scroll-card:hover {
+    transform: scale(1.05);
+}
+
+/* tombol slider */
+.scroll-btn {
+    position: absolute;
+    top: 40%;
+    background: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.scroll-btn.left {
+    left: -10px;
+}
+
+.scroll-btn.right {
+    right: -10px;
+}
+
+/* =========================
+   MAP
+========================= */
 #map {
     height: 400px;
+    width: 100%;
     border-radius: 15px;
 }
 
-/* about */
+.map-box {
+    position: relative;
+}
+
+.map-info {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 10px;
+}
+
+/* =========================
+   ABOUT
+========================= */
 .about {
     background: #f8f9fa;
     padding: 50px 0;
 }
 
-/* penyakit */
-.penyakit {
+.about-img {
+    border-radius: 20px;
+    max-height: 280px;
+    object-fit: cover;
+}
+
+/* =========================
+   PENYAKIT (VERSI MODERN)
+========================= */
+.penyakit-section {
     background: linear-gradient(135deg, #20c997, #0dcaf0);
-    color: white;
-    padding: 40px 0;
+    padding: 60px 0;
+    border-radius: 10px;
 }
 
-/* contact */
-.contact-box {
-    background: #f1f1f1;
+.penyakit-card {
+    background: #ffffff;
+    padding: 20px;
     border-radius: 15px;
+    text-align: left;
+    transition: 0.3s;
+    min-height: 150px;
 }
 
-/* footer */
+.penyakit-card h6 {
+    color: #20c997;
+    font-weight: 600;
+}
+
+.penyakit-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+.penyakit-card:hover {
+    transform: translateY(-5px);
+}
+
+/* =========================
+   CONTACT MODERN
+========================= */
+.contact-modern {
+    background: #f8f9fa;
+    padding: 40px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.contact-modern h4 {
+    color: #20c997;
+    font-weight: bold;
+}
+
+.contact-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.contact-form input {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.contact-form button {
+    background: #20c997;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.contact-form button:hover {
+    background: #17b89c;
+}
+
+/* =========================
+   FOOTER
+========================= */
 .footer {
     background: #0fb9b1;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .hero {
+        text-align: center;
+    }
+
+    .scroll-card {
+        min-width: 250px;
+    }
+
+    .scroll-btn {
+        display: none;
+    }
+
+    .contact-form {
+        flex-direction: column;
+    }
+}
+/* =========================
+   SLIDER PREMIUM FIX BESAR 🔥
+========================= */
+.card-slider {
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+}
+
+.card-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* CARD */
+.card-item {
+    min-width: 520px;   /* 🔥 DIBESARKAN */
+    height: 220px;      /* 🔥 LEBIH TINGGI */
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    padding: 30px;      /* 🔥 LEBIH LEGA */
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* TEXT */
+.card-content {
+    width: 60%;
+    z-index: 2;
+}
+
+.card-content h5 {
+    font-size: 20px;   /* 🔥 LEBIH BESAR */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-content p,
+.card-content li {
+    font-size: 14px;
+}
+
+/* IMAGE */
+.card-item img {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 110%;   /* 🔥 lebih gede */
+    object-fit: contain;
+}
+
+/* tombol */
+.scroll-btn {
+    position: absolute;
+    top: 45%;
+    background: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.scroll-btn.left {
+    left: -15px;
+}
+
+.scroll-btn.right {
+    right: -15px;
 }
