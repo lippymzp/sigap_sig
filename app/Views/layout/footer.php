@@ -1,31 +1,64 @@
 <footer class="footer mt-5">
-<div class="container text-white p-4">
+
+<div class="container text-white py-5">
 
 <div class="row">
-<div class="col-md-4">
-<h5>LOGO</h5>
-<p>SIGAP Sistem Informasi Geografis</p>
+
+    <!-- LOGO -->
+    <div class="col-md-4 mb-4" data-aos="fade-up">
+        <h5 class="fw-bold">LOGO</h5>
+        <p>
+            SIGAP<br>
+            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
+        </p>
+    </div>
+
+    <!-- SOSIAL -->
+    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <h6 class="fw-bold mb-3">Media Sosial</h6>
+
+        <p>📷 Instagram</p>
+        <p>📘 Facebook</p>
+        <p>🐦 Twitter</p>
+    </div>
+
+    <!-- KONTAK -->
+    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
+
+        <p>📧 Email: email@kampus.ac.id</p>
+        <p>📍 Jember, Jawa Timur</p>
+    </div>
+
 </div>
 
-<div class="col-md-4">
-<h6>Media Sosial</h6>
-<p>@username</p>
-</div>
+<hr style="border-color: rgba(255,255,255,0.3)">
 
-<div class="col-md-4">
-<h6>Kontak</h6>
-<p>Email: kamu@email.com</p>
-</div>
-</div>
-
-<hr>
-<p class="text-center">Hak Cipta © 2026</p>
+<p class="text-center mb-0">
+    Hak Cipta © 2026 SIGAP
+</p>
 
 </div>
+
 </footer>
 
+<!-- BOOTSTRAP -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- LEAFLET -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- AOS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    AOS.init({
+        duration: 1000,
+        once: true
+    });
+});
+</script>
 
 </body>
 </html>

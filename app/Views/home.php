@@ -9,7 +9,7 @@
       <h5 class="text-teal">Satu Peta, Satu Data</h5>
       <h2>Apa itu Penyakit Menular?</h2>
       <p>
-        Penyakit menular adalah penyakit yang dapat berpindah dari satu orang ke orang lain melalui udara, air, makanan, maupun kontak langsung.
+        Penyakit menular adalah penyakit yang dapat berpindah dari satu orang ke orang lain, baik melalui udara, air, makanan, maupun kontak langsung. Penyebabnya bisa berupa bakteri, virus, parasit, atau jamur yang masuk ke dalam tubuh dan mengganggu kesehatan.
       </p>
     </div>
 
@@ -26,16 +26,28 @@
 <h4 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Data</h4>
 
 <div class="d-flex justify-content-center flex-wrap gap-3">
-<div class="menu-box">Demam Berdarah</div>
-<div class="menu-box">Tuberkulosis</div>
-<div class="menu-box">Pneumonia</div>
-<div class="menu-box">Diare</div>
+
+<a href="<?= base_url('dbd') ?>" class="menu-box text-decoration-none">
+    Demam Berdarah
+</a>
+
+<a href="<?= base_url('tbc') ?>" class="menu-box text-decoration-none">
+    Tuberkulosis
+</a>
+
+<a href="<?= base_url('pneumonia') ?>" class="menu-box text-decoration-none">
+    Pneumonia
+</a>
+
+<a href="<?= base_url('diare') ?>" class="menu-box text-decoration-none">
+    Diare
+</a>
+
 </div>
 </section>
 
-<!-- 🔥 SLIDER PREMIUM -->
+<!-- SLIDER PREMIUM -->
 <section class="container mt-5">
-
 <div class="position-relative">
 
 <button class="scroll-btn left" onclick="scrollCardLeft()">‹</button>
@@ -46,9 +58,7 @@
     <div class="card-item">
         <div class="card-content">
             <h5>Satu Platform Untuk Memantau, Memetakan, dan Mendeteksi Penyakit</h5>
-            <p>
-                SIGAP membantu pemantauan penyakit secara terintegrasi.
-            </p>
+            <p>SIGAP membantu pemantauan penyakit secara terintegrasi.</p>
         </div>
         <img src="<?= base_url('img/foto3.png') ?>">
     </div>
@@ -56,9 +66,7 @@
     <div class="card-item">
         <div class="card-content">
             <h5>SIGAP: Cepat Deteksi, Tepat Informasi</h5>
-            <p>
-                Mendukung akses data kesehatan yang cepat dan akurat.
-            </p>
+            <p>Mendukung akses data kesehatan yang cepat dan akurat.</p>
         </div>
         <img src="<?= base_url('img/foto1.png') ?>">
     </div>
@@ -141,8 +149,8 @@
 
 <div class="row g-4 justify-content-center">
 
-<div class="col-md-3"><div class="penyakit-card"><h6>Demam Berdarah Dengue</h6><p>Penyakit yang disebabkan oleh virus dengue dan ditularkan lewat gigitan nyamuk Aedes aegypti. </p></div></div>
-<div class="col-md-3"><div class="penyakit-card"><h6>Tuberkulosis</h6><p>Infeksi bakteri yang menyerang paru-paru dan menular lewat udara saat penderita batuk atau bersin.</p></div></div>
+<div class="col-md-3"><div class="penyakit-card"><h6>DBD</h6><p>Penyakit yang disebabkan oleh virus dengue dan ditularkan lewat gigitan nyamuk Aedes aegypti. </p></div></div>
+<div class="col-md-3"><div class="penyakit-card"><h6>TBC</h6><p>Infeksi bakteri yang menyerang paru-paru dan menular lewat udara saat penderita batuk atau bersin.</p></div></div>
 <div class="col-md-3"><div class="penyakit-card"><h6>Pneumonia</h6><p>Peradangan pada paru-paru akibat infeksi bakteri atau virus yang menyebabkan kantung udara terisi cairan</p></div></div>
 <div class="col-md-3"><div class="penyakit-card"><h6>Diare</h6><p>Kondisi buang air besar lebih dari 3 kali sehari akibat infeksi dari makanan atau minuman yang tidak bersih.</p></div></div>
 
@@ -155,7 +163,6 @@
 <div class="container">
 
 <div class="contact-modern">
-
     <h4>Hubungi kami</h4>
     <p>Punya pertanyaan? Kami di sini untuk membantu.</p>
 
@@ -163,7 +170,6 @@
         <input type="text" placeholder="email angkatan">
         <button>Hubungi Kami</button>
     </div>
-
 </div>
 
 </div>
@@ -187,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-/* SLIDER PREMIUM */
+/* SLIDER */
 function scrollCardLeft() {
     document.getElementById('cardSlider').scrollBy({ left: -400, behavior: 'smooth' });
 }

@@ -13,4 +13,23 @@ class Home extends BaseController
     {
         return view('kontak');
     }
+
+    public function pneumonia()
+    {
+        return view('pneumonia');
+    }
+public function dbd()
+{
+    return view('dbd');
+}
+
+public function tbc()
+{
+    return view('tbc');
+}
+
+public function diare()
+{
+    return view('diare');
+}
 }
