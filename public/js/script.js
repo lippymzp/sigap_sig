@@ -276,3 +276,70 @@ legend.onAdd = function(){
 };
 
 legend.addTo(map);
+
+// js lidna
+document.addEventListener("DOMContentLoaded", function () {
+    const scrollContainer = document.getElementById('artikel-scroll');
+
+    if (!scrollContainer) return;
+
+    const scrollAmount = 320;
+
+    setInterval(() => {
+        let maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+        if (scrollContainer.scrollLeft >= maxScrollLeft) {
+            scrollContainer.scrollTo({
+                left: 0,
+                behavior: 'smooth'
+            });
+        } else {
+            scrollContainer.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    }, 9000);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ctx = document.getElementById('chartTbc');
+
+    if (!ctx) {
+        console.log("Canvas tidak ditemukan");
+        return;
+    }
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                'Jember Kidul',
+                'Kaliwates',
+                'Kebon Agung',
+                'Kepatihan',
+                'Mangli',
+                'Sempusari',
+                'Tegal Besar'
+            ],
+            datasets: [
+                {
+                    label: 'Dewasa',
+                    data: [65, 30, 40, 20, 15, 10, 70],
+                    backgroundColor: '#3b82f6'
+                },
+                {
+                    label: 'Anak-anak',
+                    data: [90, 70, 75, 85, 25, 20, 95],
+                    backgroundColor: '#5eead4'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+});
