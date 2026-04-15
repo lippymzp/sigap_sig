@@ -144,69 +144,79 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 
 </section>
 
-<!-- RINGKASAN -->
-<section class="container mt-5" data-aos="fade-up">
+<!-- ================= TAMBAHAN DATABASE ================= -->
+<script>
 
-<div class="p-4 shadow-sm" style="border-radius:20px; border:2px solid #20c997;">
+/* 🔥 FIX UTAMA (TIDAK MENGUBAH KODE LAMA) */
+function fixNama(nama){
+    return (nama || "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/[^a-z0-9 ]/g, "");
+}
 
-<h5 class="text-teal fw-bold">Ringkasan Data</h5>
+/* 🔥 PENYELARAS NAMA GEOJSON */
+var aliasDesa = {
+    "kemuningsarilor": "kemuning sari lor"
+};
 
-<p>
-Kasus diare tertinggi terjadi di wilayah <b style="color:red;">Kecamatan A</b>.<br>
-Wilayah lainnya dengan kasus tinggi yaitu <b style="color:red;">Desa B</b> dan <b style="color:red;">Desa C</b>.
-</p>
+var dataDiare = <?= json_encode($diare ?? []) ?>;
 
-<p>
-Rata-rata kasus diare mencapai <b>60 kasus</b>.
-</p>
+var dataFinal = {};
 
-<div class="text-center mt-3">
-<a href="<?= base_url('/') ?>" class="btn btn-teal px-4 rounded-pill">
-    Kembali
-</a>
-</div>
+dataDiare.forEach(item => {
 
-</div>
-</section>
+    var desa = fixNama(item.desa);
+
+    if(aliasDesa[desa]){
+        desa = aliasDesa[desa];
+    }
+
+    if(!dataFinal[desa]){
+        dataFinal[desa] = {
+            total: 0,
+            jumlah: 0
+        };
+    }
+
+    dataFinal[desa].total += parseInt(item.kasus);
+    dataFinal[desa].jumlah++;
+});
+
+for(var key in dataFinal){
+    var rata = dataFinal[key].total / dataFinal[key].jumlah;
+
+    if(rata >= 20) dataFinal[key].kategori = "tinggi";
+    else if(rata >= 10) dataFinal[key].kategori = "sedang";
+    else dataFinal[key].kategori = "rendah";
+}
+
+console.log("DATA FINAL:", dataFinal);
+
+</script>
 
 <!-- SCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-/* CHART */
 new Chart(document.getElementById('chartDiare'), {
     type: 'bar',
     data: {
         labels: ['Jan','Feb','Mar','Apr','Mei'],
         datasets: [
-            {
-                label:'Sembuh',
-                data:[100,80,70,60,150],
-                backgroundColor:'#8ecae6'
-            },
-            {
-                label:'Pengobatan',
-                data:[90,150,120,90,95],
-                backgroundColor:'#219ebc'
-            },
-            {
-                label:'Meninggal',
-                data:[40,20,40,40,60],
-                backgroundColor:'#90dbf4'
-            }
+            { label:'Sembuh', data:[100,80,70,60,150], backgroundColor:'#8ecae6' },
+            { label:'Pengobatan', data:[90,150,120,90,95], backgroundColor:'#219ebc' },
+            { label:'Meninggal', data:[40,20,40,40,60], backgroundColor:'#90dbf4' }
         ]
     }
 });
 
-/* ======================
-   MAP QGIS 6 DESA 🔥
-====================== */
 var map = L.map('mapDiare').setView([-8.1,113.5], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-// LOAD GEOJSON
 fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
 .then(res => res.json())
 .then(data => {
@@ -214,24 +224,54 @@ fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
     var geo = L.geoJSON(data, {
 
         style: function(feature){
+
+            var nama = fixNama(feature.properties.NAMOBJ);
+
+            if(aliasDesa[nama]){
+                nama = aliasDesa[nama];
+            }
+
+            var item = dataFinal[nama];
+
+            var warna = "#cccccc";
+
+            if(item){
+                if(item.kategori == "tinggi") warna = "#dc3545";
+                else if(item.kategori == "sedang") warna = "#ffc107";
+                else if(item.kategori == "rendah") warna = "#28a745";
+            }
+
             return {
                 color: "#00CED1",
                 weight: 2,
-                fillColor: "#20c997",
-                fillOpacity: 0.5
+                fillColor: warna,
+                fillOpacity: 0.7
             };
         },
 
         onEachFeature: function(feature, layer){
 
-            // ambil nama desa dari QGIS (NAMOBJ)
-            var nama = feature.properties.NAMOBJ || "Desa";
+            var namaAsli = feature.properties.NAMOBJ || "Desa";
+            var namaFix  = fixNama(namaAsli);
 
-            // popup
-            layer.bindPopup("<b>Desa: " + nama + "</b>");
+            if(aliasDesa[namaFix]){
+                namaFix = aliasDesa[namaFix];
+            }
 
-            // label langsung muncul di map
-            layer.bindTooltip(nama, {
+            var item = dataFinal[namaFix];
+
+            var isi = "<b>Desa: " + namaAsli + "</b>";
+
+            if(item){
+                isi += "<br>Total Kasus: " + item.total;
+                isi += "<br>Kategori: " + item.kategori;
+            } else {
+                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
+            }
+
+            layer.bindPopup(isi);
+
+            layer.bindTooltip(namaAsli, {
                 permanent: true,
                 direction: "center",
                 className: "label-desa"
@@ -244,9 +284,6 @@ fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
     map.fitBounds(geo.getBounds());
 
 });
-
-// refresh map
-setTimeout(()=>map.invalidateSize(),300);
 
 });
 </script>

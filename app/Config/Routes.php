@@ -19,5 +19,6 @@ $routes->get('skrining-diare', 'Diare::skrining');
 $routes->post('hasil-diare', 'Diare::hasil');
 $routes->get('pdf-diare', 'Diare::pdf');
 $routes->post('skrining-diare-step2', 'Diare::step2');
+$routes->get('/diare', 'Diare::index');
 
 

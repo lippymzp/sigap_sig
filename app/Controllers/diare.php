@@ -137,4 +137,14 @@ class Diare extends BaseController
 
         $dompdf->stream("hasil-diare.pdf", ["Attachment" => false]);
     }
+    public function index()
+{
+    $model = new \App\Models\DiareModel();
+
+    $data['diare'] = $model->findAll();
+
+    dd($data['diare']); // 🔥 WAJIB TARUH INI
+
+    return view('gol_d/diare', $data);
+}
 }
