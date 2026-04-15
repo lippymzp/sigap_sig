@@ -11,7 +11,6 @@
         Diare adalah kondisi buang air besar lebih dari 3 kali sehari akibat infeksi makanan atau minuman yang tidak bersih.
     </p>
 
-    <!-- ✅ FIX KE DETAIL -->
     <a href="<?= base_url('diare-detail') ?>" class="btn btn-light mt-3 px-4 py-2 rounded-pill shadow">
         Pelajari selengkapnya →
     </a>
@@ -199,18 +198,68 @@ new Chart(document.getElementById('chartDiare'), {
     }
 });
 
-/* MAP */
-var map = L.map('mapDiare').setView([-7.9,112.6], 10);
+/* ======================
+   MAP QGIS 6 DESA 🔥
+====================== */
+var map = L.map('mapDiare').setView([-8.1,113.5], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-L.marker([-7.9,112.6]).addTo(map).bindPopup("Kasus Tinggi");
-L.marker([-7.8,112.7]).addTo(map).bindPopup("Kasus Sedang");
+// LOAD GEOJSON
+fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
+.then(res => res.json())
+.then(data => {
 
+    var geo = L.geoJSON(data, {
+
+        style: function(feature){
+            return {
+                color: "#00CED1",
+                weight: 2,
+                fillColor: "#20c997",
+                fillOpacity: 0.5
+            };
+        },
+
+        onEachFeature: function(feature, layer){
+
+            // ambil nama desa dari QGIS (NAMOBJ)
+            var nama = feature.properties.NAMOBJ || "Desa";
+
+            // popup
+            layer.bindPopup("<b>Desa: " + nama + "</b>");
+
+            // label langsung muncul di map
+            layer.bindTooltip(nama, {
+                permanent: true,
+                direction: "center",
+                className: "label-desa"
+            });
+
+        }
+
+    }).addTo(map);
+
+    map.fitBounds(geo.getBounds());
+
+});
+
+// refresh map
 setTimeout(()=>map.invalidateSize(),300);
 
 });
 </script>
+
+<style>
+.label-desa{
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    padding: 2px 6px;
+    font-size: 11px;
+    border-radius: 6px;
+}
+</style>
 
 <?= $this->include('layout/footer') ?>
