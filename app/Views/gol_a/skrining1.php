@@ -181,7 +181,7 @@ body {
 
 <div class="mb-3">
 <label>Kategori Usia</label>
-<input type="text" name="kategori_usia" id="kategori_usia" class="form-control" readonly>
+<input type="text" name="tanggal_skrining" class="form-control" value="<?= date('d-m-Y') ?>" readonly>
 </div>
 
 <div class="mb-3">

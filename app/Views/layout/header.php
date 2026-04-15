@@ -89,7 +89,8 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
         <!-- 🔥 LOGIN (HANYA DI HALAMAN PENYAKIT) -->
         <?php if (in_array($uri, $showLoginPages)): ?>
         <li class="nav-item ms-3">
-          <a href="<?= base_url('login') ?>" class="btn btn-login">
+          <a href="<?= base_url('/login?penyakit=' . ($penyakit ?? '')) ?>" 
+            class="btn btn-login">
             Login
           </a>
         </li>

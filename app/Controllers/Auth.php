@@ -4,22 +4,38 @@ namespace App\Controllers;
 
 class Auth extends BaseController
 {
-
     public function login()
     {
-        return view('gol_c/login');
-    }
+        $penyakit = $this->request->getGet('penyakit');
 
-    public function loginProcess()
-    {
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
-
-        if($email == "admin@gmail.com" && $password == "123"){
-            return redirect()->to('/');
-        }else{
-            return "Login gagal";
+        if ($penyakit) {
+            session()->set('penyakit', $penyakit);
         }
+
+        return view('gol_c/auth/login');
     }
 
+    public function prosesLogin()
+    {
+        $penyakit = $this->request->getPost('penyakit');
+
+        session()->set('penyakit', $penyakit);
+
+        return redirect()->to('/' . $penyakit . '/dashboard');
+    }
+
+    public function forgot()
+    {
+        return view('gol_c/auth/forgot_password');
+    }
+
+    public function otp()
+    {
+        return view('gol_c/auth/otp');
+    }
+
+    public function reset()
+    {
+        return view('gol_c/auth/reset_password');
+    }
 }

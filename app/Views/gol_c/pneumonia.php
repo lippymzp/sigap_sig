@@ -1,3 +1,4 @@
+<?php $this->setVar('penyakit', 'pneumonia'); ?>
 <?= $this->include('layout/header') ?>
 
 <!-- HERO -->
