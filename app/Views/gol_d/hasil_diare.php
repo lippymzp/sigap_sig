@@ -6,10 +6,12 @@
 Hasil Skrining Diare Anda
 </h4>
 
-<!-- =========================
-   CARD UTAMA
-========================= -->
 <div class="card shadow-lg p-4" style="border-radius:20px; border:2px solid #40EDD0;">
+
+<?php
+$identitas = $identitas ?? [];
+$jawaban   = $jawaban ?? [];
+?>
 
 <!-- =========================
    INFORMASI UMUM
@@ -19,20 +21,20 @@ Hasil Skrining Diare Anda
 <div class="row g-3 mb-4">
 
 <div class="col-md-6">
-<input class="form-control mb-2" value="<?= $data['nama'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['nik'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['jk'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['tgl'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['usia'] ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['nama'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['nik'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['jk'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['tgl'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['usia'] ?? '-' ?>" readonly>
 </div>
 
 <div class="col-md-6">
 <input class="form-control mb-2 bg-info text-white" value="<?= date('d-m-Y') ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['prov'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['kab'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['kec'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['kel'] ?>" readonly>
-<input class="form-control mb-2" value="<?= $data['kodepos'] ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['prov'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['kab'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['kec'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['kel'] ?? '-' ?>" readonly>
+<input class="form-control mb-2" value="<?= $identitas['kodepos'] ?? '-' ?>" readonly>
 </div>
 
 </div>
@@ -68,15 +70,15 @@ $pertanyaan = [
 ];
 
 foreach($pertanyaan as $i => $p):
-$jawaban = $data["q".$i] ?? 0;
+$nilai = $jawaban["q".$i] ?? 0;
 ?>
 
 <tr>
 <td><?= $i+1 ?></td>
 <td class="text-start"><?= $p ?></td>
 <td>
-<span class="badge <?= $jawaban ? 'bg-danger' : 'bg-success' ?>">
-<?= $jawaban ? 'Ya' : 'Tidak' ?>
+<span class="badge <?= $nilai ? 'bg-danger' : 'bg-success' ?>">
+<?= $nilai ? 'Ya' : 'Tidak' ?>
 </span>
 </td>
 </tr>
@@ -93,7 +95,7 @@ $jawaban = $data["q".$i] ?? 0;
 
 <h6 class="fw-bold">Hasil</h6>
 
-<div class="alert alert-success text-center fw-bold" style="border-radius:10px;">
+<div class="alert alert-<?= $warna ?> text-center fw-bold" style="border-radius:10px;">
 <?= $hasil ?>
 </div>
 
@@ -107,13 +109,7 @@ $jawaban = $data["q".$i] ?? 0;
 <h6 class="fw-bold">Rekomendasi</h6>
 
 <div class="p-3" style="border:1px solid #ccc; border-radius:10px;">
-<?php if($skor >= 7): ?>
-Segera periksakan ke fasilitas kesehatan. Minum oralit dan hindari makanan kotor.
-<?php elseif($skor >= 4): ?>
-Perbanyak cairan dan jaga kebersihan makanan.
-<?php else: ?>
-Kondisi relatif aman, tetap jaga pola hidup sehat.
-<?php endif; ?>
+<?= $rekomendasi ?? '-' ?>
 </div>
 
 </div>

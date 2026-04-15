@@ -24,7 +24,11 @@ class Diare extends BaseController
     {
         $identitas = $this->request->getPost();
 
-        // simpan khusus (biar ga campur session lain)
+        // VALIDASI sederhana (biar ga kosong)
+        if (empty($identitas)) {
+            return redirect()->back()->with('error', 'Data identitas belum diisi');
+        }
+
         session()->set('skrining_diare', [
             'identitas' => $identitas
         ]);
@@ -46,6 +50,13 @@ class Diare extends BaseController
 
         $jawaban = $this->request->getPost();
         $identitas = $session['identitas'];
+
+        // =====================
+        // VALIDASI JAWABAN
+        // =====================
+        if (empty($jawaban)) {
+            return redirect()->to('/skrining-diare')->with('error', 'Jawaban belum diisi');
+        }
 
         // =====================
         // HITUNG SKOR
@@ -86,6 +97,9 @@ class Diare extends BaseController
             'rekomendasi' => $rekomendasi
         ]);
 
+        // =====================
+        // KIRIM KE VIEW (FIX)
+        // =====================
         return view('gol_d/hasil_diare', [
             'identitas'   => $identitas,
             'jawaban'     => $jawaban,
@@ -103,7 +117,7 @@ class Diare extends BaseController
     {
         $session = session()->get('skrining_diare');
 
-        if (!$session) {
+        if (!$session || !isset($session['identitas'])) {
             return redirect()->to('/skrining-diare');
         }
 
