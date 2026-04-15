@@ -1,3 +1,4 @@
+<?php $this->setVar('penyakit', 'diare'); ?>
 <?= $this->include('layout/header') ?>
 
 <!-- HERO -->

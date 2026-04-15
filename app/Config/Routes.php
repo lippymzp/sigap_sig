@@ -11,7 +11,6 @@ $routes->get('/pneumonia', 'Home::pneumonia');
 $routes->get('/dbd', 'Home::dbd');
 $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
-$routes->get('/login', 'Home::login');
 $routes->get('/skrining', 'Home::skrining');
 
 $routes->get('/skrining1', 'Home::skrining1');
@@ -25,4 +24,15 @@ $routes->post('hasil-diare', 'Diare::hasil');
 $routes->get('pdf-diare', 'Diare::pdf');
 $routes->post('skrining-diare-step2', 'Diare::step2');
 
+//Login
+$routes->get('/login', 'Auth::login');
+$routes->post('/login-process', 'Auth::prosesLogin');
+$routes->get('/forgot', 'Auth::forgot');
+$routes->get('/otp', 'Auth::otp');
+$routes->get('/reset', 'Auth::reset');
 
+//dashboard
+$routes->get('/dbd/dashboard', 'Dashboard::dbd');
+$routes->get('/tbc/dashboard', 'Dashboard::tbc');
+$routes->get('/pneumonia/dashboard', 'Dashboard::pneumonia');
+$routes->get('/diare/dashboard', 'Dashboard::diare');
