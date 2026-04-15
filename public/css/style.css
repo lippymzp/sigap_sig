@@ -338,3 +338,166 @@ body {
     }
 
 }
+/* =========================
+   STEP PROGRESS MODERN 🔥
+========================= */
+.step-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-width: 120px;
+}
+
+/* lingkaran */
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #E0F7F6;
+    color: #6B8A8A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+/* garis */
+.step-line {
+    height: 3px;
+    width: 80px;
+    background: #E0F7F6;
+    margin: 0 10px;
+    border-radius: 10px;
+}
+
+/* aktif */
+.step-active .step-circle {
+    background: linear-gradient(135deg, #40EDD0, #00CED1);
+    color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.step-active .step-title {
+    color: #00CED1;
+    font-weight: 600;
+}
+
+/* selesai */
+.step-done .step-circle {
+    background: #2CCFC0;
+    color: white;
+}
+
+/* text */
+.step-title {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #6B8A8A;
+}
+.step-wrapper {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* INPUT MODERN */
+.modern-input {
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #E0F7F6;
+    transition: 0.3s;
+}
+
+.modern-input:focus {
+    border-color: #00CED1;
+    box-shadow: 0 0 0 3px rgba(0,206,209,0.15);
+}
+
+/* LABEL */
+.form-label {
+    font-size: 13px;
+    color: #6B8A8A;
+    margin-bottom: 4px;
+}
+/* =========================
+   QUESTION CARD
+========================= */
+.question-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #E0F7F6;
+    transition: 0.3s;
+}
+
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* TEXT */
+.question-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1F3A3A;
+}
+
+/* =========================
+   TOGGLE BUTTON (🔥 KEREN)
+========================= */
+.toggle-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* tombol */
+.btn-toggle {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: 0.3s;
+}
+
+/* default */
+.btn-toggle.yes {
+    background: #E0F7F6;
+    color: #2CCFC0;
+}
+
+.btn-toggle.no {
+    background: #f1f1f1;
+    color: #888;
+}
+
+/* aktif YES */
+input[type="radio"]:checked + .btn-toggle.yes {
+    background: linear-gradient(135deg, #40EDD0, #00CED1);
+    color: white;
+    border: none;
+}
+
+/* aktif NO */
+input[type="radio"]:checked + .btn-toggle.no {
+    background: #6B8A8A;
+    color: white;
+    border: none;
+}

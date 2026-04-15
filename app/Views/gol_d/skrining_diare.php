@@ -2,95 +2,100 @@
 
 <section class="container mt-5">
 
-<h3 class="text-teal mb-4 text-center">Skrining Kesehatan Diare</h3>
+<!-- ================= STEP MODERN ================= -->
+<div class="step-wrapper">
 
-<div class="card p-4 shadow" style="border-radius:20px; max-width:700px; margin:auto;">
+    <div class="step-item step-active">
+        <div class="step-circle">1</div>
+        <div class="step-title">Informasi Umum</div>
+    </div>
 
-<form id="formDiare">
+    <div class="step-line"></div>
 
-<div class="mb-3">
-<label>1. Apakah Anda mengalami diare lebih dari 3x sehari?</label>
-<select class="form-control" name="q1">
-<option value="0">Tidak</option>
-<option value="1">Ya</option>
-</select>
+    <div class="step-item">
+        <div class="step-circle">2</div>
+        <div class="step-title">Pertanyaan Skrining</div>
+    </div>
+
 </div>
 
-<div class="mb-3">
-<label>2. Apakah terdapat darah/lendir pada feses?</label>
-<select class="form-control" name="q2">
-<option value="0">Tidak</option>
-<option value="1">Ya</option>
+<!-- ================= FORM ================= -->
+<form action="<?= base_url('skrining-diare-step2') ?>" method="post">
+
+<div class="card border-0 shadow-lg p-4" style="border-radius:20px;">
+
+<h5 class="fw-bold mb-1">Informasi Umum</h5>
+<p class="text-muted mb-4">Lengkapi data sebelum skrining dimulai</p>
+
+<div class="row g-3">
+
+<!-- KIRI -->
+<div class="col-md-6">
+
+<label class="form-label">NIK</label>
+<input name="nik" class="form-control modern-input" placeholder="Masukkan NIK" required>
+
+<label class="form-label mt-2">Nama Lengkap</label>
+<input name="nama" class="form-control modern-input" placeholder="Masukkan Nama">
+
+<label class="form-label mt-2">Jenis Kelamin</label>
+<select name="jk" class="form-control modern-input">
+<option value="">-- Pilih --</option>
+<option>Laki-laki</option>
+<option>Perempuan</option>
 </select>
+
+<label class="form-label mt-2">Tanggal Lahir</label>
+<input type="date" name="tgl" class="form-control modern-input">
+
+<label class="form-label mt-2">Kategori Usia</label>
+<select name="usia" class="form-control modern-input">
+<option value="">-- Pilih --</option>
+<option>Anak</option>
+<option>Dewasa</option>
+<option>Lansia</option>
+</select>
+
+<label class="form-label mt-2">Nomor Telepon</label>
+<input name="hp" class="form-control modern-input" placeholder="08xxxx">
+
 </div>
 
-<div class="mb-3">
-<label>3. Apakah Anda mengalami mual atau muntah?</label>
-<select class="form-control" name="q3">
-<option value="0">Tidak</option>
-<option value="1">Ya</option>
-</select>
+<!-- KANAN -->
+<div class="col-md-6">
+
+<label class="form-label">Provinsi</label>
+<input name="prov" class="form-control modern-input" placeholder="Provinsi">
+
+<label class="form-label mt-2">Kabupaten</label>
+<input name="kab" class="form-control modern-input" placeholder="Kabupaten">
+
+<label class="form-label mt-2">Kecamatan</label>
+<input name="kec" class="form-control modern-input" placeholder="Kecamatan">
+
+<label class="form-label mt-2">Kelurahan</label>
+<input name="kel" class="form-control modern-input" placeholder="Kelurahan">
+
+<label class="form-label mt-2">Kode Pos</label>
+<input name="kodepos" class="form-control modern-input" placeholder="Kode Pos">
+
+<label class="form-label mt-2">Tanggal Skrining</label>
+<input value="<?= date('Y-m-d') ?>" class="form-control modern-input" readonly>
+
 </div>
 
-<div class="mb-3">
-<label>4. Apakah tubuh terasa lemas/dehidrasi?</label>
-<select class="form-control" name="q4">
-<option value="0">Tidak</option>
-<option value="1">Ya</option>
-</select>
 </div>
 
-<div class="mb-3">
-<label>5. Apakah Anda mengalami demam?</label>
-<select class="form-control" name="q5">
-<option value="0">Tidak</option>
-<option value="1">Ya</option>
-</select>
-</div>
-
-<div class="text-center mt-4">
-<button type="button" class="btn btn-teal" onclick="hitungDiare()">
-    Lihat Hasil
+<!-- BUTTON -->
+<div class="mt-4">
+<button class="btn btn-teal w-100 py-2 fw-semibold" style="border-radius:12px;">
+    Lanjut ke Pertanyaan →
 </button>
 </div>
 
+</div>
 </form>
 
-<div id="hasilDiare" class="mt-4 text-center"></div>
-
-</div>
-
 </section>
-
-<script>
-function hitungDiare(){
-
-let form = document.getElementById('formDiare');
-let data = new FormData(form);
-
-let total = 0;
-
-for (let val of data.values()) {
-    total += parseInt(val);
-}
-
-let hasil = "";
-
-if(total <= 1){
-    hasil = "<span class='text-success'>Risiko Rendah</span>";
-}
-else if(total <= 3){
-    hasil = "<span class='text-warning'>Risiko Sedang</span>";
-}
-else{
-    hasil = "<span class='text-danger'>Risiko Tinggi</span>";
-}
-
-document.getElementById('hasilDiare').innerHTML = `
-    <h5>Hasil Skrining:</h5>
-    <h3>${hasil}</h3>
-`;
-}
-</script>
 
 <?= $this->include('layout/footer') ?>
