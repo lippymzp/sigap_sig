@@ -34,6 +34,6 @@ public function diare()
 }
 public function skrining()
 {
-    return view('skrining');
+    return view('gol_a/skrining');
 }
 }
