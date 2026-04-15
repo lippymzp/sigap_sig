@@ -7,7 +7,7 @@ class Auth extends BaseController
 
     public function login()
     {
-        return view('login');
+        return view('gol_c/login');
     }
 
     public function loginProcess()
