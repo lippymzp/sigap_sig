@@ -12,4 +12,5 @@ $routes->get('/dbd', 'Home::dbd');
 $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/login', 'Home::login');
+$routes->get('/skrining', 'Home::skrining');
 

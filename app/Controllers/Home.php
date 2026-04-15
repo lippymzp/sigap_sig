@@ -32,4 +32,8 @@ public function diare()
 {
     return view('diare');
 }
+public function skrining()
+{
+    return view('skrining');
+}
 }

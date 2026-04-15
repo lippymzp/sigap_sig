@@ -460,3 +460,19 @@ body {
     background: linear-gradient(135deg, #17b89c, #0bbcd6);
     color: white;
 }
+.fitur-box {
+    display: inline-block;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    color: white;
+    border-radius: 12px;
+    transition: 0.3s;
+    text-align: center;
+    min-width: 180px;
+}
+
+.fitur-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    color: white;
+}
