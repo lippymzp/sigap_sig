@@ -501,3 +501,18 @@ input[type="radio"]:checked + .btn-toggle.no {
     color: white;
     border: none;
 }
+/* TABLE */
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/* INPUT HASIL */
+.form-control[readonly] {
+    background: #f8f9fa;
+}
+
+/* BADGE */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+}
