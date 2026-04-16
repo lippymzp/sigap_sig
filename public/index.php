@@ -23,6 +23,9 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
     exit(1);
 }
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 /*
  *---------------------------------------------------------------
  * SET THE CURRENT DIRECTORY

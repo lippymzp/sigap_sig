@@ -29,8 +29,13 @@ $routes->get('/diare', 'Diare::index');
 $routes->get('/login', 'Auth::login');
 $routes->post('/login-process', 'Auth::prosesLogin');
 $routes->get('/forgot', 'Auth::forgot');
-$routes->get('/otp', 'Auth::otp');
+$routes->post('/forgot-process', 'Auth::prosesForgot');
 $routes->get('/reset', 'Auth::reset');
+$routes->post('/reset-process', 'Auth::prosesReset');
+$routes->get('/otp-login', 'Auth::otpLogin');
+$routes->post('/otp-login', 'Auth::verifyOtpLogin');
+$routes->get('/otp-reset', 'Auth::otpReset');
+$routes->post('/otp-reset', 'Auth::verifyOtpReset');
 
 //dashboard
 $routes->get('/dbd/dashboard', 'Dashboard::dbd');

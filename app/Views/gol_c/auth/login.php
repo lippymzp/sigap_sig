@@ -3,6 +3,7 @@
 <head>
     <title>Login SIGAP</title>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -95,6 +96,12 @@
         <h2 class="title text-center">MASUK</h2>
         <br>
 
+        <?php if(session()->getFlashdata('success')): ?>
+            <div class="alert alert-success text-center">
+                <?= session()->getFlashdata('success') ?>
+            </div>
+        <?php endif; ?>
+
         <form action="<?= base_url('/login-process') ?>" method="post">
 
             <input type="hidden" name="penyakit" value="<?= $_GET['penyakit'] ?? '' ?>">
@@ -106,15 +113,30 @@
 
             <div class="mb-2">
                 <label>Kata Sandi</label>
+
                 <div class="position-relative">
-                    <input type="password" name="password" class="form-control" placeholder="Masukkan kata sandi">
-                    <span class="eye-icon">👁️</span>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="login_password"
+                        class="form-control pe-5" 
+                        placeholder="Masukkan kata sandi"
+                    >
+
+                    <i class="bi bi-eye eye-icon" id="toggleLoginPassword"></i>
                 </div>
             </div>
 
-            <div class="text-end mb-4">
+            <div class="text-end mb-3">
                 <a href="<?= base_url('/forgot') ?>">Lupa Kata Sandi</a>
             </div>
+
+            <!-- ERROR -->
+            <?php if(session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger">
+                    <?= session()->getFlashdata('error') ?>
+                </div>
+            <?php endif; ?>
 
             <button type="submit" class="btn btn-teal w-100">
                 Masuk
@@ -126,10 +148,24 @@
 
     <!-- KANAN -->
     <div class="right-panel">
-        <img src="<?= base_url('assets/img/login.png') ?>">
+        <img src="<?= base_url('img/login_1.png') ?>" width="450">
     </div>
 
 </div>
+
+<script>
+const input = document.getElementById("login_password");
+const icon = document.getElementById("toggleLoginPassword");
+
+icon.addEventListener("click", function () {
+    const isHidden = input.type === "password";
+
+    input.type = isHidden ? "text" : "password";
+
+    icon.classList.toggle("bi-eye");
+    icon.classList.toggle("bi-eye-slash");
+});
+</script>
 
 </body>
 </html>

@@ -516,3 +516,32 @@ input[type="radio"]:checked + .btn-toggle.no {
     padding: 6px 12px;
     border-radius: 20px;
 }
+
+/* NOTIF */
+.alert-box {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #20c997;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-weight: bold;
+    z-index: 999;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.eye-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+}
+
+.eye-icon:hover {
+    color: #000;
+}

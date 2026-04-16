@@ -13,7 +13,10 @@
         .card-custom {
             background: #ffffff;
             border-radius: 30px;
-            padding: 150px;
+            padding-top: 90px;
+            padding-bottom: 90px;
+            padding-left: 5px;
+            padding-right: 40px;
             max-width: 1000px;
             width: 100%;
         }
@@ -52,21 +55,36 @@
 
             <!-- KIRI GAMBAR -->
             <div class="col-md-5 text-center">
-                <img src="<?= base_url('assets/img/forgot.png') ?>" class="img-fluid">
+                <img src="<?= base_url('img/login_2.png') ?>" width="400">
             </div>
 
             <!-- KANAN FORM -->
             <div class="col-md-7">
-                <h2 class="text-teal mb-3">LUPA KATA SANDI?</h2>
-                <p>Masukkan alamat email yang terkait dengan akun Anda</p>
+                <form action="<?= base_url('/forgot-process') ?>" method="post">
 
-                <input type="email" class="form-control custom-input mb-4" placeholder="Masukkan email anda">
+                    <h2 class="text-teal mb-3">LUPA KATA SANDI?</h2>
+                    <p>Masukkan alamat email yang terkait dengan akun Anda</p>
 
-                <button type="button"
-                    onclick="window.location.href='<?= base_url('/otp') ?>'"
-                    class="btn btn-teal w-100">
-                    Lanjut
-                </button>
+                    <!-- ERROR -->
+                    <?php if(session()->getFlashdata('error')): ?>
+                        <div class="alert alert-danger">
+                            <?= session()->getFlashdata('error') ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <input 
+                        type="email" 
+                        name="email"
+                        class="form-control custom-input mb-4" 
+                        placeholder="Masukkan email anda"
+                        required
+                    >
+
+                    <button type="submit" class="btn btn-teal w-100">
+                        Lanjut
+                    </button>
+
+                </form>
             </div>
 
         </div>
