@@ -1,3 +1,4 @@
+<?php $this->setVar('penyakit', 'diare'); ?>
 <?= $this->include('layout/header') ?>
 
 <!-- HERO -->
@@ -11,7 +12,6 @@
         Diare adalah kondisi buang air besar lebih dari 3 kali sehari akibat infeksi makanan atau minuman yang tidak bersih.
     </p>
 
-    <!-- ✅ FIX KE DETAIL -->
     <a href="<?= base_url('diare-detail') ?>" class="btn btn-light mt-3 px-4 py-2 rounded-pill shadow">
         Pelajari selengkapnya →
     </a>
@@ -145,72 +145,159 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 
 </section>
 
-<!-- RINGKASAN -->
-<section class="container mt-5" data-aos="fade-up">
+<!-- ================= TAMBAHAN DATABASE ================= -->
+<script>
 
-<div class="p-4 shadow-sm" style="border-radius:20px; border:2px solid #20c997;">
+/* 🔥 FIX UTAMA (TIDAK MENGUBAH KODE LAMA) */
+function fixNama(nama){
+    return (nama || "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/[^a-z0-9 ]/g, "");
+}
 
-<h5 class="text-teal fw-bold">Ringkasan Data</h5>
+/* 🔥 PENYELARAS NAMA GEOJSON */
+var aliasDesa = {
+    "kemuningsarilor": "kemuning sari lor"
+};
 
-<p>
-Kasus diare tertinggi terjadi di wilayah <b style="color:red;">Kecamatan A</b>.<br>
-Wilayah lainnya dengan kasus tinggi yaitu <b style="color:red;">Desa B</b> dan <b style="color:red;">Desa C</b>.
-</p>
+var dataDiare = <?= json_encode($diare ?? []) ?>;
 
-<p>
-Rata-rata kasus diare mencapai <b>60 kasus</b>.
-</p>
+var dataFinal = {};
 
-<div class="text-center mt-3">
-<a href="<?= base_url('/') ?>" class="btn btn-teal px-4 rounded-pill">
-    Kembali
-</a>
-</div>
+dataDiare.forEach(item => {
 
-</div>
-</section>
+    var desa = fixNama(item.desa);
+
+    if(aliasDesa[desa]){
+        desa = aliasDesa[desa];
+    }
+
+    if(!dataFinal[desa]){
+        dataFinal[desa] = {
+            total: 0,
+            jumlah: 0
+        };
+    }
+
+    dataFinal[desa].total += parseInt(item.kasus);
+    dataFinal[desa].jumlah++;
+});
+
+for(var key in dataFinal){
+    var rata = dataFinal[key].total / dataFinal[key].jumlah;
+
+    if(rata >= 20) dataFinal[key].kategori = "tinggi";
+    else if(rata >= 10) dataFinal[key].kategori = "sedang";
+    else dataFinal[key].kategori = "rendah";
+}
+
+console.log("DATA FINAL:", dataFinal);
+
+</script>
 
 <!-- SCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-/* CHART */
 new Chart(document.getElementById('chartDiare'), {
     type: 'bar',
     data: {
         labels: ['Jan','Feb','Mar','Apr','Mei'],
         datasets: [
-            {
-                label:'Sembuh',
-                data:[100,80,70,60,150],
-                backgroundColor:'#8ecae6'
-            },
-            {
-                label:'Pengobatan',
-                data:[90,150,120,90,95],
-                backgroundColor:'#219ebc'
-            },
-            {
-                label:'Meninggal',
-                data:[40,20,40,40,60],
-                backgroundColor:'#90dbf4'
-            }
+            { label:'Sembuh', data:[100,80,70,60,150], backgroundColor:'#8ecae6' },
+            { label:'Pengobatan', data:[90,150,120,90,95], backgroundColor:'#219ebc' },
+            { label:'Meninggal', data:[40,20,40,40,60], backgroundColor:'#90dbf4' }
         ]
     }
 });
 
-/* MAP */
-var map = L.map('mapDiare').setView([-7.9,112.6], 10);
+var map = L.map('mapDiare').setView([-8.1,113.5], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-L.marker([-7.9,112.6]).addTo(map).bindPopup("Kasus Tinggi");
-L.marker([-7.8,112.7]).addTo(map).bindPopup("Kasus Sedang");
+fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
+.then(res => res.json())
+.then(data => {
 
-setTimeout(()=>map.invalidateSize(),300);
+    var geo = L.geoJSON(data, {
+
+        style: function(feature){
+
+            var nama = fixNama(feature.properties.NAMOBJ);
+
+            if(aliasDesa[nama]){
+                nama = aliasDesa[nama];
+            }
+
+            var item = dataFinal[nama];
+
+            var warna = "#cccccc";
+
+            if(item){
+                if(item.kategori == "tinggi") warna = "#dc3545";
+                else if(item.kategori == "sedang") warna = "#ffc107";
+                else if(item.kategori == "rendah") warna = "#28a745";
+            }
+
+            return {
+                color: "#00CED1",
+                weight: 2,
+                fillColor: warna,
+                fillOpacity: 0.7
+            };
+        },
+
+        onEachFeature: function(feature, layer){
+
+            var namaAsli = feature.properties.NAMOBJ || "Desa";
+            var namaFix  = fixNama(namaAsli);
+
+            if(aliasDesa[namaFix]){
+                namaFix = aliasDesa[namaFix];
+            }
+
+            var item = dataFinal[namaFix];
+
+            var isi = "<b>Desa: " + namaAsli + "</b>";
+
+            if(item){
+                isi += "<br>Total Kasus: " + item.total;
+                isi += "<br>Kategori: " + item.kategori;
+            } else {
+                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
+            }
+
+            layer.bindPopup(isi);
+
+            layer.bindTooltip(namaAsli, {
+                permanent: true,
+                direction: "center",
+                className: "label-desa"
+            });
+
+        }
+
+    }).addTo(map);
+
+    map.fitBounds(geo.getBounds());
+
+});
 
 });
 </script>
+
+<style>
+.label-desa{
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    padding: 2px 6px;
+    font-size: 11px;
+    border-radius: 6px;
+}
+</style>
 
 <?= $this->include('layout/footer') ?>

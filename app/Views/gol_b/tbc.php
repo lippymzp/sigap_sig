@@ -1,3 +1,4 @@
+<?php $this->setVar('penyakit', 'tbc'); ?>
 <?= $this->include('layout/header') ?>
 
 <!-- HERO -->

@@ -1,3 +1,4 @@
+<?php $this->setVar('penyakit', 'dbd'); ?>
 <?= $this->include('layout/header') ?>
 
 <!-- HERO -->

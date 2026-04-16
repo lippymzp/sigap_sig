@@ -11,16 +11,27 @@ class Diare extends BaseController
     // =========================
     public function skrining()
     {
+        // reset session biar bersih tiap mulai
+        session()->remove('skrining_diare');
+
         return view('gol_d/skrining_diare');
     }
 
     // =========================
-    // STEP 2 (PERTANYAAN)
+    // STEP 2 (SIMPAN IDENTITAS → KE PERTANYAAN)
     // =========================
     public function step2()
     {
-        // simpan data identitas ke session
-        session()->set($this->request->getPost());
+        $identitas = $this->request->getPost();
+
+        // VALIDASI sederhana (biar ga kosong)
+        if (empty($identitas)) {
+            return redirect()->back()->with('error', 'Data identitas belum diisi');
+        }
+
+        session()->set('skrining_diare', [
+            'identitas' => $identitas
+        ]);
 
         return view('gol_d/pertanyaan_diare');
     }
@@ -30,50 +41,72 @@ class Diare extends BaseController
     // =========================
     public function hasil()
     {
-        // ambil data identitas + jawaban
-        $data = array_merge(
-            session()->get(),
-            $this->request->getPost()
-        );
+        $session = session()->get('skrining_diare');
+
+        // kalau belum isi step1 → balik
+        if (!$session || !isset($session['identitas'])) {
+            return redirect()->to('/skrining-diare');
+        }
+
+        $jawaban = $this->request->getPost();
+        $identitas = $session['identitas'];
+
+        // =====================
+        // VALIDASI JAWABAN
+        // =====================
+        if (empty($jawaban)) {
+            return redirect()->to('/skrining-diare')->with('error', 'Jawaban belum diisi');
+        }
 
         // =====================
         // HITUNG SKOR
         // =====================
         $skor = 0;
+        $jumlahPertanyaan = 10;
 
-        // jumlah pertanyaan = 10 (sesuai view)
-        for ($i = 0; $i < 10; $i++) {
-            $skor += isset($data["q".$i]) ? $data["q".$i] : 0;
+        for ($i = 0; $i < $jumlahPertanyaan; $i++) {
+            $skor += isset($jawaban["q".$i]) ? (int)$jawaban["q".$i] : 0;
         }
 
         // =====================
-        // ANALISIS
+        // ANALISIS HASIL
         // =====================
         if ($skor >= 7) {
             $hasil = "Risiko Tinggi Diare";
             $warna = "danger";
+            $rekomendasi = "Segera periksa ke fasilitas kesehatan terdekat dan jaga hidrasi tubuh.";
         } elseif ($skor >= 4) {
             $hasil = "Risiko Sedang Diare";
             $warna = "warning";
+            $rekomendasi = "Perbanyak minum air, jaga pola makan, dan pantau kondisi tubuh.";
         } else {
             $hasil = "Risiko Rendah Diare";
             $warna = "success";
+            $rekomendasi = "Pertahankan pola hidup bersih dan sehat.";
         }
 
         // =====================
-        // SIMPAN KE SESSION (PENTING BUAT PDF)
+        // SIMPAN KE SESSION (UNTUK PDF)
         // =====================
-        session()->set([
-            'data' => $data,
-            'hasil' => $hasil,
-            'skor' => $skor
+        session()->set('skrining_diare', [
+            'identitas'   => $identitas,
+            'jawaban'     => $jawaban,
+            'hasil'       => $hasil,
+            'warna'       => $warna,
+            'skor'        => $skor,
+            'rekomendasi' => $rekomendasi
         ]);
 
+        // =====================
+        // KIRIM KE VIEW (FIX)
+        // =====================
         return view('gol_d/hasil_diare', [
-            'data' => $data,
-            'hasil' => $hasil,
-            'warna' => $warna,
-            'skor' => $skor
+            'identitas'   => $identitas,
+            'jawaban'     => $jawaban,
+            'hasil'       => $hasil,
+            'warna'       => $warna,
+            'skor'        => $skor,
+            'rekomendasi' => $rekomendasi
         ]);
     }
 
@@ -82,28 +115,36 @@ class Diare extends BaseController
     // =========================
     public function pdf()
     {
-        $dompdf = new Dompdf();
+        $session = session()->get('skrining_diare');
 
-        $data  = session()->get('data');
-        $hasil = session()->get('hasil');
-        $skor  = session()->get('skor');
-
-        // kalau kosong → redirect biar ga error
-        if (!$data) {
+        if (!$session || !isset($session['identitas'])) {
             return redirect()->to('/skrining-diare');
         }
 
+        $dompdf = new Dompdf();
+
         $html = view('gol_d/pdf_diare', [
-            'data' => $data,
-            'hasil' => $hasil,
-            'skor' => $skor
+            'identitas'   => $session['identitas'],
+            'jawaban'     => $session['jawaban'],
+            'hasil'       => $session['hasil'],
+            'skor'        => $session['skor'],
+            'rekomendasi' => $session['rekomendasi']
         ]);
 
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        // tampil di browser (bukan download langsung)
         $dompdf->stream("hasil-diare.pdf", ["Attachment" => false]);
     }
+    public function index()
+{
+    $model = new \App\Models\DiareModel();
+
+    $data['diare'] = $model->findAll();
+
+    dd($data['diare']); // 🔥 WAJIB TARUH INI
+
+    return view('gol_d/diare', $data);
+}
 }
