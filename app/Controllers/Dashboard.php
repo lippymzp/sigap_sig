@@ -50,7 +50,7 @@ class Dashboard extends BaseController
     // ✅ TAMBAHKAN DI DALAM CLASS
    public function dbd()
 {
-    return view('gol_b/dashboard_dbd', [
+    return view('gol_a/dashboard_dbd', [
         'menu' => 'dashboard',
         'artikels' => []
     ]);
@@ -66,7 +66,7 @@ public function tbc()
 
 public function pneumonia()
 {
-    return view('gol_b/dashboard_pneumonia', [
+    return view('gol_c/dashboard_pneumonia', [
         'menu' => 'dashboard',
         'artikels' => []
     ]);
@@ -74,7 +74,7 @@ public function pneumonia()
 
 public function diare()
 {
-    return view('gol_b/dashboard_diare', [
+    return view('gol_d/dashboard_diare', [
         'menu' => 'dashboard',
         'artikels' => []
     ]);
