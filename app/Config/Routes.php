@@ -35,7 +35,7 @@ $routes->get('/otp', 'Auth::otp');
 $routes->get('/reset', 'Auth::reset');
 
 //dashboard
-$routes->get('/dbd/dashboard', 'Dashboard::dbd');
-$routes->get('/tbc/dashboard', 'Dashboard::tbc');
-$routes->get('/pneumonia/dashboard', 'Dashboard::pneumonia');
-$routes->get('/diare/dashboard', 'Dashboard::diare');
+$routes->get('dbd/dashboard', 'Dashboard::dbd');
+$routes->get('tbc/dashboard', 'Dashboard::tbc');
+$routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
+$routes->get('diare/dashboard', 'Dashboard::diare');

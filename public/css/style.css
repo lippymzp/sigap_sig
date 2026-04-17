@@ -940,4 +940,50 @@ body {
     border-radius: 20px;
 
 }
+
+/* wrapper dropdown avatar */
+.avatar-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* dropdown default style */
+.dropdown-menu {
+    border-radius: 10px;
+    padding: 10px 0;
+    min-width: 160px;
+    margin-top: 10px;
+    display: none;
+}
+
+/* hover trigger */
+.avatar-dropdown:hover > .dropdown-menu {
+    display: block !important;
+}
+
+/* item style */
+.dropdown-item {
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+}
+
+/* hover item */
+.dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+/* optional animasi smooth */
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 0.2s ease;
+}
+
+.avatar-dropdown:hover > .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 }

@@ -6,7 +6,10 @@ class Dashboard extends BaseController
 {
     public function index()
     {
-        return view('dashboard', ['menu' => 'dashboard']);
+        return view('gol_b/dashboard', [
+            'menu' => 'dashboard',
+            'artikels' => [] 
+        ]);
     }
 
     public function input()
@@ -45,23 +48,35 @@ class Dashboard extends BaseController
     }
 
     // ✅ TAMBAHKAN DI DALAM CLASS
-    public function dbd()
-    {
-        return view('gol_b/dashboard_dbd');
-    }
+   public function dbd()
+{
+    return view('gol_b/dashboard_dbd', [
+        'menu' => 'dashboard',
+        'artikels' => []
+    ]);
+}
 
-    public function tbc()
-    {
-        return view('gol_b/dashboard_tbc');
-    }
+public function tbc()
+{
+    return view('gol_b/dashboard_tbc', [
+        'menu' => 'dashboard',
+        'artikels' => []
+    ]);
+}
 
-    public function pneumonia()
-    {
-        return view('gol_b/dashboard_pneumonia');
-    }
+public function pneumonia()
+{
+    return view('gol_b/dashboard_pneumonia', [
+        'menu' => 'dashboard',
+        'artikels' => []
+    ]);
+}
 
-    public function diare() 
-    {
-        return view('gol_b/dashboard_diare');
-    }
+public function diare()
+{
+    return view('gol_b/dashboard_diare', [
+        'menu' => 'dashboard',
+        'artikels' => []
+    ]);
+}
 }
