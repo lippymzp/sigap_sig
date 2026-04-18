@@ -58,7 +58,7 @@
     </div>
 
     <div class="col-lg-3 col-md-6">
-        <a href="<?= base_url('skrining') ?>" class="text-decoration-none">
+        <a href="<?= base_url('skriningdbd') ?>" class="text-decoration-none">
             <div class="fitur-box shadow-sm p-3 rounded">
                 🩺 Skrining Kesehatan
             </div>
@@ -108,7 +108,7 @@ Tubuhmu memberi sinyal, jangan diabaikan.<br>
 Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 </p>
 
-<a href="<?= base_url('skrining') ?>" class="btn btn-teal px-4 py-2 rounded-pill shadow">
+<a href="<?= base_url('skriningdbd') ?>" class="btn btn-teal px-4 py-2 rounded-pill shadow">
     Mulai Skrining →
 </a>
 

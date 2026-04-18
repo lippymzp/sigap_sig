@@ -1,9 +1,10 @@
+<?= $this->include('layout/header') ?>
 <!DOCTYPE html>
 <html>
 <head>
 <title>Informasi Umum</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 body {
     background: #ffffff;
@@ -117,7 +118,9 @@ body {
     column-gap: 0px; /* jarak kiri kanan */
     --bs-gutter-x: 8rem; /* default cuma 1.5rem */
 }
-
+body {
+    font-family: 'Poppins', sans-serif;
+}
 </style>
 </head>
 
@@ -148,7 +151,7 @@ body {
 <h4><b>Informasi Umum</b></h4>
 <p class="mb-5">Lengkapi beberapa info dasar sebelum Skrining dimulai</p>
 
-<form method="post" action="/skrining2/skriningdbd2">
+<form method="post" action="/skriningdbd/skriningdbd2">
 
 <div class="row gy-4">
 
@@ -181,7 +184,7 @@ body {
 
 <div class="mb-3">
 <label>Kategori Usia</label>
-<input type="text" name="tanggal_skrining" class="form-control" value="<?= date('d-m-Y') ?>" readonly>
+<input type="text" id="kategori_usia" name="kategori_usia" class="form-control" readonly>
 </div>
 
 <div class="mb-3">
@@ -214,12 +217,12 @@ body {
 
 <div class="mb-3">
 <label>Kode Pos</label>
-<input type="text" name="kode_pos" id="kode_pos" class="form-control" readonly>
+<input type="text" name="kode_pos" id="kode_pos" class="form-control">
 </div>
 
 <div class="mb-3">
 <label>Tanggal Skrining</label>
-<input type="text" name="kategori_usia" class="form-control" value="<?= date('d-m-Y') ?>" readonly>
+<input type="text" name="tanggal_skrining" class="form-control" value="<?= date('d-m-Y') ?>" readonly>
 </div>
 
 </div>
@@ -319,7 +322,7 @@ document.getElementById('kecamatan').addEventListener('change', function(){
 
 // AUTO KODE POS (dummy)
 document.getElementById('kelurahan').addEventListener('change', function(){
-    document.getElementById('kode_pos').value = "68121";
+    document.getElementById('kode_pos').value = " ";
 });
 
 // KATEGORI USIA
@@ -330,6 +333,11 @@ document.getElementById('tgl_lahir').addEventListener('change', function(){
                    umur <= 59 ? "Dewasa" : "Lansia";
     document.getElementById('kategori_usia').value = kategori;
 });
+
+// LIMIT NIK 16 DIGIT
+document.querySelector('[name="nik"]').oninput = function(){
+    this.value = this.value.replace(/\D/g, '').slice(0,16);
+}
 
 </script>
 
