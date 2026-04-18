@@ -13,9 +13,16 @@ $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
 
+/*skrining gol A */
 $routes->get('/skriningdbd', 'Home::skriningdbd');
 $routes->match(['get','post'], '/skriningdbd/skriningdbd2', 'Home::skriningdbd2');
 $routes->match(['get','post'], '/skriningdbd/skriningdbd3', 'Home::skriningdbd3');
+
+//profil gol A
+$routes->get('/profil_kepala', 'Profile::profil_kepala');
+
+//profil admin Gol A
+$routes->get('/profil_admin', 'Profile2::profil_admin');
 
 $routes->get('/skrining-diare', 'Home::skrining_diare');
 $routes->get('/diare-detail', 'Home::diare_detail');

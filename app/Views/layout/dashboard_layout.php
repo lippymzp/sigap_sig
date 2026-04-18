@@ -87,7 +87,7 @@
 
     <ul class="dropdown-menu dropdown-menu-end shadow">
         <li>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
                 <i class="fa-regular fa-user me-2"></i> Profile
             </a>
         </li>
