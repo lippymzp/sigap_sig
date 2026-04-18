@@ -170,7 +170,7 @@ body {
 <h5><b>Informasi Gejala Klinis</b></h5>
 <p class="mb-4">Sesuaikan dengan kondisi gejala yang dialami</p>
 
-<form method="post" action="/skrining/skrining3">
+<form method="post" action="/skrining3/skriningdbd3">
     
 <input type="hidden" name="nik" value="<?= $nik ?? '' ?>">
 <input type="hidden" name="nama" value="<?= $nama ?? '' ?>">

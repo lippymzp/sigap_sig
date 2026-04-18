@@ -148,7 +148,7 @@ body {
 <h4><b>Informasi Umum</b></h4>
 <p class="mb-5">Lengkapi beberapa info dasar sebelum Skrining dimulai</p>
 
-<form method="post" action="/skrining/skrining2">
+<form method="post" action="/skrining2/skriningdbd2">
 
 <div class="row gy-4">
 

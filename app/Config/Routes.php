@@ -13,11 +13,9 @@ $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
 
-$routes->get('/skrining1', 'Home::skrining1');
-$routes->post('/skrining2', 'Home::skrining2');
-$routes->post('/skrining3', 'Home::skrining3');
-$routes->post('/hasil', 'Home::hasil');
-
+$routes->get('/skriningdbd', 'Home::skriningdbd');
+$routes->match(['get','post'], '/skrining2/skriningdbd2', 'Home::skriningdbd2');
+$routes->match(['get','post'], '/skrining3/skriningdbd3', 'Home::skriningdbd3');
 
 $routes->get('/skrining-diare', 'Home::skrining_diare');
 $routes->get('/diare-detail', 'Home::diare_detail');

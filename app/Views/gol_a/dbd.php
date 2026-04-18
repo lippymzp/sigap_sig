@@ -49,7 +49,7 @@
     </div>
 
     <div class="col-6 col-md-3">
-      <a href="<?= base_url('skrining1') ?>" class="fitur-box d-block text-center text-decoration-none">
+      <a href="<?= base_url('skriningdbd') ?>" class="fitur-box d-block text-center text-decoration-none">
         Skrining
       </a>
     </div>
