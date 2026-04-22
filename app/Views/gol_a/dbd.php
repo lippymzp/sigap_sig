@@ -152,6 +152,7 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 
 <h4 class="text-teal mb-3 fw-bold">Peta Persebaran Penyakit</h4>
 
+<!-- 🔥 FIX: ID TETAP peta -->
 <div id="peta" style="height:400px; border-radius:15px;"></div>
 
 <div class="mt-3 d-flex gap-2">
@@ -165,7 +166,6 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 <!-- ================= TAMBAHAN DATABASE ================= -->
 <script>
 
-/* 🔥 FIX UTAMA (TIDAK MENGUBAH KODE LAMA) */
 function fixNama(nama){
     return (nama || "")
         .toLowerCase()
@@ -174,22 +174,14 @@ function fixNama(nama){
         .replace(/[^a-z0-9 ]/g, "");
 }
 
-/* 🔥 PENYELARAS NAMA GEOJSON */
-var aliasDesa = {
-    "kemuningsarilor": "kemuning sari lor"
-};
-
 var dataDBD = <?= json_encode($dbd ?? []) ?>;
+console.log("DATA DARI PHP:", dataDBD);
 
 var dataFinal = {};
 
 dataDBD.forEach(item => {
 
     var desa = fixNama(item.desa);
-
-    if(aliasDesa[desa]){
-        desa = aliasDesa[desa];
-    }
 
     if(!dataFinal[desa]){
         dataFinal[desa] = {
@@ -230,12 +222,14 @@ new Chart(document.getElementById('chartDBD'), {
     }
 });
 
-var map = L.map('mapDBD').setView([-8.1,113.5], 12);
+/* 🔥 FIX MAP */
+var map = L.map('peta').setView([-8.1,113.5], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
+/* 🔥 PAKAI db.geojson */
+fetch("<?= base_url('assets/peta/db.geojson') ?>")
 .then(res => res.json())
 .then(data => {
 
@@ -244,12 +238,9 @@ fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
         style: function(feature){
 
             var nama = fixNama(feature.properties.NAMOBJ);
-
-            if(aliasDesa[nama]){
-                nama = aliasDesa[nama];
-            }
-
             var item = dataFinal[nama];
+
+            console.log("CEK:", nama, item);
 
             var warna = "#cccccc";
 
@@ -269,32 +260,19 @@ fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
 
         onEachFeature: function(feature, layer){
 
-            var namaAsli = feature.properties.NAMOBJ || "Desa";
-            var namaFix  = fixNama(namaAsli);
+            var nama = feature.properties.NAMOBJ;
+            var item = dataFinal[fixNama(nama)];
 
-            if(aliasDesa[namaFix]){
-                namaFix = aliasDesa[namaFix];
-            }
-
-            var item = dataFinal[namaFix];
-
-            var isi = "<b>Desa: " + namaAsli + "</b>";
+            var isi = "<b>"+nama+"</b>";
 
             if(item){
-                isi += "<br>Total Kasus: " + item.total;
-                isi += "<br>Kategori: " + item.kategori;
+                isi += "<br>Total Kasus: "+item.total;
+                isi += "<br>Kategori: "+item.kategori;
             } else {
-                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
+                isi += "<br style='color:red'>Data tidak ditemukan";
             }
 
             layer.bindPopup(isi);
-
-            layer.bindTooltip(namaAsli, {
-                permanent: true,
-                direction: "center",
-                className: "label-desa"
-            });
-
         }
 
     }).addTo(map);
