@@ -18,11 +18,11 @@ class Auth extends BaseController
 
     public function prosesLogin()
     {
-        $model = new LoginModel();
+        $model = new \App\Models\LoginModel();
 
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
-        $penyakit_login = $this->request->getPost('penyakit');
+        $penyakit_login = session()->get('penyakit');
 
         $user = $model->where('email', $email)->first();
 
@@ -34,17 +34,23 @@ class Auth extends BaseController
             return redirect()->back()->with('error', 'Password salah!');
         }
 
-        if ($user['penyakit'] != $penyakit_login) {
+        $penyakitModel = new \App\Models\PenyakitModel();
+        $penyakitDB = $penyakitModel->find($user['id_penyakit']);
+
+        if (
+            !$penyakitDB ||
+            strtolower(trim($penyakitDB['nama_penyakit'])) != strtolower(trim($penyakit_login))
+        ) {
             return redirect()->back()->with('error', 'Akun tidak punya akses ke halaman ini!');
         }
 
+        // lanjut OTP
         $otp = rand(100000, 999999);
 
         session()->set([
             'temp_user' => $user['id_user'],
             'otp_code' => $otp,
-            'otp_expired' => time() + 300,
-            'penyakit' => $user['penyakit']
+            'otp_expired' => time() + 300
         ]);
 
         $sent = $this->sendOtpEmail($email, $otp);
@@ -113,17 +119,34 @@ class Auth extends BaseController
             return redirect()->back()->with('error', 'OTP salah!');
         }
 
+        // AMBIL USER DARI DB
+        $model = new \App\Models\LoginModel();
+        $user = $model->find(session()->get('temp_user'));
+
+        if (!$user) {
+            return redirect()->to('/login')->with('error', 'User tidak ditemukan!');
+        }
+
+        // SET SESSION LOGIN FINAL
         session()->set([
             'logged_in' => true,
-            'id_user' => session()->get('temp_user'),
-            'penyakit' => session()->get('penyakit')
+            'id_user' => $user['id_user'],
+            'email' => $user['email'],
+            'role_id' => $user['role_id'],
+            'id_penyakit' => $user['id_penyakit']
         ]);
 
+        // HAPUS SESSION OTP
         session()->remove(['otp_code','otp_expired','temp_user']);
 
-        $penyakit = session()->get('penyakit');
+        $penyakitModel = new \App\Models\PenyakitModel();
+        $penyakit = $penyakitModel->find($user['id_penyakit']);
 
-        return redirect()->to('/' . $penyakit . '/dashboard');
+        if (!$penyakit) {
+            return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
+        }
+
+        return redirect()->to('/' . strtolower($penyakit['nama_penyakit']) . '/dashboard');
     }
 
     public function otpReset()
@@ -179,9 +202,12 @@ class Auth extends BaseController
             ->set(['password' => $password])
             ->update();
 
-        // ambil penyakit dari DB (lebih aman)
+        // ambil penyakit dari DB
         $user = $model->where('email', $email)->first();
-        $penyakit = $user['penyakit'];
+        $penyakitModel = new \App\Models\PenyakitModel();
+        $p = $penyakitModel->find($user['id_penyakit']);
+
+        $penyakit = $p['nama_penyakit'];
 
         // bersihin session reset
         session()->remove('reset_email');

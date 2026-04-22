@@ -104,7 +104,7 @@
 
         <form action="<?= base_url('/login-process') ?>" method="post">
 
-            <input type="hidden" name="penyakit" value="<?= $_GET['penyakit'] ?? '' ?>">
+            <input type="hidden" name="penyakit" value="<?= session('penyakit') ?>">
 
             <div class="mb-3">
                 <label>Email</label>

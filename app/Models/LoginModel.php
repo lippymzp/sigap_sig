@@ -6,13 +6,13 @@ use CodeIgniter\Model;
 
 class LoginModel extends Model
 {
-    protected $table = 'login';
+    protected $table = 'user_akun';
     protected $primaryKey = 'id_user';
 
     protected $allowedFields = [
         'email',
         'password',
-        'id_role',
-        'penyakit'
+        'role_id',
+        'id_penyakit'
     ];
 }
