@@ -83,6 +83,7 @@
 
 <!-- SCRIPT -->
 <script>
+document.addEventListener("DOMContentLoaded", function(){
 
 /* ================= TAMBAHAN QGIS ================= */
 function fixNama(nama){
@@ -152,12 +153,15 @@ new Chart(ctx, {
 });
 
 /* MAP */
-var map = L.map('mapTbc').setView([-7.9,112.6], 10);
+var map = L.map('mapTbc').setView([-8.1,113.5], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-
+/* 🔥 FIX BIAR LANGSUNG MUNCUL */
+setTimeout(() => {
+    map.invalidateSize();
+}, 200);
 
 /* 🔥 QGIS GEOJSON */
 fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
@@ -214,9 +218,9 @@ fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
     }).addTo(map);
 
     map.fitBounds(geo.getBounds());
-
 });
 
+});
 </script>
 
 <style>
