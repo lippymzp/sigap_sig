@@ -14,7 +14,7 @@
     </div>
 
     <div class="col-md-6 text-center">
-      <img src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg" class="img-fluid hero-img">
+      <img src="<?= base_url('img/dokterportal.png') ?>" class="img-fluid hero-img">
     </div>
 
   </div>

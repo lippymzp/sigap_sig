@@ -85,8 +85,9 @@ body {
     background: linear-gradient(to right, var(--bg-main), var(--bg-card));
 }
 
-.hero-img {
-    max-height: 300px;
+.hero-img{
+    max-width: 450px; /* ubah jadi 600px kalau mau lebih gede */
+    width: 100%;
 }
 
 /* =========================
