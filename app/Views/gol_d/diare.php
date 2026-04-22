@@ -153,10 +153,10 @@ body{
 <div class="scroll-container" id="slider">
 
     <!-- CARD 1 -->
-    <div class="scroll-item card-gradient p-4 shadow">
+    <div class="scroll-item card-gradient shadow">
         <div class="d-flex justify-content-between align-items-center h-100">
             <div>
-                <h5>Pengertian diare</h5>
+                <h5>Pengertian, penyebab, gejala, diagnosis, pengobatan, pencegahan, dan komplikasi Diare</h5>
                 <p>Informasi lengkap tentang diare</p>
             </div>
             <img src="<?= base_url('img/diare-artikel.png') ?>">
@@ -164,10 +164,10 @@ body{
     </div>
 
     <!-- CARD 2 -->
-    <div class="scroll-item card-gradient p-4 shadow">
+    <div class="scroll-item card-gradient shadow">
         <div class="d-flex justify-content-between align-items-center h-100">
             <div>
-                <h5>ISPA & Diare</h5>
+                <h5>ISPA dan Diare Penyakit Dominan Pasca Banjir Aceh Tamian</h5>
                 <p>Kasus dominan</p>
             </div>
             <img src="<?= base_url('img/dokter.png') ?>">
@@ -175,21 +175,21 @@ body{
     </div>
 
     <!-- CARD 3 -->
-    <div class="scroll-item card-gradient p-4 shadow">
+    <div class="scroll-item card-gradient shadow">
         <div class="d-flex justify-content-between align-items-center h-100">
             <div>
-                <h5>Kolaborasi kesehatan</h5>
-                <p>Diare meningkat</p>
+                <h5>DIARE, PANTI PERKUAT KOLABORASI HADAPI ANCAMAN KESEHATAN</h5>
+                <p>Panti berkolaborasi untuk menghadapi ancaman kesehatan.</p>
             </div>
             <img src="<?= base_url('img/seminar.png') ?>">
         </div>
     </div>
 
     <!-- CARD 4 -->
-    <div class="scroll-item card-gradient p-4 shadow">
+    <div class="scroll-item card-gradient shadow">
         <div class="d-flex justify-content-between align-items-center h-100">
             <div>
-                <h5>Variasi spasial</h5>
+                <h5>Variasi Temporal dan Klaster Spasial Penyakit Diare di Provinsi Jakarta, Indonesia</h5>
                 <p>Penyakit diare</p>
             </div>
             <img src="<?= base_url('img/riset.png') ?>">

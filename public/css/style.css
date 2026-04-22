@@ -1103,15 +1103,6 @@ body{
     padding-bottom:10px;
 }
 
-.scroll-item{
-    min-width:420px; /* 🔥 dari 320 → 420 */
-    height:150px;    /* 🔥 tambah tinggi */
-    flex-shrink:0;
-    border-radius:18px;
-    display:flex;
-    align-items:center;
-    padding:20px;
-}
 
 .scroll-container::-webkit-scrollbar{
     height:6px;
@@ -1157,12 +1148,6 @@ body{
     font-size:13px;
     opacity:0.9;
 }
-.scroll-item img{
-    width:110px;   /* 🔥 dari 90 → 110 */
-    height:80px;
-    object-fit:cover;
-    border-radius:10px;
-}
 .scroll-item .d-flex{
     width:100%;
     justify-content:space-between;
@@ -1193,13 +1178,6 @@ body{
     border-radius:20px;
 }
 
-/* gambar */
-.scroll-item img{
-    width:140px;
-    height:100px;
-    object-fit:cover;
-    border-radius:10px;
-}
 
 /* tombol */
 .nav-btn{
@@ -1241,12 +1219,7 @@ body{
     border-radius:20px;
 }
 
-.scroll-item img{
-    width:140px;
-    height:100px;
-    object-fit:cover;
-    border-radius:12px;
-}
+
 
 /* tombol */
 .nav-btn{
@@ -1345,4 +1318,49 @@ body{
 .btn-kembali:hover{
     background:#ABFBFF;
     transform:translateY(-2px);
+}
+.scroll-item{
+    min-height: 220px;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 30px !important;
+}
+
+.scroll-item .d-flex{
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* TEXT */
+.scroll-item h5{
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.scroll-item p{
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* IMAGE KANAN */
+.scroll-item img{
+    height: 140px;
+    width: 220px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* BIAR TEXT GA KEPEPET */
+.scroll-item .text-area{
+    max-width: 60%;
+}
+.scroll-item{
+    transition: 0.3s;
+}
+
+.scroll-item:hover{
+    transform: scale(1.02);
 }
