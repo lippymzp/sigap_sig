@@ -1364,7 +1364,6 @@ body{
 .scroll-item:hover{
     transform: scale(1.02);
 }
-<<<<<<< HEAD
 .card-summary{
     background:white;
     padding:20px;
@@ -1404,7 +1403,6 @@ body{
 }
 *{
     --primary:#00BBC2 !important;
-=======
 
 #map {
     position: relative;
@@ -1480,5 +1478,5 @@ body{
     .info-image img {
         width: 120px;
     }
->>>>>>> a2086a5eba512cacc008bc3e83507f6163a8199f
-}
+
+}}

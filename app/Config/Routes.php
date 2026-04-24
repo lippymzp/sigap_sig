@@ -69,12 +69,10 @@ $routes->get('dbd/dashboard', 'Dashboard::dbd');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
 $routes->get('diare/dashboard', 'Dashboard::diare');
-<<<<<<< HEAD
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
-=======
 
 /* ========================= */
 /* FUNFACT TBC */
@@ -114,4 +112,4 @@ $routes->get('admin/artikel/delete/(:num)', 'Admin\Artikel::delete/$1');
 $routes->get('admin/artikel/toggle/(:num)', 'Admin\Artikel::toggle/$1');
 
 $routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
->>>>>>> a2086a5eba512cacc008bc3e83507f6163a8199f
+

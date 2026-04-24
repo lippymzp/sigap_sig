@@ -75,7 +75,7 @@ class Dashboard extends BaseController
         ]);
     }
 
-<<<<<<< HEAD
+
 public function diare()
 {
     return view('gol_d/dashboard_diare', [
@@ -92,13 +92,13 @@ public function inputData()
 public function hasil_data()
     {
         return view('gol_d/hasil_data');
-=======
-    public function diare()
+    }
+    
+    public function dashboard_diare()
     {
         return view('gol_d/dashboard_diare', [
             'menu' => 'dashboard',
             'artikels' => []
         ]);
->>>>>>> a2086a5eba512cacc008bc3e83507f6163a8199f
     }
 }
