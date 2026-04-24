@@ -74,7 +74,7 @@
 
     <div class="main-content">
         <div class="topbar">
-            <div class="fs-5 fw-bold text-dark">Dashboard</div>
+            <div class="fs-4 fw-bold text-dark"><?= $judul ?? 'Dashboard' ?></div>
             <div class="d-flex align-items-center">
                 <div class="text-end me-3">
                     <div class="fw-bold text-dark" style="font-size: 0.95rem; line-height: 1.2;">Profil</div>

@@ -5,6 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+
+/* ========================= */
+/* HALAMAN UTAMA */
+/* ========================= */
+
 $routes->get('/', 'Home::index');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
@@ -13,28 +18,37 @@ $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
 
-/*skrining gol A */
+/* ========================= */
+/* SKRINING DBD */
+/* ========================= */
+
 $routes->get('/skriningdbd', 'Home::skriningdbd');
-$routes->match(['get','post'], '/skriningdbd/skriningdbd2', 'Home::skriningdbd2');
-$routes->match(['get','post'], '/skriningdbd/skriningdbd3', 'Home::skriningdbd3');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Home::skriningdbd2');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Home::skriningdbd3');
 
-//profil gol A
+/* ========================= */
+/* PROFIL */
+/* ========================= */
+
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
-
-//profil admin Gol A
 $routes->get('/profil_admin', 'Profile2::profil_admin');
+
+/* ========================= */
+/* DIARE */
+/* ========================= */
 
 $routes->get('/skrining-diare', 'Home::skrining_diare');
 $routes->get('/diare-detail', 'Home::diare_detail');
+$routes->get('/diare', 'Diare::index');
 $routes->get('skrining-diare', 'Diare::skrining');
 $routes->post('hasil-diare', 'Diare::hasil');
 $routes->get('pdf-diare', 'Diare::pdf');
 $routes->post('skrining-diare-step2', 'Diare::step2');
 
-$routes->get('/dashboard', 'Dashboard::index');
-$routes->get('/diare', 'Diare::index');
+/* ========================= */
+/* LOGIN */
+/* ========================= */
 
-//Login
 $routes->get('/login', 'Auth::login');
 $routes->post('/login-process', 'Auth::prosesLogin');
 $routes->get('/forgot', 'Auth::forgot');
@@ -46,12 +60,58 @@ $routes->post('/otp-login', 'Auth::verifyOtpLogin');
 $routes->get('/otp-reset', 'Auth::otpReset');
 $routes->post('/otp-reset', 'Auth::verifyOtpReset');
 
-//dashboard
+/* ========================= */
+/* DASHBOARD */
+/* ========================= */
+
+$routes->get('/dashboard', 'Dashboard::index');
 $routes->get('dbd/dashboard', 'Dashboard::dbd');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
 $routes->get('diare/dashboard', 'Dashboard::diare');
+<<<<<<< HEAD
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
+=======
+
+/* ========================= */
+/* FUNFACT TBC */
+/* ========================= */
+
+$routes->get('tbc/funfact', 'Dashboard::funfact');
+
+/* ========================= */
+/* BERITA TBC */
+/* ========================= */
+
+$routes->get('tbc/berita', 'AdminTbc\BeritaTbc::index');
+$routes->get('tbc/berita/create', 'AdminTbc\BeritaTbc::create');
+
+$routes->post('tbc/berita/simpan', 'AdminTbc\BeritaTbc::simpan');
+$routes->post('tbc/berita/kutip', 'AdminTbc\BeritaTbc::simpanKutip');
+
+$routes->get('tbc/berita/detail/(:num)', 'AdminTbc\BeritaTbc::detail/$1');
+$routes->get('tbc/berita/edit/(:num)', 'AdminTbc\BeritaTbc::edit/$1');
+$routes->post('tbc/berita/update/(:num)', 'AdminTbc\BeritaTbc::update/$1');
+
+$routes->get('tbc/berita/hapus/(:num)', 'AdminTbc\BeritaTbc::hapus/$1');
+$routes->get('tbc/berita/arsip/(:num)', 'AdminTbc\BeritaTbc::arsip/$1');
+
+/* ========================= */
+/* ARTIKEL ADMIN */
+/* ========================= */
+
+$routes->get('admin/artikel', 'Admin\Artikel::index');
+$routes->get('admin/artikel/tambah', 'Admin\Artikel::create');
+$routes->post('admin/artikel/simpan', 'Admin\Artikel::store');
+
+$routes->get('admin/artikel/edit/(:num)', 'Admin\Artikel::edit/$1');
+$routes->post('admin/artikel/update/(:num)', 'Admin\Artikel::update/$1');
+
+$routes->get('admin/artikel/delete/(:num)', 'Admin\Artikel::delete/$1');
+$routes->get('admin/artikel/toggle/(:num)', 'Admin\Artikel::toggle/$1');
+
+$routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
+>>>>>>> a2086a5eba512cacc008bc3e83507f6163a8199f

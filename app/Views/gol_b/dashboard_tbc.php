@@ -71,42 +71,115 @@
         </div>
 
         <div class="inner-card">
-            <div id="map"></div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
+    <div id="map" style="height:400px; border-radius:15px;"></div>
 
-                    const map = L.map('map').setView([-7.9, 112.6], 8);
+    <script>
+    document.addEventListener("DOMContentLoaded", function(){
 
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        function fixNama(nama){
+            return (nama || "")
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, " ")
+                .replace(/[^a-z0-9 ]/g, "");
+        }
 
-                    let marker = L.marker([-7.9, 112.6]).addTo(map);
+        /* AMBIL DATA DARI PHP */
+        var dataTbc = <?= json_encode($tbc ?? []) ?>;
+        var dataFinal = {};
 
-                    map.on('click', function(e) {
-                        document.getElementById('lat').innerText = e.latlng.lat.toFixed(6);
-                        document.getElementById('lng').innerText = e.latlng.lng.toFixed(6);
-                        marker.setLatLng(e.latlng);
-                    });
+        dataTbc.forEach(item => {
 
-                });
+            var desa = fixNama(item.desa);
 
-                /* SLIDER */
-                function scrollCardLeft() {
-                    document.getElementById('cardSlider').scrollBy({
-                        left: -400,
-                        behavior: 'smooth'
+            if(!dataFinal[desa]){
+                dataFinal[desa] = {
+                    total: 0,
+                    jumlah: 0
+                };
+            }
+
+            dataFinal[desa].total += parseInt(item.kasus);
+            dataFinal[desa].jumlah++;
+        });
+
+        for(var key in dataFinal){
+            var rata = dataFinal[key].total / dataFinal[key].jumlah;
+
+            if(rata >= 20) dataFinal[key].kategori = "tinggi";
+            else if(rata >= 10) dataFinal[key].kategori = "sedang";
+            else dataFinal[key].kategori = "rendah";
+        }
+
+        /* INIT MAP */
+        var map = L.map('map').setView([-8.1,113.5], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        .addTo(map);
+
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 200);
+
+        /* LOAD GEOJSON */
+        fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
+        .then(res => res.json())
+        .then(data => {
+
+            var geo = L.geoJSON(data, {
+
+                style: function(feature){
+
+                    var nama = fixNama(feature.properties.NAMOBJ);
+                    var item = dataFinal[nama];
+
+                    var warna = "#cccccc";
+
+                    if(item){
+                        if(item.kategori == "tinggi") warna = "#1b4332";
+                        else if(item.kategori == "sedang") warna = "#40916c";
+                        else if(item.kategori == "rendah") warna = "#95d5b2";
+                    }
+
+                    return {
+                        color: "#2a9d8f",
+                        weight: 2,
+                        fillColor: warna,
+                        fillOpacity: 0.7
+                    };
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    var namaAsli = feature.properties.NAMOBJ;
+                    var item = dataFinal[fixNama(namaAsli)];
+
+                    var isi = "<b>Desa: " + namaAsli + "</b>";
+
+                    if(item){
+                        isi += "<br>Total Kasus: " + item.total;
+                        isi += "<br>Kategori: " + item.kategori;
+                    } else {
+                        isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
+                    }
+
+                    layer.bindPopup(isi);
+
+                    layer.bindTooltip(namaAsli, {
+                        permanent: true,
+                        direction: "center",
+                        className: "label-desa"
                     });
                 }
 
-                function scrollCardRight() {
-                    document.getElementById('cardSlider').scrollBy({
-                        left: 400,
-                        behavior: 'smooth'
-                    });
-                }
-            </script>
-        </div>
+            }).addTo(map);
 
-    </div>
+            map.fitBounds(geo.getBounds());
+        });
+
+    });
+    </script>
+</div>
 
    <!-- CHART -->
 <div class="section-block">
@@ -133,63 +206,130 @@
     </div>
 
     <div class="inner-card">
-        <div class="chart-box">
-            <canvas id="chartTbc"></canvas>
-        </div>
+    
+    <div class="chart-box">
+        <canvas id="chartTbc"></canvas>
     </div>
+
+</div>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const ctx = document.getElementById('chartTbc');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Januari','Februari','Maret','April','Mei'],
+            datasets: [
+                {
+                    label: 'Sembuh',
+                    data: [70,100,80,60,120],
+                    backgroundColor: '#95d5b2'
+                },
+                {
+                    label: 'Pengobatan',
+                    data: [120,140,110,90,100],
+                    backgroundColor: '#52b788'
+                },
+                {
+                    label: 'Meninggal',
+                    data: [15,25,20,15,30],
+                    backgroundColor: '#1b4332'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+<style>
+.chart-box {
+    height: 350px;
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+</style>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
 
 </div>
 </div>
+</div>
 
-<!-- ARTIKEL -->
-<section id="artikel" class="artikel-section my-5">
-    <div class="artikel-header">
-        <h2 class="section-title">Berita, Artikel & Majalah Kesehatan</h2>
+<!-- SECTION BERITA -->
+<div class="content-section">
+
+    <h4 class="section-title">Berita</h4>
+    <p class="section-sub">Informasi dan Edukasi tentang Pencegahan serta Penanganan</p>
+
+    <div class="info-card">
+
+        <div class="info-text">
+            <h5>Pneumonia Pada Anak: <br> Pahami Penyebab dan Cara Mengatasinya</h5>
+            <p>
+                Pneumonia pada anak adalah infeksi paru serius yang dapat menyebabkan gangguan pernapasan.
+                Ketahui gejala, penyebab dan cara mengatasinya.
+            </p>
+            <small>Medis • 10 Jan 2025</small>
+        </div>
+
+        <div class="info-image">
+            <img src="<?= base_url('img/pneumonia.png') ?>">
+        </div>
+
     </div>
 
-    <div id="artikel-scroll" class="artikel-scroll">
-        <?php if (!empty($artikels)): ?>
-            <?php foreach ($artikels as $artikel): ?>
-                <div class="card-artikel">
+</div>
 
-                    <img src="<?= base_url('img/artikel/' . $artikel['gambar']) ?>" class="artikel-img" alt="<?= esc($artikel['judul']) ?>" />
 
-                    <div class="artikel-action">
-                        <a href="<?= base_url('admin/artikel/edit/' . $artikel['id']) ?>">
-                            <img src="<?= base_url('img/edit.png') ?>">
-                        </a>
+<!-- SECTION FUNFACT -->
+<div class="content-section">
 
-                        <form action="<?= base_url('admin/artikel/delete/' . $artikel['id']) ?>" method="post">
-                            <button type="submit">
-                                <img src="<?= base_url('img/hapus.png') ?>">
-                            </button>
-                        </form>
-                    </div>
+    <h4 class="section-title">Funfact</h4>
+    <p class="section-sub">Informasi dan Edukasi berdasarkan sumber terpercaya</p>
 
-                    <div class="artikel-content">
-                        <small><?= date('l, d M Y', strtotime($artikel['tanggal_terbit'])) ?></small>
+    <div class="info-card small">
 
-                        <h5><?= esc($artikel['judul']) ?></h5>
+        <div class="info-text">
+            <h5>Pneumonia</h5>
+            <p>
+                Pneumonia adalah infeksi pada paru-paru yang menyebabkan kantung udara terisi cairan,
+                sehingga mengganggu proses pernapasan.
+            </p>
+        </div>
 
-                        <?php
-                        $preview = character_limiter(strip_tags($artikel['isi']), 150, '...');
-                        ?>
+        <div class="info-image">
+            <img src="<?= base_url('img/pneumonia2.png') ?>">
+        </div>
 
-                        <p><?= $preview ?></p>
-
-                        <a href="<?= base_url('admin/artikel/' . $artikel['slug']) ?>" class="custom-link">
-                            Baca Selengkapnya →
-                        </a>
-                    </div>
-
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="text-muted">Belum ada artikel yang ditambahkan.</div>
-        <?php endif; ?>
     </div>
-</section>
+
+</div>
+
+
 
 <?= $this->endSection() ?>

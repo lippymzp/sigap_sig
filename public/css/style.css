@@ -1364,6 +1364,7 @@ body{
 .scroll-item:hover{
     transform: scale(1.02);
 }
+<<<<<<< HEAD
 .card-summary{
     background:white;
     padding:20px;
@@ -1403,4 +1404,81 @@ body{
 }
 *{
     --primary:#00BBC2 !important;
+=======
+
+#map {
+    position: relative;
+    z-index: 1;
+}
+
+/* SECTION */
+.content-section {
+    margin-top: 30px;
+}
+
+.section-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.section-sub {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* CARD */
+.info-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #0ea5a4, #5eead4);
+    border-radius: 20px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* ukuran kecil (funfact) */
+.info-card.small {
+    background: linear-gradient(135deg, #38bdf8, #0ea5a4);
+}
+
+/* TEXT */
+.info-text {
+    max-width: 65%;
+}
+
+.info-text h5 {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.info-text p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* IMAGE */
+.info-image img {
+    width: 150px;
+    border-radius: 15px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px){
+    .info-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .info-text {
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .info-image img {
+        width: 120px;
+    }
+>>>>>>> a2086a5eba512cacc008bc3e83507f6163a8199f
 }
