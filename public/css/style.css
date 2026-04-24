@@ -1364,3 +1364,43 @@ body{
 .scroll-item:hover{
     transform: scale(1.02);
 }
+.card-summary{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+.summary-item{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+.summary-item span{
+    color:#777;
+}
+
+.btn-save{
+    background:#00BBC2;
+    color:white;
+    border:none;
+    padding:10px 25px;
+    border-radius:25px;
+    box-shadow:0 5px 15px rgba(0,187,194,0.3);
+}
+
+.link-action{
+    font-size:13px;
+    color:#00BBC2;
+    text-decoration:none;
+}
+
+.chart-img{
+    max-width:100%;
+    border-radius:10px;
+}
+*{
+    --primary:#00BBC2 !important;
+}

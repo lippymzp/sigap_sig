@@ -79,4 +79,14 @@ public function diare()
         'artikels' => []
     ]);
 }
+
+
+public function inputData()
+{
+    return view('input_data');
+}
+public function hasil_data()
+    {
+        return view('gol_d/hasil_data');
+    }
 }

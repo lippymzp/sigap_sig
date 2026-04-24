@@ -51,3 +51,7 @@ $routes->get('dbd/dashboard', 'Dashboard::dbd');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
 $routes->get('diare/dashboard', 'Dashboard::diare');
+$routes->get('diare/input_data', 'Diare::inputData');
+$routes->get('diare/hasil', 'Diare::hasil_data');
+$routes->post('diare/simpan', 'diare::simpan');
+$routes->get('/diare/export', 'Diare::export');
