@@ -2,13 +2,16 @@
 
 namespace App\Controllers;
 
+use App\Models\BeritaTbcModel;
+use App\Models\FunfactTbcModel;
+
 class Dashboard extends BaseController
 {
     public function index()
     {
         return view('gol_b/dashboard', [
             'menu' => 'dashboard',
-            'artikels' => [] 
+            'artikels' => []
         ]);
     }
 
@@ -37,46 +40,46 @@ class Dashboard extends BaseController
         return view('export', ['menu' => 'export']);
     }
 
-    public function berita()
-    {
-        return view('berita', ['menu' => 'berita']);
-    }
-
     public function funfact()
     {
-        return view('funfact', ['menu' => 'funfact']);
+        $model = new FunfactTbcModel();
+
+        $data['artikel'] = $model->where('status_artikel', 'Publish')
+                                 ->orderBy('tanggal_artikel', 'DESC')
+                                 ->findAll();
+
+        return view('gol_b/funfact', $data);
     }
 
-    // ✅ TAMBAHKAN DI DALAM CLASS
-   public function dbd()
-{
-    return view('gol_a/dashboard_dbd', [
-        'menu' => 'dashboard',
-        'artikels' => []
-    ]);
-}
+    public function dbd()
+    {
+        return view('gol_a/dashboard_dbd', [
+            'menu' => 'dashboard',
+            'artikels' => []
+        ]);
+    }
 
-public function tbc()
-{
-    return view('gol_b/dashboard_tbc', [
-        'menu' => 'dashboard',
-        'artikels' => []
-    ]);
-}
+    public function tbc()
+    {
+        return view('gol_b/dashboard_tbc', [
+            'menu' => 'dashboard',
+            'artikels' => []
+        ]);
+    }
 
-public function pneumonia()
-{
-    return view('gol_c/dashboard_pneumonia', [
-        'menu' => 'dashboard',
-        'artikels' => []
-    ]);
-}
+    public function pneumonia()
+    {
+        return view('gol_c/dashboard_pneumonia', [
+            'menu' => 'dashboard',
+            'artikels' => []
+        ]);
+    }
 
-public function diare()
-{
-    return view('gol_d/dashboard_diare', [
-        'menu' => 'dashboard',
-        'artikels' => []
-    ]);
-}
+    public function diare()
+    {
+        return view('gol_d/dashboard_diare', [
+            'menu' => 'dashboard',
+            'artikels' => []
+        ]);
+    }
 }
