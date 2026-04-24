@@ -46,7 +46,10 @@ class Home extends BaseController
          $data = $this->request->getPost();
          return view('gol_a/skrining3', $data);
     }
-
+     public function rekap_skrining()
+    {
+        return view('gol_a/rekap_skrining');
+    }
     public function skrining_diare()
     {
     return view('gol_d/skrining_diare');

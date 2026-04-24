@@ -1,61 +1,56 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGAP - Profil</title>
-    
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts - Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGAP - Profil</title>
 
-    <style>
-        body {
-            background: #f8f9fa;
-            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-        }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        * {
-            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-        }
+<style>
 
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
+body{
+    background:#f8f9fa;
+    font-family:'Poppins',sans-serif;
+}
 
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 260px;
-            background: #f8fafc;
-            color: #2c3e50;
-            padding: 20px 0;
-            border-right: 1px solid #e9ecef;
-        }
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 0 20px;
-        }
+/* ================= SIDEBAR ================= */
 
-        .logo img {
-            max-width: 140px;
-        }
+.sidebar{
+    width:260px;
+    background:#f8fafc;
+    border-right:1px solid #e9ecef;
+    transition:0.3s;
+}
 
-        .menu-label {
-            font-size: 12px;
-            color: #6c757d;
-            padding: 10px 20px 6px 20px;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+.wrapper.hide .sidebar{
+    margin-left:-260px;
+}
 
-        .sidebar a {
+.logo{
+    text-align:center;
+    padding:20px;
+}
+
+.logo img{
+    max-width:140px;
+}
+
+.menu-label{
+    font-size:12px;
+    color:#6c757d;
+    padding:10px 20px;
+    font-weight:600;
+}
+
+.sidebar a {
             display: flex;
             align-items: center;
             padding: 12px 20px;
@@ -86,58 +81,110 @@
             font-size: 16px;
         }
 
-        /* ===== MAIN ===== */
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
+/* ================= TOPBAR ================= */
 
-        .profile-card {
-            background: white;
-            max-width: 520px;
-            margin: auto;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
+.topbar{
+    position:fixed;
+    top:0;
+    left:260px;
+    right:0;
+    height:70px;
+    background:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+    border-bottom:1px solid #e9ecef;
+    transition:0.3s;
+    z-index:1000;
+}
 
-        .avatar-box {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+.wrapper.hide .topbar{
+    left:0;
+}
 
-        .avatar-box img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #e0f2f1;
-        }
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
 
-        .btn-upload {
-            margin-top: 12px;
-            border-radius: 20px;
-        }
+.menu-toggle{
+    font-size:20px;
+    cursor:pointer;
+}
 
-        h5 {
-            font-weight: 600;
-        }
-    </style>
+.topbar-title{
+    font-size:22px;
+    font-weight:600;
+}
+
+.admin-box{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.avatar-circle{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#00cfd1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+}
+
+/* ================= MAIN ================= */
+
+.main-content{
+    flex:1;
+    margin-left:auto;
+    margin-top:auto;
+    padding:30px;
+    transition:0.3s;
+}
+
+.wrapper.hide .main-content{
+    margin-left:0;
+}
+
+.profile-card {
+    background:white;
+    max-width:560px;
+    margin:60px auto;
+    margin-top:60px;
+    padding:40px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.avatar-box img{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    border:5px solid #e0f2f1;
+    margin-bottom:15px;
+}
+.btn-upload{
+    margin-top:15px;
+}
+
+</style>
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="wrapper" id="wrapper">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar">
 
-        <div class="logo">
-            <img src="/assets/img/logo_nama.svg" alt="Logo SIGAP">
-            <!-- Jika tidak ada file logo, bisa pakai teks -->
-            <!-- <h5 class="fw-bold text-success mb-0">SIGAP</h5> -->
-        </div>
+<div class="logo">
+<img src="/assets/img/logo_nama.svg">
+</div>
 
 <div class="menu-label">HOME</div>
         <a href="http://localhost:8080/dbd/dashboard" class="active">
@@ -171,6 +218,47 @@
 
     </div>
 
+<!-- ================= TOPBAR ================= -->
+<div class="topbar">
+
+<div class="topbar-left">
+<i class="fa-solid fa-bars menu-toggle" id="toggleSidebar"></i>
+
+<div class="topbar-title">
+<?= $title ?? 'Profile'; ?>
+</div>
+</div>
+
+<div class="admin-box">
+
+<div class="text-end">
+<b>Profil</b><br>
+<small>Admin</small>
+</div>
+
+<div class="dropdown">
+<div class="avatar-circle" data-bs-toggle="dropdown">
+<i class="fa-regular fa-user"></i>
+</div>
+
+<ul class="dropdown-menu dropdown-menu-end">
+<li><a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
+                        <i class="fa-regular fa-user me-2"></i> Profile
+                    </a></li>
+<li><a class="dropdown-item" href="<?= base_url('logout') ?>">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                    </a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<!-- BOOTSTRAP JS (WAJIB) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Data Skrining</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <!-- MAIN -->
     <div class="main-content">
         <div class="profile-card">
@@ -182,7 +270,7 @@
                 <input type="file" id="uploadFoto" accept="image/*" style="display:none" onchange="previewImage(event)">
 
                 <div>
-                    <button class="btn btn-outline-info btn-sm btn-upload"
+                    <button class="btn btn-outline-info btn-sm btn-upload mb-4"
                         onclick="document.getElementById('uploadFoto').click()">
                         <i class="fa fa-camera me-1"></i> Tambah Foto
                     </button>
