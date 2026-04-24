@@ -1450,4 +1450,37 @@ body{
 .main-content {
     transition: all 0.3s ease;
 }
+.main-content{
+    flex:1;
+    margin-left:auto;
+    margin-top:auto;
+    padding:30px;
+    transition:0.3s;
+}
+
+.wrapper.hide .main-content{
+    margin-left:0;
+}
+
+.profile-card {
+    background:white;
+    max-width:800px;
+    margin:60px auto;
+    margin-top:60px;
+    padding:40px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.avatar-box img{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    border:5px solid #e0f2f1;
+    margin-bottom:15px;
+}
+.btn-upload{
+    margin-top:15px;
+}
 }
