@@ -39,7 +39,7 @@ class Auth extends BaseController
 
         if (
             !$penyakitDB ||
-            strtolower(trim($penyakitDB['nama_penyakit'])) != strtolower(trim($penyakit_login))
+            strtolower(trim((string) ($penyakitDB['nama_penyakit'] ?? ''))) != strtolower(trim($penyakit_login))
         ) {
             return redirect()->back()->with('error', 'Akun tidak punya akses ke halaman ini!');
         }
@@ -148,19 +148,21 @@ class Auth extends BaseController
 
         $penyakitModel = new \App\Models\PenyakitModel();
         $penyakit = $penyakitModel->find($user['id_penyakit']);
-
-        if (!$penyakit) {
-            return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
-        }
-
-        return redirect()->to('/' . strtolower(trim($penyakit['nama_penyakit']) . '/dashboard');
+        $penyakit_login = session()->get('penyakit');
+        $penyakitDB = $penyakit;
+        if (
+    !$penyakitDB ||
+    strtolower(trim((string) ($penyakitDB['nama_penyakit'] ?? ''))) != strtolower(trim($penyakit_login))
+    ) {
+    return redirect()->back()->with('error', 'Akun tidak punya akses ke halaman ini!');
+    }
     }
 
     public function otpReset()
     {
         return view('gol_c/auth/otp_reset');
     }
-
+    
     public function verifyOtpReset()
     {
         $otp = $this->request->getPost('otp');
