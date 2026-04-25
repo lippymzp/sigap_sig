@@ -162,7 +162,11 @@
                 <div class="col-md-6">
                     <label>Desa</label>
                     <select class="form-control custom-input" id="desa">
-                        <option>Serut</option>
+                        <option>Sumbersari</option>
+                        <option>Antirogo</option>
+                        <option>Karangrejo</option>
+                        <option>Wirolegi</option>
+                        <option>Tegal gede</option>
                     </select>
                 </div>
 
