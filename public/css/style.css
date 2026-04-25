@@ -1664,13 +1664,7 @@ select {
 .slider-btn.left { left: 10px; }
 .slider-btn.right { right: 10px; }
 }
-
-.welcome-icon i {
-    font-size: 130px;
-    color: rgba(255, 255, 255, 0.2);
-    transition: 0.3s;
-}
-
-.welcome-box:hover .welcome-icon i {
-    transform: scale(1.1);
+.welcome-icon img {
+    width: 250px;     /* kecilkan ukuran */
+    opacity: 50000;     /* biar samar seperti contoh */
 }

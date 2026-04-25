@@ -57,5 +57,10 @@ class Home extends BaseController
 public function diare_detail()
 {
     return view('gol_d/diare_detail');
+
+}
+ public function rekap_skrining_dbd()
+    {
+    return view('gol_a/rekap_skrining_dbd');
 }
 }

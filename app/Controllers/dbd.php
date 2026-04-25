@@ -23,22 +23,22 @@ class Dbd extends BaseController
         ]);
     }
 
-    public function simpan()
+    public function simpandatapasien()
     {
-        $data = [
-            'kecamatan' => $this->request->getPost('kecamatan'),
-            'desa'      => $this->request->getPost('desa'),
-            'jk'        => $this->request->getPost('jk'),
-            'usia'      => $this->request->getPost('usia'),
-        ];
+        $model = new InputDataPasienModel();
 
-        $pasien = session()->get('pasien') ?? [];
+        // ambil semua data dari form
+        $data = $this->request->getPost();
 
-        $pasien[] = $data;
+        // 🔥 panggil model (di sinilah insert terjadi)
+        $success = $model->simpanSemua($data);
 
-        session()->set('pasien', $pasien);
-
-        return redirect()->to('/dbd/hasil');
+        // 🔥 respon hasil
+        if ($success) {
+            return redirect()->back()->with('success', 'Data pasien & wilayah berhasil disimpan');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menyimpan data');
+        }
     }
 
     public function export()
@@ -72,5 +72,12 @@ class Dbd extends BaseController
         }
 
         echo "</table>";
+    }
+    public function dashboard()
+    {
+        return view('gol_a/dashboard_kader', [
+            'menu' => 'dashboard',
+            'penyakit' => 'dbd'
+        ]);
     }
 }

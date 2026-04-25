@@ -9,9 +9,10 @@
         <p>Puskesmas Sumbersari, Jember</p>
     </div>
 
-   <div class="welcome-icon">
-    <i class="fa-solid fa-map-location-dot"></i>
+ <div class="welcome-icon">
+    <img src="<?= base_url('img/World_Map.png') ?>" alt="map">
 </div>
+
 </div>
 
 <!-- STAT -->

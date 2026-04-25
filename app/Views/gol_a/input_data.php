@@ -1,6 +1,9 @@
 <?= $this->extend('layout/dashboard_layout') ?>
 <?= $this->section('content') ?>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <style>
 
 /* ===== STEP HEADER ===== */
@@ -140,28 +143,28 @@
 
                 <div class="col-md-6">
                     <label>Provinsi</label>
-                    <select class="form-control custom-input" id="provinsi">
+                    <select name="provinsi" class="form-control custom-input" id="provinsi">
                         <option>Jawa Timur</option>
                     </select>
                 </div>
 
                 <div class="col-md-6">
                     <label>Kabupaten</label>
-                    <select class="form-control custom-input" id="kabupaten">
+                    <select name="kabupaten" class="form-control custom-input" id="kabupaten">
                         <option>Jember</option>
                     </select>
                 </div>
 
                 <div class="col-md-6">
                     <label>Kecamatan</label>
-                    <select class="form-control custom-input" id="kecamatan">
+                    <select name="kecamatan" class="form-control custom-input" id="kecamatan">
                         <option>Sumbersari</option>
                     </select>
                 </div>
 
                 <div class="col-md-6">
                     <label>Desa</label>
-                    <select class="form-control custom-input" id="desa">
+                    <select name="desa" class="form-control custom-input" id="desa">
                         <option>Sumbersari</option>
                         <option>Antirogo</option>
                         <option>Karangrejo</option>
@@ -171,17 +174,17 @@
                 </div>
 
                 <div class="col-md-6 d-flex gap-2">
-                    <input type="text" class="form-control custom-input" placeholder="RT" id="rt">
-                    <input type="text" class="form-control custom-input" placeholder="RW" id="rw">
+                    <input type="text" class="form-control custom-input" placeholder="RT" id="rt" name="rt">
+                    <input type="text" class="form-control custom-input" placeholder="RW" id="rw" name="rw">
                 </div>
 
                 <div class="col-md-6 d-flex gap-2">
-                    <input type="text" class="form-control custom-input" placeholder="Latitude" id="lat">
-                    <input type="text" class="form-control custom-input" placeholder="Longitude" id="lng">
+                    <input type="text" class="form-control custom-input" placeholder="Latitude" id="lat" name="lat">
+                    <input type="text" class="form-control custom-input" placeholder="Longitude" id="lng" name="lng">
                 </div>
 
                 <div class="col-md-12">
-                    <textarea class="form-control custom-input" placeholder="Alamat lengkap" id="alamat"></textarea>
+                    <textarea class="form-control custom-input" placeholder="Alamat lengkap" id="alamat" name="alamat"></textarea>
                 </div>
 
             </div>
@@ -201,9 +204,7 @@
 
             <h6 class="fw-bold mb-3">Preview Lokasi</h6>
 
-            <img src="<?= base_url('img/map-preview.png') ?>" 
-                 class="img-fluid rounded"
-                 style="height:200px; object-fit:cover;">
+            <div id="mapPreview" style="height:200px; border-radius:10px;"></div>
 
             <small class="text-muted d-block mt-2">Lokasi akan tampil di peta</small>
 
@@ -212,6 +213,112 @@
     </div>
 
 </div>
+
+            <script>
+
+                var map;
+                var marker;
+
+                // 🔥 DATA KOORDINAT DESA (DEFAULT)
+                var koordinatDesa = {
+                    "Sumbersari": { lat: -8.1725, lng: 113.7033 },
+                    "Antirogo": { lat: -8.1570, lng: 113.6905 },
+                    "Karangrejo": { lat: -8.1652, lng: 113.6801 },
+                    "Wirolegi": { lat: -8.1498, lng: 113.7050 },
+                    "Tegal gede": { lat: -8.1801, lng: 113.6955 }
+                };
+
+                document.addEventListener("DOMContentLoaded", function(){
+
+                    // 🔥 INIT MAP
+                    map = L.map('mapPreview').setView([-8.1725, 113.7033], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap'
+                    }).addTo(map);
+
+                    // 🔥 MARKER AWAL
+                    marker = L.marker([-8.1725, 113.7033]).addTo(map);
+
+                    // 🔥 FIX BUG MAP KOSONG (WAJIB kalau di step/tab)
+                    setTimeout(() => {
+                        map.invalidateSize();
+                    }, 300);
+
+                    // =========================================
+                    // 🔥 DEFAULT SAAT LOAD
+                    // =========================================
+                    var defaultDesa = document.getElementById("desa").value;
+
+                    if(koordinatDesa[defaultDesa]){
+                        var lat = koordinatDesa[defaultDesa].lat;
+                        var lng = koordinatDesa[defaultDesa].lng;
+
+                        document.getElementById("lat").value = lat;
+                        document.getElementById("lng").value = lng;
+
+                        map.setView([lat, lng], 15);
+                        marker.setLatLng([lat, lng]);
+                    }
+
+                    // =========================================
+                    // 🔥 PILIH DESA → AUTO PINDAH MAP
+                    // =========================================
+                    document.getElementById("desa").addEventListener("change", function(){
+
+                        var desa = this.value;
+
+                        if(koordinatDesa[desa]){
+                            var lat = koordinatDesa[desa].lat;
+                            var lng = koordinatDesa[desa].lng;
+
+                            document.getElementById("lat").value = lat;
+                            document.getElementById("lng").value = lng;
+
+                            map.setView([lat, lng], 15);
+                            marker.setLatLng([lat, lng]);
+                        }
+
+                    });
+
+                    // =========================================
+                    // 🔥 KLIK PETA → AMBIL TITIK RUMAH (INI INTI)
+                    // =========================================
+                    map.on('click', function(e){
+
+                        var lat = e.latlng.lat;
+                        var lng = e.latlng.lng;
+
+                        // isi input
+                        document.getElementById("lat").value = lat.toFixed(6);
+                        document.getElementById("lng").value = lng.toFixed(6);
+
+                        // pindah marker
+                        marker.setLatLng([lat, lng]);
+
+                        // zoom ke titik
+                        map.setView([lat, lng], 17);
+
+                    });
+
+                    // =========================================
+                    // 🔥 MANUAL INPUT LAT LNG → MAP IKUT GERAK
+                    // =========================================
+                    document.getElementById("lat").addEventListener("input", updateMap);
+                    document.getElementById("lng").addEventListener("input", updateMap);
+
+                    function updateMap(){
+                        var lat = parseFloat(document.getElementById("lat").value);
+                        var lng = parseFloat(document.getElementById("lng").value);
+
+                        if(!isNaN(lat) && !isNaN(lng)){
+                            map.setView([lat, lng], 17);
+                            marker.setLatLng([lat, lng]);
+                        }
+                    }
+
+                });
+                </script>
 
 </div>
 
@@ -255,12 +362,12 @@
 
                 <div class="col-md-6">
                     <label>Nama Pasien</label>
-                    <input type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama">
+                    <input name="nama" type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama">
                 </div>
 
                 <div class="col-md-6">
                     <label>Tanggal Kunjungan</label>
-                    <input type="date" class="form-control custom-input" id="tanggal">
+                    <input name="tanggal" type="date" class="form-control custom-input" id="tanggal">
                 </div>
 
                 <div class="col-md-6">
@@ -271,16 +378,12 @@
 
                 <div class="col-md-6">
                     <label>Usia</label>
-                    <select class="form-control custom-input" id="usia">
-                        <option>Dewasa</option>
-                        <option>Anak</option>
-                        <option>Balita</option>
-                    </select>
+                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia">
                 </div>
 
                 <div class="col-md-12">
                     <label>Catatan Klinis</label>
-                    <textarea class="form-control custom-input" placeholder="Masukkan catatan..." id="catatan"></textarea>
+                    <textarea name="catatan" class="form-control custom-input" placeholder="Masukkan catatan..." id="catatan"></textarea>
                 </div>
 
             </div>
@@ -379,12 +482,24 @@
             </div>
 
             <!-- FORM SUBMIT -->
-            <form action="<?= base_url('dbd/simpan') ?>" method="post" onsubmit="return submitData()">
+            <form action="<?= base_url('dbd/simpandatapasien') ?>" method="post" onsubmit="return submitData()">
 
+                <input type="hidden" name="provinsi" id="formProvinsi">
+                <input type="hidden" name="kabupaten" id="formKabupaten">
                 <input type="hidden" name="kecamatan" id="formKecamatan">
                 <input type="hidden" name="desa" id="formDesa">
+                <input type="hidden" name="rt" id="formRT">
+                <input type="hidden" name="rw" id="formRW">
+                <input type="hidden" name="alamat" id="formAlamat">
+                <input type="hidden" name="lat" id="formLat">
+                <input type="hidden" name="lng" id="formLng">
+
+                <input type="hidden" name="nama" id="formNama">
+                <input type="hidden" name="tanggal" id="formTanggal">
                 <input type="hidden" name="jk" id="formJK">
                 <input type="hidden" name="usia" id="formUsia">
+                <input type="hidden" name="catatan" id="formCatatan">
+                <input type="hidden" name="no_rm" id="formRM">
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
 
@@ -469,28 +584,34 @@ function nextStep(step){
 // ===== SUBMIT =====
 function submitData(){
 
-    // isi data hidden
-    document.getElementById('formKecamatan').value =
-        document.getElementById('kecamatan').value;
+    // STEP 1
+    document.getElementById('formProvinsi').value = document.getElementById('provinsi').value;
+    document.getElementById('formKabupaten').value = document.getElementById('kabupaten').value;
+    document.getElementById('formKecamatan').value = document.getElementById('kecamatan').value;
+    document.getElementById('formDesa').value = document.getElementById('desa').value;
+    document.getElementById('formRT').value = document.getElementById('rt').value;
+    document.getElementById('formRW').value = document.getElementById('rw').value;
+    document.getElementById('formAlamat').value = document.getElementById('alamat').value;
+    document.getElementById('formLat').value = document.getElementById('lat').value;
+    document.getElementById('formLng').value = document.getElementById('lng').value;
 
-    document.getElementById('formDesa').value =
-        document.getElementById('desa').value;
-
-    document.getElementById('formUsia').value =
-        document.getElementById('usia').value;
+    // STEP 2
+    document.getElementById('formNama').value = document.getElementById('nama').value;
+    document.getElementById('formTanggal').value = document.getElementById('tanggal').value;
+    document.getElementById('formUsia').value = document.getElementById('usia').value;
+    document.getElementById('formCatatan').value = document.getElementById('catatan').value;
 
     let jk = document.querySelector('input[name="jk"]:checked');
-    document.getElementById('formJK').value = jk ? jk.value : '-';
+    document.getElementById('formJK').value = jk ? jk.value : '';
 
-    // 🔥 tampilkan popup
+    // popup
     document.getElementById('popupSuccess').style.display = 'flex';
 
-    // 🔥 tahan submit biar popup kelihatan
     setTimeout(() => {
         document.querySelector('form').submit();
     }, 1200);
 
-    return false; // ⛔ stop submit langsung
+    return false;
 }
 
 </script>

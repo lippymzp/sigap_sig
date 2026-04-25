@@ -77,6 +77,7 @@ $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
+$routes->get('/kader/dashboard', 'dbd::dashboard');
 
 /* ========================= */
 /* DASHBOARD KEPALA */
@@ -124,4 +125,11 @@ $routes->get('admin/artikel/delete/(:num)', 'Admin\Artikel::delete/$1');
 $routes->get('admin/artikel/toggle/(:num)', 'Admin\Artikel::toggle/$1');
 
 $routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
+
+/* ========================= */
+/* INPUT DATA PASIEN */
+/* ========================= */
+$routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
+
+$routes->get('/rekap_skrining_dbd', 'Home::rekap_skrining_dbd');
 

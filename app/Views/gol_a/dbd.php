@@ -37,7 +37,7 @@
     </div>
 
     <div class="col-lg-3 col-md-6">
-        <a href="#peta" class="text-decoration-none">
+        <a href="#map" class="text-decoration-none">
             <div class="fitur-box shadow-sm p-3 rounded">
                 🗺️ Peta Persebaran
             </div>

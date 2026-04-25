@@ -1,33 +1,22 @@
-<?= $this->extend('layout/dashboard_layout_kepala'); ?>
-
-<?= $this->section('style'); ?>
-<style>
-.main-content {
-    margin-left: 250px;
-}
-#chartDBD {
-    height: 300px !important;
-}
-</style>
-<?= $this->endSection(); ?>
-
-
-<?= $this->section('content'); ?>
+<?= $this->extend('layout/dashboard_layout_kader') ?>
+<?= $this->section('content') ?>
 
 <!-- WELCOME -->
 <div class="welcome-box">
     <div class="welcome-text">
         <h5>Selamat datang kembali,</h5>
-        <h3>Anda masuk sebagai Kepala Puskesmas</h3>
+        <h3>Anda masuk sebagai KADER</h3>
         <p>Puskesmas Sumbersari, Jember</p>
     </div>
-    <div class="welcome-icon">
+
+   <div class="welcome-icon">
     <img src="<?= base_url('img/World_Map.png') ?>" alt="map">
 </div>
 </div>
 
 <!-- STAT -->
 <div class="stat-row">
+
     <div class="stat-card">
         <div class="stat-icon">
             <i class="fa-solid fa-chart-column"></i>
@@ -58,19 +47,30 @@
             <p>Kelurahan Terdampak</p>
         </div>
     </div>
+
 </div>
 
 <!-- MAP -->
 <div class="section-card">
-<div class="section-block">
-<div class="section-header">
-    <div>
-        <h5>Peta Interaktif Penyebaran</h5>
-        <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
-    </div>
-</div>
 
-<div class="inner-card">
+    <!-- MAP -->
+    <div class="section-block">
+
+        <div class="section-header">
+            <div>
+                <h5>Peta Interaktif Penyebaran</h5>
+                <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
+            </div>
+
+            <div class="filter">
+                <span>Periode:</span>
+                <select>
+                    <option>2025</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="inner-card">
     <div id="map"></div>
 
     <script>
@@ -218,7 +218,10 @@
     });
 
     </script>
-    <style>
+</div>
+
+<!-- 🔥 STYLE LABEL -->
+<style>
 .label-desa{
     background: rgba(0,0,0,0.6);
     color: white;
@@ -228,7 +231,11 @@
     border-radius: 6px;
 }
 </style>
+        </div>
 
+    </div>
+
+<!-- GRAFIK -->
 <section id="grafik" class="container mt-5" data-aos="fade-up">
 
 <h4 class="text-teal mb-3 fw-bold">Grafik DBD</h4>
@@ -277,4 +284,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 </script>
-<?= $this->endSection(); ?>
+
+</section>
+
+<?= $this->endSection() ?>
