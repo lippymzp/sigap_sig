@@ -9,8 +9,13 @@ class Profile extends Controller
     public function profil_kepala()
     {
         $data = [
-            'nama'  => 'Admin',
-            'email' => 'admin@gmail.com'
+            'nama'   => 'Kepala',
+            'email'  => 'kepala@gmail.com',
+
+            // WAJIB untuk layout
+            'menu'   => 'profil',          // untuk active sidebar
+            'judul'  => 'Profil Kepala',    // untuk topbar title
+            'title'  => 'Profil Kepala'     // optional (tab browser)
         ];
 
         return view('gol_a/profil_kepala', $data);

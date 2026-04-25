@@ -219,37 +219,146 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+
 </style>
 </head>
 
 <body>
-
+// ================== LOGIC C4.5 ==================
 <?php
-// ================== LOGIC HASIL ==================
-$total = 0;
-for ($i = 1; $i <= 7; $i++) {
-    $total += (int)(${ "p$i" } ?? 0);
-}
+$hasil = "Tidak Terindikasi";
+$alasan = "";
 
-// INTERPRETASI
-if ($total <= 2) {
-    $hasil = "Normal";
-    $deskripsi = "Tidak ditemukan gejala yang signifikan.";
-    $rekomendasi = "Pertahankan pola hidup sehat.";
-} elseif ($total <= 4) {
-    $hasil = "Ringan";
-    $deskripsi = "Terdapat gejala ringan, disarankan pemantauan.";
-    $rekomendasi = "Perlu istirahat cukup dan pemantauan.";
-} elseif ($total <= 6) {
-    $hasil = "Sedang";
-    $deskripsi = "Gejala cukup terasa, disarankan konsultasi.";
-    $rekomendasi = "Disarankan konsultasi ke tenaga kesehatan.";
+// ROOT: DEMAM
+if ($p3 == 0) {
+
+    // Demam = No
+    if ($p5 == 0) {
+        $hasil = "Tidak Terindikasi";
+        $alasan = "Tidak demam dan tidak sakit kepala";
+    } else {
+        if ($p2 == 0) {
+            $hasil = "Tidak Terindikasi";
+            $alasan = "Tidak demam dan usia ≤ 20";
+        } else {
+
+            if ($p6 == 0) {
+                if ($p1 == 0) {
+                    $hasil = "Tidak Terindikasi";
+                    $alasan = "Tidak demam, tidak nyeri otot, bukan laki-laki";
+                } else {
+                    if ($p8 == 1) {
+                        $hasil = "Terindikasi";
+                        $alasan = "Tidak demam, laki-laki, muntah";
+                    } else {
+                        $hasil = "Tidak Terindikasi";
+                        $alasan = "Tidak demam, tanpa muntah";
+                    }
+                }
+            } else {
+                if ($p8 == 1) {
+                    $hasil = "Terindikasi";
+                    $alasan = "Tidak demam tapi ada nyeri otot dan muntah";
+                } else {
+                    if ($p1 == 0 && $p7 == 1) {
+                        $hasil = "Terindikasi";
+                        $alasan = "Tidak demam, nyeri otot, ruam";
+                    } else {
+                        $hasil = "Tidak Terindikasi";
+                        $alasan = "Gejala tidak cukup kuat";
+                    }
+                }
+            }
+        }
+    }
+
 } else {
-    $hasil = "Berat";
-    $deskripsi = "Gejala berat, perlu penanganan segera.";
-    $rekomendasi = "Segera lakukan pemeriksaan medis.";
+
+    // Demam = Yes
+
+    // RULE KUAT
+    if ($p6 == 1 && $p5 == 0) {
+        $hasil = "Terindikasi";
+        $alasan = "Demam + nyeri otot tanpa sakit kepala";
+    }
+
+    elseif ($p6 == 1) {
+        $hasil = "Terindikasi";
+        $alasan = "Demam + nyeri otot";
+    }
+
+    elseif ($p5 == 0) {
+
+        if ($p8 == 0) {
+            if ($p7 == 0) {
+                $hasil = "Tidak Terindikasi";
+                $alasan = "Demam tanpa gejala lain";
+            } else {
+                if ($p2 == 1) {
+                    $hasil = "Terindikasi";
+                    $alasan = "Demam + ruam + usia >20";
+                } else {
+                    $hasil = "Tidak Terindikasi";
+                    $alasan = "Demam + ruam tapi usia ≤20";
+                }
+            }
+        }
+
+        else {
+            if ($p7 == 1) {
+                $hasil = "Terindikasi";
+                $alasan = "Demam + muntah + ruam";
+            } else {
+                if ($p4 == 1 && $p2 == 0) {
+                    $hasil = "Terindikasi";
+                    $alasan = "Demam lama >5 hari pada usia ≤20";
+                } else {
+                    $hasil = "Tidak Terindikasi";
+                    $alasan = "Gejala belum cukup kuat";
+                }
+            }
+        }
+
+    }
+
+    else {
+        // Sakit kepala = yes
+
+        if ($p2 == 0) {
+            if ($p7 == 1) {
+                $hasil = "Terindikasi";
+                $alasan = "Demam + sakit kepala + ruam";
+            } else {
+                if ($p1 == 0 && $p4 == 1) {
+                    $hasil = "Terindikasi";
+                    $alasan = "Demam lama >5 hari";
+                } else {
+                    $hasil = "Tidak Terindikasi";
+                    $alasan = "Gejala belum kuat";
+                }
+            }
+        }
+
+        else {
+            // umur >20
+
+            if ($p4 == 1) {
+                $hasil = "Terindikasi";
+                $alasan = "Demam lama >5 hari";
+            } else {
+                if ($p8 == 1) {
+                    $hasil = "Terindikasi";
+                    $alasan = "Demam + muntah";
+                } else {
+                    $hasil = "Terindikasi";
+                    $alasan = "Demam + sakit kepala usia >20";
+                }
+            }
+        }
+    }
 }
 ?>
+
 
 <div class="card-custom">
 
@@ -302,8 +411,8 @@ if ($total <= 2) {
     <label class="mt-3">Kelurahan</label>
     <input type="text" class="form-control" value="<?= $kelurahan ?>" readonly>
 
-    <label class="mt-3">Kode Pos</label>
-    <input type="text" class="form-control" value="<?= $kode_pos ?>" readonly>
+    <label class="mt-3">RT/RW</label>
+    <input type="text" class="form-control" value="<?= $rt_rw ?>" readonly>
 </div>
 
 </div>
@@ -324,13 +433,14 @@ if ($total <= 2) {
 
 <?php 
 $pertanyaan = [
-    "Apakah Anda mengalami demam tinggi mendadak (≥ 38°C) dalam 2–7 hari terakhir?",
-    "Apakah Anda merasakan nyeri kepala atau nyeri di belakang mata?",
-    "Apakah Anda mengalami nyeri otot atau sendi (pegal-pegal)?",
-    "Apakah Anda mengalami mual atau muntah?",
-    "Apakah muncul bintik merah pada kulit atau ruam?",
-    "Apakah Anda merasa lemas atau cepat lelah tidak biasa?",
-    "Apakah ada riwayat lingkungan sekitar terdapat kasus DBD atau banyak nyamuk?"
+    "Apakah Anda berjenis kelamin Laki-laki?",
+    "Apakah usia Anda saat ini di atas 20 tahun?",
+    "Apakah Anda sedang mengalami demam saat ini?",
+    "Apakah demam tersebut sudah berlangsung lebih dari 5 hari?",
+    "Apakah Anda merasakan sakit kepala yang mengganggu?",
+    "Apakah otot atau sendi Anda terasa nyeri/pegal-pegal?",
+    "Apakah muncul bintik merah atau ruam pada kulit Anda?",
+    "Apakah Anda merasa mual atau sempat muntah-muntah?"
 ];
 ?>
 
@@ -355,19 +465,15 @@ $pertanyaan = [
 <div class="section-title">Hasil</div>
 
 <div class="hasil-box">
-    <?= $hasil ?> (Skor: <?= $total ?>)
+    <?= $hasil ?>
 </div>
 
 <p class="text-center mt-2 text-muted">
-    <?= $deskripsi ?>
+    <?= $alasan ?>
 </p>
 
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
-
-<div class="data-box mb-4">
-    <?= $rekomendasi ?>
-</div>
 
 <!-- TIPS -->
 

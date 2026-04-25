@@ -151,7 +151,7 @@ body {
 <h4><b>Informasi Umum</b></h4>
 <p class="mb-5">Lengkapi beberapa info dasar sebelum Skrining dimulai</p>
 
-<form method="post" action="/skriningdbd/skriningdbd2">
+<form method="post" action="/skriningdbd/skriningdbd2" id="formSkrining">
 
 <div class="row gy-4">
 
@@ -216,8 +216,8 @@ body {
 </div>
 
 <div class="mb-3">
-<label>Kode Pos</label>
-<input type="text" name="kode_pos" id="kode_pos" class="form-control">
+<label>RT/RW</label>
+<input type="text" name="rt_rw" id="rt_rw" class="form-control">
 </div>
 
 <div class="mb-3">
@@ -338,6 +338,34 @@ document.getElementById('tgl_lahir').addEventListener('change', function(){
 document.querySelector('[name="nik"]').oninput = function(){
     this.value = this.value.replace(/\D/g, '').slice(0,16);
 }
+document.getElementById('formSkrining').addEventListener('submit', function(e){
+
+    let requiredFields = [
+        'nik',
+        'nama',
+        'jenis_kelamin',
+        'tanggal_lahir',
+        'kategori_usia',
+        'telepon',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'kelurahan',
+        'rt_rw'
+    ];
+
+    for (let name of requiredFields) {
+        let field = document.querySelector(`[name="${name}"]`);
+
+        if (!field || field.value.trim() === "" || field.value === "-- Pilih --" || field.value.includes("Pilih")) {
+            alert("Semua data wajib diisi sebelum melanjutkan!");
+            field.focus();
+            e.preventDefault();
+            return;
+        }
+    }
+
+});
 
 </script>
 

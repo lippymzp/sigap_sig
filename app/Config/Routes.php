@@ -79,6 +79,14 @@ $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
 
 /* ========================= */
+/* DASHBOARD KEPALA */
+/* ========================= */
+
+$routes->get('/dashboard_kepala', 'Kepala::dashboard');
+$routes->get('/dashboard_kepala', 'Kepala::dashboard');
+$routes->get('/export_kepala', 'Kepala::export');
+
+/* ========================= */
 /* FUNFACT TBC */
 /* ========================= */
 

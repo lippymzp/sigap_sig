@@ -6,12 +6,12 @@
     <div class="welcome-text">
         <h5>Selamat datang kembali,</h5>
         <h3>Anda masuk sebagai ADMIN</h3>
-        <p>Puskesmas Kaliwates, Jember</p>
+        <p>Puskesmas Sumbersari, Jember</p>
     </div>
 
-    <div class="welcome-icon">
-        <i class="fa-solid fa-map"></i>
-    </div>
+   <div class="welcome-icon">
+    <i class="fa-solid fa-map-location-dot"></i>
+</div>
 </div>
 
 <!-- STAT -->
