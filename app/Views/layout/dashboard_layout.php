@@ -17,7 +17,9 @@
 
 <body>
     <?php $penyakit = session('penyakit') ?? 'tbc'; ?>
+    <div class="wrapper" id="wrapper">
     <div class="sidebar">
+        
         <div class="logo text-center">
             <img src="/assets/img/logo_nama.svg" alt="Logo SIGAP" style="max-width: 160px; height: auto;">
         </div>
@@ -70,11 +72,23 @@
             class="<?= ($menu == 'funfact') ? 'active' : '' ?>">
             <i class="fa-regular fa-user me-2"></i> Edit Funfact
         </a>
+        <a href="<?= base_url('profil_admin') ?>"
+            class="<?= ($menu == 'profil') ? 'active' : '' ?>">
+             <i class="fa-regular fa-user me-2"></i> Profil Admin
+        </a>
+
     </div>
 
     <div class="main-content">
-        <div class="topbar">
-            <div class="fs-4 fw-bold text-dark"><?= $judul ?? 'Dashboard' ?></div>
+        <div class="topbar d-flex justify-content-between align-items-center">
+
+    <div class="d-flex align-items-center">
+        <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
+
+        <div class="fs-4 fw-bold text-dark">
+            <?= $judul ?? 'Dashboard' ?>
+        </div>
+    </div>
             <div class="d-flex align-items-center">
                 <div class="text-end me-3">
                     <div class="fw-bold text-dark" style="font-size: 0.95rem; line-height: 1.2;">Profil</div>
@@ -149,6 +163,22 @@
     <script src="<?= base_url('js/script.js') ?>"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <?= $this->renderSection('script'); ?>
+    </div> <!-- END WRAPPER -->
+
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("toggleSidebar");
+    const wrapper = document.getElementById("wrapper");
+
+    if (toggle && wrapper) {
+        toggle.addEventListener("click", function() {
+            wrapper.classList.toggle("hide");
+        });
+    } else {
+        console.log("ERROR: toggle atau wrapper tidak ditemukan");
+    }
+});
+</script>
 </body>
 
 </html>

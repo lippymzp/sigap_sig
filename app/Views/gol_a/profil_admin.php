@@ -1,295 +1,34 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGAP - Profil</title>
+<?= $this->extend('layout/dashboard_layout'); ?>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<?= $this->section('content'); ?>
 
-<style>
+<div class="profile-card">
 
-body{
-    background:#f8f9fa;
-    font-family:'Poppins',sans-serif;
-}
+    <!-- FOTO PROFIL -->
+    <div class="avatar-box text-center">
+        <img id="previewFoto" src="https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png"
+            style="width:130px;height:130px;border-radius:50%;border:5px solid #e0f2f1;">
 
-.wrapper{
-    display:flex;
-    min-height:100vh;
-}
+        <input type="file" id="uploadFoto" accept="image/*"
+            style="display:none" onchange="previewImage(event)">
 
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-    width:260px;
-    background:#f8fafc;
-    border-right:1px solid #e9ecef;
-    transition:0.3s;
-}
-
-.wrapper.hide .sidebar{
-    margin-left:-260px;
-}
-
-.logo{
-    text-align:center;
-    padding:20px;
-}
-
-.logo img{
-    max-width:140px;
-}
-
-.menu-label{
-    font-size:12px;
-    color:#6c757d;
-    padding:10px 20px;
-    font-weight:600;
-}
-
-.sidebar a {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            color: #2c3e50;
-            text-decoration: none;
-            font-size: 14.5px;
-            font-weight: 400;
-            transition: all 0.25s ease;
-        }
-
-        .sidebar a:hover {
-            background: #e9f5f3;
-            color: #00c4b4;
-        }
-
-        .sidebar a.active {
-            background: #00c4b4;
-            color: white;
-            border-radius: 8px;
-            margin: 0 10px;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(0, 196, 180, 0.25);
-        }
-
-        .sidebar a i {
-            width: 24px;
-            margin-right: 12px;
-            font-size: 16px;
-        }
-
-/* ================= TOPBAR ================= */
-
-.topbar{
-    position:fixed;
-    top:0;
-    left:260px;
-    right:0;
-    height:70px;
-    background:#fff;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 30px;
-    border-bottom:1px solid #e9ecef;
-    transition:0.3s;
-    z-index:1000;
-}
-
-.wrapper.hide .topbar{
-    left:0;
-}
-
-.topbar-left{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.menu-toggle{
-    font-size:20px;
-    cursor:pointer;
-}
-
-.topbar-title{
-    font-size:22px;
-    font-weight:600;
-}
-
-.admin-box{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.avatar-circle{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    background:#00cfd1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-}
-
-/* ================= MAIN ================= */
-
-.main-content{
-    flex:1;
-    margin-left:auto;
-    margin-top:auto;
-    padding:30px;
-    transition:0.3s;
-}
-
-.wrapper.hide .main-content{
-    margin-left:0;
-}
-
-.profile-card {
-    background:white;
-    max-width:560px;
-    margin:60px auto;
-    margin-top:60px;
-    padding:40px;
-    border-radius:12px;
-    text-align:center;
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-}
-
-.avatar-box img{
-    width:130px;
-    height:130px;
-    border-radius:50%;
-    border:5px solid #e0f2f1;
-    margin-bottom:15px;
-}
-.btn-upload{
-    margin-top:15px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="wrapper" id="wrapper">
-
-<!-- ================= SIDEBAR ================= -->
-<div class="sidebar">
-
-<div class="logo">
-<img src="/assets/img/logo_nama.svg">
-</div>
-
-<div class="menu-label">HOME</div>
-        <a href="http://localhost:8080/dbd/dashboard" class="active">
-            <i class="fa-solid fa-house"></i> Dashboard
-        </a>
-
-        <div class="menu-label">MENU UTAMA</div>
-        <a href="http://localhost:8080/dbd/input_data">
-            <i class="fa-regular fa-clipboard"></i> Input Data Pasien
-        </a>
-        <a href="http://localhost:8080/dbd/hasil">
-            <i class="fa-regular fa-folder"></i> Hasil Data Pasien
-        </a>
-        <a href="http://localhost:8080/dbd/skrining">
-            <i class="fa-regular fa-file-lines"></i> Skrining
-        </a>
-        <a href="http://localhost:8080/dbd/peta">
-            <i class="fa-solid fa-map-location-dot"></i> Peta Sebaran
-        </a>
-        <a href="http://localhost:8080/dbd/export">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Export Data
-        </a>
-
-        <div class="menu-label">INFORMASI</div>
-        <a href="http://localhost:8080/dbd/berita">
-            <i class="fa-regular fa-newspaper"></i> Edit Berita
-        </a>
-        <a href="http://localhost:8080/dbd/funfact">
-            <i class="fa-regular fa-user"></i> Edit Funfact
-        </a>
-
-    </div>
-
-<!-- ================= TOPBAR ================= -->
-<div class="topbar">
-
-<div class="topbar-left">
-<i class="fa-solid fa-bars menu-toggle" id="toggleSidebar"></i>
-
-<div class="topbar-title">
-<?= $title ?? 'Profile'; ?>
-</div>
-</div>
-
-<div class="admin-box">
-
-<div class="text-end">
-<b>Profil</b><br>
-<small>Admin</small>
-</div>
-
-<div class="dropdown">
-<div class="avatar-circle" data-bs-toggle="dropdown">
-<i class="fa-regular fa-user"></i>
-</div>
-
-<ul class="dropdown-menu dropdown-menu-end">
-<li><a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
-                        <i class="fa-regular fa-user me-2"></i> Profile
-                    </a></li>
-<li><a class="dropdown-item" href="<?= base_url('logout') ?>">
-                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-                    </a></li>
-</ul>
-
-</div>
-</div>
-</div>
-<!-- BOOTSTRAP JS (WAJIB) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Data Skrining</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-    <!-- MAIN -->
-    <div class="main-content">
-        <div class="profile-card">
-
-            <!-- FOTO PROFIL -->
-            <div class="avatar-box">
-                <img id="previewFoto" src="https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png" alt="Foto Profil">
-
-                <input type="file" id="uploadFoto" accept="image/*" style="display:none" onchange="previewImage(event)">
-
-                <div>
-                    <button class="btn btn-outline-info btn-sm btn-upload mb-4"
-                        onclick="document.getElementById('uploadFoto').click()">
-                        <i class="fa fa-camera me-1"></i> Tambah Foto
-                    </button>
-                </div>
-            </div>
-
-            <h5 class="fw-bold mb-4">Admin</h5>
-
-            <input class="form-control mb-3" value="agustiarifin123@gmail.com" readonly>
-            <input class="form-control mb-3" value="********" readonly>
-
-            <button class="btn btn-info w-100">Ubah Kata Sandi</button>
-
+        <div>
+            <button class="btn btn-outline-info btn-sm mt-3 mb-4"
+                onclick="document.getElementById('uploadFoto').click()">
+                <i class="fa fa-camera me-1"></i> Tambah Foto
+            </button>
         </div>
     </div>
 
+    <h5 class="fw-bold text-center mb-4">Admin</h5>
+
+    <input class="form-control mb-3" value="admin@gmail.com" readonly>
+    <input class="form-control mb-3" value="********" readonly>
+
+    <button class="btn btn-info w-100">Ubah Kata Sandi</button>
+
 </div>
 
-<!-- SCRIPT PREVIEW FOTO -->
 <script>
 function previewImage(event) {
     const reader = new FileReader();
@@ -300,5 +39,4 @@ function previewImage(event) {
 }
 </script>
 
-</body>
-</html>
+<?= $this->endSection(); ?>
