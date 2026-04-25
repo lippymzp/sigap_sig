@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <?php $penyakit = session('penyakit') ?? 'tbc'; ?>
+    <?php $penyakit = session('penyakit') ?? 'dbd'; ?>
     <div class="wrapper" id="wrapper">
     <div class="sidebar">
         
@@ -48,7 +48,7 @@
             <i class="fa-regular fa-file-lines me-2"></i> Skrining
         </a>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/peta') ?>"
+        <a href="#map"
             class="<?= ($menu == 'peta') ? 'active' : '' ?>">
             <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
         </a>
