@@ -170,7 +170,10 @@ body {
 <p class="mb-2">Sesuaikan dengan kondisi gejala yang dialami</p>
 
 <!-- PROGRESS -->
-<p id="progressText">1 dari 7</p>
+<p id="progressText"></p>
+<div class="progress" style="height: 10px; border-radius: 10px;">
+    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background:#00BBC2;"></div>
+</div>
 
 <form method="post" action="/skriningdbd/skriningdbd3">
 
@@ -185,19 +188,20 @@ body {
 <input type="hidden" name="kabupaten" value="<?= $kabupaten ?? '' ?>">
 <input type="hidden" name="kecamatan" value="<?= $kecamatan ?? '' ?>">
 <input type="hidden" name="kelurahan" value="<?= $kelurahan ?? '' ?>">
-<input type="hidden" name="kode_pos" value="<?= $kode_pos ?? '' ?>">
+<input type="hidden" name="rt_rw" value="<?= $rt_rw ?? '' ?>">
 
 <div class="container mt-4">
 
 <?php 
 $pertanyaan = [
-    "Apakah Anda mengalami demam tinggi mendadak (≥ 38°C) dalam 2–7 hari terakhir?",
-    "Apakah Anda merasakan nyeri kepala atau nyeri di belakang mata?",
-    "Apakah Anda mengalami nyeri otot atau sendi (pegal-pegal)?",
-    "Apakah Anda mengalami mual atau muntah?",
-    "Apakah muncul bintik merah pada kulit atau ruam?",
-    "Apakah Anda merasa lemas atau cepat lelah tidak biasa?",
-    "Apakah ada riwayat lingkungan sekitar terdapat kasus DBD atau banyak nyamuk?"
+    "Apakah Anda berjenis kelamin Laki-laki?",
+    "Apakah usia Anda saat ini di atas 20 tahun?",
+    "Apakah Anda sedang mengalami demam saat ini?",
+    "Apakah demam tersebut sudah berlangsung lebih dari 5 hari?",
+    "Apakah Anda merasakan sakit kepala yang mengganggu?",
+    "Apakah otot atau sendi Anda terasa nyeri/pegal-pegal?",
+    "Apakah muncul bintik merah atau ruam pada kulit Anda?",
+    "Apakah Anda merasa mual atau sempat muntah-muntah?"
 ];
 ?>
 
@@ -277,9 +281,10 @@ document.querySelectorAll('.opsi-group').forEach(group => {
 <!-- SCRIPT STEP -->
 <script>
 let currentStep = 1;
-const totalStep = 7;
 
 const steps = document.querySelectorAll('.step-form');
+const totalStep = steps.length;
+
 const btnNext = document.getElementById('btnNext');
 const btnPrev = document.getElementById('btnPrev');
 const progressText = document.getElementById('progressText');
@@ -291,8 +296,10 @@ function showStep(step) {
     btnPrev.style.display = step === 1 ? 'none' : 'block';
     btnNext.textContent = (step === totalStep) ? 'Kirim' : 'Selanjutnya';
 
-    // update progress
     progressText.textContent = step + " dari " + totalStep;
+
+    let percent = (step / totalStep) * 100;
+    document.getElementById('progressBar').style.width = percent + '%';
 }
 
 showStep(currentStep);
@@ -319,6 +326,7 @@ btnPrev.addEventListener('click', function() {
         showStep(currentStep);
     }
 });
+
 </script>
 
 </body>
