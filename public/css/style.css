@@ -350,7 +350,6 @@ body {
    STEP PROGRESS MODERN 🔥
 ========================= */
 .step-wrapper {
-    display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 30px;
@@ -1412,14 +1411,9 @@ body{
     position: fixed;
     left: 0;
     top: 0;
-    transition: all 0.3s ease;
+    transition: left 0.3s ease;
 }
 
-/* MAIN CONTENT NORMAL */
-.main-content {
-    margin-left: 250px;
-    transition: all 0.3s ease;
-}
 
 /* SAAT SIDEBAR DIHIDE */
 .wrapper.hide .sidebar {
@@ -1482,5 +1476,31 @@ body{
 }
 .btn-upload{
     margin-top:15px;
+}
+/* ===== FIX SIDEBAR TOGGLE FINAL ===== */
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: left 0.3s ease;
+}
+
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    transition: all 0.3s ease;
+}
+
+/* saat sidebar disembunyikan */
+.wrapper.hide .sidebar {
+    left: -250px;
+}
+
+.wrapper.hide .main-content {
+    margin-left: 0;
+    width: 100%;
 }
 }

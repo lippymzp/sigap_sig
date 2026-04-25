@@ -106,10 +106,12 @@
             </a>
         </li>
         <li>
-            <a class="dropdown-item" href="<?= base_url('/logout') ?>">
-                <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-            </a>
-        </li>
+    <a class="dropdown-item"
+       href="<?= base_url('/logout') ?>"
+       onclick="return confirm('Yakin mau keluar?')">
+        <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+    </a>
+    </li>
     </ul>
 </div>
             </div>

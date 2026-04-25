@@ -95,6 +95,13 @@ class Auth extends BaseController
         return redirect()->to('/otp-reset');
     }
 
+    public function logout()
+    {
+    session()->destroy();
+
+    return redirect()->to('/'); // ke home.php
+    }
+
     public function otpLogin()
     {
         return view('gol_c/auth/otp_login');

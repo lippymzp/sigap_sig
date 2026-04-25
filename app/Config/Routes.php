@@ -11,6 +11,7 @@ use CodeIgniter\Router\RouteCollection;
 /* ========================= */
 
 $routes->get('/', 'Home::index');
+$routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
 $routes->get('/dbd', 'Home::dbd');
@@ -27,12 +28,11 @@ $routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Home::skriningdbd2
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Home::skriningdbd3');
 $routes->get('/rekap_skrining', 'Home::rekap_skrining');
 /* ========================= */
-/* PROFIL */
+/* PROFIL dan Logut */
 /* ========================= */
 
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->get('/profil_admin', 'Profile2::profil_admin');
-
 /* ========================= */
 /* DIARE */
 /* ========================= */
