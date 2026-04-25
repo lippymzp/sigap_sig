@@ -153,7 +153,7 @@ class Auth extends BaseController
             return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
         }
 
-        return redirect()->to('/' . strtolower($penyakit['nama_penyakit']) . '/dashboard');
+        return redirect()->to('/' . strtolower(trim($penyakit['nama_penyakit']) . '/dashboard');
     }
 
     public function otpReset()
