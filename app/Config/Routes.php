@@ -66,6 +66,10 @@ $routes->post('/otp-reset', 'Auth::verifyOtpReset');
 
 $routes->get('/dashboard', 'Dashboard::index');
 $routes->get('dbd/dashboard', 'Dashboard::dbd');
+$routes->get('dbd/input_data', 'Dbd::inputData');
+$routes->get('dbd/hasil', 'Dbd::hasil_data');
+$routes->post('dbd/simpan', 'dbd::simpan');
+$routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
 $routes->get('diare/dashboard', 'Dashboard::diare');
