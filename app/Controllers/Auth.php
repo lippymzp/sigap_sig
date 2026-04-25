@@ -48,7 +48,7 @@ class Auth extends BaseController
         $otp = rand(100000, 999999);
 
         session()->set([
-            'temp_user' => $user['id_user'],
+            'temp_user' => $user['id_petugas'],
             'otp_code' => $otp,
             'otp_expired' => time() + 300
         ]);
@@ -137,9 +137,9 @@ class Auth extends BaseController
         // SET SESSION LOGIN FINAL
         session()->set([
             'logged_in' => true,
-            'id_user' => $user['id_user'],
+            'id_petugas' => $user['id_petugas'],
             'email' => $user['email'],
-            'role_id' => $user['role_id'],
+            'id_jabatan' => $user['id_jabatan'],
             'id_penyakit' => $user['id_penyakit']
         ]);
 
@@ -148,14 +148,12 @@ class Auth extends BaseController
 
         $penyakitModel = new \App\Models\PenyakitModel();
         $penyakit = $penyakitModel->find($user['id_penyakit']);
-        $penyakit_login = session()->get('penyakit');
-        $penyakitDB = $penyakit;
-        if (
-    !$penyakitDB ||
-    strtolower(trim((string) ($penyakitDB['nama_penyakit'] ?? ''))) != strtolower(trim($penyakit_login))
-    ) {
-    return redirect()->back()->with('error', 'Akun tidak punya akses ke halaman ini!');
-    }
+
+        if (!$penyakit) {
+            return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
+        }
+
+        return redirect()->to('/' . strtolower($penyakit['nama_penyakit']) . '/dashboard');
     }
 
     public function otpReset()

@@ -104,11 +104,11 @@
 
         <form action="<?= base_url('/login-process') ?>" method="post">
 
-            <input type="hidden" name="penyakit" value="<?= session('penyakit') ?>">
+            <input type="hidden" name="penyakit" value="<?= session('penyakit') ?? '' ?>">
 
             <div class="mb-3">
                 <label>Email</label>
-                <input type="email" name="email" class="form-control" placeholder="Masukkan email">
+                <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
             </div>
 
             <div class="mb-2">
@@ -121,6 +121,7 @@
                         id="login_password"
                         class="form-control pe-5" 
                         placeholder="Masukkan kata sandi"
+                        required
                     >
 
                     <i class="bi bi-eye eye-icon" id="toggleLoginPassword"></i>
