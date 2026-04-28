@@ -63,4 +63,18 @@ public function diare_detail()
     {
     return view('gol_a/rekap_skrining_dbd');
 }
+public function skriningpneumonia()
+{
+    return view('gol_a/skrining1');
+}
+public function skriningpneumonia2()
+{
+    $data = $this->request->getPost();
+    return view('gol_a/skrining2', $data);
+}
+public function skriningpneumonia3()
+{
+    $data = $this->request->getPost();
+    return view('gol_a/skrining3', $data);
+}
 }

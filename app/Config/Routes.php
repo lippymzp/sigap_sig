@@ -20,6 +20,13 @@ $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
 
 /* ========================= */
+/* SKRINING Pneumonia */
+/* ========================= */
+$routes->get('/skriningpneumonia', 'Home::skriningpneumonia');
+$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Home::skriningpneumonia2');
+$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Home::skriningpneumonia3');
+
+/* ========================= */
 /* SKRINING DBD */
 /* ========================= */
 
