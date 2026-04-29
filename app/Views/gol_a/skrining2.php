@@ -1,5 +1,152 @@
 <?= $this->include('layout/header') ?>
-<div class="container mt-5 mb-5">
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pertanyaan Skrining</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+    background: #ffffff;
+}
+
+/* STEP */
+.step-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px;
+}
+.step-item p {
+    margin-top: 8px;
+    font-size: 14px;
+}
+.step.active {
+    background: #009B9F;
+    color: white;
+}
+.step.inactive {
+    background: #00BBC2;
+    color: white;
+}
+.step-line {
+    width: 500px;
+    border-top: 2px dashed #00BBC2;
+    margin: 0 10px;
+    transform: translateY(-20px);
+}
+* {
+    font-family: 'Poppins', sans-serif;
+}
+/* CARD */
+.card-custom {
+    border-radius: 15px;
+    border: 2px solid #00BBC2;
+    background: #f1f3f5;
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* PERTANYAAN */
+.pertanyaan {
+    margin-bottom: 20px;
+}
+
+/* OPSI */
+.opsi-group {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 8px;
+}
+.opsi {
+    border-radius: 15px;
+    padding: 10px 50px;
+    font-size: 15px;
+    cursor: pointer;
+    background: #fafafa;
+    color: #555;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.opsi.active {
+    background: #00BBC2;
+    color: white;
+}
+
+/* BUTTON */
+.btn-kembali {
+    border: 2px solid #00BBC2;
+    color: #00BBC2;
+    border-radius: 12px;
+    height: 50px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-kirim {
+    background: #00BBC2;
+    color: white;
+    border-radius: 12px;
+    height: 50px;
+    font-weight: 500;
+}
+
+/* PROGRESS */
+#progressText {
+    color: black;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+/* FOOTER */
+.footer {
+    background: #00BBC2;
+    color: white;
+    padding: 40px 0;
+    margin-top: 120px;
+}
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+.logo-footer {
+    width: 60px;
+    height: 60px;
+    background: red;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+.pertanyaan label {
+    display: block;
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+</style>
+</head>
+
+<body>
 
 <!-- STEP -->
 <div class="step-wrapper mb-5">
@@ -43,11 +190,10 @@
 <input type="hidden" name="kelurahan" value="<?= $kelurahan ?? '' ?>">
 <input type="hidden" name="rt_rw" value="<?= $rt_rw ?? '' ?>">
 
+<div class="container mt-4">
 
 <?php 
 $pertanyaan = [
-    "Apakah Anda berjenis kelamin Laki-laki?",
-    "Apakah usia Anda saat ini di atas 20 tahun?",
     "Apakah Anda sedang mengalami demam saat ini?",
     "Apakah demam tersebut sudah berlangsung lebih dari 5 hari?",
     "Apakah Anda merasakan sakit kepala yang mengganggu?",
@@ -55,6 +201,7 @@ $pertanyaan = [
     "Apakah muncul bintik merah atau ruam pada kulit Anda?",
     "Apakah Anda merasa mual atau sempat muntah-muntah?"
 ];
+
 ?>
 
 <?php foreach($pertanyaan as $index => $text): ?>
@@ -160,7 +307,7 @@ btnNext.addEventListener('click', function() {
     const input = document.querySelector(`[data-step="${currentStep}"] input`);
 
     if (input.value === "") {
-        alert("Silakan pilih jawaban terlebih dahulu!");
+        alert("Jawaban belum dipilih!");
         return;
     }
 
@@ -180,4 +327,6 @@ btnPrev.addEventListener('click', function() {
 });
 
 </script>
-<?= $this->include('layout/footer') ?>
+
+</body>
+</html>
