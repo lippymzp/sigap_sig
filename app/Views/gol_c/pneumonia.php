@@ -18,7 +18,7 @@
    
 <!-- BUTTON -->
 <a href="#" class="btn-gradient">
-    Pelajari selanjutnya →
+    Pelajari selengkapnya →
 </a>
 
 <style>
@@ -197,32 +197,51 @@
 </style>
 
 <!-- FITUR -->
+
 <section class="container mt-5 text-center" data-aos="fade-up">
 
-<h4 class="text-teal mb-4">Fitur Menarik</h4>
+<h4 class="mb-4" style="color:#1aa6a6; font-weight:600;">
+    Fitur Menarik yang Bisa Dimanfaatkan
+</h4>
 
-<div class="row g-3 justify-content-center">
+<div class="row g-4 justify-content-center">
 
+<!-- GRAFIK -->
 <div class="col-md-3">
-<a href="#grafik" class="fitur-box text-decoration-none d-block">
+<a href="#grafik" class="fitur-box d-block" data-target="grafik">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Grafik Kesehatan
 </a>
 </div>
 
+<!-- MAP -->
 <div class="col-md-3">
-<a href="#mapSection" class="fitur-box text-decoration-none d-block">
+<a href="#mapSection" class="fitur-box d-block" data-target="map">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Peta Persebaran
 </a>
 </div>
 
+<!-- ARTIKEL -->
 <div class="col-md-3">
-<a href="#" class="fitur-box text-decoration-none d-block">
+<a href="#" class="fitur-box d-block" data-target="artikel">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Artikel
 </a>
 </div>
 
+<!-- SKRINING -->
 <div class="col-md-3">
-<a href="<?= base_url('skrining') ?>" class="fitur-box text-decoration-none d-block">
+<a href="<?= base_url('skrining') ?>" class="fitur-box d-block" data-target="skrining">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Skrining
 </a>
 </div>
@@ -231,7 +250,74 @@
 
 </section>
 
+<style>
+/* BOX FITUR */
+.fitur-box {
+    padding: 15px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+/* HOVER */
+.fitur-box:hover {
+    transform: translateY(-5px);
+    color: white;
+}
+
+/* AKTIF */
+.fitur-box.active {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* ICON GARIS */
+.icon {
+    margin-bottom: 10px;
+}
+
+.icon span {
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background: white;
+    margin: 0 2px;
+    border-radius: 2px;
+}
+
+.icon span:nth-child(2) {
+    height: 24px;
+}
+
+.icon span:nth-child(3) {
+    height: 14px;
+}
+</style>
+
+<script>
+const fitur = document.querySelectorAll('.fitur-box');
+
+fitur.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+
+        // biar yg # gak reload
+        if(this.getAttribute("href") === "#"){
+            e.preventDefault();
+        }
+
+        // aktif efek
+        fitur.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+</script>
+
 <!-- GRAFIK -->
+ 
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -247,6 +333,13 @@
 <style>
 body {
   background: #ffffff;
+}
+
+.judul-grafik {
+  color: #1aa6a6;
+  font-weight: 600;
+  text-align: left;   /* sesuai gambar (kiri) */
+  margin-bottom: 10px; /* biar deket ke card */
 }
 
 /* CARD */
@@ -283,8 +376,8 @@ h5 {
 </head>
 <body>
 
-<div class="container mt-5">
-
+<div class="container mt-4">
+<h4 class="judul-grafik">Grafik Pneumonia</h4>
   <div class="card-custom">
 
     <h5 class="mb-4">Kasus Umum</h5>
@@ -486,13 +579,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     var warna = "#cccccc";
 
                     if(item){
-                        if(item.kategori == "tinggi") warna = "#d62828";
-                        else if(item.kategori == "sedang") warna = "#e76f51";
-                        else if(item.kategori == "rendah") warna = "#f4a261";
+                        if(item.kategori == "tinggi") warna = "#dc3545";
+                        else if(item.kategori == "sedang") warna = "#ffc107";
+                        else if(item.kategori == "rendah") warna = "#28a745";
                     }
 
                     return {
-                        color: "#2a9d8f",
+                        color: "#00CED1",
                         weight: 2,
                         fillColor: warna,
                         fillOpacity: 0.7
