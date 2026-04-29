@@ -282,4 +282,18 @@ class Dbd extends BaseController
             'penyakit' => 'dbd'
         ]);
     }
+
+    public function peta()
+    {
+        // ... (Logika untuk mengambil data $dbd Anda jika ada) ...
+        
+        $data = [
+            'title' => 'Peta Sebaran DBD',
+            'menu'  => 'peta_sebaran', // <--- Harus sama dengan yang ada di pengecekan if ($menu == '...')
+            'dbd'   => [] // Isi array data dbd Anda di sini
+        ];
+
+        // Ganti 'peta_view' dengan nama file view peta Anda (misalnya 'kader/peta_view')
+        return view('gol_a/peta_sebaran_kader', $data); 
+    }
 }
