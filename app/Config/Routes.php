@@ -133,3 +133,12 @@ $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
 $routes->get('/rekap_skrining_dbd', 'Home::rekap_skrining_dbd');
 
+/* ========================= */
+/* KADER */
+/* ========================= */
+
+$routes->get('/formkader', 'formkader::formulir');
+$routes->post('/formkader/simpan', 'formkader::simpan');
+$routes->get('/formkader/rekap', 'formkader::rekap');
+$routes->get('/formkader/detail/(:any)', 'formkader::detail/$1');
+$routes->get('formkader/exportExcel', 'formkader::exportExcel');

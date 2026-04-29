@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-
+use App\Models\InputDataPasienModel;
 class Dbd extends BaseController
 {
     public function inputData()
@@ -23,7 +23,7 @@ class Dbd extends BaseController
         ]);
     }
 
-    public function simpandatapasien()
+   public function simpandatapasien()
     {
         $model = new InputDataPasienModel();
 
