@@ -33,6 +33,7 @@ $routes->get('/rekap_skrining', 'Home::rekap_skrining');
 
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->get('/profil_admin', 'Profile2::profil_admin');
+$routes->get('/profil_kader', 'Profile3::profil_kader');
 /* ========================= */
 /* DIARE */
 /* ========================= */
@@ -78,6 +79,8 @@ $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
 $routes->get('/kader/dashboard', 'dbd::dashboard');
+$routes->get('cekdb', 'Home::cekdb');
+$routes->get('peta_sebaran', 'dbd::peta');
 
 /* ========================= */
 /* DASHBOARD KEPALA */

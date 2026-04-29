@@ -16,9 +16,7 @@
 </head>
 
 <body>
-    <?php
-    $penyakit = session('penyakit') ?? 'dbd';
-    $menu = $menu ?? '';?>
+    <?php $penyakit = session('penyakit') ?? 'dbd'; ?>
     <div class="wrapper" id="wrapper">
     <div class="sidebar">
         
@@ -28,23 +26,22 @@
 
         <div class="menu-label">HOME</div>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/dashboard') ?>"
-            class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
+        <a href="<?= base_url('kader/dashboard') ?>"
+            class="<?= ($menu == 'kader/dashboard') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
 
         <div class="menu-label">MENU UTAMA</div>
 
 
-        <a href="#map"
-            class="<?= ($menu == 'peta') ? 'active' : '' ?>">
-            <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
-        </a>
+        <a href="<?= base_url('peta_sebaran') ?>" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
+    <i class="fa-solid fa-house me-2"></i> Peta Sebaran
+</a>
 
-        <a href="#grafik"
-            class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
-            <i class="fa-solid fa-chart-column me-2"></i> Grafik
-        </a>
+        <a href="<?= base_url('kader/dashboard#grafik') ?>"
+   class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
+   <i class="fa-solid fa-chart-column me-2"></i> Grafik
+</a>
 
         <a href="<?= base_url('formkader/formulir') ?>"
             class="<?= ($menu == 'form') ? 'active' : '' ?>">
@@ -57,7 +54,7 @@
         <div class="menu-label">Informasi</div>
 
         <a href="<?= base_url('profil_kader') ?>"
-            class="<?= ($menu == 'profil') ? 'active' : '' ?>">
+            class="<?= ($menu == 'profil_kader') ? 'active' : '' ?>">
              <i class="fa-regular fa-user me-2"></i> Profil Kader
         </a>
 
