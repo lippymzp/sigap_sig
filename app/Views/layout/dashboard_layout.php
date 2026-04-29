@@ -17,7 +17,7 @@
 
 <body>
     <?php
-    $penyakit = session('penyakit') ?? 'dbd';
+    $penyakit = session('penyakit') ?? 'tbc';
     $menu = $menu ?? '';?>
     <div class="wrapper" id="wrapper">
     <div class="sidebar">

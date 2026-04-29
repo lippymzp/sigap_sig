@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
