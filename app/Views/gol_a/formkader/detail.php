@@ -13,9 +13,9 @@ body {
 .card-custom {
     border-radius: 15px;
     border: 2px solid #00BBC2;
-    background: #ffffff;
-    padding: 30px;
+    padding: 25px;
     margin-top: 40px;
+    background: #fff;
 }
 
 .title {
@@ -25,33 +25,23 @@ body {
 
 .label {
     font-weight: 600;
+    color: #555;
 }
 
-.value-box {
-    background: #f1f3f5;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 15px;
+.value {
+    font-weight: 500;
 }
 
-/* FOTO */
 .foto {
-    width: 250px;
+    width: 220px;
     border-radius: 10px;
-    border: 1px solid #ddd;
+    margin-top: 10px;
+    cursor: pointer;
     transition: 0.3s;
 }
 
-/* efek hover biar interaktif */
 .foto:hover {
     transform: scale(1.05);
-    cursor: pointer;
-}
-
-.btn-kembali {
-    background: #00BBC2;
-    color: white;
-    border-radius: 10px;
 }
 </style>
 </head>
@@ -59,64 +49,72 @@ body {
 <body>
 
 <div class="container">
-
 <div class="card-custom">
 
-<h4 class="title">Detail Laporan Posyandu</h4>
-<p class="mb-1"><b><?= $pos ?></b></p>
+<h4 class="title mb-4">Detail Posyandu <?= $pos ?></h4>
 
-<div class="d-flex">
-    <div style="width:120px;"><strong>Kelurahan</strong></div>
-    <div>: <?= $data['kelurahan'] ?? '-' ?></div>
+<div class="row mb-3">
+    <div class="col-md-4 label">Kelurahan</div>
+    <div class="col-md-8 value"><?= $data['kelurahan'] ?? '-' ?></div>
 </div>
 
-<?php if($data): ?>
-
-<div class="row">
-
-<div class="col-md-6">
-
-    <div class="label">Tanggal Input</div>
-    <div class="value-box"><?= $data['tanggalinput'] ?></div>
-
-    <div class="label">Jumlah Diperiksa</div>
-    <div class="value-box"><?= $data['diperiksa'] ?></div>
-
-    <div class="label">Jumlah Positif</div>
-    <div class="value-box"><?= $data['positif'] ?></div>
-
-    <div class="label">Bagian Positif</div>
-    <div class="value-box"><?= $data['bagian'] ?? '-' ?></div>
+<div class="row mb-3">
+    <div class="col-md-4 label">Tanggal</div>
+    <div class="col-md-8 value"><?= $data['tanggalinput'] ?? '-' ?></div>
 </div>
 
-<div class="col-md-6 text-center">
-    <div class="label mb-2">Foto</div>
-
-    <?php if(!empty($data['foto'])): ?>
-        <a href="<?= base_url('uploads/'.$data['foto']) ?>" target="_blank">
-            <img src="<?= base_url('uploads/'.$data['foto']) ?>" class="foto">
-        </a>
-        <small class="d-block mt-2 text-muted">Klik gambar untuk memperbesar</small>
-    <?php else: ?>
-        <p>- Tidak ada foto -</p>
-    <?php endif; ?>
+<div class="row mb-3">
+    <div class="col-md-4 label">Jumlah Diperiksa</div>
+    <div class="col-md-8 value"><?= $data['diperiksa'] ?? '-' ?></div>
 </div>
 
+<div class="row mb-3">
+    <div class="col-md-4 label">Jumlah Positif</div>
+    <div class="col-md-8 value"><?= $data['positif'] ?? '-' ?></div>
 </div>
 
-<?php else: ?>
-
-<div class="alert alert-danger text-center">
-    Data belum tersedia untuk pos ini
+<div class="row mb-3">
+    <div class="col-md-4 label">Bagian Positif</div>
+    <div class="col-md-8 value"><?= $data['bagian'] ?? '-' ?></div>
 </div>
 
+<?php if(!empty($data['foto'])): ?>
+<div class="row mb-3">
+    <div class="col-md-4 label">Foto</div>
+    <div class="col-md-8">
+        <img src="<?= base_url('uploads/'.$data['foto']) ?>" 
+             class="foto"
+             data-bs-toggle="modal"
+             data-bs-target="#modalFoto">
+    </div>
+</div>
 <?php endif; ?>
 
-
-<a href="/formkader/rekap" class="btn btn-kembali mt-4">Kembali ke Rekap</a> 
+<a href="<?= base_url('formkader/rekap') ?>" class="btn btn-secondary mt-3">Kembali</a>
 
 </div>
 </div>
+
+<!-- MODAL FOTO -->
+<div class="modal fade" id="modalFoto" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Preview Foto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <img src="<?= base_url('uploads/'.$data['foto']) ?>" class="img-fluid">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- JS BOOTSTRAP -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

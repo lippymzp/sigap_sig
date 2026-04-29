@@ -73,7 +73,7 @@ label {
 <h4 class="title">LAPORAN PSN 2026 PKM SUMBERSARI</h4>
 <p class="mb-5">Pemberantasan Sarang Nyamuk</p>
 
-<form method="post" action="/formkader/simpan" enctype="multipart/form-data">
+<form method="post" action="<?= base_url('dbd/simpanpsn') ?>" enctype="multipart/form-data">
 
 <!--TANGGAL INPUT -->
 <!-- KELURAHAN -->

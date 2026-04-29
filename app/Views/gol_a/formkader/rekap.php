@@ -43,7 +43,7 @@ body { background:#f8f9fa; }
 
 <h4 class="title">Rekap Laporan PSN 2026</h4>
 
-<a href="/formkader/exportExcel" class="btn btn-success">Export Excel</a>
+<a href="/dbd/exportrekappsn" class="btn btn-success">Export Excel</a>
 
 <!-- FILTER -->
 <form method="GET" class="mb-3 row g-2">
@@ -108,7 +108,7 @@ body { background:#f8f9fa; }
 $no = 1;
 
 /* 🔥 INI FIX UTAMA */
-foreach($laporan as $pos => $data):
+foreach($laporanpsn as $pos => $data):
 
 $status = $data ? 'sudah' : 'belum';
 ?>
@@ -135,7 +135,7 @@ $status = $data ? 'sudah' : 'belum';
 
 <td>
 <?php if($data): ?>
-<a href="/formkader/detail/<?= urlencode($pos) ?>" class="btn btn-sm btn-info text-white">Detail</a>
+<a href="<?= base_url('formkader/detail/'.$pos) ?>" class="btn btn-sm btn-info text-white">Detail</a>
 <?php endif; ?>
 </td>
 
