@@ -133,12 +133,9 @@ $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
 $routes->get('/rekap_skrining_dbd', 'Home::rekap_skrining_dbd');
 
-/* ========================= */
-/* KADER */
-/* ========================= */
-
-$routes->get('/formkader', 'formkader::formulir');
-$routes->post('/formkader/simpan', 'formkader::simpan');
-$routes->get('/formkader/rekap', 'formkader::rekap');
-$routes->get('/formkader/detail/(:any)', 'formkader::detail/$1');
-$routes->get('formkader/exportExcel', 'formkader::exportExcel');
+// ================= PSN KADER =================
+$routes->get('formkader/formulir', 'Dbd::formulirpsn');
+$routes->post('dbd/simpanpsn', 'Dbd::simpanpsn');
+$routes->get('formkader/rekap', 'Dbd::rekappsn');
+$routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
+$routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');

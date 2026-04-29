@@ -44,8 +44,8 @@
             <i class="fa-solid fa-chart-column me-2"></i> Grafik
         </a>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/export') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
+        <a href="<?= base_url('formkader/formulir') ?>"
+            class="<?= ($menu == 'form') ? 'active' : '' ?>">
             <i class="fa-solid fa-file-lines me-2"></i> Pelaporan Kader
         </a>
 
