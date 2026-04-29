@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function(){
             <?php foreach ($artikels as $artikel): ?>
                 <div class="card-artikel">
 
-                    <img src="<?= base_url('img/artikel/' . $artikel['gambar']) ?>" class="artikel-img" alt="<?= esc($artikel['judul']) ?>" />
+                    <img src="<?= base_url('img/artikel/' . (string)$artikel['gambar']) ?>" class="artikel-img" alt="<?= esc((string)$artikel['judul']) ?>" />
 
                     <div class="artikel-action">
                         <a href="<?= base_url('admin/artikel/edit/' . $artikel['id']) ?>">
@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     <div class="artikel-content">
                         <small><?= date('l, d M Y', strtotime($artikel['tanggal_terbit'])) ?></small>
 
-                        <h5><?= esc($artikel['judul']) ?></h5>
+                        <h5><?= esc((string)$artikel['judul']) ?></h5>
 
                         <?php
                         $preview = character_limiter(strip_tags($artikel['isi']), 150, '...');
