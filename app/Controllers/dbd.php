@@ -202,7 +202,7 @@ class Dbd extends BaseController
     }
 
     // ================= DETAIL =================
-    public function detailpsn($pos)
+    public function detailpsn(int$pos)
     {
         $session = session();
         $laporanpsn = $session->get('laporanpsn') ?? [];

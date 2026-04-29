@@ -16,7 +16,9 @@
 </head>
 
 <body>
-    <?php $penyakit = session('penyakit') ?? 'dbd'; ?>
+    <?php
+    $penyakit = session('penyakit') ?? 'dbd';
+    $menu = $menu ?? '';?>
     <div class="wrapper" id="wrapper">
     <div class="sidebar">
         

@@ -1,4 +1,25 @@
 <?= $this->include('layout/header') ?>
+
+<?php
+$$p3 = session()->get('p1') ?? 0;
+$p4 = session()->get('p2') ?? 0;
+$p5 = session()->get('p3') ?? 0;
+$p6 = session()->get('p4') ?? 0;
+$p7 = session()->get('p5') ?? 0;
+$p8 = session()->get('p6') ?? 0;
+
+$nama = $nama ?? '';
+$nik = $nik ?? '';
+$jenis_kelamin = $jenis_kelamin ?? '';
+$tanggal_lahir = $tanggal_lahir ?? '';
+$kategori_usia = $kategori_usia ?? '';
+$provinsi = $provinsi ?? '';
+$kabupaten = $kabupaten ?? '';
+$kecamatan = $kecamatan ?? '';
+$kelurahan = $kelurahan ?? '';
+$rt_rw = $rt_rw ?? '';
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -537,8 +558,8 @@ $pertanyaan = [
         Kembali
     </a>
 
-    <a href="/skrining" class="btn btn-selesai">
-        Selesai
+   <a href="<?= base_url('/') ?>" class="btn btn-selesai">
+    Selesai
     </a>
 
 </div>

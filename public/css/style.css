@@ -1665,12 +1665,10 @@ select {
 .slider-btn.right { right: 10px; }
 }
 
-<<<<<<< HEAD
-=======
 
 .welcome-box:hover .welcome-icon i {
     transform: scale(1.1);
-}
+
 body {
     background: #ffffff;
 }
@@ -2135,4 +2133,4 @@ body {
 * {
     font-family: 'Poppins', sans-serif;
 }
->>>>>>> c289fb1a95a8021e2d432e28ee11cc75d3e74284
+}
