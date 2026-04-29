@@ -1,7 +1,10 @@
 <?= $this->extend('layout/dashboard_layout') ?>
 <?= $this->section('content') ?>
 
-<?php $grafik = $grafik ?? []; ?>
+<?php
+$grafik = $grafik ?? [];
+$kelurahan = $kelurahan ?? [];
+?>
 
 <!-- WELCOME -->
 <div class="welcome-box">
