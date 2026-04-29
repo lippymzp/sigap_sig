@@ -63,4 +63,15 @@ public function diare_detail()
     {
     return view('gol_a/rekap_skrining_dbd');
 }
+public function cekdb()
+{
+    try {
+        $db = \Config\Database::connect();
+        $db->initialize();
+
+        echo "Koneksi berhasil";
+    } catch (\Exception $e) {
+        echo $e->getMessage();
+    }
+}
 }

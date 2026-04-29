@@ -78,7 +78,7 @@ $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
 $routes->get('/kader/dashboard', 'dbd::dashboard');
-
+$routes->get('cekdb', 'Home::cekdb');
 /* ========================= */
 /* DASHBOARD KEPALA */
 /* ========================= */

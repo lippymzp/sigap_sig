@@ -496,7 +496,7 @@
 
                 <input type="hidden" name="nama" id="formNama">
                 <input type="hidden" name="tanggal" id="formTanggal">
-                <input type="hidden" name="jk" id="formJK">
+                <input type="hidden" name="jenis_kelamin" id="formJK">
                 <input type="hidden" name="usia" id="formUsia">
                 <input type="hidden" name="catatan" id="formCatatan">
                 <input type="hidden" name="no_rm" id="formRM">
