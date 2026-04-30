@@ -179,16 +179,42 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const map = L.map('map').setView([-7.9, 112.6], 8);
+    // Fokus ke Jember
+    const map = L.map('map').setView([-8.17, 113.70], 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    let marker = L.marker([-7.9,112.6]).addTo(map);
+    fetch('/assets/peta/jember_kecamatan.geojson')
+    .then(res => res.json())
+    .then(data => {
 
-    map.on('click', function(e){
-        document.getElementById('lat').innerText = e.latlng.lat.toFixed(6);
-        document.getElementById('lng').innerText = e.latlng.lng.toFixed(6);
-        marker.setLatLng(e.latlng);
+        console.log(data.features[0].properties); // cek field
+
+        function getColor(nama) {
+            return nama === "SUMBERSARI" ? "red" :
+                   nama === "KALIWATES" ? "blue" :
+                   nama === "AJUNG" ? "green" :
+                   nama === "PANTI" ? "orange" :
+                   "gray";
+        }
+
+        const geojson = L.geoJSON(data, {
+            style: function(feature){
+                const nama = feature.properties.WADMKC; // ⚠️ sesuaikan ini
+
+                return {
+                    color: "black",
+                    weight: 2,
+                    fillColor: getColor(nama),
+                    fillOpacity: 0.6
+                }
+            },
+            onEachFeature: function(feature, layer){
+                const nama = feature.properties.WADMKC; // ⚠️ sesuaikan juga
+                layer.bindPopup(nama);
+            }
+        }).addTo(map);
+
     });
 
 });

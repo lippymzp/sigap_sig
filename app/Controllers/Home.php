@@ -39,7 +39,7 @@ class Home extends BaseController
     public function skrining_diare()
     {
     return view('gol_d/skrining_diare');
-}
+    }
 public function diare_detail()
 {
     return view('gol_d/diare_detail');
@@ -62,6 +62,7 @@ public function skriningpneumonia3()
 {
     $data = $this->request->getPost();
     return view('gol_a/skrining3', $data);
+    }
 public function cekdb()
 {
     try {
