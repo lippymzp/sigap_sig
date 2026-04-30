@@ -18,7 +18,9 @@
 </head>
 
 <body>
-    <?php $penyakit = session('penyakit') ?? 'tbc'; ?>
+    <?php
+    $penyakit = session('penyakit') ?? 'tbc';
+    $menu = $menu ?? '';?>
     <div class="wrapper" id="wrapper">
     <div class="sidebar">
         

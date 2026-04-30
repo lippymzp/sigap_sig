@@ -30,16 +30,16 @@ $routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Home::
 /* SKRINING DBD */
 /* ========================= */
 
-$routes->get('/skriningdbd', 'Home::skriningdbd');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Home::skriningdbd2');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Home::skriningdbd3');
-$routes->get('/rekap_skrining', 'Home::rekap_skrining');
-/* ========================= */
+$routes->get('/skriningdbd', 'Dbd::skriningdbd');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Dbd::skriningdbd2');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Dbd::skriningdbd3');
+$routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
 /* PROFIL dan Logut */
 /* ========================= */
 
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->get('/profil_admin', 'Profile2::profil_admin');
+$routes->get('/profil_kader', 'Profile3::profil_kader');
 /* ========================= */
 /* DIARE */
 /* ========================= */
@@ -85,6 +85,8 @@ $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
 $routes->get('/kader/dashboard', 'dbd::dashboard');
+$routes->get('cekdb', 'Home::cekdb');
+$routes->get('peta_sebaran', 'dbd::peta');
 
 /* ========================= */
 /* DASHBOARD KEPALA */
@@ -93,6 +95,7 @@ $routes->get('/kader/dashboard', 'dbd::dashboard');
 $routes->get('/dashboard_kepala', 'Kepala::dashboard');
 $routes->get('/dashboard_kepala', 'Kepala::dashboard');
 $routes->get('/export_kepala', 'Kepala::export');
+
 
 /* ========================= */
 /* FUNFACT TBC */
@@ -138,5 +141,15 @@ $routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
 /* ========================= */
 $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
-$routes->get('/rekap_skrining_dbd', 'Home::rekap_skrining_dbd');
 
+// ================= PSN KADER =================
+$routes->get('formkader/formulir', 'Dbd::formulirpsn');
+$routes->post('dbd/simpanpsn', 'Dbd::simpanpsn');
+$routes->get('formkader/rekap', 'Dbd::rekappsn');
+$routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
+$routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
+
+// ================= EXPORT HASIL DATA PASIEN =================
+$routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
+$routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
+$routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');

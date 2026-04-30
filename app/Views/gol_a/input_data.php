@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
@@ -189,7 +189,7 @@
 
             </div>
 
-            <div class="text-end mt-4">
+            <div class="d-flex justify-content-end mt-4">
                 <button class="btn-next" onclick="nextStep(2)">Lanjut →</button>
             </div>
 
@@ -215,6 +215,16 @@
 </div>
 
             <script>
+                function prevStep(step){
+                document.getElementById('step1').style.display='none';
+                document.getElementById('step2').style.display='none';
+                document.getElementById('step3').style.display='none';
+                document.getElementById('step'+step).style.display='block';
+                document.getElementById('stepNav1').classList.remove('active');
+                document.getElementById('stepNav2').classList.remove('active');
+                document.getElementById('stepNav3').classList.remove('active');
+                document.getElementById('stepNav'+step).classList.add('active');
+}
 
                 var map;
                 var marker;
@@ -388,7 +398,8 @@
 
             </div>
 
-            <div class="text-end mt-4">
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn-next" onclick="prevStep(1)">← Kembali</button>
                 <button class="btn-next" onclick="nextStep(3)">Lanjut →</button>
             </div>
 
@@ -448,38 +459,49 @@
             <h6 class="fw-bold mb-3">Ringkasan Laporan Kasus</h6>
 
             <!-- DATA -->
-            <div class="summary-item d-flex justify-content-between mb-2">
-                <span>Alamat</span>
-                <b id="sumAlamat">-</b>
-            </div>
+            <div class="summary-box">
 
-            <div class="summary-item d-flex justify-content-between mb-2">
-                <span>Jenis Kelamin</span>
-                <b id="sumJK">-</b>
-            </div>
+    <div class="row mb-2 align-items-start">
+        <div class="col-4 text-muted">Alamat</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumAlamat">-</div>
+    </div>
 
-            <div class="summary-item d-flex justify-content-between mb-2">
-                <span>Usia</span>
-                <b id="sumUsia">-</b>
-            </div>
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Jenis Kelamin</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumJK">-</div>
+    </div>
 
-            <div class="summary-item d-flex justify-content-between mb-2">
-                <span>Tanggal</span>
-                <b id="sumTanggal">-</b>
-            </div>
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Usia</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumUsia">-</div>
+    </div>
 
-            <div class="summary-item d-flex justify-content-between mb-3">
-                <span>Catatan</span>
-                <b id="sumCatatan">-</b>
-            </div>
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Tanggal</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTanggal">-</div>
+    </div>
 
-            <!-- CHECK -->
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="confirm">
-                <label class="form-check-label">
-                    Saya mengonfirmasi data benar
-                </label>
-            </div>
+    <div class="row mb-3">
+        <div class="col-4 text-muted">Catatan</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumCatatan">-</div>
+    </div>
+
+    <!-- CHECK -->
+    <div class="form-check mt-3">
+        <input class="form-check-input" type="checkbox" id="confirm">
+        <label class="form-check-label">
+            Saya mengonfirmasi data benar
+        </label>
+    </div>
+
+</div>
+
+</div>
 
             <!-- FORM SUBMIT -->
             <form action="<?= base_url('dbd/simpandatapasien') ?>" method="post" onsubmit="return submitData()">
@@ -496,23 +518,18 @@
 
                 <input type="hidden" name="nama" id="formNama">
                 <input type="hidden" name="tanggal" id="formTanggal">
-                <input type="hidden" name="jk" id="formJK">
+                <input type="hidden" name="jenis_kelamin" id="formJK">
                 <input type="hidden" name="usia" id="formUsia">
                 <input type="hidden" name="catatan" id="formCatatan">
                 <input type="hidden" name="no_rm" id="formRM">
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
 
-                    <div>
-                        <a href="#" class="link-action d-block">💾 Simpan Draft</a>
-                        <a href="#" class="link-action d-block">✏️ Ubah Data</a>
-                    </div>
 
-                    <button type="submit" class="btn-save">
-                        Simpan
-                    </button>
-
-                </div>
+                    <div class="d-flex justify-content-end gap-3 mt-4 w-100">
+    <button type="button" class="btn-next" onclick="prevStep(2)">← Kembali</button>
+    <button type="submit" class="btn-next">Simpan</button>
+</div>
 
             </form>
 

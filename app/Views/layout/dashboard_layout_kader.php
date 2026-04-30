@@ -26,26 +26,25 @@
 
         <div class="menu-label">HOME</div>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/dashboard') ?>"
-            class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
+        <a href="<?= base_url('kader/dashboard') ?>"
+            class="<?= ($menu == 'dashboard_kader') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
 
         <div class="menu-label">MENU UTAMA</div>
 
 
-        <a href="#map"
-            class="<?= ($menu == 'peta') ? 'active' : '' ?>">
-            <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
-        </a>
+        <a href="<?= base_url('peta_sebaran') ?>" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
+    <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
+</a>
 
-        <a href="#grafik"
-            class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
-            <i class="fa-solid fa-chart-column me-2"></i> Grafik
-        </a>
+        <a href="<?= base_url('kader/dashboard#grafik') ?>"
+   class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
+   <i class="fa-solid fa-chart-column me-2"></i> Grafik
+</a>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/export') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
+        <a href="<?= base_url('formkader/formulir') ?>"
+            class="<?= ($menu == 'formulirpsn') ? 'active' : '' ?>">
             <i class="fa-solid fa-file-lines me-2"></i> Pelaporan Kader
         </a>
 
@@ -68,7 +67,7 @@
         <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
 
         <div class="fs-4 fw-bold text-dark">
-            <?= $judul ?? 'Dashboard' ?>
+            <?= $judul ?? 'Dashboard Kader' ?>
         </div>
     </div>
             <div class="d-flex align-items-center">

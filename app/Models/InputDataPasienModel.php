@@ -10,39 +10,46 @@ class InputDataPasienModel extends Model
     protected $primaryKey = 'id_wilayah';
 
     protected $allowedFields = [
-        'provinsi','kabupaten','kecamatan','kelurahan',
-        'rt','rw','alamat_lengkap','latitude','longitude'
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'kelurahan',
+        'rt',
+        'rw',
+        'alamat_lengkap',
+        'latitude',
+        'longitude'
     ];
 
-    // 🔥 SIMPAN SEKALIGUS
-    public function simpanSemua($data)
+    // SIMPAN SEKALIGUS
+    public function simpanSemua(array $data)
     {
         $db = \Config\Database::connect();
 
-        // 🔥 pakai transaksi biar aman
+        // transaksi
         $db->transStart();
 
         // 1. simpan wilayah
         $this->insert([
-            'provinsi'        => $data['provinsi'] ?? null,
-            'kabupaten'       => $data['kabupaten'] ?? null,
-            'kecamatan'       => $data['kecamatan'] ?? null,
-            'kelurahan'       => $data['desa'] ?? null,
-            'rt'              => $data['rt'] ?? null,
-            'rw'              => $data['rw'] ?? null,
-            'alamat_lengkap'  => $data['alamat'] ?? null,
-            'latitude'        => $data['lat'] ?? null,
-            'longitude'       => $data['lng'] ?? null,
+            'provinsi'       => $data['provinsi'] ?? null,
+            'kabupaten'      => $data['kabupaten'] ?? null,
+            'kecamatan'      => $data['kecamatan'] ?? null,
+            'kelurahan'      => $data['desa'] ?? null,
+            'rt'             => $data['rt'] ?? null,
+            'rw'             => $data['rw'] ?? null,
+            'alamat_lengkap' => $data['alamat'] ?? null,
+            'latitude'       => $data['lat'] ?? null,
+            'longitude'      => $data['lng'] ?? null,
         ]);
 
         $id_wilayah = $this->insertID();
 
-        // 2. simpan pasien (pakai query builder manual)
+        // 2. simpan pasien
         $db->table('pasien')->insert([
             'id_wilayah'    => $id_wilayah,
             'no_rm'         => $data['no_rm'] ?? null,
             'nama_pasien'   => $data['nama'] ?? null,
-            'jenis_kelamin' => ($data['jk'] ?? '') == 'Perempuan' ? 1 : 2,
+            'jenis_kelamin' => $data['jenis_kelamin'] ?? null,
             'umur'          => $data['usia'] ?? null,
             'tgl_kunjungan' => $data['tanggal'] ?? null,
             'ctt_klinis'    => $data['catatan'] ?? null,
@@ -53,4 +60,22 @@ class InputDataPasienModel extends Model
 
         return $db->transStatus();
     }
+
+
+    public function getDataPasienJoin()
+{
+    return $this->db->table('pasien')
+        ->select('
+            pasien.id_pasien,
+            pasien.nama_pasien,
+            pasien.jenis_kelamin,
+            pasien.umur,
+            wilayah.kecamatan,
+            wilayah.kelurahan as desa
+        ')
+        ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+        ->orderBy('pasien.id_pasien', 'DESC')
+        ->get()
+        ->getResultArray();
+}
 }

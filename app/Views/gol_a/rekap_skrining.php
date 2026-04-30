@@ -269,10 +269,10 @@ body{
 
     <!-- FILTER -->
         <div class="mb-3 d-flex justify-content-center">
-        <button class="btn btn-info btn-sm me-2 filter-btn" data-filter="semua">Semua</button>
-        <button class="btn btn-outline-danger btn-sm me-2 filter-btn" data-filter="tinggi">Risiko Tinggi</button>
-        <button class="btn btn-outline-warning btn-sm me-2 filter-btn" data-filter="sedang">Risiko Sedang</button>
-        <button class="btn btn-outline-success btn-sm filter-btn" data-filter="rendah">Risiko Rendah</button>
+        <button class="btn btn-info btn-sm me-2 filter-btn" data-filter="semua">Kategori Lingkungan</button>
+        <button class="btn btn-outline-danger btn-sm me-2 filter-btn" data-filter="tinggi">Buruk</button>
+        <button class="btn btn-outline-warning btn-sm me-2 filter-btn" data-filter="sedang">Cukup</button>
+        <button class="btn btn-outline-success btn-sm filter-btn" data-filter="rendah">Baik</button>
     </div>
 
         <!-- OVERVIEW -->
@@ -300,10 +300,10 @@ body{
                             <th>Nama</th>
                             <th>Umur</th>
                             <th>Jenis Kelamin</th>
-                            <th>Kecamatan</th>
-                            <th>Kelurahan</th>
+                            <th>Alamat</th>
                             <th>Tanggal</th>
-                            <th>Keterangan</th>
+                            <th>Hasil</th>
+                                                    
                         </tr>
                     </thead>
                     <tbody>
@@ -311,19 +311,19 @@ body{
                             <?php $no=1; foreach($skrining as $row): ?>
                             <tr>
                                 <td><?= $no++ ?></td>
-                                <td><?= $row['nama'] ?></td>
-                                <td><?= $row['umur'] ?></td>
+                                <td><?= $row['nama_pasien_skrining'] ?></td>
+                                <td><?= $row['usia'] ?></td>
                                 <td><?= $row['jenis_kelamin'] ?></td>
-                                <td><?= $row['kecamatan'] ?></td>
-                                <td><?= $row['kelurahan'] ?></td>
+                                <td><?= $row['alamat'] ?></td>
                                 <td><?= $row['tanggal'] ?></td>
-                                <td>
-                                    <span class="badge bg-<?= 
-                                        $row['risiko']=='tinggi' ? 'danger' : 
-                                        ($row['risiko']=='sedang' ? 'warning text-dark' : 'success') ?>">
-                                        <?= ucfirst($row['risiko']) ?>
-                                    </span>
-                                </td>
+<td>
+    <span class="badge bg-<?=
+        strpos($row['hasil'], 'Buruk') !== false ? 'danger' :
+        (strpos($row['hasil'], 'Cukup') !== false ? 'warning text-dark' : 'success')
+    ?>">
+        <?= $row['hasil'] ?>
+    </span>
+</td>
                             </tr>
                             <?php endforeach ?>
                         <?php else: ?>

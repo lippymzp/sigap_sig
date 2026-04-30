@@ -1,5 +1,10 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
+
+<?php
+$grafik = $grafik ?? [];
+$kelurahan = $kelurahan ?? [];
+?>
 
 <!-- WELCOME -->
 <div class="welcome-box">
@@ -10,7 +15,9 @@
     </div>
 
  <div class="welcome-icon">
-    <img src="<?= base_url('img/World_Map.png') ?>" alt="map">
+    <img src="<?= base_url('img/World_Map.png') ?>" 
+         alt="map"
+         style="width:280px; height:auto;">
 </div>
 
 </div>
@@ -241,8 +248,28 @@
 
 <h4 class="text-teal mb-3 fw-bold">Grafik DBD</h4>
 
+<form method="get">
+
 <div class="row mb-3">
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kelurahan</option></select></div>
+
+<div class="col-md-3">
+<select name="kelurahan"
+        class="form-control shadow-sm"
+        onchange="this.form.submit()">
+
+    <option value="">Semua Kelurahan</option>
+
+    <?php foreach ($kelurahan as $k): ?>
+        <option value="<?= $k['kelurahan'] ?>"
+            <?= (request()->getGet('kelurahan') == $k['kelurahan']) ? 'selected' : '' ?>>
+            <?= $k['kelurahan'] ?>
+        </option>
+    <?php endforeach; ?>
+
+</select>
+</div>
+
+</form>
 <div class="col-md-3"><select class="form-control shadow-sm"><option>Kategori</option></select></div>
 <div class="col-md-3"><select class="form-control shadow-sm"><option>Tahun</option></select></div>
 </div>
@@ -251,7 +278,8 @@
 
 <div class="col-md-9">
 <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-<canvas id="chartDBD"></canvas>
+<pre>
+</pre><canvas id="chartDBD"></canvas>
 </div>
 </div>
 
@@ -271,15 +299,31 @@
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
+    const dataGrafik = <?= json_encode($grafik) ?>;
+
+    let labels = [];
+    let totalKasus = [];
+
+    const namaBulan = [
+        '', 'Jan', 'Feb', 'Mar', 'Apr',
+        'Mei', 'Jun', 'Jul', 'Ags',
+        'Sep', 'Okt', 'Nov', 'Des'
+    ];
+
+    dataGrafik.forEach(function(item){
+        labels.push(namaBulan[item.bulan]);
+        totalKasus.push(item.total);
+    });
+
     new Chart(document.getElementById('chartDBD'), {
         type: 'bar',
         data: {
-            labels: ['Jan','Feb','Mar','Apr','Mei'],
-            datasets: [
-                { label:'Sembuh', data:[100,80,70,60,150], backgroundColor:'#8ecae6' },
-                { label:'Pengobatan', data:[90,150,120,90,95], backgroundColor:'#219ebc' },
-                { label:'Meninggal', data:[40,20,40,40,60], backgroundColor:'#90dbf4' }
-            ]
+            labels: labels,
+            datasets: [{
+                label: 'Total Kasus',
+                data: totalKasus,
+                backgroundColor: '#00BBC2'
+            }]
         }
     });
 
@@ -299,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function(){
             <?php foreach ($artikels as $artikel): ?>
                 <div class="card-artikel">
 
-                    <img src="<?= base_url('img/artikel/' . $artikel['gambar']) ?>" class="artikel-img" alt="<?= esc($artikel['judul']) ?>" />
+                    <img src="<?= base_url('img/artikel/' . (string)$artikel['gambar']) ?>" class="artikel-img" alt="<?= esc((string)$artikel['judul']) ?>" />
 
                     <div class="artikel-action">
                         <a href="<?= base_url('admin/artikel/edit/' . $artikel['id']) ?>">
@@ -316,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     <div class="artikel-content">
                         <small><?= date('l, d M Y', strtotime($artikel['tanggal_terbit'])) ?></small>
 
-                        <h5><?= esc($artikel['judul']) ?></h5>
+                        <h5><?= esc((string)$artikel['judul']) ?></h5>
 
                         <?php
                         $preview = character_limiter(strip_tags($artikel['isi']), 150, '...');

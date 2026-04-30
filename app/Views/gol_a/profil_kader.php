@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout_admin'); ?>
+<?= $this->extend('layout/dashboard_layout_kader'); ?>
 
 <?= $this->section('content'); ?>
 
@@ -20,9 +20,9 @@
         </div>
     </div>
 
-    <h5 class="fw-bold text-center mb-4">Admin</h5>
+    <h5 class="fw-bold text-center mb-4">Kader</h5>
 
-    <input class="form-control mb-3" value="admin@gmail.com" readonly>
+    <input class="form-control mb-3" value="kader@gmail.com" readonly>
     <input class="form-control mb-3" value="********" readonly>
 
     <button class="btn btn-info w-100">Ubah Kata Sandi</button>

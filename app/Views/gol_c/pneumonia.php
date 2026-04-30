@@ -1,58 +1,248 @@
 <?php $this->setVar('penyakit', 'pneumonia'); ?>
 <?= $this->include('layout/header') ?>
 
-<!-- HERO -->
-<section class="pneu-hero text-white" data-aos="fade-up">
+<!-- HERO BANNER -->
+<section class="pneu-hero text-white mb-4">
 <div class="container">
 <div class="row align-items-center">
 
 <div class="col-md-6">
     <h1>Pneumonia</h1>
     <p>
-        Pneumonia adalah infeksi paru-paru yang menyebabkan kantung udara terisi cairan sehingga mengganggu pernapasan.
+    Tau ga sih, Apa Itu Pneumonia ?   
+</p> 
+<p>
+        Pneumonia adalah infeksi pada paru-paru yang menyebabkan kantung udara (alveoli) terisi cairan atau nanah, 
+        sehingga mengganggu proses pernapasan.
     </p>
-    <a href="#grafik" class="btn btn-light mt-3">
-        Pelajari Selengkapnya →
-    </a>
+   
+<!-- BUTTON -->
+<a href="#" class="btn-gradient">
+    Pelajari selengkapnya →
+</a>
+
+<style>
+.btn-gradient {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 28px;
+    border-radius: 18px;
+    text-decoration: none;
+
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+
+    background: linear-gradient(
+        135deg,
+        #1fb5a9,   /* kiri (toska) */
+        #6fd3d8    /* kanan (biru muda soft) */
+    );
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    transition: all 0.3s ease;
+}
+
+/* hover biar hidup */
+.btn-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.3);
+}
+</style>
 </div>
 
-<div class="col-md-6 text-end">
-    <img src="<?= base_url('img/pneumonia.png') ?>" 
-         class="img-fluid pneu-img"
-         onerror="this.style.display='none'">
-</div>
-
-</div>
+<div class="col-md-6 text-center">
+   
 </div>
 </section>
 
+
+<style>
+/* ================= HERO ================= */
+.pneu-hero{
+    background: linear-gradient(135deg,#00bcd4,#36d1dc,#5b86e5);
+    padding: 70px 0;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pneu-hero h1{
+    font-size: 58px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.pneu-hero p{
+    font-size: 19px;
+    line-height: 1.8;
+    max-width: 520px;
+}
+
+.hero-btn{
+    background: #00a8cc;
+    color: #fff;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+}
+
+.hero-btn:hover{
+    background:#0088aa;
+    color:#fff;
+}
+
+.pneu-hero {
+    height: 400px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    color: white;
+
+    background: 
+    linear-gradient(
+        to right,
+        rgba(0, 206, 209, 0.9) 40%,   /* Menggunakan Dark Turquoise #00CED1 */
+        rgba(0, 206, 209, 0.3) 70%,
+        rgba(0, 206, 209, 0) 100%
+    ),
+    url("<?= base_url('img/pneumonia.png') ?>");
+
+    background-size: cover;
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+
+@keyframes floatHero{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+/* ================= FILTER ================= */
+.filter-container {
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.filter-box {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#f5f5f5;
+    padding:8px 12px;
+    border-radius:10px;
+}
+
+.filter-box select {
+    border:none;
+    background:transparent;
+    outline:none;
+}
+
+.main-layout {
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+}
+
+.chart-container {
+    flex:3;
+    height:350px;
+}
+
+.side-container {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.info-box {
+    background:#cfe3e3;
+    padding:15px;
+    border-radius:12px;
+}
+
+.info-row {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
+}
+
+.legend-box {
+    border:1px solid #ccc;
+    padding:10px;
+    border-radius:10px;
+}
+
+.legend-item {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:5px;
+}
+
+.legend-color {
+    width:15px;
+    height:15px;
+    border-radius:3px;
+}
+</style>
+
 <!-- FITUR -->
+
 <section class="container mt-5 text-center" data-aos="fade-up">
 
-<h4 class="text-teal mb-4">Fitur Menarik</h4>
+<h4 class="mb-4" style="color:#1aa6a6; font-weight:600;">
+    Fitur Menarik yang Bisa Dimanfaatkan
+</h4>
 
-<div class="row g-3 justify-content-center">
+<div class="row g-4 justify-content-center">
 
+<!-- GRAFIK -->
 <div class="col-md-3">
-<a href="#grafik" class="fitur-box text-decoration-none d-block">
+<a href="#grafik" class="fitur-box d-block" data-target="grafik">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Grafik Kesehatan
 </a>
 </div>
 
+<!-- MAP -->
 <div class="col-md-3">
-<a href="#mapSection" class="fitur-box text-decoration-none d-block">
+<a href="#mapSection" class="fitur-box d-block" data-target="map">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Peta Persebaran
 </a>
 </div>
 
+<!-- ARTIKEL -->
 <div class="col-md-3">
-<a href="#" class="fitur-box text-decoration-none d-block">
+<a href="#" class="fitur-box d-block" data-target="artikel">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Artikel
 </a>
 </div>
 
+<!-- SKRINING -->
 <div class="col-md-3">
 <a href="<?= base_url('skriningpneumonia') ?>" class="fitur-box text-decoration-none d-block">
+<a href="<?= base_url('skrining') ?>" class="fitur-box d-block" data-target="skrining">
+    <div class="icon">
+        <span></span><span></span><span></span>
+    </div>
     Skrining
 </a>
 </div>
@@ -61,35 +251,216 @@
 
 </section>
 
+<style>
+/* BOX FITUR */
+.fitur-box {
+    padding: 15px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+/* HOVER */
+.fitur-box:hover {
+    transform: translateY(-5px);
+    color: white;
+}
+
+/* AKTIF */
+.fitur-box.active {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* ICON GARIS */
+.icon {
+    margin-bottom: 10px;
+}
+
+.icon span {
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background: white;
+    margin: 0 2px;
+    border-radius: 2px;
+}
+
+.icon span:nth-child(2) {
+    height: 24px;
+}
+
+.icon span:nth-child(3) {
+    height: 14px;
+}
+</style>
+
+<script>
+const fitur = document.querySelectorAll('.fitur-box');
+
+fitur.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+
+        // biar yg # gak reload
+        if(this.getAttribute("href") === "#"){
+            e.preventDefault();
+        }
+
+        // aktif efek
+        fitur.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+</script>
+
 <!-- GRAFIK -->
-<section id="grafik" class="container mt-5" data-aos="fade-up">
+ 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h4 class="text-teal mb-3">Grafik Pneumonia</h4>
+<title>Kasus Umum</title>
 
-<div class="row mb-3">
-<div class="col-md-3"><select class="form-control"><option>Kelurahan</option></select></div>
-<div class="col-md-3"><select class="form-control"><option>Kategori</option></select></div>
-<div class="col-md-3"><select class="form-control"><option>Tahun</option></select></div>
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Style -->
+<style>
+body {
+  background: #ffffff;
+}
+
+.judul-grafik {
+  color: #1aa6a6;
+  font-weight: 600;
+  text-align: left;   /* sesuai gambar (kiri) */
+  margin-bottom: 10px; /* biar deket ke card */
+}
+
+/* CARD */
+.card-custom {
+  background: #f4f8f8;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* FILTER */
+.filter {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* CHART FULL */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+h5 {
+  font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container mt-4">
+<h4 class="judul-grafik">Grafik Pneumonia</h4>
+  <div class="card-custom">
+
+    <h5 class="mb-4">Kasus Umum</h5>
+
+    <!-- FILTER -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label>Jenis Kelamin</label>
+        <select class="form-control filter">
+          <option>All</option>
+          <option>Laki-laki</option>
+          <option>Wanita</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Bulan</label>
+        <select class="form-control filter">
+          <option>All</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Tahun</label>
+        <select class="form-control filter">
+          <option>2025</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- GRAFIK FULL -->
+    <div class="chart-container">
+      <canvas id="chartKasus"></canvas>
+    </div>
+
+  </div>
+
 </div>
 
-<div class="row">
-<div class="col-md-9">
-<div class="chart-box p-3 shadow rounded">
-<canvas id="chartPneu"></canvas>
-</div>
-</div>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="col-md-3">
-<div class="legend-box p-3 shadow rounded">
-<h6>Keterangan</h6>
-<p>🟩 Sembuh</p>
-<p>🟦 Pengobatan</p>
-<p>🟨 Meninggal</p>
-</div>
-</div>
-</div>
+<script>
+const ctx = document.getElementById('chartKasus');
 
-</section>
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'],
+    datasets: [
+      {
+        label: 'Laki-laki',
+        data: [270,140,60,100,90,75,65,90,100,120,150,90],
+        backgroundColor: '#16a085'
+      },
+      {
+        label: 'Wanita',
+        data: [240,120,80,60,75,45,40,85,105,160,120,60],
+        backgroundColor: '#a3d5d3'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false, // BIAR FULL
+    plugins: {
+      legend: {
+        position: 'top'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
+
 
 <!-- PETA -->
 <section id="mapSection" class="container mt-5" data-aos="fade-up">
@@ -209,13 +580,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     var warna = "#cccccc";
 
                     if(item){
-                        if(item.kategori == "tinggi") warna = "#d62828";
-                        else if(item.kategori == "sedang") warna = "#e76f51";
-                        else if(item.kategori == "rendah") warna = "#f4a261";
+                        if(item.kategori == "tinggi") warna = "#dc3545";
+                        else if(item.kategori == "sedang") warna = "#ffc107";
+                        else if(item.kategori == "rendah") warna = "#28a745";
                     }
 
                     return {
-                        color: "#2a9d8f",
+                        color: "#00CED1",
                         weight: 2,
                         fillColor: warna,
                         fillOpacity: 0.7

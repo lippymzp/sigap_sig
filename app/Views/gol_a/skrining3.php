@@ -1,139 +1,249 @@
 <?= $this->include('layout/header') ?>
-<div class="container mt-5 mb-5">
 
 <?php
-$hasil = "Tidak Terindikasi";
-$alasan = "";
 
-// ROOT: DEMAM
-if ($p3 == 0) {
+$nama = $nama ?? '';
+$nik = $nik ?? '';
+$jenis_kelamin = $jenis_kelamin ?? '';
+$tanggal_lahir = $tanggal_lahir ?? '';
+$kategori_usia = $kategori_usia ?? '';
+$provinsi = $provinsi ?? '';
+$kabupaten = $kabupaten ?? '';
+$kecamatan = $kecamatan ?? '';
+$kelurahan = $kelurahan ?? '';
+$rt_rw = $rt_rw ?? '';
 
-    // Demam = No
-    if ($p5 == 0) {
-        $hasil = "Tidak Terindikasi";
-        $alasan = "Tidak demam dan tidak sakit kepala";
-    } else {
-        if ($p2 == 0) {
-            $hasil = "Tidak Terindikasi";
-            $alasan = "Tidak demam dan usia ≤ 20";
-        } else {
+$hasil = $hasil ?? '';
+$alasan = $alasan ?? '';
+$totalSkor = $totalSkor ?? 0;
 
-            if ($p6 == 0) {
-                if ($p1 == 0) {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Tidak demam, tidak nyeri otot, bukan laki-laki";
-                } else {
-                    if ($p8 == 1) {
-                        $hasil = "Terindikasi";
-                        $alasan = "Tidak demam, laki-laki, muntah";
-                    } else {
-                        $hasil = "Tidak Terindikasi";
-                        $alasan = "Tidak demam, tanpa muntah";
-                    }
-                }
-            } else {
-                if ($p8 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Tidak demam tapi ada nyeri otot dan muntah";
-                } else {
-                    if ($p1 == 0 && $p7 == 1) {
-                        $hasil = "Terindikasi";
-                        $alasan = "Tidak demam, nyeri otot, ruam";
-                    } else {
-                        $hasil = "Tidak Terindikasi";
-                        $alasan = "Gejala tidak cukup kuat";
-                    }
-                }
-            }
-        }
-    }
+?>
 
-} else {
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hasil Skrining</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+    background: #ffffff;
+}
 
-    // Demam = Yes
+/* CARD */
+.card-custom {
+    border-radius: 15px;
+    border: 2px solid #00BBC2;
+    background: #f1f3f5;
+    padding: 40px;
+    max-width: 1000px;
+    margin: 40px auto;
+}
 
-    // RULE KUAT
-    if ($p6 == 1 && $p5 == 0) {
-        $hasil = "Terindikasi";
-        $alasan = "Demam + nyeri otot tanpa sakit kepala";
-    }
+/* TITLE */
+.section-title {
+    font-weight: bold;
+    margin: 25px 0 15px;
+}
 
-    elseif ($p6 == 1) {
-        $hasil = "Terindikasi";
-        $alasan = "Demam + nyeri otot";
-    }
+/* BOX */
+.data-box {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
 
-    elseif ($p5 == 0) {
+/* HASIL */
+.hasil-box {
+    background: #00BBC2;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
 
-        if ($p8 == 0) {
-            if ($p7 == 0) {
-                $hasil = "Tidak Terindikasi";
-                $alasan = "Demam tanpa gejala lain";
-            } else {
-                if ($p2 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam + ruam + usia >20";
-                } else {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Demam + ruam tapi usia ≤20";
-                }
-            }
-        }
+/* TABLE */
+.table th {
+    background: #00BBC2;
+    color: white;
+}
+.badge {
+    padding: 8px 15px;
+    font-size: 14px;
+}
 
-        else {
-            if ($p7 == 1) {
-                $hasil = "Terindikasi";
-                $alasan = "Demam + muntah + ruam";
-            } else {
-                if ($p4 == 1 && $p2 == 0) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam lama >5 hari pada usia ≤20";
-                } else {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Gejala belum cukup kuat";
-                }
-            }
-        }
+/* TIPS */
+.tips-box {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 10px;
+}
 
-    }
+.tips-header {
+    background: #00BBC2;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+}
 
-    else {
-        // Sakit kepala = yes
+.tips-content {
+    background: #cfe8f3;
+    padding: 15px;
+}
 
-        if ($p2 == 0) {
-            if ($p7 == 1) {
-                $hasil = "Terindikasi";
-                $alasan = "Demam + sakit kepala + ruam";
-            } else {
-                if ($p1 == 0 && $p4 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam lama >5 hari";
-                } else {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Gejala belum kuat";
-                }
-            }
-        }
+.tips-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
 
-        else {
-            // umur >20
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
 
-            if ($p4 == 1) {
-                $hasil = "Terindikasi";
-                $alasan = "Demam lama >5 hari";
-            } else {
-                if ($p8 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam + muntah";
-                } else {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam + sakit kepala usia >20";
-                }
-            }
-        }
+/* FOOTER */
+.footer-text {
+    text-align: center;
+    margin-top: 30px;
+    color: gray;
+    font-size: 14px;
+}
+.btn-custom {
+    height: 55px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+
+.btn-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.btn-kembali, .btn-selesai, .btn-cetak {
+    width: 160px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+/* warna */
+.btn-kembali {
+    background: white;
+    border: 2px solid #00BBC2;
+    color: #00BBC2;
+}
+
+.btn-selesai {
+    background: #00BBC2;
+    color: white;
+}
+
+.btn-cetak {
+    width: 200px;
+    height: 50px;
+    background: #555;
+    color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    
+}
+@media print {
+    .btn-wrapper, .btn-cetak {
+        display: none;
     }
 }
-?>
+.btn-cetak-full {
+    width: 100%;                 /* full lebar */
+    height: 50px;
+    background: #00BBC2;         /* warna tosca */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.btn-cetak-full:hover {
+    opacity: 0.9;
+}
+/* TABLE ROUNDED */
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.table thead tr th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.table thead tr th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* FOOTER (baris terakhir) */
+.table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+
+.table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+/* BUTTON STYLE */ 
+.btn-kembali { 
+    background: white; 
+    color: #00BBC2; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); } 
+
+.btn-selesai { 
+    background: #00BBC2; 
+    color: white; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+/* SPACING BIAR NGGAK RAPET */
+.section-title {
+    margin-top: 35px;
+}
+
+.data-box {
+    margin-bottom: 25px;
+}
+
+.table {
+    margin-bottom: 25px;
+}
+
+.hasil-box {
+    margin-bottom: 15px;
+}
+
+.tips-box {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.cetak-wrapper {
+    margin-top: 20px;
+}
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+
+</style>
+</head>
+
+<body>
 
 
 <div class="card-custom">
@@ -209,14 +319,27 @@ if ($p3 == 0) {
 
 <?php 
 $pertanyaan = [
-    "Apakah Anda berjenis kelamin Laki-laki?",
-    "Apakah usia Anda saat ini di atas 20 tahun?",
-    "Apakah Anda sedang mengalami demam saat ini?",
-    "Apakah demam tersebut sudah berlangsung lebih dari 5 hari?",
-    "Apakah Anda merasakan sakit kepala yang mengganggu?",
-    "Apakah otot atau sendi Anda terasa nyeri/pegal-pegal?",
-    "Apakah muncul bintik merah atau ruam pada kulit Anda?",
-    "Apakah Anda merasa mual atau sempat muntah-muntah?"
+    "Apakah Anda menguras TPA?",
+    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
+    "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
+    "Apakah Anda mendaur ulang barang bekas yang dapat menampung air hujan?",
+    "Apakah Anda menaburkan larvasida seperti abate pada tempat penampungan yang sulit dibersihkan?",
+    "Apakah Anda menaburkan abate sesuai dengan aturan pakai?",
+    "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
+    "Apakah Anda menanam tanaman pengusir nyamuk?",
+    "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
+    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
+    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus?",
+    "Apakah di rumah Anda banyak genangan air?",
+    "Apakah Anda memiliki kebiasaan menggantungkan baju di rumah?",
+    "Apakah semua anggota keluarga Anda sering menggantungkan baju di rumah?",
+    "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
+    "Apakah akhir-akhir ini Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
+    "Apakah baru-baru ini Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
+    "Apakah belakangan ini Anda sering berkunjung ke tempat umum atau lokasi ramai?",
+    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?"
 ];
 ?>
 
@@ -225,20 +348,31 @@ $pertanyaan = [
     <td class="text-center"><?= $i+1 ?></td>
     <td class="text-start"><?= $text ?></td>
     <td class="text-center">
-        <?php if((${"p".($i+1)} ?? 0) == 1): ?>
-            <span class="badge bg-success">Ya</span>
-        <?php else: ?>
-            <span class="badge bg-danger">Tidak</span>
-        <?php endif; ?>
-    </td>
+
+<?php
+$value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
+
+if ($value == 1):
+?>
+    <span class="badge bg-success">Ya</span>
+<?php else: ?>
+    <span class="badge bg-danger">Tidak</span>
+<?php endif; ?>
+
+</td>
 </tr>
 <?php endforeach; ?>
+
+
 
 </tbody>
 </table>
 
 <!-- HASIL -->
 <div class="section-title">Hasil</div>
+<p class="text-muted">
+
+
 
 <div class="hasil-box">
     <?= $hasil ?>
@@ -284,8 +418,8 @@ $pertanyaan = [
         Kembali
     </a>
 
-    <a href="/skrining" class="btn btn-selesai">
-        Selesai
+   <a href="<?= base_url('/') ?>" class="btn btn-selesai">
+    Selesai
     </a>
 
 </div>
@@ -301,4 +435,6 @@ $pertanyaan = [
 
 </div>
 
+</body>
+</html>
 <?= $this->include('layout/footer') ?>

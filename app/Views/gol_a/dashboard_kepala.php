@@ -21,8 +21,10 @@
         <h3>Anda masuk sebagai Kepala Puskesmas</h3>
         <p>Puskesmas Sumbersari, Jember</p>
     </div>
-    <div class="welcome-icon">
-    <img src="<?= base_url('img/World_Map.png') ?>" alt="map">
+     <div class="welcome-icon">
+    <img src="<?= base_url('img/World_Map.png') ?>" 
+         alt="map"
+         style="width:280px; height:auto;">
 </div>
 </div>
 

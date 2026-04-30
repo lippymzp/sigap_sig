@@ -51,13 +51,38 @@ class Dashboard extends BaseController
         return view('gol_b/funfact', $data);
     }
 
-    public function dbd()
-    {
-        return view('gol_a/dashboard_dbd', [
-            'menu' => 'dashboard',
-            'artikels' => []
-        ]);
+   public function dbd()
+{
+    $db = \Config\Database::connect();
+
+    $selectedKelurahan = $this->request->getGet('kelurahan');
+
+    $kelurahan = $db->query("
+        SELECT DISTINCT kelurahan
+        FROM wilayah
+        ORDER BY kelurahan ASC
+    ")->getResultArray();
+
+    $builder = $db->table('pasien p');
+    $builder->select('MONTH(p.tgl_kunjungan) as bulan, COUNT(*) as total');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+
+    if (!empty($selectedKelurahan)) {
+        $builder->where('w.kelurahan', $selectedKelurahan);
     }
+
+    $builder->groupBy('MONTH(p.tgl_kunjungan)');
+    $builder->orderBy('MONTH(p.tgl_kunjungan)', 'ASC');
+
+    $grafik = $builder->get()->getResultArray();
+
+    return view('gol_a/dashboard_dbd', [
+        'menu' => 'dashboard',
+        'artikels' => [],
+        'grafik' => $grafik,
+        'kelurahan' => $kelurahan
+    ]);
+}
 
     public function tbc()
     {

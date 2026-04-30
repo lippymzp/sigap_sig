@@ -1665,12 +1665,10 @@ select {
 .slider-btn.right { right: 10px; }
 }
 
-<<<<<<< HEAD
-=======
 
 .welcome-box:hover .welcome-icon i {
     transform: scale(1.1);
-}
+
 body {
     background: #ffffff;
 }
@@ -1745,6 +1743,7 @@ body {
     font-weight: bold;
     border: none;
     transition: 0.3s;
+    
 }
 
 /* SAAT DIKLIK */
@@ -2135,4 +2134,102 @@ body {
 * {
     font-family: 'Poppins', sans-serif;
 }
->>>>>>> c289fb1a95a8021e2d432e28ee11cc75d3e74284
+
+
+/* =============================
+  sidebar admin
+============================= */
+/* =============================
+   WRAPPER
+============================= */
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
+
+/* =============================
+   SIDEBAR
+============================= */
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:260px;
+    height:100vh;
+
+    background:#ffffff;
+    padding:20px 15px;
+
+    overflow-y:auto;      /* ⭐ INI YANG MEMBUAT SCROLL */
+    overflow-x:hidden;
+
+    transition:0.3s;
+    box-shadow:2px 0 10px rgba(0,0,0,0.05);
+}
+
+/* Scrollbar modern */
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#cfcfcf;
+    border-radius:10px;
+}
+
+/* =============================
+   MENU SIDEBAR
+============================= */
+.sidebar a{
+    display:block;
+    padding:10px 15px;
+    margin-bottom:6px;
+    text-decoration:none;
+    color:#444;
+    border-radius:8px;
+    transition:0.2s;
+}
+
+.sidebar a:hover{
+    background:#eef2ff;
+}
+
+.sidebar a.active{
+    background:#4e73df;
+    color:#fff;
+}
+
+/* Label */
+.menu-label{
+    font-size:12px;
+    font-weight:600;
+    margin-top:20px;
+    margin-bottom:10px;
+    color:#888;
+    text-transform:uppercase;
+}
+
+/* =============================
+   MAIN CONTENT
+============================= */
+.main-content{
+    margin-left:260px;
+    width:100%;
+    min-height:100vh;
+    background:#f8f9fc;
+    display:flex;
+    flex-direction:column;
+}
+
+/* =============================
+   SIDEBAR COLLAPSE
+============================= */
+.wrapper.hide .sidebar{
+    left:-260px;
+}
+
+.wrapper.hide .main-content{
+    margin-left:0;
+}
+
+}
