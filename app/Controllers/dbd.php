@@ -8,7 +8,8 @@ class Dbd extends BaseController
     {
         return view('gol_a/input_data', [
             'menu' => 'inputdata',
-            'penyakit' => 'dbd'
+            'penyakit' => 'dbd',
+            'judul' => 'Input Data Pasien'
         ]);
     }
 
@@ -19,6 +20,19 @@ class Dbd extends BaseController
         return view('gol_a/hasil_data_a', [
             'menu' => 'hasil',
             'penyakit' => 'dbd',
+            'judul' => 'Hasil Data Pasien',
+            'pasien' => $pasien
+        ]);
+    }
+
+    public function rekap_skrining()
+    {
+        $pasien = session()->get('pasien') ?? [];
+
+        return view('gol_a/rekap_skrining_dbd', [
+            'menu' => 'skrining',
+            'penyakit' => 'dbd',
+            'judul' => 'Rekap Skrining',
             'pasien' => $pasien
         ]);
     }

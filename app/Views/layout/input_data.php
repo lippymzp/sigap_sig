@@ -92,7 +92,7 @@ html,body{
 <body>
 
 <?php
-$penyakit = session('penyakit') ?? 'dbd';
+$penyakit = session('penyakit') ?? 'tbc';
 $menu = $menu ?? '';
 ?>
 
@@ -182,7 +182,7 @@ $menu = $menu ?? '';
         <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
 
         <div class="fs-4 fw-bold text-dark">
-            <?= $judul ?? 'Dashboard' ?>
+            <?= $judul ?? 'Input Data Pasien' ?>
         </div>
     </div>
 
