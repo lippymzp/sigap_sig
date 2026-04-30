@@ -225,7 +225,6 @@ class Dbd extends BaseController
         ]);
     }
 
-
     public function exportrekappsn()
     {
         $session = session();
@@ -472,7 +471,65 @@ public function rekap_skrining()
 
     return view('gol_a/rekap_skrining', $data);
 }
+
+// ================= EXPORT EXCEL =================
+public function export_excel_pasien()
+{
+    header("Content-Type: application/vnd.ms-excel");
+    header("Content-Disposition: attachment; filename=export_hasil_data_pasien.xls");
+
+    $data = [
+        [
+            'kecamatan' => 'Sumbersari',
+            'desa' => 'Tegal Gede',
+            'jenis_kelamin' => 1,
+            'umur' => 21,
+            'kasus_baru' => 2,
+            'total_kasus' => 10
+        ],
+        [
+            'kecamatan' => 'Kaliwates',
+            'desa' => 'Kebon Agung',
+            'jenis_kelamin' => 0,
+            'umur' => 35,
+            'kasus_baru' => 1,
+            'total_kasus' => 5
+        ]
+    ];
+
+    echo "<table border='1'>";
+    echo "<tr>
+            <th>No</th>
+            <th>Kecamatan</th>
+            <th>Kelurahan</th>
+            <th>Jenis Kelamin</th>
+            <th>Umur</th>
+            <th>Kasus Baru</th>
+            <th>Total Kasus</th>
+          </tr>";
+
+    $no = 1;
+    foreach ($data as $d) {
+        $jk = ($d['jenis_kelamin'] == 1) ? 'Perempuan' : 'Laki-laki';
+
+        echo "<tr>
+                <td>{$no}</td>
+                <td>{$d['kecamatan']}</td>
+                <td>{$d['desa']}</td>
+                <td>{$jk}</td>
+                <td>{$d['umur']}</td>
+                <td>{$d['kasus_baru']}</td>
+                <td>{$d['total_kasus']}</td>
+              </tr>";
+
+        $no++;
+    }
+
+    echo "</table>";
+    exit;
 }
+}
+
 
 
 

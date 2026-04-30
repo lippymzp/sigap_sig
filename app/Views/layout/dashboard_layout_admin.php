@@ -57,8 +57,7 @@ html,body{
     margin-left:260px;
     width:100%;
     min-height:100vh;         /* FIX */
-    display:flex;
-    flex-direction:column;
+    
 }
 
 /* TOPBAR */
@@ -123,7 +122,7 @@ $menu = $menu ?? '';
             <i class="fa-regular fa-folder me-2"></i>Hasil Data Pasien
         </a>
 
-        <a href="<?= base_url('/rekap_skrining_dbd') ?>"
+        <a href="<?= base_url('dbd/rekap_skrining') ?>" 
             class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
             <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
         </a>
@@ -221,8 +220,10 @@ $menu = $menu ?? '';
     <?= $this->renderSection('content'); ?>
 </div>
 
+</div>
+</div>
 <!-- FOOTER -->
-<footer class="footer mt-5" style="width:100%;">
+<footer class="footer mt-5">
 
             <div class="container text-white py-5">
 
@@ -261,7 +262,6 @@ $menu = $menu ?? '';
 
         </footer>
 
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -272,14 +272,6 @@ body {
 }
 
 /* =========================
-   FOOTER
-========================= */
-.footer {
-    background: var(--primary-dark);
-    color: white;
-}
-
-/* =========================
    HERO LANDING PAGE
 ========================= */
 .pneu-hero {
@@ -668,7 +660,14 @@ body {
     padding: 30px;
     min-height: 100vh;
 }
-
+.footer {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    background: #00BBC2;
+    color: white;
+    padding: 40px 0;
+    margin-top: 40px;
+}
 /* WELCOME BOX */
 .welcome-box {
     display: flex;
@@ -1756,13 +1755,6 @@ body {
     background: #00BBC2;
 }
 
-/* FOOTER */
-.footer {
-    background: #00BBC2;
-    color: white;
-    padding: 40px 0;
-    margin-top: 120px;
-}
 .footer a {
     color: white;
     text-decoration: none;
@@ -1894,13 +1886,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* FOOTER */
-.footer {
-    background: #00BBC2;
-    color: white;
-    padding: 40px 0;
-    margin-top: 120px;
-}
 .footer a {
     color: white;
     text-decoration: none;
@@ -2214,11 +2199,9 @@ body {
 ============================= */
 .main-content{
     margin-left:260px;
-    width:100%;
+    width:calc(100% - 260px);
     min-height:100vh;
     background:#f8f9fc;
-    display:flex;
-    flex-direction:column;
 }
 
 /* =============================
