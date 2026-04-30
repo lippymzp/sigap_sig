@@ -90,10 +90,18 @@ class Dbd extends BaseController
 
    //FORM KADER PSN
 
-    public function formulirpsn()
-    {
-        return view('gol_a/formkader/formulir');
-    }
+   public function formulirpsn()
+{
+  
+    $data = [
+        'title' => 'Pelaporan Kader',
+        'judul' => 'Peta Sebaran',
+        'menu'  => 'formulirpsn', // <--- TAMBAHKAN BARIS INI
+        // data lain yang mungkin Anda kirim...
+    ];
+
+    return view('gol_a/formkader/formulir', $data);
+}
 
     public function simpanpsn()
     {
@@ -292,7 +300,7 @@ class Dbd extends BaseController
     public function dashboard()
     {
         return view('gol_a/dashboard_kader', [
-            'menu' => 'dashboard',
+            'menu' => 'dashboard_kader',
             'penyakit' => 'dbd'
         ]);
     }
@@ -303,6 +311,7 @@ class Dbd extends BaseController
         
         $data = [
             'title' => 'Peta Sebaran DBD',
+            'judul' => 'Peta Sebaran',
             'menu'  => 'peta_sebaran', // <--- Harus sama dengan yang ada di pengecekan if ($menu == '...')
             'dbd'   => [] // Isi array data dbd Anda di sini
         ];

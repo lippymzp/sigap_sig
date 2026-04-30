@@ -1,160 +1,228 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>LAPORAN PSN 2026 PKM SUMBERSARI</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<?= $this->extend('layout/dashboard_layout_kader') ?>
+<?= $this->section('content') ?>
 
 <style>
-body {
-    background: #f8f9fa;
-}
+    /* Mengatur latar belakang area konten agar sesuai desain (warna mint/cyan pucat) */
+    .page-wrapper {
+        background-color: #E6F4F1; 
+        padding: 20px;
+        border-radius: 15px;
+        min-height: 100vh;
+    }
 
-/* CARD */
-.card-custom {
-    border-radius: 15px;
-    border: 2px solid #00BBC2;
-    background: #ffffff;
-    padding: 30px;
-    margin-top: 40px;
-}
+    /* Banner Hijau Tosca di atas form */
+    .banner-top {
+        background-color: #00CED1; /* Sesuaikan dengan warna tosca di desain */
+        border-radius: 15px;
+        padding: 20px 25px;
+        color: white;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .banner-icon {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 12px 15px;
+        border-radius: 10px;
+        margin-right: 20px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .banner-text h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 18px;
+    }
+    .banner-text p {
+        margin: 0;
+        font-size: 13px;
+        opacity: 0.9;
+        margin-top: 3px;
+    }
 
-/* TITLE */
-.title {
-    color: #00BBC2;
-    font-weight: bold;
-}
+    /* Card Putih Form */
+    .form-card {
+        background: #FFFFFF;
+        border-radius: 15px;
+        padding: 40px 35px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
 
-/* INPUT */
-.form-control, .form-select {
-    border-radius: 10px;
-    height: 45px;
-}
+    /* Label Form */
+    .form-label {
+        font-weight: 700;
+        color: #333333;
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: block;
+    }
 
-/* LABEL */
-label {
-    font-weight: 500;
-    margin-bottom: 5px;
-}
+    /* Input & Select Custom */
+    .form-input {
+        background-color: #F4F6F8;
+        border: 1px solid #EAEFEF;
+        border-radius: 10px;
+        padding: 14px 18px;
+        width: 100%;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+        outline: none;
+        transition: all 0.3s ease;
+        appearance: none; /* Menghilangkan style default panah select bawaan browser di beberapa kasus */
+    }
+    
+    /* Khusus untuk panah select agar lebih rapi */
+    select.form-input {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 15px;
+        padding-right: 40px;
+    }
 
-/* REQUIRED */
-.required::after {
-    content: " *";
-    color: red;
-}
+    .form-input::placeholder {
+        color: #A9B2B2;
+    }
+    .form-input:focus {
+        border-color: #51C2B8;
+        background-color: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(81, 194, 184, 0.2);
+    }
 
-/* BUTTON */
-.btn-submit {
-    background: #00BBC2;
-    color: white;
-    border-radius: 10px;
-    height: 50px;
-    font-weight: bold;
-}
+    /* Kotak Upload Foto */
+    .upload-box {
+        border: 2px dashed #BEE3E1;
+        background-color: #F9FCFC;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+    .upload-box:hover {
+        background-color: #F0F9F9;
+        border-color: #51C2B8;
+    }
 
-/* UPLOAD */
-.upload-box {
-    border: 2px dashed #00BBC2;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-}
-
+    /* Tombol Submit */
+    .btn-submit {
+        background-color: #38B2AC; /* Warna sesuai dengan desain aplikasi Anda */
+        color: white;
+        border-radius: 10px;
+        padding: 15px;
+        font-weight: bold;
+        font-size: 15px;
+        border: none;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+    .btn-submit:hover {
+        background-color: #2C8E89;
+    }
 </style>
-</head>
 
-<body>
+<div class="page-wrapper">
 
-<div class="container">
+    <!-- HEADER BANNER -->
+    <div class="banner-top">
+        <div class="banner-icon">
+            <i class="fa-solid fa-shield-medical"></i>
+        </div>
+        <div class="banner-text">
+            <h4>Pelaporan Kader</h4>
+            <p>Silahkan isi data dengan benar</p>
+        </div>
+    </div>
 
-<div class="card-custom">
+    <!-- FORM CARD -->
+    <div class="form-card">
+        <form method="post" action="<?= base_url('dbd/simpanpsn') ?>" enctype="multipart/form-data">
+            
+            <!-- Tanggal Input (Dibuat hidden agar tidak merusak desain, namun datanya tetap terkirim) -->
+            <input type="hidden" name="tanggalinput" value="<?= date('Y-m-d') ?>">
 
-<h4 class="title">LAPORAN PSN 2026 PKM SUMBERSARI</h4>
-<p class="mb-5">Pemberantasan Sarang Nyamuk</p>
+            <!-- WILAYAH KERJA PUSKESMAS -->
+            <label class="form-label">Wilayah Kerja Puskesmas</label>
+            <select name="puskesmas" class="form-input" required>
+                <option value="" disabled selected>Pilih puskesmas</option>
+                <option value="Sumbersari">PKM Sumbersari</option>
+            </select>
 
-<form method="post" action="<?= base_url('dbd/simpanpsn') ?>" enctype="multipart/form-data">
+            <!-- KELURAHAN -->
+            <label class="form-label">Kelurahan</label>
+            <select name="kelurahan" class="form-input" required>
+                <option value="" disabled selected>Pilih kelurahan</option>
+                <option>Sumbersari</option>
+                <option>Wirolegi</option>
+                <option>Antirogo</option>
+                <option>Tegal Gede</option>
+                <option>Karangrejo</option>
+            </select>
 
-<!--TANGGAL INPUT -->
-<!-- KELURAHAN -->
-<div class="mb-3">
-<label class="required">Tanggal Input</label>
-<input type="text" name="tanggalinput" class="form-control" value="<?= date('Y-m-d') ?>" readonly>
+            <!-- POS POSYANDU -->
+            <label class="form-label">Pos Posyandu</label>
+            <select name="posyandu" class="form-input" required>
+                <option value="" disabled selected>Pilih pos posyandu</option>
+                
+                <?php for($i=1; $i<=95; $i++): ?>
+                    <option>CATLEYA <?= $i ?></option>
+                <?php endfor; ?>
+                
+                <option>CATLEYA 36A (BAYANGAN)</option>
+                <option>CATLEYA 58A (BAYANGAN)</option>
+                <option>CATLEYA 65A (BAYANGAN)</option>
+                <option>CATLEYA 78A (BAYANGAN)</option>
+                <option>CATLEYA 88A (BAYANGAN)</option>
+                <option>CATLEYA 92A (BAYANGAN)</option>
+                <option>CATLEYA 95A</option>
+                <option>CATLEYA 95B (BAYANGAN)</option>
+            </select>
 
-<!-- KELURAHAN -->
-<div class="mb-3">
-<label class="required">Kelurahan</label>
-<select name="kelurahan" class="form-select" required>
-<option value="">-- Pilih --</option>
-<option>Sumbersari</option>
-<option>Wirolegi</option>
-<option>Antirogo</option>
-<option>Tegal Gede</option>
-<option>Karangrejo</option>
-</select>
+            <!-- JUMLAH DIPERIKSA -->
+            <label class="form-label">Jumlah Rumah/KK yang Diperiksa</label>
+            <input type="number" name="diperiksa" class="form-input" placeholder="Sebutkan Jumlah Rumah / KK yang diperiksa" required>
+
+            <!-- JUMLAH POSITIF -->
+            <label class="form-label">Jumlah Rumah/KK yang Positif Jentik</label>
+            <input type="number" name="positif" class="form-input" placeholder="Sebutkan Jumlah Rumah / KK yang diperiksa" required>
+
+            <!-- BAGIAN POSITIF -->
+            <label class="form-label">Bagian yang Positif</label>
+            <input type="text" name="bagian" class="form-input" placeholder="(Sebutkan, contoh : kamar mandi, vas bunga, dll)">
+
+            <!-- UPLOAD FOTO (Sesuai Permintaan) -->
+            <label class="form-label">Upload Foto Bukti</label>
+            <div class="upload-box" onclick="document.getElementById('foto').click()">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: #51C2B8; margin-bottom: 10px;"></i>
+                <br>Klik di sini untuk upload / ambil foto
+            </div>
+            <!-- Input file disembunyikan, akan terpicu (trigger) saat kotak putus-putus diklik -->
+            <input type="file" name="foto" id="foto" style="display: none;" accept="image/*" capture="environment">
+
+            <!-- TOMBOL SUBMIT -->
+            <button type="submit" class="btn-submit mt-2">Kirim Laporan</button>
+
+        </form>
+    </div>
 </div>
 
-<!-- POSYANDU -->
-<div class="mb-3">
-<label class="required">Pos Posyandu</label>
-<select name="posyandu" class="form-select" required>
+<script>
+    // Script kecil untuk mengubah teks pada kotak upload saat file telah dipilih
+    document.getElementById('foto').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        var uploadBox = document.querySelector('.upload-box');
+        if(fileName) {
+            uploadBox.innerHTML = '<i class="fa-solid fa-check-circle" style="font-size: 24px; color: #38B2AC; margin-bottom: 10px;"></i><br>File terpilih: <b>' + fileName + '</b>';
+            uploadBox.style.borderColor = '#38B2AC';
+        }
+    });
+</script>
 
-<option value="">-- Pilih --</option>
-
-<?php for($i=1; $i<=95; $i++): ?>
-<option>CATLEYA <?= $i ?></option>
-<?php endfor; ?>
-
-<option>CATLEYA 36A (BAYANGAN)</option>
-<option>CATLEYA 58A (BAYANGAN)</option>
-<option>CATLEYA 65A (BAYANGAN)</option>
-<option>CATLEYA 78A (BAYANGAN)</option>
-<option>CATLEYA 88A (BAYANGAN)</option>
-<option>CATLEYA 92A (BAYANGAN)</option>
-<option>CATLEYA 95A</option>
-<option>CATLEYA 95B (BAYANGAN)</option>
-
-</select>
-</div>
-
-<!-- JUMLAH DIPERIKSA -->
-<div class="mb-3">
-<label class="required">Yang Diperiksa (Jumlah Rumah / KK)</label>
-<input type="number" name="diperiksa" class="form-control" required>
-</div>
-
-<!-- POSITIF -->
-<div class="mb-3">
-<label class="required">Jumlah Yang Positif Jentik</label>
-<input type="number" name="positif" class="form-control" required>
-</div>
-
-<!-- BAGIAN POSITIF -->
-<div class="mb-3">
-<label>Bagian Yang Positif</label>
-<textarea name="bagian" class="form-control" rows="3"
-placeholder="Contoh: kamar mandi, vas bunga"></textarea>
-</div>
-
-<!-- UPLOAD FOTO -->
-<div class="mb-3">
-<label>Upload Foto</label>
-
-<div class="upload-box" onclick="document.getElementById('foto').click()">
-Klik untuk upload / ambil foto
-</div>
-
-<input type="file" name="foto" id="foto" class="form-control mt-2"
-accept="image/*" capture="environment">
-</div>
-
-<!-- BUTTON -->
-<button class="btn btn-submit w-100 mt-3">Kirim Laporan</button>
-
-</form>
-
-</div>
-</div>
-
-</body>
-</html>
+<?= $this->endSection() ?>

@@ -12,7 +12,7 @@ class Profile3 extends Controller
             'nama'   => 'Kader',
             'email'  => 'kader@gmail.com',
 
-            // WAJIB untuk layout
+        
             'menu'   => 'profil',          // untuk active sidebar
             'judul'  => 'Profil Kader',    // untuk topbar title
             'title'  => 'Profil Kader'     // optional (tab browser)
