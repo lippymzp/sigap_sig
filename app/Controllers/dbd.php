@@ -2,7 +2,8 @@
 
 namespace App\Controllers;
 use App\Models\InputDataPasienModel;
-
+use Dompdf\Dompdf;
+use Dompdf\Options;
 class Dbd extends BaseController
 {
     public function inputData()
@@ -449,7 +450,7 @@ public function rekap_skrining()
 {
     $db = \Config\Database::connect();
 
-    $builder = $db->table('skrining s');
+    $builder = $db->table('skrining as s');
     $builder->select('
         s.id_skrining,
         p.nama_pasien_skrining,
