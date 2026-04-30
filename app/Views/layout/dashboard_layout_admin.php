@@ -133,7 +133,7 @@ $menu = $menu ?? '';
             <i class="fa-solid fa-map-location-dot me-2"></i>Peta Sebaran
         </a>
 
-        <a href="<?= base_url('dbd/export') ?>"
+        <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>"
             class="<?= ($menu == 'export') ? 'active' : '' ?>">
             <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Export Data
         </a>

@@ -15,7 +15,9 @@ $kelurahan = $kelurahan ?? [];
     </div>
 
  <div class="welcome-icon">
-    <img src="<?= base_url('img/World_Map.png') ?>" alt="map">
+    <img src="<?= base_url('img/World_Map.png') ?>" 
+         alt="map"
+         style="width:280px; height:auto;">
 </div>
 
 </div>

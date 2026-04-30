@@ -27,7 +27,7 @@
         <div class="menu-label">HOME</div>
 
         <a href="<?= base_url('kader/dashboard') ?>"
-            class="<?= ($menu == 'kader/dashboard') ? 'active' : '' ?>">
+            class="<?= ($menu == 'dashboard_kader') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
 
@@ -35,7 +35,7 @@
 
 
         <a href="<?= base_url('peta_sebaran') ?>" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
-    <i class="fa-solid fa-house me-2"></i> Peta Sebaran
+    <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
 </a>
 
         <a href="<?= base_url('kader/dashboard#grafik') ?>"
@@ -44,7 +44,7 @@
 </a>
 
         <a href="<?= base_url('formkader/formulir') ?>"
-            class="<?= ($menu == 'form') ? 'active' : '' ?>">
+            class="<?= ($menu == 'formulirpsn') ? 'active' : '' ?>">
             <i class="fa-solid fa-file-lines me-2"></i> Pelaporan Kader
         </a>
 
@@ -54,7 +54,7 @@
         <div class="menu-label">Informasi</div>
 
         <a href="<?= base_url('profil_kader') ?>"
-            class="<?= ($menu == 'profil_kader') ? 'active' : '' ?>">
+            class="<?= ($menu == 'profil') ? 'active' : '' ?>">
              <i class="fa-regular fa-user me-2"></i> Profil Kader
         </a>
 
@@ -67,7 +67,7 @@
         <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
 
         <div class="fs-4 fw-bold text-dark">
-            <?= $judul ?? 'Dashboard' ?>
+            <?= $judul ?? 'Dashboard Kader' ?>
         </div>
     </div>
             <div class="d-flex align-items-center">

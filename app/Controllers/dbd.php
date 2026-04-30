@@ -79,10 +79,18 @@ class Dbd extends BaseController
 
    //FORM KADER PSN
 
-    public function formulirpsn()
-    {
-        return view('gol_a/formkader/formulir');
-    }
+   public function formulirpsn()
+{
+  
+    $data = [
+        'title' => 'Pelaporan Kader',
+        'judul' => 'Peta Sebaran',
+        'menu'  => 'formulirpsn', // <--- TAMBAHKAN BARIS INI
+        // data lain yang mungkin Anda kirim...
+    ];
+
+    return view('gol_a/formkader/formulir', $data);
+}
 
     public function simpanpsn()
     {
@@ -281,7 +289,7 @@ class Dbd extends BaseController
     public function dashboard()
     {
         return view('gol_a/dashboard_kader', [
-            'menu' => 'dashboard',
+            'menu' => 'dashboard_kader',
             'penyakit' => 'dbd'
         ]);
     }
@@ -292,6 +300,7 @@ class Dbd extends BaseController
         
         $data = [
             'title' => 'Peta Sebaran DBD',
+            'judul' => 'Peta Sebaran',
             'menu'  => 'peta_sebaran', // <--- Harus sama dengan yang ada di pengecekan if ($menu == '...')
             'dbd'   => [] // Isi array data dbd Anda di sini
         ];
@@ -300,6 +309,7 @@ class Dbd extends BaseController
         return view('gol_a/peta_sebaran_kader', $data); 
     }
 
+<<<<<<< HEAD
 
     public function skriningdbd()
     {
@@ -431,6 +441,148 @@ $modelPasien->save([
     $data['alasan'] = $alasan;
     $data['totalSkor'] = $totalSkor;
     return view('gol_a/skrining3', $data);
+=======
+    // ================= EXPORT HASIL DATA PASIEN =================   }
+
+    // ================= HALAMAN EXPORT =================
+    public function export_hasil_data_pasien()
+    {
+        helper('url');
+
+        // 🔥 DUMMY DATA SESUAI VIEW (WAJIB LENGKAP)
+        $data['data'] = [
+            [
+                'kecamatan' => 'Sumbersari',
+                'desa' => 'Tegal Gede',
+                'jenis_kelamin' => 1,
+                'umur' => 21,
+                'kasus_baru' => 2,
+                'total_kasus' => 10
+            ],
+            [
+                'kecamatan' => 'Kaliwates',
+                'desa' => 'Kebon Agung',
+                'jenis_kelamin' => 0,
+                'umur' => 35,
+                'kasus_baru' => 1,
+                'total_kasus' => 5
+            ],
+            [
+                'kecamatan' => 'Sumbersari',
+                'desa' => 'Sumbersari',
+                'jenis_kelamin' => 1,
+                'umur' => 18,
+                'kasus_baru' => 3,
+                'total_kasus' => 12
+            ]
+        ];
+
+        return view('gol_a/export_hasil_data_pasien', $data);
+    }
+
+
+    // ================= EXPORT PDF =================
+    public function export_pdf_pasien()
+    {
+        helper('url');
+
+        $data = [
+            'pasien' => [
+                [
+                    'kecamatan' => 'Sumbersari',
+                    'desa' => 'Tegal Gede',
+                    'jenis_kelamin' => 1,
+                    'umur' => 21,
+                    'kasus_baru' => 2,
+                    'total_kasus' => 10
+                ],
+                [
+                    'kecamatan' => 'Kaliwates',
+                    'desa' => 'Kebon Agung',
+                    'jenis_kelamin' => 0,
+                    'umur' => 35,
+                    'kasus_baru' => 1,
+                    'total_kasus' => 5
+                ],
+            ]
+        ];
+
+        $html = view('gol_a/export_pdf_pasien', $data);
+
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream("data_pasien.pdf", ["Attachment" => false]);
+    }
+
+
+    // ================= EXPORT EXCEL =================
+    public function export_excel_pasien()
+    {
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=export_hasil_data_pasien.xls");
+
+        $data = [
+            [
+                'kecamatan' => 'Sumbersari',
+                'desa' => 'Tegal Gede',
+                'jenis_kelamin' => 1,
+                'umur' => 21,
+                'kasus_baru' => 2,
+                'total_kasus' => 10
+            ],
+            [
+                'kecamatan' => 'Kaliwates',
+                'desa' => 'Kebon Agung',
+                'jenis_kelamin' => 0,
+                'umur' => 35,
+                'kasus_baru' => 1,
+                'total_kasus' => 5
+            ],
+            [
+                'kecamatan' => 'Sumbersari',
+                'desa' => 'Sumbersari',
+                'jenis_kelamin' => 1,
+                'umur' => 18,
+                'kasus_baru' => 3,
+                'total_kasus' => 12
+            ]
+        ];
+
+        echo "<table border='1'>";
+        echo "<tr>
+                <th>No</th>
+                <th>Kecamatan</th>
+                <th>Kelurahan</th>
+                <th>Jenis Kelamin</th>
+                <th>Umur</th>
+                <th>Kasus Baru</th>
+                <th>Total Kasus</th>
+              </tr>";
+
+        $no = 1;
+        foreach ($data as $d) {
+
+            $jk = ($d['jenis_kelamin'] == 1) ? 'Perempuan' : 'Laki-laki';
+
+            echo "<tr>
+                    <td>{$no}</td>
+                    <td>{$d['kecamatan']}</td>
+                    <td>{$d['desa']}</td>
+                    <td>{$jk}</td>
+                    <td>{$d['umur']}</td>
+                    <td>{$d['kasus_baru']}</td>
+                    <td>{$d['total_kasus']}</td>
+                  </tr>";
+
+            $no++;
+        }
+
+        echo "</table>";
+        exit;
+    }
+>>>>>>> 776922be70a96a32c4743fedb318399fa6e7f460
 }
 
 
