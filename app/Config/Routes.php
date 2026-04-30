@@ -143,3 +143,8 @@ $routes->post('dbd/simpanpsn', 'Dbd::simpanpsn');
 $routes->get('formkader/rekap', 'Dbd::rekappsn');
 $routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
 $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
+
+// ================= EXPORT HASIL DATA PASIEN =================
+$routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
+$routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
+$routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');

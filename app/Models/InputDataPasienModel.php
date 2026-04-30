@@ -60,4 +60,22 @@ class InputDataPasienModel extends Model
 
         return $db->transStatus();
     }
+
+
+    public function getDataPasienJoin()
+{
+    return $this->db->table('pasien')
+        ->select('
+            pasien.id_pasien,
+            pasien.nama_pasien,
+            pasien.jenis_kelamin,
+            pasien.umur,
+            wilayah.kecamatan,
+            wilayah.kelurahan as desa
+        ')
+        ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+        ->orderBy('pasien.id_pasien', 'DESC')
+        ->get()
+        ->getResultArray();
+}
 }
