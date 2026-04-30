@@ -31,24 +31,10 @@ class Home extends BaseController
     public function diare()
     {
         return view('gol_d/diare');
-    }
-    public function skriningdbd()
-    {
-        return view('gol_a/skrining1');
-    }
-    public function skriningdbd2()
-    {
-        $data = $this->request->getPost();
-        return view('gol_a/skrining2', $data);
-    }
-    public function skriningdbd3()
-    {
+
+        
          $data = $this->request->getPost();
          return view('gol_a/skrining3', $data);
-    }
-     public function rekap_skrining()
-    {
-        return view('gol_a/rekap_skrining');
     }
     public function skrining_diare()
     {

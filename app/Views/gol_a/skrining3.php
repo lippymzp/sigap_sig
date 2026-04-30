@@ -1,12 +1,6 @@
 <?= $this->include('layout/header') ?>
 
 <?php
-$$p3 = session()->get('p1') ?? 0;
-$p4 = session()->get('p2') ?? 0;
-$p5 = session()->get('p3') ?? 0;
-$p6 = session()->get('p4') ?? 0;
-$p7 = session()->get('p5') ?? 0;
-$p8 = session()->get('p6') ?? 0;
 
 $nama = $nama ?? '';
 $nik = $nik ?? '';
@@ -18,6 +12,11 @@ $kabupaten = $kabupaten ?? '';
 $kecamatan = $kecamatan ?? '';
 $kelurahan = $kelurahan ?? '';
 $rt_rw = $rt_rw ?? '';
+
+$hasil = $hasil ?? '';
+$alasan = $alasan ?? '';
+$totalSkor = $totalSkor ?? 0;
+
 ?>
 
 <!DOCTYPE html>
@@ -245,154 +244,6 @@ body {
 </head>
 
 <body>
-<?php
-// ================== LOGIC C4.5 ==================
-
-$hasil = "Tidak Terindikasi";
-$alasan = "";
-// AUTO DARI IDENTITAS
-$p1 = ($jenis_kelamin == "Laki-laki") ? 1 : 0;
-
-// hitung umur dari tanggal lahir
-$umur = date('Y') - date('Y', strtotime($tanggal_lahir));
-$p2 = ($umur > 20) ? 1 : 0;
-// mapping dari form skrining 2
-$p3 = $_POST['p1'] ?? 0; // demam
-$p4 = $_POST['p2'] ?? 0; // >5 hari
-$p5 = $_POST['p3'] ?? 0; // sakit kepala
-$p6 = $_POST['p4'] ?? 0; // nyeri otot
-$p7 = $_POST['p5'] ?? 0; // ruam
-$p8 = $_POST['p6'] ?? 0; // muntah
-
-// ROOT: DEMAM
-if ($p3 == 0) {
-
-    // Demam = No
-    if ($p5 == 0) {
-        $hasil = "Tidak Terindikasi";
-        $alasan = "Tidak demam dan tidak sakit kepala";
-    } else {
-        if ($p2 == 0) {
-            $hasil = "Tidak Terindikasi";
-            $alasan = "Tidak demam dan usia ≤ 20";
-        } else {
-
-            if ($p6 == 0) {
-                if ($p1 == 0) {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Tidak demam, tidak nyeri otot, bukan laki-laki";
-                } else {
-                    if ($p8 == 1) {
-                        $hasil = "Terindikasi";
-                        $alasan = "Tidak demam, laki-laki, muntah";
-                    } else {
-                        $hasil = "Tidak Terindikasi";
-                        $alasan = "Tidak demam, tanpa muntah";
-                    }
-                }
-            } else {
-                if ($p8 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Tidak demam tapi ada nyeri otot dan muntah";
-                } else {
-                    if ($p1 == 0 && $p7 == 1) {
-                        $hasil = "Terindikasi";
-                        $alasan = "Tidak demam, nyeri otot, ruam";
-                    } else {
-                        $hasil = "Tidak Terindikasi";
-                        $alasan = "Gejala tidak cukup kuat";
-                    }
-                }
-            }
-        }
-    }
-
-} else {
-
-    // Demam = Yes
-
-    // RULE KUAT
-    if ($p6 == 1 && $p5 == 0) {
-        $hasil = "Terindikasi";
-        $alasan = "Demam + nyeri otot tanpa sakit kepala";
-    }
-
-    elseif ($p6 == 1) {
-        $hasil = "Terindikasi";
-        $alasan = "Demam + nyeri otot";
-    }
-
-    elseif ($p5 == 0) {
-
-        if ($p8 == 0) {
-            if ($p7 == 0) {
-                $hasil = "Tidak Terindikasi";
-                $alasan = "Demam tanpa gejala lain";
-            } else {
-                if ($p2 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam + ruam + usia >20";
-                } else {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Demam + ruam tapi usia ≤20";
-                }
-            }
-        }
-
-        else {
-            if ($p7 == 1) {
-                $hasil = "Terindikasi";
-                $alasan = "Demam + muntah + ruam";
-            } else {
-                if ($p4 == 1 && $p2 == 0) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam lama >5 hari pada usia ≤20";
-                } else {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Gejala belum cukup kuat";
-                }
-            }
-        }
-
-    }
-
-    else {
-        // Sakit kepala = yes
-
-        if ($p2 == 0) {
-            if ($p7 == 1) {
-                $hasil = "Terindikasi";
-                $alasan = "Demam + sakit kepala + ruam";
-            } else {
-                if ($p1 == 0 && $p4 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam lama >5 hari";
-                } else {
-                    $hasil = "Tidak Terindikasi";
-                    $alasan = "Gejala belum kuat";
-                }
-            }
-        }
-
-        else {
-            // umur >20
-
-            if ($p4 == 1) {
-                $hasil = "Terindikasi";
-                $alasan = "Demam lama >5 hari";
-            } else {
-                if ($p8 == 1) {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam + muntah";
-                } else {
-                    $hasil = "Terindikasi";
-                    $alasan = "Demam + sakit kepala usia >20";
-                }
-            }
-        }
-    }
-}
-?>
 
 
 <div class="card-custom">
@@ -468,14 +319,27 @@ if ($p3 == 0) {
 
 <?php 
 $pertanyaan = [
-    "Jenis kelamin laki-laki (otomatis dari identitas)",
-    "Usia di atas 20 tahun (otomatis dari tanggal lahir)",
-    "Apakah Anda sedang mengalami demam saat ini?",
-    "Apakah demam tersebut sudah berlangsung lebih dari 5 hari?",
-    "Apakah Anda merasakan sakit kepala yang mengganggu?",
-    "Apakah otot atau sendi Anda terasa nyeri/pegal-pegal?",
-    "Apakah muncul bintik merah atau ruam pada kulit Anda?",
-    "Apakah Anda merasa mual atau sempat muntah-muntah?"
+    "Apakah Anda menguras TPA?",
+    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
+    "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
+    "Apakah Anda mendaur ulang barang bekas yang dapat menampung air hujan?",
+    "Apakah Anda menaburkan larvasida seperti abate pada tempat penampungan yang sulit dibersihkan?",
+    "Apakah Anda menaburkan abate sesuai dengan aturan pakai?",
+    "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
+    "Apakah Anda menanam tanaman pengusir nyamuk?",
+    "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
+    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
+    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus?",
+    "Apakah di rumah Anda banyak genangan air?",
+    "Apakah Anda memiliki kebiasaan menggantungkan baju di rumah?",
+    "Apakah semua anggota keluarga Anda sering menggantungkan baju di rumah?",
+    "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
+    "Apakah akhir-akhir ini Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
+    "Apakah baru-baru ini Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
+    "Apakah belakangan ini Anda sering berkunjung ke tempat umum atau lokasi ramai?",
+    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?"
 ];
 ?>
 
@@ -484,21 +348,18 @@ $pertanyaan = [
     <td class="text-center"><?= $i+1 ?></td>
     <td class="text-start"><?= $text ?></td>
     <td class="text-center">
-        <?php 
-        if($i == 0){
-            $value = $p1; // jenis kelamin
-        } elseif($i == 1){
-            $value = $p2; // umur
-        } else {
-            $value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
-        }
 
-        if($value == 1): ?>
-            <span class="badge bg-success">Ya</span>
-        <?php else: ?>
-            <span class="badge bg-danger">Tidak</span>
-        <?php endif; ?>
-    </td>
+<?php
+$value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
+
+if ($value == 1):
+?>
+    <span class="badge bg-success">Ya</span>
+<?php else: ?>
+    <span class="badge bg-danger">Tidak</span>
+<?php endif; ?>
+
+</td>
 </tr>
 <?php endforeach; ?>
 
@@ -510,8 +371,7 @@ $pertanyaan = [
 <!-- HASIL -->
 <div class="section-title">Hasil</div>
 <p class="text-muted">
-*Data jenis kelamin dan usia diperoleh otomatis dari informasi identitas
-</p>
+
 
 
 <div class="hasil-box">

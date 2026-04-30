@@ -23,11 +23,10 @@ $routes->get('/skrining', 'Home::skrining');
 /* SKRINING DBD */
 /* ========================= */
 
-$routes->get('/skriningdbd', 'Home::skriningdbd');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Home::skriningdbd2');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Home::skriningdbd3');
-$routes->get('/rekap_skrining', 'Home::rekap_skrining');
-/* ========================= */
+$routes->get('/skriningdbd', 'Dbd::skriningdbd');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Dbd::skriningdbd2');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Dbd::skriningdbd3');
+$routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
 /* PROFIL dan Logut */
 /* ========================= */
 
@@ -135,7 +134,6 @@ $routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
 /* ========================= */
 $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
-$routes->get('/rekap_skrining_dbd', 'Home::rekap_skrining_dbd');
 
 // ================= PSN KADER =================
 $routes->get('formkader/formulir', 'Dbd::formulirpsn');
