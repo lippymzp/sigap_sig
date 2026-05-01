@@ -238,8 +238,8 @@
 
 <!-- SKRINING -->
 <div class="col-md-3">
-<a href="<?= base_url('skriningpneumonia') ?>" class="fitur-box text-decoration-none d-block">
-<a href="<?= base_url('skrining') ?>" class="fitur-box d-block" data-target="skrining">
+
+<a href="<?= base_url('skriningpneumonia') ?>" class="fitur-box d-block" data-target="skrining">
     <div class="icon">
         <span></span><span></span><span></span>
     </div>
