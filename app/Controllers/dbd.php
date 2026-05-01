@@ -442,9 +442,6 @@ $modelPasien->save([
     return view('gol_a/skrining3', $data);
 }
 
-
-
-
 public function rekap_skrining()
 {
     $db = \Config\Database::connect();
@@ -471,7 +468,74 @@ public function rekap_skrining()
 
     return view('gol_a/rekap_skrining', $data);
 }
+// ================= HALAMAN EXPORT =================
+public function export_hasil_data_pasien()
+{
+    helper('url');
 
+    $data['data'] = [
+        [
+            'kecamatan' => 'Sumbersari',
+            'desa' => 'Tegal Gede',
+            'jenis_kelamin' => 1,
+            'umur' => 21,
+            'kasus_baru' => 2,
+            'total_kasus' => 10
+        ],
+        [
+            'kecamatan' => 'Kaliwates',
+            'desa' => 'Kebon Agung',
+            'jenis_kelamin' => 0,
+            'umur' => 35,
+            'kasus_baru' => 1,
+            'total_kasus' => 5
+        ],
+        [
+            'kecamatan' => 'Sumbersari',
+            'desa' => 'Sumbersari',
+            'jenis_kelamin' => 1,
+            'umur' => 18,
+            'kasus_baru' => 3,
+            'total_kasus' => 12
+        ]
+    ];
+
+    return view('gol_a/export_hasil_data_pasien', $data);
+}
+// ================= EXPORT PDF =================
+public function export_pdf_pasien()
+{
+    helper('url');
+
+    $data = [
+        'data' => [
+            [
+                'kecamatan' => 'Sumbersari',
+                'desa' => 'Tegal Gede',
+                'jenis_kelamin' => 1,
+                'umur' => 21,
+                'kasus_baru' => 2,
+                'total_kasus' => 10
+            ],
+            [
+                'kecamatan' => 'Kaliwates',
+                'desa' => 'Kebon Agung',
+                'jenis_kelamin' => 0,
+                'umur' => 35,
+                'kasus_baru' => 1,
+                'total_kasus' => 5
+            ]
+        ]
+    ];
+
+    $html = view('gol_a/export_pdf_pasien', $data);
+
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("data_pasien.pdf", ["Attachment" => false]);
+}
 // ================= EXPORT EXCEL =================
 public function export_excel_pasien()
 {
