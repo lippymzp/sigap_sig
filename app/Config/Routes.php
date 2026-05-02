@@ -156,8 +156,11 @@ $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
 
 // ================= PSN KADER =================
-$routes->get('formkader/formulir', 'Dbd::formulirpsn');
+$routes->get('formkader/riwayat_lapor_jentik', 'Dbd::riwayat_jentik');
+$routes->get('formkader/formulir_tambah_data', 'Dbd::tambah_pelaporan');
 $routes->post('dbd/simpanpsn', 'Dbd::simpanpsn');
+$routes->get('dbd/pelaporan', 'Dbd::riwayat_jentik');
+$routes->get('dbd/hapus_pelaporan/(:num)', 'Dbd::hapus_pelaporan/$1');
 $routes->get('formkader/rekap', 'Dbd::rekappsn');
 $routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
 $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');

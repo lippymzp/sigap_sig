@@ -1,11 +1,22 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\InputDataPasienModel;
+use App\Models\PelaporanModel; // <-- DITAMBAHKAN: Panggil Model Pelaporan
 use Dompdf\Dompdf;
 use Dompdf\Options;
+
 class Dbd extends BaseController
 {
+    protected $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
+
+    // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
+    public function __construct()
+    {
+        $this->pelaporanModel = new PelaporanModel();
+    }
+
     public function inputData()
     {
         return view('gol_a/input_data', [
@@ -80,46 +91,173 @@ class Dbd extends BaseController
 
    //FORM KADER PSN
 
-   public function formulirpsn()
-{
-  
-    $data = [
-        'title' => 'Pelaporan Kader',
-        'judul' => 'Peta Sebaran',
-        'menu'  => 'formulirpsn', // <--- TAMBAHKAN BARIS INI
-        // data lain yang mungkin Anda kirim...
-    ];
-
-    return view('gol_a/formkader/formulir', $data);
-}
-
-    public function simpanpsn()
+    public function riwayat_jentik()
     {
-        $session = session();
-        $data = $this->request->getPost();
+        // 1. Ambil data dari database
+        $dataPelaporan = $this->pelaporanModel->orderBy('created_at', 'DESC')->findAll();
 
-        $file = $this->request->getFile('foto');
-
-        if ($file && $file->isValid()) {
-            $namaFile = $file->getRandomName();
-            $file->move('uploads/', $namaFile);
-            $data['foto'] = $namaFile;
-        }
-
-        $laporanpsn = $session->get('laporanpsn') ?? [];
-
-        $laporanpsn[$data['posyandu']] = [
-            'kelurahan'    => $data['kelurahan'],
-            'tanggalinput' => date('Y-m-d'),
-            'diperiksa'    => $data['diperiksa'],
-            'positif'      => $data['positif'],
-            'bagian'       => $data['bagian'],
-            'foto'         => $data['foto'] ?? null
+        // 2. Mapping ID Kelurahan menjadi Teks
+        $kelurahanMap = [
+            1 => 'Sumbersari',
+            2 => 'Wirolegi',
+            3 => 'Antirogo',
+            4 => 'Tegal Gede',
+            5 => 'Karangrejo'
         ];
 
-        $session->set('laporanpsn', $laporanpsn);
+        // 3. Format data (Mengubah ID angka menjadi teks yang bisa dibaca)
+        foreach ($dataPelaporan as &$row) {
+            $row['nama_puskesmas'] = ($row['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
+            $row['nama_kelurahan'] = isset($kelurahanMap[$row['id_kelurahan']]) ? $kelurahanMap[$row['id_kelurahan']] : '-';
+            $row['nama_posyandu']  = 'Catleya ' . $row['id_posyandu'];
+        }
 
-        return redirect()->to('formkader/formulir');
+        // 4. Bungkus data untuk dikirim ke View
+        $data = [
+            'title'     => 'Pelaporan Kader',
+            'judul'     => 'Pelaporan Kader',
+            'menu'      => 'riwayat_jentik', // Sesuai dengan menu sidebar Anda
+            'pelaporan' => $dataPelaporan    // Variabel berisi data database
+        ];
+
+        // 5. Tampilkan ke file View yang tepat
+        // Pastikan Anda menaruh kode HTML tabel riwayat di dalam file ini:
+        return view('gol_a/formkader/riwayat_lapor_jentik', $data);
+    }
+    // ==============================================================
+    // FUNGSI BARU: PELAPORAN KADER (READ & TAMPILKAN TABEL)
+    // ==============================================================
+    public function pelaporan()
+    {
+        $dataPelaporan = $this->pelaporanModel->orderBy('created_at', 'DESC')->findAll();
+
+        $kelurahanMap = [
+            1 => 'Sumbersari',
+            2 => 'Wirolegi',
+            3 => 'Antirogo',
+            4 => 'Tegal Gede',
+            5 => 'Karangrejo'
+        ];
+
+        foreach ($dataPelaporan as &$row) {
+            $row['nama_puskesmas'] = ($row['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
+            $row['nama_kelurahan'] = isset($kelurahanMap[$row['id_kelurahan']]) ? $kelurahanMap[$row['id_kelurahan']] : '-';
+            $row['nama_posyandu']  = 'Catleya ' . $row['id_posyandu'];
+        }
+
+        $data = [
+            'title'     => 'Riwayat Pelaporan Kader',
+            'menu'      => 'pelaporan',
+            'pelaporan' => $dataPelaporan 
+        ];
+
+        return view('riwayat_pelaporan', $data);
+    }
+
+    public function hapus_pelaporan($id)
+    {
+        // 1. Cari data berdasarkan ID
+        $data = $this->pelaporanModel->find($id);
+        
+        if ($data) {
+            // 2. Hapus file foto dari folder (opsional, tapi sangat disarankan agar memori server tidak penuh)
+            if (!empty($data['foto'])) {
+                $fotoArray = json_decode($data['foto'], true);
+                if (is_array($fotoArray)) {
+                    foreach ($fotoArray as $foto) {
+                        $pathFoto = FCPATH . 'uploads/pelaporan/' . $foto;
+                        if (file_exists($pathFoto)) {
+                            unlink($pathFoto); // Perintah untuk menghapus file fisik
+                        }
+                    }
+                }
+            }
+            
+            // 3. Hapus data dari database
+            $this->pelaporanModel->delete($id);
+            
+            // 4. Kembali ke halaman riwayat dengan pesan sukses
+            return redirect()->to(base_url('dbd/pelaporan'))->with('success', 'Data pelaporan berhasil dihapus!');
+        }
+
+        // Jika data tidak ditemukan
+        return redirect()->to(base_url('dbd/pelaporan'));
+    }
+
+    // ==============================================================
+    // FUNGSI BARU: HALAMAN TAMBAH PELAPORAN
+    // ==============================================================
+    public function tambah_pelaporan()
+    {
+        $data = [
+            'title' => 'Tambah Pelaporan Kader',
+            'judul' => 'Pelaporan Kader',
+            'menu'  => 'pelaporan'
+        ];
+
+        return view('gol_a/formkader/formulir_tambah_data', $data);
+    }
+
+    // ==============================================================
+    // FUNGSI BARU: SIMPAN DATA DARI FORM (INSERT KE DATABASE)
+    // ==============================================================
+    public function simpanpsn()
+    {
+        $periodeLengkap = $this->request->getPost('periode'); 
+        $idPuskesmas    = $this->request->getPost('id_puskesmas');
+        $idKelurahan    = $this->request->getPost('id_kelurahan');
+        $idPosyandu     = $this->request->getPost('id_posyandu');
+        $diperiksa      = $this->request->getPost('diperiksa');
+        $positif        = $this->request->getPost('positif');
+        $bagian         = $this->request->getPost('bagian');
+
+        $minggu = '';
+        $bulan  = '';
+        if (strpos($periodeLengkap, '(') !== false) {
+            $parts = explode('(', $periodeLengkap);
+            $minggu = trim($parts[0]); 
+            
+            $datePart = str_replace(')', '', $parts[1]); 
+            $dateArray = explode(' ', $datePart);
+            if (count($dateArray) >= 3) {
+                $bulan = $dateArray[count($dateArray) - 2]; 
+            }
+        }
+
+        $abj = 0;
+        if ($diperiksa > 0) {
+            $abj = (($diperiksa - $positif) / $diperiksa) * 100;
+        }
+
+        $namaFotoArray = [];
+        if ($imagefile = $this->request->getFiles()) {
+            if (array_key_exists('foto', $imagefile)) {
+                foreach ($imagefile['foto'] as $img) {
+                    if ($img->isValid() && ! $img->hasMoved()) {
+                        $newName = $img->getRandomName();
+                        $img->move(FCPATH . 'uploads/pelaporan', $newName);
+                        $namaFotoArray[] = $newName;
+                    }
+                }
+            }
+        }
+        $fotoJson = json_encode($namaFotoArray);
+
+        $this->pelaporanModel->insert([
+            'bulan'           => $bulan,
+            'minggu'          => $minggu,
+            'periode_lengkap' => $periodeLengkap,
+            'id_puskesmas'    => $idPuskesmas,
+            'id_kelurahan'    => $idKelurahan,
+            'id_posyandu'     => $idPosyandu,
+            'diperiksa'       => $diperiksa,
+            'positif'         => $positif,
+            'bagian'          => $bagian,
+            'foto'            => $fotoJson,
+            'abj'             => $abj
+        ]);
+
+        return redirect()->to(base_url('dbd/pelaporan'))->with('success', 'Data pelaporan jentik berhasil disimpan!');
     }
 
 
@@ -592,9 +730,5 @@ public function export_excel_pasien()
     echo "</table>";
     exit;
 }
+
 }
-
-
-
-
-
