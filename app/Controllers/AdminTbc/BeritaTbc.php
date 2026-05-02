@@ -11,19 +11,13 @@ class BeritaTbc extends BaseController
     {
         $model = new BeritaTbcModel();
 
-        // default tampil Publish
         $status = $this->request->getGet('status') ?? 'Publish';
 
         $total   = $model->countAll();
 
-        $publish = $model->where('status_berita', 'Publish')
-                         ->countAllResults();
-
-        $draft   = $model->where('status_berita', 'Draft')
-                         ->countAllResults();
-
-        $arsip   = $model->where('status_berita', 'Arsip')
-                         ->countAllResults();
+        $publish = $model->where('status_berita', 'Publish')->countAllResults();
+        $draft   = $model->where('status_berita', 'Draft')->countAllResults();
+        $arsip   = $model->where('status_berita', 'Arsip')->countAllResults();
 
         $berita = $model->where('status_berita', $status)
                         ->orderBy('id_berita', 'DESC')
@@ -49,49 +43,78 @@ class BeritaTbc extends BaseController
         ]);
     }
 
-    public function simpan()
-    {
-        $model = new BeritaTbcModel();
+  public function simpan()
+{
+    $model = new BeritaTbcModel();
 
-        $file = $this->request->getFile('gambar');
-        $namaGambar = 'default.jpg';
+    $file = $this->request->getFile('gambar');
+    $namaGambar = 'default.jpg';
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $namaGambar = $file->getRandomName();
-            $file->move('uploads/berita/', $namaGambar);
-        }
-
-        $model->save([
-            'judul_berita'      => $this->request->getPost('judul'),
-            'isi_berita'        => $this->request->getPost('isi'),
-            'deskripsi_berita'  => $this->request->getPost('ringkasan'),
-            'penulis'           => $this->request->getPost('penulis'),
-            'tanggal_berita'    => $this->request->getPost('tanggal'),
-            'status_berita'     => $this->request->getPost('status') ?: 'Publish',
-            'gambar_berita'     => $namaGambar
-        ]);
-
-        return redirect()->to('/tbc/berita');
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $namaGambar = $file->getRandomName();
+        $file->move('uploads/berita/', $namaGambar);
     }
 
-    public function simpanKutip()
-    {
-        $model = new BeritaTbcModel();
+    $isi = $this->request->getPost('isi');
 
-        $model->save([
-            'judul_berita'      => $this->request->getPost('judul'),
-            'isi_berita'        => $this->request->getPost('link'),
-            'deskripsi_berita'  => 'Kutip berita luar',
-            'penulis'           => 'Admin',
-            'tanggal_berita'    => date('Y-m-d'),
-            'status_berita'     => $this->request->getPost('status') ?: 'Publish',
-            'gambar_berita'     => 'default.jpg'
-        ]);
-
-        return redirect()->to('/tbc/berita');
+    if (is_array($isi)) {
+        $isi = implode('', $isi);
     }
 
-    public function hapus($id)
+    // 🔥 SIMPAN & AMBIL ID
+    $id = $model->insert([
+        'id_petugas'        => session()->get('id_petugas') ?? 1,
+        'id_penyakit'       => 1,
+        'judul_berita'      => $this->request->getPost('judul'),
+
+        'deskripsi_berita'  => filter_var($isi, FILTER_VALIDATE_URL)
+                                ? 'Kutip berita luar'
+                                : $isi,
+
+        'url_berita'        => filter_var($isi, FILTER_VALIDATE_URL) ? $isi : null,
+        'gambar_berita'     => $namaGambar,
+        'tanggal_berita'    => $this->request->getPost('tanggal'),
+        'status_berita'     => $this->request->getPost('status') ?: 'Publish'
+    ]);
+
+    // 🔥 INI YANG KAMU BELUM ADA
+    session()->setFlashdata('success', true);
+    session()->setFlashdata('last_id', $id);
+
+    return redirect()->to('/tbc/berita');
+}
+
+   public function simpanKutip()
+{
+    $model = new BeritaTbcModel();
+
+    // 🔥 TAMBAH INI
+    $isi = $this->request->getPost('isi') ?? $this->request->getPost('link');
+    $namaGambar = 'default.jpg';
+
+    $id = $model->insert([
+        'id_petugas'        => session()->get('id_petugas') ?? 1,
+        'id_penyakit'       => 1,
+        'judul_berita'      => $this->request->getPost('judul'),
+
+        'deskripsi_berita'  => filter_var($isi, FILTER_VALIDATE_URL)
+                                ? 'Kutip berita luar'
+                                : $isi,
+
+        'url_berita'        => filter_var($isi, FILTER_VALIDATE_URL) ? $isi : null,
+        'gambar_berita'     => $namaGambar,
+        'tanggal_berita'    => date('Y-m-d'),
+        'status_berita'     => $this->request->getPost('status') ?: 'Publish'
+    ]);
+
+    session()->setFlashdata('success', true);
+    session()->setFlashdata('last_id', $id);
+
+    return redirect()->to('/tbc/berita');
+}
+
+
+    public function hapus(int $id)
     {
         $model = new BeritaTbcModel();
         $model->delete($id);
@@ -99,7 +122,7 @@ class BeritaTbc extends BaseController
         return redirect()->to('/tbc/berita');
     }
 
-    public function arsip($id)
+    public function arsip(int $id)
     {
         $model = new BeritaTbcModel();
 
@@ -110,7 +133,7 @@ class BeritaTbc extends BaseController
         return redirect()->to('/tbc/berita?status=Draft');
     }
 
-    public function publish($id)
+    public function publish(int $id)
     {
         $model = new BeritaTbcModel();
 
@@ -121,7 +144,7 @@ class BeritaTbc extends BaseController
         return redirect()->to('/tbc/berita');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $model = new BeritaTbcModel();
 
@@ -132,32 +155,40 @@ class BeritaTbc extends BaseController
         ]);
     }
 
-    public function update($id)
-    {
-        $model = new BeritaTbcModel();
+    public function update(int $id)
+{
+    $model = new BeritaTbcModel();
 
-        $data = [
-            'judul_berita'      => $this->request->getPost('judul'),
-            'isi_berita'        => $this->request->getPost('isi'),
-            'deskripsi_berita'  => $this->request->getPost('ringkasan'),
-            'penulis'           => $this->request->getPost('penulis'),
-            'tanggal_berita'    => $this->request->getPost('tanggal')
-        ];
+    $isi = $this->request->getPost('isi');
 
-        $file = $this->request->getFile('gambar');
+if (is_array($isi)) {
+    $isi = implode('', $isi);
+}
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $nama = $file->getRandomName();
-            $file->move('uploads/berita/', $nama);
-            $data['gambar_berita'] = $nama;
-        }
+$isUrl = filter_var($isi, FILTER_VALIDATE_URL);
 
-        $model->update($id, $data);
+$data = [
+    'judul_berita'      => $this->request->getPost('judul'),
+    'deskripsi_berita'  => $isUrl ? 'Kutip berita luar' : $this->request->getPost('ringkasan'),
+    'isi_berita'        => $isUrl ? null : $isi,
+    'url_berita'        => $isUrl ? $isi : null,
+    'tanggal_berita'    => $this->request->getPost('tanggal')
+];
 
-        return redirect()->to('/tbc/berita');
+    $file = $this->request->getFile('gambar');
+
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $nama = $file->getRandomName();
+        $file->move('uploads/berita/', $nama);
+        $data['gambar_berita'] = $nama;
     }
 
-    public function detail($id)
+    $model->update($id, $data);
+
+    return redirect()->to('/tbc/berita');
+}
+
+    public function detail(int $id)
     {
         $model = new BeritaTbcModel();
 

@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 
 <style>
-.isi-berita{
+.isi-funfact{
     width:100%;
     text-align:justify;
     line-height:1.9;
@@ -10,50 +10,51 @@
 }
 
 /* 🔥 INI KUNCI UTAMA */
-.isi-berita *{
+.isi-funfact *{
     max-width:100% !important;
     width:auto !important;
 }
 
 /* biar rapi */
-.isi-berita p{
+.isi-funfact p{
     margin-bottom:14px;
 }
 </style>
 
 <?php 
-$berita = $berita ?? [];
+$funfact = $funfact ?? [];
 
-// 🔥 FIX: paksa jadi string biar ga error Intelephense
-$url = is_array($berita['url_berita'] ?? null) ? '' : ($berita['url_berita'] ?? '');
-$isi = is_array($berita['isi_berita'] ?? null) ? '' : ($berita['isi_berita'] ?? '');
-$ringkasan = is_array($berita['deskripsi_berita'] ?? null) ? '' : ($berita['deskripsi_berita'] ?? '');
+// 🔥 FIX: paksa jadi string biar ga error
+$url = is_array($funfact['url'] ?? null) ? '' : ($funfact['url'] ?? '');
+$isi = is_array($funfact['isi_funfact'] ?? null) ? '' : ($funfact['isi_funfact'] ?? '');
+$ringkasan = is_array($funfact['deskripsi_funfact'] ?? null) ? '' : ($funfact['deskripsi_funfact'] ?? '');
 ?>
 
-<div class="card border-0 shadow-sm p-4 rounded-4" style="width:100%;max-width:100%;">
+<div class="card border-0 shadow-sm p-3 rounded-4">
 
-<!-- ATAS: GAMBAR + JUDUL -->
+<!-- ATAS -->
 <div class="row align-items-center mb-4">
 
 <div class="col-md-5">
-<img src="<?= base_url('uploads/berita/' . (!empty($berita['gambar_berita']) ? $berita['gambar_berita'] : 'default.jpg')) ?>"
+<img src="<?= base_url('uploads/funfact/' . (!empty($funfact['gambar_funfact']) ? $funfact['gambar_funfact'] : 'default.jpg')) ?>"
 style="width:100%;height:240px;object-fit:cover;border-radius:16px;">
 </div>
 
 <div class="col-md-7">
 <h2 class="fw-bold mb-2" style="line-height:1.4;">
-<?= esc((string)($berita['judul_berita'] ?? '')) ?>
+<?= esc((string)($funfact['judul_funfact'] ?? '')) ?>
 </h2>
 
 <p class="text-muted mb-0">
-<?= !empty($berita['tanggal_berita']) ? date('d F Y', strtotime($berita['tanggal_berita'])) : '-' ?> • Admin
+<?= !empty($funfact['tanggal_funfact']) ? date('d F Y', strtotime($funfact['tanggal_funfact'])) : '-' ?> • 
+<?= esc($funfact['penulis_funfact'] ?? 'Admin') ?>
 </p>
 </div>
 
 </div>
 
-<!-- BAWAH: ISI -->
-<div class="isi-berita mt-3">
+<!-- BAWAH -->
+<div style="line-height:1.9;font-size:16px;">
 
 <?php if (!empty($url) && filter_var($url, FILTER_VALIDATE_URL)): ?>
 
@@ -65,7 +66,7 @@ border:1px solid #dbeaea;
 ">
 
 <p style="margin-bottom:8px;font-weight:600;">
-🔗 Sumber Berita Eksternal
+🔗 Sumber Funfact Eksternal
 </p>
 
 <a href="<?= esc((string)$url) ?>" target="_blank"
@@ -78,7 +79,7 @@ border-radius:8px;
 text-decoration:none;
 font-weight:600;
 ">
-Buka Berita
+Buka Funfact
 </a>
 
 <p style="margin-top:10px;font-size:13px;color:#888;">
@@ -89,13 +90,15 @@ Buka Berita
 
 <?php else: ?>
 
-<div class="w-100">
-    <?= !empty($isi) ? $isi : $ringkasan ?>
-</div>
-<?php endif; ?>
+<div class="isi-funfact">
+<?= !empty($isi) ? $isi : $ringkasan ?>
 </div>
 
-<a href="<?= base_url('tbc/berita') ?>"
+<?php endif; ?>
+
+</div>
+
+<a href="<?= base_url('tbc/funfact') ?>"
 class="btn text-white mt-4"
 style="
 background:#11c5d8;

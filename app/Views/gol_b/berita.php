@@ -1,6 +1,49 @@
 <?= $this->extend('layout/dashboard_layout') ?>
 <?= $this->section('content') ?>
+<style>
+.icon{
+width:60px;height:60px;
+border-radius:50%;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:10px;
+font-size:22px;
+}
 
+.success{background:#d4f5e9;color:#16a34a;}
+.error{background:#ffe5e5;color:#dc2626;}
+
+.btn-main{
+display:block;
+background:#20c4cc;
+color:#fff;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+text-decoration:none;
+text-align:center;
+}
+
+.btn-second{
+background:#eee;
+border:none;
+padding:8px 15px;
+border-radius:8px;
+margin-top:8px;
+width:100%;
+}
+</style>
+<?php /** @var array $berita */ ?>
+<?php
+$total   = $total ?? 0;
+$publish = $publish ?? 0;
+$draft   = $draft ?? 0;
+$arsip   = $arsip ?? 0;
+$status  = $status ?? 'Publish';
+$berita  = $berita ?? [];
+?>
 <div class="card border-0 shadow-sm p-4 rounded-4">
 
 <!-- SEARCH -->
@@ -383,5 +426,43 @@ function tutupPopupDraft(){
 document.getElementById('popupDraft').style.display='none';
 }
 </script>
+<?php if(session()->getFlashdata('success')): ?>
 
+<div id="popupSuccess" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.3);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+">
+
+<div style="
+width:320px;
+background:#fff;
+padding:25px;
+border-radius:16px;
+text-align:center;
+">
+
+<div class="icon success">✔</div>
+
+<h5>Unggah Berita Berhasil</h5>
+<p>Berita berhasil diunggah</p>
+
+<a href="<?= base_url('tbc/berita/detail/'.session()->getFlashdata('last_id')) ?>"
+class="btn-main">
+Lihat Tampilan
+</a>
+
+<button onclick="this.closest('#popupSuccess').remove()" class="btn-second">
+Selesai
+</button>
+
+</div>
+</div>
+
+<?php endif; ?>
 <?= $this->endSection() ?>

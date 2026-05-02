@@ -6,15 +6,18 @@ use CodeIgniter\Model;
 
 class FunfactTbcModel extends Model
 {
-    protected $table = 'artikel';
-    protected $primaryKey = 'id_artikel';
+    protected $table      = 'funfact';
+    protected $primaryKey = 'id_funfact';
 
     protected $allowedFields = [
-        'judul_artikel',
-        'status_artikel',
-        'gambar_artikel',
-        'deskripsi_artikel',
-        'tanggal_artikel'
+        'id_petugas',
+        'id_penyakit',
+        'judul_funfact',
+        'deskripsi_funfact',
+        'gambar_funfact',
+        'tanggal_funfact',
+        'url',
+        'status_funfact'
     ];
 
     protected $useTimestamps = false;

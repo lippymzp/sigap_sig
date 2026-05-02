@@ -5,12 +5,17 @@ use CodeIgniter\Model;
 
 class BeritaTbcModel extends Model
 {
-    protected $table = 'beritatbc';
+    protected $table      = 'berita';
     protected $primaryKey = 'id_berita';
-    protected $allowedFields = [
+
+        protected $allowedFields = [
+        'id_petugas',
+        'id_penyakit',
         'judul_berita',
-        'gambar_berita',
         'deskripsi_berita',
+        'isi_berita',
+        'url_berita',
+        'gambar_berita',
         'tanggal_berita',
         'status_berita'
     ];

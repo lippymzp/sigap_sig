@@ -98,12 +98,6 @@ $routes->get('/export_kepala', 'Kepala::export');
 
 
 /* ========================= */
-/* FUNFACT TBC */
-/* ========================= */
-
-$routes->get('tbc/funfact', 'Dashboard::funfact');
-
-/* ========================= */
 /* BERITA TBC */
 /* ========================= */
 
@@ -119,6 +113,25 @@ $routes->post('tbc/berita/update/(:num)', 'AdminTbc\BeritaTbc::update/$1');
 
 $routes->get('tbc/berita/hapus/(:num)', 'AdminTbc\BeritaTbc::hapus/$1');
 $routes->get('tbc/berita/arsip/(:num)', 'AdminTbc\BeritaTbc::arsip/$1');
+$routes->get('tbc/berita/publish/(:num)', 'AdminTbc\BeritaTbc::publish/$1');
+
+/* ========================= */
+/* FUNFACT TBC */
+/* ========================= */
+
+$routes->get('tbc/funfact', 'AdminTbc\FunfactTbc::index');
+$routes->get('tbc/funfact/create', 'AdminTbc\FunfactTbc::create');
+
+$routes->post('tbc/funfact/simpan', 'AdminTbc\FunfactTbc::simpan');
+$routes->post('tbc/funfact/kutip', 'AdminTbc\FunfactTbc::simpanKutip');
+
+$routes->get('tbc/funfact/detail/(:num)', 'AdminTbc\FunfactTbc::detail/$1');
+$routes->get('tbc/funfact/edit/(:num)', 'AdminTbc\FunfactTbc::edit/$1');
+$routes->post('tbc/funfact/update/(:num)', 'AdminTbc\FunfactTbc::update/$1');
+
+$routes->get('tbc/funfact/hapus/(:num)', 'AdminTbc\FunfactTbc::hapus/$1');
+$routes->get('tbc/funfact/arsip/(:num)', 'AdminTbc\FunfactTbc::arsip/$1');
+$routes->get('tbc/funfact/publish/(:num)', 'AdminTbc\FunfactTbc::publish/$1');
 
 /* ========================= */
 /* ARTIKEL ADMIN */

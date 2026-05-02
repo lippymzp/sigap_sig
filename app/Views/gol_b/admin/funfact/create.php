@@ -98,20 +98,20 @@
 
 <!-- TAB -->
 <div class="tab-box">
-    <button class="tab-btn tab-active" id="btnTulis" onclick="showTab('tulis')">
-        Tulis Berita
+    <button type="button" onclick="showTab('tulis')" class="tab-btn tab-active">
+        Tulis Funfact
     </button>
 
-    <button class="tab-btn" id="btnKutip" onclick="showTab('kutip')">
-        Kutip Berita Luar
+    <button type="button" onclick="showTab('kutip')" class="tab-btn">
+        Kutip Funfact Luar
     </button>
 </div>
 
 <!-- FORM TULIS -->
 <div id="formTulis">
 
-<form id="formBerita"
-      action="<?= base_url('tbc/berita/simpan') ?>"
+<form id="formFunfact"
+      action="<?= base_url('tbc/funfact/simpan') ?>"
       method="post"
       enctype="multipart/form-data">
 
@@ -123,15 +123,15 @@
 <div class="col-md-8">
 
 <div class="form-head">
-<h4>Detail Informasi Berita</h4>
-<small>Lengkapi data berita SIG untuk dipublikasikan.</small>
+<h4>Detail Informasi Funfact</h4>
+<small>Lengkapi data Funfact SIG untuk dipublikasikan.</small>
 </div>
 
-<label class="fw-bold">Judul Berita</label>
+<label class="fw-bold">Judul Funfact</label>
 <input type="text" name="judul" class="form-control"
-placeholder="Masukkan judul berita utama...">
+placeholder="Masukkan judul funfact utama...">
 
-<label class="fw-bold">Isi Berita</label>
+<label class="fw-bold">Isi Funfact</label>
 
 <div class="toolbar">
 
@@ -186,7 +186,7 @@ class="form-control">
 
 <button type="button"
         class="btn-cancel"
-        onclick="window.location.href='<?= base_url('tbc/berita') ?>'">
+        onclick="window.location.href='<?= base_url('tbc/funfact') ?>'">
 Batal
 </button>
 
@@ -269,26 +269,26 @@ style="display:none;">
 </div>
 
 <!-- FORM KUTIP -->
-<div id="formKutip" style="display:none;">
+<div id="formKutipFunfact" style="display:none;">
 
-<form id="formKutipBerita"
-      action="<?= base_url('tbc/berita/kutip') ?>"
+<form id="formKutipFunfact"
+      action="<?= base_url('tbc/funfact/kutip') ?>"
       method="post">
 
 <div class="form-wrap">
 
 <div class="form-head">
-<h4>Detail Informasi Berita</h4>
-<small>Lengkapi data berita SIG untuk dipublikasikan.</small>
+<h4>Detail Informasi Funfact</h4>
+<small>Lengkapi data Funfact SIG untuk dipublikasikan.</small>
 </div>
 
-<label class="fw-bold">Judul Berita</label>
+<label class="fw-bold">Judul Funfact</label>
 <input type="text"
        name="judul"
        class="form-control"
-       placeholder="Masukkan judul berita utama...">
+       placeholder="Masukkan judul funfact utama...">
 
-<label class="fw-bold">Link Berita</label>
+<label class="fw-bold">Link Funfact</label>
 <input type="text"
        name="link"
        class="form-control"
@@ -342,7 +342,7 @@ top:50%;
 left:50%;
 transform:translate(-50%,-50%);">
 
-<h5 id="popupTitle">Unggah Berita Gagal</h5>
+<h5 id="popupTitle">Unggah Funfact Gagal</h5>
 <p id="popupText">Mohon lengkapi semua kolom</p>
 
 <div id="popupButtons"></div>
@@ -355,21 +355,20 @@ function showTab(type){
 
 if(type=='tulis'){
 document.getElementById('formTulis').style.display='block';
-document.getElementById('formKutip').style.display='none';
+document.getElementById('formKutipFunfact').style.display='none';
 
-document.getElementById('btnTulis').classList.add('tab-active');
-document.getElementById('btnKutip').classList.remove('tab-active');
+document.querySelectorAll('.tab-btn')[0].classList.add('tab-active');
+document.querySelectorAll('.tab-btn')[1].classList.remove('tab-active');
 
 }else{
 
 document.getElementById('formTulis').style.display='none';
-document.getElementById('formKutip').style.display='block';
+document.getElementById('formKutipFunfact').style.display='block';
 
-document.getElementById('btnKutip').classList.add('tab-active');
-document.getElementById('btnTulis').classList.remove('tab-active');
+document.querySelectorAll('.tab-btn')[1].classList.add('tab-active');
+document.querySelectorAll('.tab-btn')[0].classList.remove('tab-active');
 }
 }
-
 
 
 function validasiForm(){
@@ -386,7 +385,7 @@ let tanggal = document.querySelector('[name=tanggal]').value.trim();
 if(judul=='' || isi=='' || ringkasan=='' || penulis=='' || tanggal==''){
 
 document.getElementById('popupBg').style.display='block';
-document.getElementById('popupTitle').innerHTML='Unggah Berita Gagal';
+document.getElementById('popupTitle').innerHTML='Unggah Funfact Gagal';
 document.getElementById('popupText').innerHTML='Mohon lengkapi semua kolom';
 
 document.getElementById('popupButtons').innerHTML=`
@@ -397,7 +396,7 @@ Lengkapi Data
 return;
 }
 
-document.getElementById('formBerita').submit();
+document.getElementById('formFunfact').submit();
 }
 
 function simpanDraft(){
@@ -410,7 +409,7 @@ if(judul=='' || isi==''){
 document.getElementById('popupBg').style.display='block';
 
 document.getElementById('popupTitle').innerHTML='Draft Gagal';
-document.getElementById('popupText').innerHTML='Minimal isi Judul dan Isi Berita';
+document.getElementById('popupText').innerHTML='Minimal isi Judul dan Isi Funfact';
 
 document.getElementById('popupButtons').innerHTML=`
 <button onclick="closePopup()" class="btn-main">
@@ -423,7 +422,7 @@ return;
 // penting: isi ke hidden input
 document.getElementById('isiHidden').value = isi;
 
-let form = document.getElementById('formBerita');
+let form = document.getElementById('formFunfact');
 
 let lama = document.querySelector('[name=status]');
 if(lama) lama.remove();
@@ -473,7 +472,7 @@ reader.readAsDataURL(file);
 
 function resetSemua(){
 
-document.getElementById('formBerita').reset();
+document.getElementById('formFunfact').reset();
 
 document.getElementById('gambarInput').value='';
 
@@ -511,26 +510,26 @@ document.execCommand("insertImage",false,url);
 }
 
 /* Saat submit simpan isi editor ke input hidden */
-document.getElementById('formBerita').onsubmit = function(){
+document.getElementById('formFunfact').onsubmit = function(){
 document.getElementById('isiHidden').value =
 document.getElementById('editor').innerHTML;
 }
 </script>
 <script>
 function batalForm(){
-window.location.href='<?= base_url('tbc/berita') ?>';
+window.location.href='<?= base_url('tbc/funfact') ?>';
 }
 
 function unggahKutip(){
 
-let judul = document.querySelector('#formKutip [name=judul]').value.trim();
-let link  = document.querySelector('#formKutip [name=link]').value.trim();
+let judul = document.querySelector('#formKutipFunfact [name=judul]').value.trim();
+let link  = document.querySelector('#formKutipFunfact [name=link]').value.trim();
 
-if(judul=='' || link==''){
-
+if(judul=='' || link=='' || !link.startsWith('http')){
+    
 document.getElementById('popupBg').style.display='block';
-document.getElementById('popupTitle').innerHTML='Unggah Gagal';
-document.getElementById('popupText').innerHTML='Isi judul dan link berita';
+document.getElementById('popupTitle').innerHTML='Unggah Funfact Gagal';
+document.getElementById('popupText').innerHTML='Isi judul dan link funfact';
 
 document.getElementById('popupButtons').innerHTML=`
 <button onclick="closePopup()" class="btn-main">
@@ -542,20 +541,23 @@ return;
 
 document.getElementById('statusKutip').value='Publish';
 
-document.getElementById('formKutipBerita').submit();
+document.getElementById('formKutipFunfact').submit();
 }
 
 function simpanDraftKutip(){
 
-let judul = document.querySelector('#formKutip [name=judul]').value.trim();
+let judul = document.querySelector('#formKutipFunfact [name=judul]').value.trim();
 
 if(judul==''){
-popup('Draft Gagal','Minimal isi judul berita');
+document.getElementById('popupBg').style.display='block';
+document.getElementById('popupTitle').innerHTML='Draft Gagal';
+document.getElementById('popupText').innerHTML='Minimal isi judul funfact';
 return;
 }
 
 document.getElementById('statusKutip').value='Draft';
-document.getElementById('formKutipBerita').submit();
+document.getElementById('formKutipFunfact').submit();
 }
 </script>
+
 <?= $this->endSection() ?>

@@ -1,188 +1,225 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers\AdminTbc;
 
 use App\Controllers\BaseController;
 use App\Models\FunfactTbcModel;
 
-class Artikel extends BaseController
+class FunfactTbc extends BaseController
 {
-    protected $artikelModel;
-
-    public function __construct()
-    {
-    $this->artikelModel = new FunfactTbcModel();
-    }
-
     public function index()
     {
-    $model = new FunfactTbcModel();
-        $keyword  = $this->request->getGet('search');
-        $status   = $this->request->getGet('status');
-        $tanggal  = $this->request->getGet('tanggal');
-        $urutkan  = $this->request->getGet('urutkan');
+        $model = new FunfactTbcModel();
 
-        if ($keyword) {
-            $model->like('judul_artikel', $keyword);
-        }
+        $status = $this->request->getGet('status') ?? 'Publish';
 
-        if ($status) {
-            $model->where('status_artikel', $status);
-        }
+        $total = $model->countAll();
 
-        if ($tanggal) {
-            $model->where('tanggal_artikel', $tanggal);
-        }
+        $publish = (clone $model)
+            ->where('status_funfact', 'Publish')
+            ->countAllResults();
 
-        if ($urutkan == 'terbaru') {
-            $model->orderBy('tanggal_artikel', 'DESC');
-        }
+        $draft = (clone $model)
+            ->where('status_funfact', 'Draft')
+            ->countAllResults();
 
-        if ($urutkan == 'terlama') {
-            $model->orderBy('tanggal_artikel', 'ASC');
-        }
+        $arsip = (clone $model)
+            ->where('status_funfact', 'Arsip')
+            ->countAllResults();
 
-        $data = [
-            'artikel' => $model->paginate(8),
-            'pager'   => $model->pager,
-            'total'   => $model->countAll(),
-            'keyword' => $keyword
-        ];
+        $funfact = (clone $model)
+            ->where('status_funfact', $status)
+            ->orderBy('id_funfact', 'DESC')
+            ->findAll();
 
-        return view('admin/artikel/index', $data);
+        return view('gol_b/funfact', [
+            'menu'    => 'funfact',
+            'judul'   => 'Kelola Funfact',
+            'total'   => $total,
+            'publish' => $publish,
+            'draft'   => $draft,
+            'arsip'   => $arsip,
+            'status'  => $status,
+            'funfact' => $funfact
+        ]);
     }
 
     public function create()
     {
-        return view('admin/artikel/create');
+        return view('gol_b/admin/funfact/create', [
+            'menu'  => 'funfact',
+            'judul' => 'Unggah Funfact'
+        ]);
     }
 
-    public function store()
-    {
-        $rules = [
-            'judul_artikel' => 'required',
-            'deskripsi_artikel' => 'required',
-            'status_artikel' => 'required',
-            'gambar_artikel' => 'uploaded[gambar_artikel]|max_size[gambar_artikel,2048]|is_image[gambar_artikel]'
-        ];
+    public function simpan()
+{
+    $model = new FunfactTbcModel();
 
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput();
-        }
+    $judul = $this->request->getPost('judul');
+    $isi   = $this->request->getPost('isi');
 
-        $file = $this->request->getFile('gambar_artikel');
+    // ✅ VALIDASI (PENTING)
+    if (!$judul || !$isi) {
+        session()->setFlashdata('error', 'gagal');
+        return redirect()->back()->withInput();
+    }
+
+    $file = $this->request->getFile('gambar');
+    $namaGambar = 'default.jpg';
+
+    if ($file && $file->isValid() && !$file->hasMoved()) {
         $namaGambar = $file->getRandomName();
-        $file->move(FCPATH . 'uploads/artikel', $namaGambar);
-
-        $this->artikelModel->save([
-            'judul_artikel'     => $this->request->getPost('judul_artikel'),
-            'deskripsi_artikel' => $this->request->getPost('deskripsi_artikel'),
-            'status_artikel'    => $this->request->getPost('status_artikel'),
-            'gambar_artikel'    => $namaGambar,
-            'tanggal_artikel'   => date('Y-m-d')
-        ]);
-
-        return redirect()->to(base_url('admin/artikel'))
-            ->with('success', 'Data berhasil disimpan');
+        $file->move(FCPATH . 'uploads/funfact/', $namaGambar);
     }
 
-    public function show($id)
+    $status = $this->request->getPost('status');
+
+    // ✅ SIMPAN & AMBIL ID
+    $id = $model->insert([
+        'id_petugas'        => session()->get('id_petugas') ?? 1,
+        'id_penyakit'       => 1,
+        'judul_funfact'     => $judul,
+        'penulis_funfact'   => $this->request->getPost('penulis'),
+        'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
+                                ? 'Kutip funfact luar'
+                                : $isi,
+
+        'url'               => filter_var($isi, FILTER_VALIDATE_URL)
+                                ? $isi
+                                : null,
+
+        'gambar_funfact'    => $namaGambar,
+        'tanggal_funfact'   => $this->request->getPost('tanggal'),
+        'status_funfact'    => $status ?: 'Publish'
+    ]);
+
+    // ✅ SIMPAN ID UNTUK POPUP DETAIL
+    session()->setFlashdata('last_id', $id);
+    session()->setFlashdata('success', 'unggah');
+
+    return redirect()->to('/tbc/funfact');
+}
+    
+public function simpanKutip()
+{
+    $model = new FunfactTbcModel();
+
+    $judul = $this->request->getPost('judul');
+    $link  = $this->request->getPost('link');
+
+    // ✅ VALIDASI
+    if (!$judul || !$link) {
+        session()->setFlashdata('error', 'gagal');
+        return redirect()->back()->withInput();
+    }
+
+    $status = $this->request->getPost('status');
+
+    $id = $model->insert([
+        'id_petugas'        => session()->get('id_petugas') ?? 1,
+        'id_penyakit'       => 1,
+        'judul_funfact'     => $judul,
+        'deskripsi_funfact' => 'Kutip funfact luar',
+        'gambar_funfact'    => 'default.jpg',
+        'tanggal_funfact'   => date('Y-m-d'),
+        'url'               => $link,
+        'status_funfact'    => $status ?: 'Publish'
+    ]);
+
+    session()->setFlashdata('last_id', $id);
+    session()->setFlashdata('success', 'unggah');
+
+    return redirect()->to('/tbc/funfact');
+}
+
+    public function hapus(int $id)
     {
-        $artikel = $this->artikelModel->find($id);
+        $model = new FunfactTbcModel();
+        $model->delete($id);
 
-        return view('admin/artikel/show', [
-            'artikel' => $artikel
-        ]);
+        return redirect()->to('/tbc/funfact');
     }
 
-    public function toggle($id)
+    public function arsip(int $id)
     {
-        $artikel = $this->artikelModel->find($id);
+        $model = new FunfactTbcModel();
 
-        if (!$artikel) {
-            return $this->response->setJSON(['status' => 'error']);
-        }
-
-        $newStatus = $artikel['status_artikel'] === 'Publish'
-            ? 'Unpublish'
-            : 'Publish';
-
-        $this->artikelModel->update($id, [
-            'status_artikel' => $newStatus
+        $model->update($id, [
+            'status_funfact' => 'Draft'
         ]);
 
-        return $this->response->setJSON([
-            'status' => $newStatus
-        ]);
+        return redirect()->to('/tbc/funfact?status=Draft');
     }
 
-    public function delete($id)
+    public function publish(int $id)
     {
-        $artikel = $this->artikelModel->find($id);
+        $model = new FunfactTbcModel();
 
-        if (!$artikel) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan');
-        }
+        $model->update($id, [
+            'status_funfact' => 'Publish'
+        ]);
 
-        if (!empty($artikel['gambar_artikel'])) {
-            $path = FCPATH . 'uploads/artikel/' . $artikel['gambar_artikel'];
-            if (file_exists($path)) {
-                unlink($path);
-            }
-        }
-
-        $this->artikelModel->delete($id);
-
-        return redirect()->to(base_url('admin/artikel'))
-            ->with('success', 'Data berhasil dihapus');
+        return redirect()->to('/tbc/funfact');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
-        $artikel = $this->artikelModel->find($id);
+        $model = new FunfactTbcModel();
 
-        if (!$artikel) {
-            return redirect()->to('admin/artikel')
-                ->with('error', 'Data tidak ditemukan');
-        }
-
-        return view('admin/artikel/edit', [
-            'artikel' => $artikel
+        return view('gol_b/admin/funfact/edit', [
+            'menu'    => 'funfact',
+            'judul'   => 'Edit Funfact',
+            'funfact' => $model->find($id)
         ]);
     }
 
-    public function update($id)
-    {
-        $artikel = $this->artikelModel->find($id);
+    public function update(int $id)
+{
+    $model = new FunfactTbcModel();
 
-        if (!$artikel) {
-            return redirect()->back();
-        }
+    $isi = $this->request->getPost('isi');
+    $status = $this->request->getPost('status');
 
-        $file = $this->request->getFile('gambar_artikel');
-        $namaGambar = $artikel['gambar_artikel'];
+    $data = [
+        'judul_funfact'     => $this->request->getPost('judul'),
+        'penulis_funfact' => $this->request->getPost('penulis'),
+        'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
+                                ? 'Kutip funfact luar'
+                                : $isi,
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
+        'url'               => filter_var($isi, FILTER_VALIDATE_URL)
+                                ? $isi
+                                : null,
 
-            if (!empty($artikel['gambar_artikel'])) {
-                $oldPath = FCPATH . 'uploads/artikel/' . $artikel['gambar_artikel'];
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
-            }
+        'tanggal_funfact'   => $this->request->getPost('tanggal'),
+        'status_funfact'    => $status ?: 'Publish'
+    ];
 
-            $namaGambar = $file->getRandomName();
-            $file->move(FCPATH . 'uploads/artikel', $namaGambar);
-        }
+    $file = $this->request->getFile('gambar');
 
-        $this->artikelModel->update($id, [
-            'judul_artikel'     => $this->request->getPost('judul_artikel'),
-            'deskripsi_artikel' => $this->request->getPost('deskripsi_artikel'),
-            'status_artikel'    => $this->request->getPost('status_artikel'),
-            'gambar_artikel'    => $namaGambar
-        ]);
-
-        return redirect()->to('admin/artikel')
-            ->with('success', 'Data berhasil diperbarui');
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $nama = $file->getRandomName();
+        $file->move(FCPATH . 'uploads/funfact/', $nama);
+        $data['gambar_funfact'] = $nama;
     }
-}   
+
+    $model->update($id, $data);
+
+    // ✅ TAMBAH NOTIF EDIT
+    session()->setFlashdata('success', 'edit');
+
+    return redirect()->to('/tbc/funfact');
+}
+
+    public function detail(int $id)
+    {
+        $model = new FunfactTbcModel();
+
+        return view('gol_b/admin/funfact/detail', [
+            'menu'    => 'funfact',
+            'judul'   => 'Detail Funfact',
+            'funfact' => $model->find($id)
+        ]);
+    }
+}

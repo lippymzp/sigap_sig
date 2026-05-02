@@ -1,7 +1,45 @@
 <?= $this->extend('layout/dashboard_layout') ?>
 <?= $this->section('content') ?>
 
+<?php /** @var array $berita */ ?>
+<?php $berita = $berita ?? []; ?>
+
+<?php
+$mode = $_GET['mode'] ?? '';
+
+$url = trim((string)($berita['url_berita'] ?? ''));
+$isLink = false;
+
+if ($mode == 'link') {
+    $isLink = true;
+} elseif ($mode == 'tulis') {
+    $isLink = false;
+} elseif ($url !== '' && filter_var($url, FILTER_VALIDATE_URL)) {
+    $isLink = true;
+}
+?>
+
 <style>
+.tab-box{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:22px;
+}
+.tab-btn{
+    width:240px;
+    height:40px;
+    border-radius:8px;
+    border:1px solid #d8d8d8;
+    background:#fff;
+    font-weight:600;
+    cursor:pointer;
+}
+.tab-active{
+    background:#11c5d8;
+    color:#fff;
+    border:none;
+}
 .form-wrap{
     background:#edf7f7;
     padding:30px;
@@ -30,16 +68,19 @@
     padding:8px 15px;
     border-radius:10px 10px 0 0;
 }
-.editor-box{
+.editor-box {
     width:100%;
     height:220px;
     border:1px solid #18bfd1;
     border-top:none;
     border-radius:0 0 10px 10px;
     padding:14px;
-    resize:none;
-    margin-bottom:18px;
     background:#fff;
+    overflow-y:auto;
+}
+
+.editor-box * {
+    margin:0 !important;
 }
 .side-card{
     background:#fff;
@@ -75,12 +116,66 @@
 }
 </style>
 
-<form action="<?= base_url('tbc/berita/update/'.$berita['id_berita']) ?>"
+<!-- TAB -->
+<div class="tab-box">
+
+<button type="button"
+class="tab-btn <?= !$isLink ? 'tab-active' : '' ?>"
+onclick="window.location.href='<?= base_url('tbc/berita/edit/'.$berita['id_berita'].'?mode=tulis') ?>'">
+Tulis Berita
+</button>
+
+<button type="button"
+class="tab-btn <?= $isLink ? 'tab-active' : '' ?>"
+onclick="window.location.href='<?= base_url('tbc/berita/edit/'.$berita['id_berita'].'?mode=link') ?>'">
+Kutip Berita Luar
+</button>
+
+</div>
+
+<form action="<?= base_url('tbc/berita/update/' . $berita['id_berita']) ?>"
 method="post"
 enctype="multipart/form-data">
 
 <div class="form-wrap">
 
+<?php if ($isLink): ?>
+
+<!-- MODE LINK -->
+<div class="form-head">
+<h4>Detail Informasi Berita</h4>
+<small>Lengkapi data berita SIG untuk dipublikasikan.</small>
+</div>
+
+<label class="fw-bold">Judul Berita</label>
+<input type="text"
+name="judul"
+class="form-control"
+value="<?= esc((string)($berita['judul_berita'] ?? '')) ?>">
+
+<label class="fw-bold">Link Berita</label>
+<input type="text"
+name="isi"
+class="form-control"
+value="<?= filter_var($url, FILTER_VALIDATE_URL) ? esc($url) : '' ?>">
+
+<div class="bottom-btn">
+
+<a href="<?= base_url('tbc/berita') ?>"
+class="btn-cancel">
+Batal
+</a>
+
+<button type="submit"
+class="btn-main">
+💾 Simpan Perubahan
+</button>
+
+</div>
+
+<?php else: ?>
+
+<!-- MODE TULIS -->
 <div class="row">
 
 <!-- KIRI -->
@@ -95,7 +190,7 @@ enctype="multipart/form-data">
 <input type="text"
 name="judul"
 class="form-control"
-value="<?= $berita['judul_berita'] ?? '' ?>">
+value="<?= esc((string)($berita['judul_berita'] ?? '')) ?>">
 
 <label class="fw-bold">Isi Berita</label>
 
@@ -103,15 +198,19 @@ value="<?= $berita['judul_berita'] ?? '' ?>">
 B &nbsp; I &nbsp; U &nbsp; ☰ &nbsp; 🔗 &nbsp; 🖼
 </div>
 
-<textarea name="isi"
-class="editor-box"><?= $berita['isi_berita'] ?? $berita['deskripsi_berita'] ?? '' ?></textarea>
+<div id="editor"
+class="editor-box"
+contenteditable="true"><?= $berita['isi_berita'] ?? $berita['deskripsi_berita'] ?? '' ?></div>
+
+<input type="hidden" name="isi" id="isiHidden">
 
 <label class="fw-bold">Ringkasan</label>
 <input type="text"
 name="ringkasan"
 class="form-control"
-value="<?= $berita['deskripsi_berita'] ?? '' ?>">
+value="<?= esc(strip_tags((string)($berita['deskripsi_berita'] ?? ''))) ?>">
 
+<!-- 🔥 FIX: TAMBAH ROW -->
 <div class="row">
 
 <div class="col-md-6">
@@ -119,7 +218,7 @@ value="<?= $berita['deskripsi_berita'] ?? '' ?>">
 <input type="text"
 name="penulis"
 class="form-control"
-value="<?= $berita['penulis'] ?? 'Admin' ?>">
+value="<?= esc((string)($berita['penulis'] ?? 'Admin')) ?>">
 </div>
 
 <div class="col-md-6">
@@ -127,10 +226,11 @@ value="<?= $berita['penulis'] ?? 'Admin' ?>">
 <input type="date"
 name="tanggal"
 class="form-control"
-value="<?= $berita['tanggal_berita'] ?? '' ?>">
+value="<?= esc((string)($berita['tanggal_berita'] ?? '')) ?>">
 </div>
 
 </div>
+<!-- 🔥 END FIX -->
 
 <div class="bottom-btn">
 
@@ -154,7 +254,7 @@ class="btn-main">
 <div class="side-card">
 
 <img id="previewThumb"
-src="<?= base_url('uploads/berita/'.($berita['gambar_berita'] ?? 'default.jpg')) ?>"
+src="<?= base_url('uploads/berita/' . (!empty($berita['gambar_berita']) ? $berita['gambar_berita'] : 'default.jpg')) ?>"
 style="width:100%;height:190px;object-fit:cover;border-radius:10px;">
 
 <p class="mt-3 fw-bold small mb-1">
@@ -196,30 +296,37 @@ style="display:none;">
 
 </div>
 
-</div>
+<?php endif; ?>
 
+</div>
 </form>
 
 <script>
-document.getElementById('gambarInput').onchange = function(e){
-
-let file = e.target.files[0];
-if(!file) return;
-
-let reader = new FileReader();
-
-reader.onload = function(ev){
-
-document.getElementById('previewThumb').src = ev.target.result;
-
-document.getElementById('previewArea').innerHTML = `
-<img src="${ev.target.result}"
-style="width:100%;height:160px;object-fit:cover;border-radius:12px;">
-`;
-
+    document.querySelector('form').onsubmit = function(){
+    document.getElementById('isiHidden').value =
+    document.getElementById('editor').innerHTML;
 }
+const gambarInput = document.getElementById('gambarInput');
 
-reader.readAsDataURL(file);
+if(gambarInput){
+    gambarInput.onchange = function(e){
+
+        let file = e.target.files[0];
+        if(!file) return;
+
+        let reader = new FileReader();
+
+        reader.onload = function(ev){
+
+            document.getElementById('previewThumb').src = ev.target.result;
+
+            document.getElementById('previewArea').innerHTML =
+            `<img src="${ev.target.result}" style="width:100%;height:160px;object-fit:cover;border-radius:12px;">`;
+
+        }
+
+        reader.readAsDataURL(file);
+    }
 }
 </script>
 
