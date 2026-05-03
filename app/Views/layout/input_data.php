@@ -1,286 +1,630 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= $title ?? 'SIGAP'; ?></title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
+<?= $this->extend('layout/dashboard_layout_admin') ?>
+<?= $this->section('content') ?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<?= $this->renderSection('style'); ?>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
 
-/* 🔥 FIX 1: jangan kunci halaman */
-html,body{
-    height:auto;              /* FIX */
-    margin:0;
-    overflow-x:hidden;        /* FIX (hapus hidden total) */
-    font-family:'Poppins',sans-serif;
+/* ===== STEP HEADER ===== */
+
+/* ===== STEP FINAL FIX ===== */
+.step-progress{
+display:flex;
+justify-content:space-between;
+margin-bottom:30px;
 }
 
+.step-item{
+width:33%;
+text-align:center;
+font-size:14px;
+color:#999;
+}
 
-/* 🔥 SIDEBAR FIX SCROLL */
-.sidebar{
-    width:260px;
-    height:100vh;
+.step-item .bar{
+height:6px;
+width:60%;
+margin:auto;
+border-radius:10px;
+background:#ddd;
+}
+
+.step-item.active{
+color:#00BBC2;
+font-weight:600;
+}
+
+.step-item.active .bar{
+background:#00BBC2;
+}
+
+.form-box{
+background:#eef5f5;
+padding:30px;
+border-radius:20px;
+}
+
+.custom-input{
+border:none;
+border-radius:10px;
+background:#f7f7f7;
+}
+
+.btn-next{
+background:#00BBC2;
+color:white;
+border:none;
+padding:10px 25px;
+border-radius:20px;
+}
+
+.summary-box{
+background:white;
+padding:20px;
+border-radius:15px;
+}
+
+/* ===== POPUP ===== */
+.popup{
     position:fixed;
-    left:0;
-    top:0;
-
-    padding:20px 15px;
-
-    overflow-y:auto;   /* ✅ INI KUNCI */
-    overflow-x:hidden;
-
-    box-shadow:2px 0 10px rgba(0,0,0,0.05);
-}
-
-/* WRAPPER */
-.wrapper{
-    display:flex;
-    min-height:100vh;         /* FIX (bukan height) */
-}
-
-
-
-/* MAIN */
-.main-content{
-    margin-left:260px;
+    top:0;left:0;
     width:100%;
-    min-height:100vh;         /* FIX */
-    display:flex;
-    flex-direction:column;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    justify-content:center;
+    align-items:center;
 }
-
-/* TOPBAR */
-.topbar{
-    background:#fff;
-    padding:15px 25px;
-    border-bottom:1px solid #eee;
-}
-
-/* CONTENT */
-.content-body{
-    flex:1;
-    overflow-y:auto;          /* penting */
+.popup-box{
+    background:white;
     padding:25px;
-    background:#f8f9fc;
+    border-radius:15px;
+    width:320px;
+    text-align:center;
 }
-
-
-
-/* TOGGLE */
-.wrapper.hide .sidebar{
-    left:-260px;
-}
-.wrapper.hide .main-content{
-    margin-left:0;
-}
-
 </style>
-</head>
 
-<body>
+<main class="section-card" style="min-height:100vh;">
 
-<?php
-$penyakit = session('penyakit') ?? 'tbc';
-$menu = $menu ?? '';
-?>
+<h4 class="mb-4">Input Data Pasien</h4>
 
-<div class="wrapper" id="wrapper">
+<!-- STEP HEADER -->
+<div class="step-progress">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+    <div class="progress-line"></div>
 
-<div class="logo text-center mb-3">
-<img src="/assets/img/logo_nama.svg" style="max-width:160px;">
-</div>
-
-<div class="menu-label">HOME</div>
-<a href="<?= base_url('dbd/dashboard') ?>"
-            class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
-            <i class="fa-solid fa-house me-2"></i> Dashboard
-        </a>
-
-    <div class="menu-label">MENU UTAMA</div>
-
-        <a href="<?= base_url('dbd/input_data') ?>"
-            class="<?= ($menu == 'inputdata') ? 'active' : '' ?>">
-            <i class="fa-regular fa-clipboard me-2"></i>Input Data Pasien
-        </a>
-
-        <a href="<?= base_url('dbd/hasil') ?>"
-            class="<?= ($menu == 'hasil') ? 'active' : '' ?>">
-            <i class="fa-regular fa-folder me-2"></i>Hasil Data Pasien
-        </a>
-
-        <a href="<?= base_url('/rekap_skrining_dbd') ?>"
-            class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
-            <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
-        </a>
-
-        <a href="<?= base_url('dbd/dashboard') ?>#map"
-            class="<?= ($menu == 'peta') ? 'active' : '' ?>">
-            <i class="fa-solid fa-map-location-dot me-2"></i>Peta Sebaran
-        </a>
-
-        <a href="<?= base_url('dbd/export') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
-            <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Export Data
-        </a>
-
-
-<div class="menu-label">Informasi</div>
-
-<a href="<?= base_url('Berita') ?>">
-  <i class="fa-solid fa-newspaper me-2"></i> Berita
-</a>
-
-<a href="<?= base_url('Fun Fact') ?>">
-  <i class="fa-solid fa-lightbulb me-2"></i> Fun Fact
-</a>
-
-<a href="<?= base_url('Video') ?>">
-  <i class="fa-solid fa-video me-2"></i> Video
-</a>
-
-<a href="<?= base_url('profil_admin') ?>">
-  <i class="fa-solid fa-user me-2"></i> Profil User
-</a>
-
-<div class="menu-label">Master Data</div>
-
-<a href="<?= base_url('manajemen_user') ?>">
-  <i class="fa-solid fa-users me-2"></i> Manajemen User
-</a>
-
-<a href="<?= base_url('manajemen_puskesmas') ?>">
-  <i class="fa-solid fa-hospital me-2"></i> Manajemen Puskesmas
-</a>
-
-<a href="<?= base_url('profil_sistem') ?>">
-  <i class="fa-solid fa-gear me-2"></i> Profil Sistem
-</a>
-
-</div>
-
-<!-- MAIN -->
-<div class="main-content">
-
-<div class="topbar d-flex justify-content-between align-items-center">
-
-    <div class="d-flex align-items-center">
-        <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
-
-        <div class="fs-4 fw-bold text-dark">
-            <?= $judul ?? 'Input Data Pasien' ?>
-        </div>
+    <div class="step-item active" id="stepNav1">
+        <div class="bar"></div>
+        <span>Step 1 : Lokasi Kasus</span>
     </div>
 
-    <div class="d-flex align-items-center">
-        <div class="text-end me-3">
-            <div class="fw-bold text-dark">Profil</div>
-            <small class="admin-text">Admin</small>
-        </div>
+    <div class="step-item" id="stepNav2">
+        <div class="bar"></div>
+        <span>Step 2 : Data Klinis</span>
+    </div>
 
-        <div class="dropdown avatar-dropdown">
-            <div class="avatar-circle" data-bs-toggle="dropdown" style="cursor:pointer;">
-                <i class="fa-regular fa-user text-white"></i>
-            </div>
-
-            <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
-                        Profile
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       href="<?= base_url('/logout') ?>"
-                       onclick="return confirm('Yakin mau keluar?')">
-                        Keluar
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <div class="step-item" id="stepNav3">
+        <div class="bar"></div>
+        <span>Step 3 : Ringkasan & Kirim</span>
     </div>
 
 </div>
 
-<!-- CONTENT -->
-<div class="content-body">
-    <?= $this->renderSection('content'); ?>
-</div>
+<div class="form-box">
 
-<!-- FOOTER -->
-<footer class="footer mt-5" style="width:100%;">
+<!-- ================= STEP 1 ================= -->
+<!-- ================= STEP 1 ================= -->
+<div id="step1">
 
-            <div class="container text-white py-5">
+<h5 class="mb-4">Step 1 : Lokasi Kasus</h5>
 
-                <div class="row">
+<div class="row g-4">
 
-                    <div class="col-md-4 mb-4">
-                        <h5 class="fw-bold">LOGO</h5>
-                        <p>
-                            SIGAP<br>
-                            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-                        </p>
-                    </div>
+    <!-- KIRI -->
+    <div class="col-md-7">
 
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Media Sosial</h6>
-                        <p>📷 Instagram</p>
-                        <p>📘 Facebook</p>
-                        <p>🐦 Twitter</p>
-                    </div>
+        <div class="card-summary">
 
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
-                        <p>📧 Email: email@kampus.ac.id</p>
-                        <p>📍 Jember, Jawa Timur</p>
-                    </div>
+            <h6 class="fw-bold mb-3">Data Lokasi</h6>
 
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label>Provinsi</label>
+                    <select name="provinsi" class="form-control custom-input" id="provinsi">
+                        <option>Jawa Timur</option>
+                    </select>
                 </div>
 
-                <hr style="border-color: rgba(255,255,255,0.3)">
+                <div class="col-md-6">
+                    <label>Kabupaten</label>
+                    <select name="kabupaten" class="form-control custom-input" id="kabupaten">
+                        <option>Jember</option>
+                    </select>
+                </div>
 
-                <p class="text-center mb-0">
-                    Hak Cipta © 2026 SIGAP
-                </p>
+                <div class="col-md-6">
+                    <label>Kecamatan</label>
+                    <select name="kecamatan" class="form-control custom-input" id="kecamatan">
+                        <option>Sumbersari</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Desa</label>
+                    <select name="desa" class="form-control custom-input" id="desa">
+                        <option>Sumbersari</option>
+                        <option>Antirogo</option>
+                        <option>Karangrejo</option>
+                        <option>Wirolegi</option>
+                        <option>Tegal gede</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 d-flex gap-2">
+                    <input type="text" class="form-control custom-input" placeholder="RT" id="rt" name="rt">
+                    <input type="text" class="form-control custom-input" placeholder="RW" id="rw" name="rw">
+                </div>
+
+                <div class="col-md-6 d-flex gap-2">
+                    <input type="text" class="form-control custom-input" placeholder="Latitude" id="lat" name="lat">
+                    <input type="text" class="form-control custom-input" placeholder="Longitude" id="lng" name="lng">
+                </div>
+
+                <div class="col-md-12">
+                    <textarea class="form-control custom-input" placeholder="Alamat lengkap" id="alamat" name="alamat"></textarea>
+                </div>
 
             </div>
 
-        </footer>
+            <div class="d-flex justify-content-end mt-4">
+                <button class="btn-next" onclick="nextStep(2)">Lanjut →</button>
+            </div>
 
+        </div>
+
+    </div>
+
+    <!-- KANAN (MAP PREVIEW STYLE FIGMA) -->
+    <div class="col-md-5">
+
+        <div class="card-summary text-center">
+
+            <h6 class="fw-bold mb-3">Preview Lokasi</h6>
+
+            <div id="mapPreview" style="height:200px; border-radius:10px;"></div>
+
+            <small class="text-muted d-block mt-2">Lokasi akan tampil di peta</small>
+
+        </div>
+
+    </div>
+
+</div>
+
+           
+
+</div>
+
+<!-- ================= STEP 2 ================= -->
+<!-- ================= STEP 2 ================= -->
+<div id="step2" style="display:none">
+
+<h5 class="mb-4">Step 2 : Data Klinis</h5>
+
+<div class="row g-4">
+
+    <!-- KIRI (STEP INDICATOR STYLE FIGMA) -->
+    <div class="col-md-4">
+
+        <div class="card-summary">
+
+            <div class="mb-3">
+                <span class="badge bg-success">✔</span> Step 1 : Lokasi
+            </div>
+
+            <div class="mb-3 fw-bold text-primary">
+                <span class="badge bg-primary">2</span> Step 2 : Data Klinis
+            </div>
+
+            <div class="text-muted">
+                <span class="badge bg-light text-dark">3</span> Ringkasan & Kirim
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- KANAN (FORM) -->
+    <div class="col-md-8">
+
+        <div class="card-summary">
+
+            <h6 class="fw-bold mb-3">Data Klinis</h6>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label>Nama Pasien</label>
+                    <input name="nama" type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Tanggal Kunjungan</label>
+                    <input name="tanggal" type="date" class="form-control custom-input" id="tanggal">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Jenis Kelamin</label><br>
+                    <input type="radio" name="jk" value="Laki-laki"> Laki-laki<br>
+                    <input type="radio" name="jk" value="Perempuan"> Perempuan
+                </div>
+
+                <div class="col-md-6">
+                    <label>Usia</label>
+                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia">
+                </div>
+
+                <div class="col-md-12">
+                    <label>Catatan Klinis</label>
+                    <textarea name="catatan" class="form-control custom-input" placeholder="Masukkan catatan..." id="catatan"></textarea>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn-next" onclick="prevStep(1)">← Kembali</button>
+                <button class="btn-next" onclick="nextStep(3)">Lanjut →</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ================= STEP 3 ================= -->
+<!-- ================= STEP 3 ================= -->
+<div id="step3" style="display:none">
+
+<h5 class="mb-4">Step 3 : Ringkasan & Kirim</h5>
+
+<div class="row g-4">
+
+    <!-- KIRI (STEP INDICATOR) -->
+    <div class="col-md-4">
+
+        <div class="card-summary">
+
+            <div class="mb-3">
+                <span class="badge bg-success">✔</span> Step 1 : Lokasi
+            </div>
+
+            <div class="mb-3">
+                <span class="badge bg-success">✔</span> Step 2 : Data Klinis
+            </div>
+
+            <div class="fw-bold text-primary">
+                <span class="badge bg-primary">3</span> Ringkasan & Kirim
+            </div>
+
+        </div>
+
+        <!-- OPTIONAL CHART -->
+        <div class="card-summary text-center mt-3">
+
+            <h6 class="fw-bold mb-3">Kelompok Usia</h6>
+
+            <img src="<?= base_url('img/chart.png') ?>" 
+                 class="img-fluid rounded"
+                 style="height:180px; object-fit:cover;">
+
+        </div>
+
+    </div>
+
+    <!-- KANAN (SUMMARY + FORM) -->
+    <div class="col-md-8">
+
+        <div class="card-summary">
+
+            <h6 class="fw-bold mb-3">Ringkasan Laporan Kasus</h6>
+
+            <!-- DATA -->
+            <div class="summary-box">
+
+    <div class="row mb-2 align-items-start">
+        <div class="col-4 text-muted">Alamat</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumAlamat">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Jenis Kelamin</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumJK">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Usia</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumUsia">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Tanggal</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTanggal">-</div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-4 text-muted">Catatan</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumCatatan">-</div>
+    </div>
+
+    <!-- CHECK -->
+    <div class="form-check mt-3">
+        <input class="form-check-input" type="checkbox" id="confirm">
+        <label class="form-check-label">
+            Saya mengonfirmasi data benar
+        </label>
+    </div>
+
+</div>
+
+</div>
+
+            <!-- FORM SUBMIT -->
+            <form action="<?= base_url('dbd/simpandatapasien') ?>" method="post" onsubmit="return submitData()">
+
+                <input type="hidden" name="provinsi" id="formProvinsi">
+                <input type="hidden" name="kabupaten" id="formKabupaten">
+                <input type="hidden" name="kecamatan" id="formKecamatan">
+                <input type="hidden" name="desa" id="formDesa">
+                <input type="hidden" name="rt" id="formRT">
+                <input type="hidden" name="rw" id="formRW">
+                <input type="hidden" name="alamat" id="formAlamat">
+                <input type="hidden" name="lat" id="formLat">
+                <input type="hidden" name="lng" id="formLng">
+
+                <input type="hidden" name="nama" id="formNama">
+                <input type="hidden" name="tanggal" id="formTanggal">
+                <input type="hidden" name="jenis_kelamin" id="formJK">
+                <input type="hidden" name="usia" id="formUsia">
+                <input type="hidden" name="catatan" id="formCatatan">
+                <input type="hidden" name="no_rm" id="formRM">
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+
+
+                    <div class="d-flex justify-content-end gap-3 mt-4 w-100">
+    <button type="button" class="btn-next" onclick="prevStep(2)">← Kembali</button>
+    <button type="submit" class="btn-next">Simpan</button>
+</div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popupSuccess">
+<div class="popup-box">
+<h5>Berhasil</h5>
+<p>Data berhasil disimpan</p>
+<button class="btn-next" onclick="closePopup()">OK</button>
 </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</main>
+
+ <script>
+                function prevStep(step){
+                document.getElementById('step1').style.display='none';
+                document.getElementById('step2').style.display='none';
+                document.getElementById('step3').style.display='none';
+                document.getElementById('step'+step).style.display='block';
+                document.getElementById('stepNav1').classList.remove('active');
+                document.getElementById('stepNav2').classList.remove('active');
+                document.getElementById('stepNav3').classList.remove('active');
+                document.getElementById('stepNav'+step).classList.add('active');
+}
+
+                var map;
+                var marker;
+
+                // 🔥 DATA KOORDINAT DESA (DEFAULT)
+                var koordinatDesa = {
+                    "Sumbersari": { lat: -8.1725, lng: 113.7033 },
+                    "Antirogo": { lat: -8.1570, lng: 113.6905 },
+                    "Karangrejo": { lat: -8.1652, lng: 113.6801 },
+                    "Wirolegi": { lat: -8.1498, lng: 113.7050 },
+                    "Tegal gede": { lat: -8.1801, lng: 113.6955 }
+                };
+
+                document.addEventListener("DOMContentLoaded", function(){
+
+                    // 🔥 INIT MAP
+                    map = L.map('mapPreview').setView([-8.1725, 113.7033], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap'
+                    }).addTo(map);
+
+                    // 🔥 MARKER AWAL
+                    marker = L.marker([-8.1725, 113.7033]).addTo(map);
+
+                    // 🔥 FIX BUG MAP KOSONG (WAJIB kalau di step/tab)
+                    setTimeout(() => {
+                        map.invalidateSize();
+                    }, 300);
+
+                    // =========================================
+                    // 🔥 DEFAULT SAAT LOAD
+                    // =========================================
+                    var defaultDesa = document.getElementById("desa").value;
+
+                    if(koordinatDesa[defaultDesa]){
+                        var lat = koordinatDesa[defaultDesa].lat;
+                        var lng = koordinatDesa[defaultDesa].lng;
+
+                        document.getElementById("lat").value = lat;
+                        document.getElementById("lng").value = lng;
+
+                        map.setView([lat, lng], 15);
+                        marker.setLatLng([lat, lng]);
+                    }
+
+                    // =========================================
+                    // 🔥 PILIH DESA → AUTO PINDAH MAP
+                    // =========================================
+                    document.getElementById("desa").addEventListener("change", function(){
+
+                        var desa = this.value;
+
+                        if(koordinatDesa[desa]){
+                            var lat = koordinatDesa[desa].lat;
+                            var lng = koordinatDesa[desa].lng;
+
+                            document.getElementById("lat").value = lat;
+                            document.getElementById("lng").value = lng;
+
+                            map.setView([lat, lng], 15);
+                            marker.setLatLng([lat, lng]);
+                        }
+
+                    });
+
+                    // =========================================
+                    // 🔥 KLIK PETA → AMBIL TITIK RUMAH (INI INTI)
+                    // =========================================
+                    map.on('click', function(e){
+
+                        var lat = e.latlng.lat;
+                        var lng = e.latlng.lng;
+
+                        // isi input
+                        document.getElementById("lat").value = lat.toFixed(6);
+                        document.getElementById("lng").value = lng.toFixed(6);
+
+                        // pindah marker
+                        marker.setLatLng([lat, lng]);
+
+                        // zoom ke titik
+                        map.setView([lat, lng], 17);
+
+                    });
+
+                    // =========================================
+                    // 🔥 MANUAL INPUT LAT LNG → MAP IKUT GERAK
+                    // =========================================
+                    document.getElementById("lat").addEventListener("input", updateMap);
+                    document.getElementById("lng").addEventListener("input", updateMap);
+
+                    function updateMap(){
+                        var lat = parseFloat(document.getElementById("lat").value);
+                        var lng = parseFloat(document.getElementById("lng").value);
+
+                        if(!isNaN(lat) && !isNaN(lng)){
+                            map.setView([lat, lng], 17);
+                            marker.setLatLng([lat, lng]);
+                        }
+                    }
+
+                });
+                </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.getElementById("toggleSidebar");
-    const wrapper = document.getElementById("wrapper");
 
-    if (toggle && wrapper) {
-        toggle.addEventListener("click", function() {
-            wrapper.classList.toggle("hide");
-        });
+function nextStep(step){
+
+    // pindah step
+    document.getElementById('step1').style.display='none';
+    document.getElementById('step2').style.display='none';
+    document.getElementById('step3').style.display='none';
+
+    document.getElementById('step'+step).style.display='block';
+
+    // update nav
+    document.getElementById('stepNav1').classList.remove('active');
+    document.getElementById('stepNav2').classList.remove('active');
+    document.getElementById('stepNav3').classList.remove('active');
+
+    document.getElementById('stepNav'+step).classList.add('active');
+
+    // ===== AUTO ISI STEP 3 =====
+    if(step === 3){
+
+        let prov = document.getElementById('provinsi').value;
+        let kab = document.getElementById('kabupaten').value;
+        let kec = document.getElementById('kecamatan').value;
+        let desa = document.getElementById('desa').value;
+        let rt = document.getElementById('rt').value;
+        let rw = document.getElementById('rw').value;
+        let alamat = document.getElementById('alamat').value;
+
+        let tanggal = document.getElementById('tanggal').value;
+        let usia = document.getElementById('usia').value;
+        let catatan = document.getElementById('catatan').value;
+
+        let jk = document.querySelector('input[name="jk"]:checked');
+        jk = jk ? jk.value : '-';
+
+        document.getElementById('sumAlamat').innerText =
+            prov + ', ' + kab + ', ' + kec + ', ' + desa +
+            ' RT ' + rt + ' RW ' + rw + ' - ' + alamat;
+
+        document.getElementById('sumJK').innerText = jk;
+        document.getElementById('sumUsia').innerText = usia;
+        document.getElementById('sumTanggal').innerText = tanggal;
+        document.getElementById('sumCatatan').innerText = catatan;
     }
-});
+}
+
+
+// ===== SUBMIT =====
+function submitData(){
+
+    // STEP 1
+    document.getElementById('formProvinsi').value = document.getElementById('provinsi').value;
+    document.getElementById('formKabupaten').value = document.getElementById('kabupaten').value;
+    document.getElementById('formKecamatan').value = document.getElementById('kecamatan').value;
+    document.getElementById('formDesa').value = document.getElementById('desa').value;
+    document.getElementById('formRT').value = document.getElementById('rt').value;
+    document.getElementById('formRW').value = document.getElementById('rw').value;
+    document.getElementById('formAlamat').value = document.getElementById('alamat').value;
+    document.getElementById('formLat').value = document.getElementById('lat').value;
+    document.getElementById('formLng').value = document.getElementById('lng').value;
+
+    // STEP 2
+    document.getElementById('formNama').value = document.getElementById('nama').value;
+    document.getElementById('formTanggal').value = document.getElementById('tanggal').value;
+    document.getElementById('formUsia').value = document.getElementById('usia').value;
+    document.getElementById('formCatatan').value = document.getElementById('catatan').value;
+
+    let jk = document.querySelector('input[name="jk"]:checked');
+    document.getElementById('formJK').value = jk ? jk.value : '';
+
+    // popup
+    document.getElementById('popupSuccess').style.display = 'flex';
+
+    setTimeout(() => {
+        document.querySelector('form').submit();
+    }, 1200);
+
+    return false;
+}
+
 </script>
 
-<?= $this->renderSection('script'); ?>
 
-</body>
-</html>
+<?= $this->endSection() ?>

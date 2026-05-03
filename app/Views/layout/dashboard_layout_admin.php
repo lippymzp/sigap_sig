@@ -18,6 +18,90 @@
 <?= $this->renderSection('style'); ?>
 
 <style>
+/* ===== FIX FOOTER FULL + TIDAK KETUTUP SIDEBAR ===== */
+/* ===== FOOTER RESPONSIVE FIX ===== */
+/* ===== FOOTER RESPONSIVE FIX (RAPIH UI) ===== */
+/* ===== FOOTER RESPONSIVE FIX (RATA KIRI KANAN) ===== */
+.footer {
+    background: #11b5b9;
+    color: white;
+    padding: 35px 0 15px;
+    margin-top: 40px;
+
+    /* default (sidebar aktif) */
+    margin-left: 260px;
+    width: calc(100% - 260px);
+
+    transition: all 0.3s ease;
+}
+
+/* saat sidebar disembunyikan */
+.wrapper.hide ~ .footer {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* container jangan right lagi */
+.footer .container {
+    text-align: initial;
+}
+
+/* bikin row distribusi rata */
+.footer .row {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* tiap kolom rata kiri (biar natural) */
+.footer .col-md-4 {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+/* judul */
+.footer h6 {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+/* isi text */
+.footer p {
+    font-size: 13px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+    opacity: 0.95;
+}
+
+/* garis */
+.footer hr {
+    border-color: rgba(255,255,255,0.25);
+    margin: 12px 0;
+}
+
+/* copyright tetap center */
+.footer .copyright,
+.footer p.text-center {
+    text-align: center;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .footer {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .footer .col-md-4 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .footer .logo {
+        justify-content: center;
+    }
+}
 
 /* 🔥 FIX 1: jangan kunci halaman */
 html,body{
@@ -101,9 +185,10 @@ $menu = $menu ?? '';
 <div class="sidebar">
 
 <div class="logo text-center mb-3">
-<img src="/assets/img/logo_nama.svg" style="max-width:160px;">
+    <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
+         alt="Logo SIGAP" 
+         class="logo-sidebar">
 </div>
-
 <div class="menu-label">HOME</div>
 <a href="<?= base_url('dbd/dashboard') ?>"
             class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
@@ -223,44 +308,59 @@ $menu = $menu ?? '';
 </div>
 </div>
 <!-- FOOTER -->
-<footer class="footer mt-5">
+<footer class="footer">
 
-            <div class="container text-white py-5">
+<div class="container text-white py-3">
+<div class="row align-items-start">
 
-                <div class="row">
+    <!-- LOGO -->
+    <div class="col-md-4 text-center mb-2">
 
-                    <div class="col-md-4 mb-4">
-                        <h5 class="fw-bold">LOGO</h5>
-                        <p>
-                            SIGAP<br>
-                            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-                        </p>
-                    </div>
+         <div class="logo mb-1">
+            <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
+                 alt="Logo SIGAP" 
+                 style="max-width:55px;">
+        </div>
 
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Media Sosial</h6>
-                        <p>📷 Instagram</p>
-                        <p>📘 Facebook</p>
-                        <p>🐦 Twitter</p>
-                    </div>
+        <h6 class="fw-bold mb-1">SIGAP</h6>
 
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
-                        <p>📧 Email: email@kampus.ac.id</p>
-                        <p>📍 Jember, Jawa Timur</p>
-                    </div>
+        <p class="small mb-0" style="line-height:1.3;">
+    Sistem Informasi Geografis Analisis<br>
+    & Pemantauan Penyakit
+</p>
 
-                </div>
+    </div>
 
-                <hr style="border-color: rgba(255,255,255,0.3)">
 
-                <p class="text-center mb-0">
-                    Hak Cipta © 2026 SIGAP
-                </p>
+    <!-- SOSIAL -->
+    <div class="col-md-4 mb-2">
+        <h6 class="fw-bold mb-1">Media Sosial</h6>
 
-            </div>
+        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>Instagram</p>
+        <p class="mb-0 small"><i class="fab fa-facebook me-2"></i>Facebook</p>
+        <p class="mb-0 small"><i class="fab fa-twitter me-2"></i>Twitter</p>
+    </div>
 
-        </footer>
+    <!-- KONTAK -->
+    <div class="col-md-4 mb-2">
+        <h6 class="fw-bold mb-1">Informasi Kontak</h6>
+
+        <p class="mb-0 small">📧 email@kampus.ac.id</p>
+        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
+        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
+        <p class="mb-0 small">📞 087851132933</p>
+    </div>
+
+</div>
+
+<hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
+
+<p class="text-center small mb-0">
+    © 2026 SIGAP
+</p>
+
+</div>
+</footer>
 
 </div>
 

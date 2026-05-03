@@ -69,7 +69,12 @@
 </head>
 
 <body>
-<?php $penyakit = session('penyakit') ?? 'dbd'; ?>
+<body>
+
+<?php
+$penyakit = session('penyakit') ?? 'dbd';
+$menu = $menu ?? '';
+?>
 
 <div class="wrapper" id="wrapper">
 

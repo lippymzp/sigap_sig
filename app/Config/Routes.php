@@ -169,3 +169,15 @@ $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
 $routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
 $routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
 $routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');
+
+// ================= Berita DBD =================
+$routes->get('/berita/tambah', 'BeritaDbd::tambah');
+$routes->post('/berita/simpan', 'BeritaDbd::simpan');
+$routes->get('/berita/kelola_berita', 'BeritaDbd::index');
+$routes->get('detail/(:num)', 'BeritaDbd::detail/$1');
+$routes->get('/berita/edit/(:num)', 'BeritaDbd::edit/$1');
+$routes->post('/berita/update/(:num)', 'BeritaDbd::update/$1');
+$routes->get('/berita/delete/(:num)', 'BeritaDbd::delete/$1');
+$routes->get('/berita', 'BeritaDbd::index');
+$routes->get('/berita/publish', 'BeritaDbd::publish');
+$routes->get('/berita/draft', 'BeritaDbd::draft');
