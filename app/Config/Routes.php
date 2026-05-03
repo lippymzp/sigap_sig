@@ -166,9 +166,9 @@ $routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
 $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
 
 // ================= EXPORT HASIL DATA PASIEN =================
+$routes->get('dbd/get-data-pasien-by-tahun', 'Dbd::get_data_pasien_by_tahun');
 $routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
-$routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
-$routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');
+$routes->get('dbd/get-tahun-list', 'Dbd::get_tahun_list');
 
 // ================= Berita DBD =================
 $routes->get('/berita/tambah', 'BeritaDbd::tambah');

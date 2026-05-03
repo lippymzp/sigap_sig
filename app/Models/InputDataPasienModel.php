@@ -60,22 +60,107 @@ class InputDataPasienModel extends Model
 
         return $db->transStatus();
     }
+public function getDataPasienJoin()
+    {
+        return $this->db->table('pasien')
+            ->select('
+                pasien.id_pasien,
+                pasien.nama_pasien,
+                pasien.jenis_kelamin,
+                pasien.umur,
+                wilayah.kecamatan,
+                wilayah.kelurahan as desa
+            ')
+            ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+            ->orderBy('pasien.id_pasien', 'DESC')
+            ->get()
+            ->getResultArray();
+    }
+
+        // =========================
+        // REKAP UNTUK DASHBOARD
+        // =========================
+       public function getRekapPasienByTahun(?int $tahun)
+        {
+            return $this->db->table('pasien p')
+                ->select("
+                    MONTHNAME(p.tgl_kunjungan) as bulan,
+                    w.kelurahan,
+
+                    SUM(CASE WHEN p.umur <= 19 THEN 1 ELSE 0 END) as anak,
+                    SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
+
+                    SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+                    SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+
+                    COUNT(*) as jumlah
+                ")
+                ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
+                ->where("YEAR(p.tgl_kunjungan)", $tahun)
+                ->groupBy(['MONTH(p.tgl_kunjungan)', 'w.kelurahan'])
+                ->orderBy("MONTH(p.tgl_kunjungan)", "ASC")
+                ->get()
+                ->getResultArray();
+        }
 
 
-    public function getDataPasienJoin()
-{
-    return $this->db->table('pasien')
-        ->select('
-            pasien.id_pasien,
-            pasien.nama_pasien,
-            pasien.jenis_kelamin,
-            pasien.umur,
-            wilayah.kecamatan,
-            wilayah.kelurahan as desa
-        ')
-        ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-        ->orderBy('pasien.id_pasien', 'DESC')
-        ->get()
-        ->getResultArray();
-}
+        // =========================
+        // EXPORT
+        // =========================
+    public function getDataExport(?string $mode, ?int $tahun, ?int $waktu, ?string $kelurahan)
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table('pasien p');
+
+       $builder->select('
+            p.no_rm,
+            p.nama_pasien,
+            p.tgl_kunjungan,
+            p.jenis_kelamin,
+            p.umur,
+            w.kelurahan,
+            w.kecamatan,
+            w.alamat_lengkap,
+        ');
+
+        // WAJIB JOIN
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+        // ================= FILTER TAHUN =================
+        if (!empty($tahun)) {
+            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+        }
+
+        // ================= FILTER WAKTU =================
+        if (!empty($waktu)) {
+
+            if ($mode == 'bulanan') {
+                $builder->where('MONTH(p.tgl_kunjungan)', $waktu);
+            }
+
+            elseif ($mode == 'triwulan') {
+                $start = ($waktu - 1) * 3 + 1;
+                $end = $start + 2;
+
+                $builder->where('MONTH(p.tgl_kunjungan) >=', $start);
+                $builder->where('MONTH(p.tgl_kunjungan) <=', $end);
+            }
+
+            elseif ($mode == 'semester') {
+                if ($waktu == 1) {
+                    $builder->where('MONTH(p.tgl_kunjungan) <=', 6);
+                } else {
+                    $builder->where('MONTH(p.tgl_kunjungan) >=', 7);
+                }
+            }
+        }
+
+        // ================= 🔥 FILTER KELURAHAN =================
+        if (!empty($kelurahan)) {
+            $builder->where('LOWER(w.kelurahan)', strtolower(trim($kelurahan)));
+        }
+
+        return $builder->get()->getResultArray();
+    }
+
 }

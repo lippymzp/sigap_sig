@@ -9,7 +9,7 @@ use Dompdf\Options;
 
 class Dbd extends BaseController
 {
-    protected $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
+    protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
 
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
     public function __construct()
@@ -154,7 +154,7 @@ class Dbd extends BaseController
         return view('riwayat_pelaporan', $data);
     }
 
-    public function hapus_pelaporan($id)
+    public function hapus_pelaporan(int $id)
     {
         // 1. Cari data berdasarkan ID
         $data = $this->pelaporanModel->find($id);
@@ -606,129 +606,187 @@ public function rekap_skrining()
 
     return view('gol_a/rekap_skrining', $data);
 }
-// ================= HALAMAN EXPORT =================
-public function export_hasil_data_pasien()
-{
-    helper('url');
+// ==================================
+    // HASIL DATA PASIEN EXPOR PDF EXCEL
+    // ==================================
 
-    $data['data'] = [
-        [
-            'kecamatan' => 'Sumbersari',
-            'desa' => 'Tegal Gede',
-            'jenis_kelamin' => 1,
-            'umur' => 21,
-            'kasus_baru' => 2,
-            'total_kasus' => 10
-        ],
-        [
-            'kecamatan' => 'Kaliwates',
-            'desa' => 'Kebon Agung',
-            'jenis_kelamin' => 0,
-            'umur' => 35,
-            'kasus_baru' => 1,
-            'total_kasus' => 5
-        ],
-        [
-            'kecamatan' => 'Sumbersari',
-            'desa' => 'Sumbersari',
-            'jenis_kelamin' => 1,
-            'umur' => 18,
-            'kasus_baru' => 3,
-            'total_kasus' => 12
-        ]
-    ];
+  // ================= buat hasil data pasiennn  =================
+    public function get_data_pasien_by_tahun()
+    {
+        $tahun = $this->request->getGet('tahun');
 
-    return view('gol_a/export_hasil_data_pasien', $data);
-}
-// ================= EXPORT PDF =================
-public function export_pdf_pasien()
-{
-    helper('url');
+        $db = \Config\Database::connect();
+        $builder = $db->table('pasien p');
 
-    $data = [
-        'data' => [
-            [
-                'kecamatan' => 'Sumbersari',
-                'desa' => 'Tegal Gede',
-                'jenis_kelamin' => 1,
-                'umur' => 21,
-                'kasus_baru' => 2,
-                'total_kasus' => 10
-            ],
-            [
-                'kecamatan' => 'Kaliwates',
-                'desa' => 'Kebon Agung',
-                'jenis_kelamin' => 0,
-                'umur' => 35,
-                'kasus_baru' => 1,
-                'total_kasus' => 5
-            ]
-        ]
-    ];
+        // QUERY UTAMA
+        $builder->select("
+            MONTH(p.tgl_kunjungan) as bulan_angka,
+            w.kelurahan,
 
-    $html = view('gol_a/export_pdf_pasien', $data);
+            SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
+            SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
 
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-    $dompdf->stream("data_pasien.pdf", ["Attachment" => false]);
-}
-// ================= EXPORT EXCEL =================
-public function export_excel_pasien()
-{
-    header("Content-Type: application/vnd.ms-excel");
-    header("Content-Disposition: attachment; filename=export_hasil_data_pasien.xls");
+            SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+            SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
 
-    $data = [
-        [
-            'kecamatan' => 'Sumbersari',
-            'desa' => 'Tegal Gede',
-            'jenis_kelamin' => 1,
-            'umur' => 21,
-            'kasus_baru' => 2,
-            'total_kasus' => 10
-        ],
-        [
-            'kecamatan' => 'Kaliwates',
-            'desa' => 'Kebon Agung',
-            'jenis_kelamin' => 0,
-            'umur' => 35,
-            'kasus_baru' => 1,
-            'total_kasus' => 5
-        ]
-    ];
+            COUNT(*) as jumlah
+        ");
 
-    echo "<table border='1'>";
-    echo "<tr>
-            <th>No</th>
-            <th>Kecamatan</th>
-            <th>Kelurahan</th>
-            <th>Jenis Kelamin</th>
-            <th>Umur</th>
-            <th>Kasus Baru</th>
-            <th>Total Kasus</th>
-          </tr>";
+        // JOIN
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-    $no = 1;
-    foreach ($data as $d) {
-        $jk = ($d['jenis_kelamin'] == 1) ? 'Perempuan' : 'Laki-laki';
+        // FILTER TAHUN
+        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
 
-        echo "<tr>
-                <td>{$no}</td>
-                <td>{$d['kecamatan']}</td>
-                <td>{$d['desa']}</td>
-                <td>{$jk}</td>
-                <td>{$d['umur']}</td>
-                <td>{$d['kasus_baru']}</td>
-                <td>{$d['total_kasus']}</td>
-              </tr>";
+        // GROUP BY WAJIB (BIAR TIDAK ERROR ONLY_FULL_GROUP_BY)
+        $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
 
-        $no++;
+        // URUT BULAN
+        $builder->orderBy('bulan_angka', 'ASC');
+
+        $data = $builder->get()->getResultArray();
+
+        // CONVERT BULAN KE INDONESIA
+        $bulanMap = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        foreach ($data as &$d) {
+            $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
+        }
+
+        return $this->response->setJSON($data);
+    }
+    
+  // ================= list tahun di export data =================
+    public function get_tahun_list()
+    {
+        $db = \Config\Database::connect();
+
+        $data = $db->table('pasien')
+            ->select('YEAR(tgl_kunjungan) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON($data);
     }
 
-    echo "</table>";
-    exit;
-}
 
+  // ================= HALAMAN =================
+   public function export_hasil_data_pasien()
+{
+    $type = $this->request->getGet('type');
+
+    $mode = $this->request->getGet('mode');
+    $tahun = $this->request->getGet('tahun');
+    $waktu = $this->request->getGet('waktu');
+    $kelurahan = $this->request->getGet('kelurahan');
+
+    $model = new InputDataPasienModel();
+    $data = $model->getDataExport($mode, $tahun, $waktu, $kelurahan);
+
+    // kalau belum klik export → tampilkan halaman filter
+    if (!$type) {
+        return view('gol_a/hasil_data_pasien/export_hasil_data_pasien', [
+            'menu' => 'export_hasil_data_pasien',
+            'penyakit' => 'dbd',
+            'judul' => 'Eksport Data Pasien',
+            'data' => $data //
+        ]);
+    }
+
+    // EXPORT EXCEL
+        if ($type == 'excel') {
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=data_pasien.xls");
+
+        echo "<html>";
+        echo "<head>
+                <meta charset='UTF-8'>
+                <style>
+                    body { font-family: Arial; font-size: 12px; }
+                    h2 { text-align: center; }
+                    .sub { text-align: center; font-size: 11px; margin-bottom: 10px; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th { background: #2c3e50; color: #fff; padding: 6px; }
+                    td { border: 1px solid #ddd; padding: 5px; }
+                    .center { text-align: center; }
+                </style>
+            </head>";
+
+        echo "<body>";
+
+        // Judul
+        echo "<h2>DATA PASIEN DBD</h2>";
+        echo "<div class='sub'>Hasil Export Berdasarkan Filter</div>";
+
+        // Tabel
+        echo "<table border='1'>";
+        echo "<tr>
+                <th>No</th>
+                <th>No RM</th>
+                <th>Nama</th>
+                <th>Tanggal</th>
+                <th>JK</th>
+                <th>Usia</th>
+                <th>Kelurahan</th>
+                <th>Kecamatan</th>
+                <th>Alamat</th>
+            </tr>";
+
+        $no = 1;
+
+        if (!empty($data)) {
+            foreach ($data as $d) {
+                echo "<tr>
+                        <td class='center'>{$no}</td>
+                        <td>{$d['no_rm']}</td>
+                        <td>{$d['nama_pasien']}</td>
+                        <td class='center'>{$d['tgl_kunjungan']}</td>
+                        <td class='center'>{$d['jenis_kelamin']}</td>
+                        <td class='center'>{$d['umur']}</td>
+                        <td>{$d['kelurahan']}</td>
+                        <td>{$d['kecamatan']}</td>
+                        <td>{$d['alamat_lengkap']}</td>
+                    </tr>";
+                $no++;
+            }
+        } else {
+            echo "<tr>
+                    <td colspan='9' class='center'>Data tidak tersedia</td>
+                </tr>";
+        }
+
+        echo "</table>";
+        echo "</body></html>";
+
+        exit;
+    }
+
+    // EXPORT PDF
+    if ($type == 'pdf') {
+        $html = view('gol_a/hasil_data_pasien/export_pdf_pasien', ['data' => $data]);
+
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $dompdf->stream("data_pasien.pdf", ["Attachment" => true]);
+        exit;
+    }
+}
 }
