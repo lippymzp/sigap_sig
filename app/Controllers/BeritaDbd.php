@@ -92,7 +92,7 @@ class BeritaDbd extends Controller
         ]);
     }
 
-    private function cleanHtml($text)
+    private function cleanHtml(?string $text): ?string
 {
     if (!$text) return $text;
 
