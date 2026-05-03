@@ -3,7 +3,8 @@
 
 <?php
 $grafik = $grafik ?? [];
-$kelurahan = $kelurahan ?? [];
+$dbd = $dbd ?? [];
+$tahunSekarang = date('Y');
 ?>
 
 <!-- WELCOME -->
@@ -69,13 +70,16 @@ $kelurahan = $kelurahan ?? [];
                 <h5>Peta Interaktif Penyebaran</h5>
                 <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
             </div>
-
-            <div class="filter">
-                <span>Periode:</span>
-                <select>
-                    <option>2025</option>
-                </select>
-            </div>
+        <div class="filter">
+    <span>Periode:</span>
+    <select id="periodeMap" onchange="updateMap()">
+        <?php for($t = 2024; $t <= $tahunSekarang; $t++): ?>
+            <option value="<?= $t ?>" <?= ($t == $tahunSekarang ? 'selected' : '') ?>>
+                <?= $t ?>
+            </option>
+        <?php endfor; ?>
+    </select>
+</div>
         </div>
 
         <div class="inner-card">
@@ -84,19 +88,18 @@ $kelurahan = $kelurahan ?? [];
     <script>
 
     /* 🔥 FIX NAMA */
-    function fixNama(nama){
-        return (nama || "")
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, " ")
-            .replace(/[^a-z0-9 ]/g, "");
-    }
+   function fixNama(nama){
+    return (nama || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]/g, "");
+}
 
     /* 🔥 OPTIONAL: kalau ada nama beda */
-    var aliasDesa = {
-        "kemuningsarilor": "kemuning sari lor"
-    };
-
+   var aliasDesa = {
+    "kemuningsarilor": "kemuning sari lor",
+    "tegalgede": "tegal gede"
+};
     var dataDBD = <?= json_encode($dbd ?? []) ?>;
     var dataFinal = {};
 
@@ -251,28 +254,61 @@ $kelurahan = $kelurahan ?? [];
 <form method="get">
 
 <div class="row mb-3">
-
+<!-- USIA -->
 <div class="col-md-3">
-<select name="kelurahan"
-        class="form-control shadow-sm"
-        onchange="this.form.submit()">
-
-    <option value="">Semua Kelurahan</option>
-
-    <?php foreach ($kelurahan as $k): ?>
-        <option value="<?= $k['kelurahan'] ?>"
-            <?= (request()->getGet('kelurahan') == $k['kelurahan']) ? 'selected' : '' ?>>
-            <?= $k['kelurahan'] ?>
-        </option>
-    <?php endforeach; ?>
-
-</select>
+    <select name="usia" class="form-control shadow-sm" onchange="this.form.submit()">
+        <option value="">Semua Usia</option>
+        <option value="anak" <?= request()->getGet('usia')=='anak' ? 'selected' : '' ?>>0-14</option>
+        <option value="remaja" <?= request()->getGet('usia')=='remaja' ? 'selected' : '' ?>>15-24</option>
+        <option value="dewasa" <?= request()->getGet('usia')=='dewasa' ? 'selected' : '' ?>>25-59</option>
+        <option value="lansia" <?= request()->getGet('usia')=='lansia' ? 'selected' : '' ?>>60+</option>
+    </select>
 </div>
 
+<!-- GENDER -->
+<div class="col-md-3">
+    <select name="jk" class="form-control shadow-sm" onchange="this.form.submit()">
+        <option value="">Semua Gender</option>
+        <option value="L" <?= request()->getGet('jk')=='L' ? 'selected' : '' ?>>Laki-laki</option>
+        <option value="P" <?= request()->getGet('jk')=='P' ? 'selected' : '' ?>>Perempuan</option>
+    </select>
+</div>
+
+<!-- BULAN -->
+<div class="col-md-3">
+    <select name="bulan" class="form-control shadow-sm" onchange="this.form.submit()">
+        <option value="">Semua Bulan</option>
+
+        <?php
+        $bulanList = [
+            1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',
+            5=>'Mei',6=>'Jun',7=>'Jul',8=>'Ags',
+            9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'
+        ];
+
+        foreach($bulanList as $key => $val):
+        ?>
+            <option value="<?= $key ?>" <?= request()->getGet('bulan') == $key ? 'selected' : '' ?>>
+                <?= $val ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+<!-- TAHUN -->
+<div class="col-md-3">
+    <select name="tahun" class="form-control shadow-sm" onchange="this.form.submit()">
+        <option value="">Semua Tahun</option>
+
+        <?php for($t = 2020; $t <= date('Y'); $t++): ?>
+            <option value="<?= $t ?>" <?= request()->getGet('tahun') == $t ? 'selected' : '' ?>>
+                <?= $t ?>
+            </option>
+        <?php endfor; ?>
+    </select>
+</div>
+</div>
 </form>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kategori</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Tahun</option></select></div>
-</div>
 
 <div class="row">
 
@@ -280,15 +316,6 @@ $kelurahan = $kelurahan ?? [];
 <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
 <pre>
 </pre><canvas id="chartDBD"></canvas>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-<h6>Keterangan Grafik</h6>
-<p><span style="color:#8ecae6">■</span> Sembuh</p>
-<p><span style="color:#219ebc">■</span> Pengobatan</p>
-<p><span style="color:#90dbf4">■</span> Meninggal</p>
 </div>
 </div>
 
@@ -304,16 +331,10 @@ document.addEventListener("DOMContentLoaded", function(){
     let labels = [];
     let totalKasus = [];
 
-    const namaBulan = [
-        '', 'Jan', 'Feb', 'Mar', 'Apr',
-        'Mei', 'Jun', 'Jul', 'Ags',
-        'Sep', 'Okt', 'Nov', 'Des'
-    ];
-
     dataGrafik.forEach(function(item){
-        labels.push(namaBulan[item.bulan]);
-        totalKasus.push(item.total);
-    });
+    labels.push(item.kelurahan);
+    totalKasus.push(item.total);
+});
 
     new Chart(document.getElementById('chartDBD'), {
         type: 'bar',
