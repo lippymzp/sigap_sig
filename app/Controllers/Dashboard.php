@@ -54,35 +54,93 @@ class Dashboard extends BaseController
    public function dbd()
 {
     $db = \Config\Database::connect();
+$bulan = $this->request->getGet('bulan');
+    $tahun = $this->request->getGet('tahun');
+    $usia  = $this->request->getGet('usia');
+    $jk    = $this->request->getGet('jk');
 
-    $selectedKelurahan = $this->request->getGet('kelurahan');
-
-    $kelurahan = $db->query("
-        SELECT DISTINCT kelurahan
-        FROM wilayah
-        ORDER BY kelurahan ASC
-    ")->getResultArray();
+    // 
+    $wilayahList = ['Wirolegi', 'Sumbersari', 'Karangrejo', 'Antirogo', 'Tegal Gede'];
 
     $builder = $db->table('pasien p');
-    $builder->select('MONTH(p.tgl_kunjungan) as bulan, COUNT(*) as total');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+    $builder->select('w.kelurahan, COUNT(*) as total');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-    if (!empty($selectedKelurahan)) {
-        $builder->where('w.kelurahan', $selectedKelurahan);
+    $builder->whereIn('w.kelurahan', [
+    'Wirolegi',
+    'Sumbersari',
+    'Karangrejo',
+    'Antirogo',
+    'Tegal Gede'
+                ]);
+    
+    // FILTER BULAN
+    if (!empty($bulan)) {
+        $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
     }
 
-    $builder->groupBy('MONTH(p.tgl_kunjungan)');
-    $builder->orderBy('MONTH(p.tgl_kunjungan)', 'ASC');
+    // FILTER TAHUN 
+    if (!empty($tahun)) {
+        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+    }
 
+    // FILTER JK
+    if (!empty($jk)) {
+    if ($jk == 'L') {
+        $builder->where('p.jenis_kelamin', 'Laki-laki');
+    } elseif ($jk == 'P') {
+        $builder->where('p.jenis_kelamin', 'Perempuan');
+    }
+}
+
+
+    // FILTER USIA
+    if (!empty($usia)) {
+    if ($usia == 'anak') {
+        $builder->where('p.umur <=', 14);
+    } elseif ($usia == 'remaja') {
+        $builder->where('p.umur >=', 15);
+        $builder->where('p.umur <=', 24);
+    } elseif ($usia == 'dewasa') {
+        $builder->where('p.umur >=', 25);
+        $builder->where('p.umur <=', 59);
+    } elseif ($usia == 'lansia') {
+        $builder->where('p.umur >=', 60);
+    }
+}
+
+
+    $builder->where('p.tgl_kunjungan IS NOT NULL');
+    $builder->groupBy('w.kelurahan');
+    $builder->orderBy('w.kelurahan', 'ASC');
+    
     $grafik = $builder->get()->getResultArray();
+
+    // ambil tahun dulu
+    $tahun = $this->request->getGet('tahun');
+
+    // DATA PETA
+    $builderDbd = $db->table('pasien p')
+        ->select('w.kelurahan as desa, COUNT(*) as kasus')
+        ->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+    if (!empty($tahun)) {
+        $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahun);
+    }
+
+    $builderDbd->groupBy('w.kelurahan');
+$dbd = $builderDbd->get()->getResultArray();
+
+
 
     return view('gol_a/dashboard_dbd', [
         'menu' => 'dashboard',
         'artikels' => [],
         'grafik' => $grafik,
-        'kelurahan' => $kelurahan
+        'dbd' => $dbd
     ]);
 }
+
 
     public function tbc()
     {
