@@ -319,27 +319,17 @@ body {
 
 <?php 
 $pertanyaan = [
-    "Apakah Anda menguras TPA?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
-    "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
-    "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
-    "Apakah Anda mendaur ulang barang bekas yang dapat menampung air hujan?",
-    "Apakah Anda menaburkan larvasida seperti abate pada tempat penampungan yang sulit dibersihkan?",
-    "Apakah Anda menaburkan abate sesuai dengan aturan pakai?",
-    "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
-    "Apakah Anda menanam tanaman pengusir nyamuk?",
-    "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
-    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
-    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus?",
-    "Apakah di rumah Anda banyak genangan air?",
-    "Apakah Anda memiliki kebiasaan menggantungkan baju di rumah?",
-    "Apakah semua anggota keluarga Anda sering menggantungkan baju di rumah?",
-    "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
-    "Apakah akhir-akhir ini Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
-    "Apakah baru-baru ini Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
-    "Apakah belakangan ini Anda sering berkunjung ke tempat umum atau lokasi ramai?",
-    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?"
+    "Apakah Anda mengalami batuk dalam 7 hari terakhir?",
+    "Apakah Anda mengeluarkan dahak (sputum) saat batuk?",
+    "Apakah Anda mengalami sesak napas?",
+    "Apakah Anda merasakan nyeri dada saat bernapas atau batuk?",
+    "Apakah Anda mengalami mual atau muntah?",
+    "Apakah Anda merasa lemas?",
+    "Apakah nafsu makan Anda menurun?",
+    "Apakah Anda mengalami demam (≥38 derajat celcius)?",
+    "Apakah napas Anda terasa lebih cepat dari biasanya?",
+    "Apakah saat bernapas terdengar bunyi seperti mendengkur atau seperti ada dahak di dada?",
+    "Apakah saat Anda bernapas terdengar bunyi mengi (seperti siulan)?"
 ];
 ?>
 
@@ -378,9 +368,6 @@ if ($value == 1):
     <?= $hasil ?>
 </div>
 
-<p class="text-center mt-2 text-muted">
-    <?= $alasan ?>
-</p>
 
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
@@ -407,18 +394,18 @@ if ($value == 1):
 <!-- CETAK (SENDIRI DI ATAS) -->
 <div class="cetak-wrapper">
     <button onclick="window.print()" class="btn-cetak-full">
-        🖨️ Cetak Hasil
+        Cetak Hasil
     </button>
 </div>
 
 <!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-    <a href="/skrining" class="btn btn-kembali">
+    <a href="<?= base_url('skriningpneumonia') ?>" class="btn btn-kembali">
         Kembali
     </a>
 
-   <a href="<?= base_url('/') ?>" class="btn btn-selesai">
+   <a href="<?= base_url('pneumonia') ?>" class="btn btn-selesai">
     Selesai
     </a>
 
