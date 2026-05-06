@@ -288,11 +288,11 @@ $menu = $menu ?? '';
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item"
-                       href="<?= base_url('/logout') ?>"
-                       onclick="return confirm('Yakin mau keluar?')">
-                        Keluar
-                    </a>
+<a class="dropdown-item"
+   href="javascript:void(0)"
+   onclick="confirmLogout('<?= base_url('/logout') ?>')">
+    Keluar
+</a>
                 </li>
             </ul>
         </div>

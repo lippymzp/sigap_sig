@@ -330,6 +330,28 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+function confirmLogout(url) {
+
+    Swal.fire({
+        title: 'Apakah anda yakin keluar?',
+        icon: 'warning',
+        showCancelButton: true,
+
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak'
+
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+
+    });
+
+}
+</script>
 
 <?= $this->endSection() ?>

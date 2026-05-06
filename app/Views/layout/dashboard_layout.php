@@ -108,11 +108,11 @@
             </a>
         </li>
         <li>
-    <a class="dropdown-item"
-       href="<?= base_url('/logout') ?>"
-       onclick="return confirm('Yakin mau keluar?')">
-        <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-    </a>
+<a class="dropdown-item"
+   href="javascript:void(0)"
+   onclick="confirmLogout('<?= base_url('/logout') ?>')">
+    Keluar
+</a>
     </li>
     </ul>
 </div>
@@ -184,5 +184,29 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmLogout(url) {
+
+    Swal.fire({
+        title: 'Apakah anda yakin keluar?',
+        icon: 'warning',
+        showCancelButton: true,
+
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak'
+
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+
+    });
+
+}
+</script>
 
 </html>
