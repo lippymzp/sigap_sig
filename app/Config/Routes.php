@@ -168,6 +168,7 @@ $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
 // ================= EXPORT HASIL DATA PASIEN =================
 $routes->get('dbd/get-data-pasien-by-tahun', 'Dbd::get_data_pasien_by_tahun');
 $routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
+
 $routes->get('dbd/get-tahun-list', 'Dbd::get_tahun_list');
 
 // ================= Berita DBD =================
@@ -181,3 +182,19 @@ $routes->get('/berita/delete/(:num)', 'BeritaDbd::delete/$1');
 $routes->get('/berita', 'BeritaDbd::index');
 $routes->get('/berita/publish', 'BeritaDbd::publish');
 $routes->get('/berita/draft', 'BeritaDbd::draft');
+
+$routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
+$routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');
+
+$routes->get('tbc/hasil', 'AdminTbc\Pasien::index');
+
+$routes->get('tbc/input_data', 'AdminTbc\Pasien::create');
+
+$routes->post('tbc/store', 'AdminTbc\Pasien::store');
+
+$routes->get('tbc/edit/(:num)', 'AdminTbc\Pasien::edit/$1');
+
+$routes->post('tbc/update/(:num)', 'AdminTbc\Pasien::update/$1');
+
+$routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
+
