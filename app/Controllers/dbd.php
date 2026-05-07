@@ -30,7 +30,7 @@ class Dbd extends BaseController
     {
         $pasien = session()->get('pasien') ?? [];
 
-        return view('gol_a/hasil_data_a', [
+        return view('gol_a/hasil_data_pasien/hasil_data_a', [
             'menu' => 'hasil',
             'penyakit' => 'dbd',
             'judul' => 'Hasil Data Pasien',
@@ -44,6 +44,7 @@ class Dbd extends BaseController
 
         // ambil semua data dari form
         $data = $this->request->getPost();
+        $data['id_petugas'] = session()->get('id_petugas');
 
         // 🔥 panggil model (di sinilah insert terjadi)
         $success = $model->simpanSemua($data);

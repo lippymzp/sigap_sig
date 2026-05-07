@@ -179,6 +179,21 @@ $penyakit = session('penyakit') ?? 'dbd';
 $menu = $menu ?? '';
 ?>
 
+<?php
+$db = \Config\Database::connect();
+
+$id_petugas = session()->get('id_petugas');
+
+$profil = $db->table('profil')
+    ->where('id_petugas', $id_petugas)
+    ->get()
+    ->getRowArray();
+
+$fotoNavbar = (!empty($profil['foto_profil']))
+    ? base_url('uploads/profil/' . $profil['foto_profil'])
+    : 'https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png';
+?>
+
 <div class="wrapper" id="wrapper">
 
 <!-- SIDEBAR -->
@@ -277,8 +292,23 @@ $menu = $menu ?? '';
         </div>
 
         <div class="dropdown avatar-dropdown">
-            <div class="avatar-circle" data-bs-toggle="dropdown" style="cursor:pointer;">
-                <i class="fa-regular fa-user text-white"></i>
+            <div class="avatar-circle"
+                data-bs-toggle="dropdown"
+                style="
+                    cursor:pointer;
+                    width:45px;
+                    height:45px;
+                    border-radius:50%;
+                    overflow:hidden;
+                ">
+
+                <img src="<?= $fotoNavbar; ?>"
+                    style="
+                        width:100%;
+                        height:100%;
+                        object-fit:cover;
+                    ">
+
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -378,6 +408,28 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("toggleSidebar");
+    const wrapper = document.getElementById("wrapper");
+
+    if (toggle && wrapper) {
+        toggle.addEventListener("click", function() {
+            wrapper.classList.toggle("hide");
+        });
+    }
+});
+
+/* LOGOUT */
+function confirmLogout(url)
+{
+    if(confirm('Yakin ingin keluar?'))
+    {
+        window.location.href = url;
+    }
+}
 </script>
 
 <?= $this->renderSection('script'); ?>

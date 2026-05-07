@@ -53,7 +53,7 @@ class InputDataPasienModel extends Model
             'umur'          => $data['usia'] ?? null,
             'tgl_kunjungan' => $data['tanggal'] ?? null,
             'ctt_klinis'    => $data['catatan'] ?? null,
-            'id_petugas'    => 1
+            'id_petugas'    => session()->get('id_petugas')
         ]);
 
         $db->transComplete();

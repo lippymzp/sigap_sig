@@ -259,7 +259,7 @@ $tahunAktif = isset($_GET['tahun']) ? $_GET['tahun'] : 2026;
         <div class="right-toolbar">
             <select class="form-select rekap-select" onchange="window.location.href=this.value;">
                 <option value="<?= base_url('pelaporan-kader') ?>">Rekap Laporan</option>
-                <option value="<?= base_url('pelaporan-kader/daftar') ?>" selected>Daftar Laporan</option>
+                <option value="<?= base_url('pelaporan-kader/daftar') ?>">Daftar Laporan</option>
             </select>
             
             <div class="periode-control">

@@ -1,6 +1,6 @@
 <?php /** @var array $berita */ ?>
 
-<?= $this->extend('layout/dashboard_layout'); ?>
+<?= $this->extend('layout/dashboard_layout_admin'); ?>
 <?= $this->section('content'); ?>
 
 <style>

@@ -39,6 +39,8 @@ $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
 
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->get('/profil_admin', 'Profile2::profil_admin');
+$routes->post('uploadFoto', 'Profile2::uploadFoto');
+$routes->post('updateProfil', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
 /* ========================= */
 /* DIARE */

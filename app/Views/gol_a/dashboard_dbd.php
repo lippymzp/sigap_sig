@@ -6,6 +6,50 @@ $grafik = $grafik ?? [];
 $dbd = $dbd ?? [];
 $tahunSekarang = date('Y');
 ?>
+<style>.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    background: #fff;
+    width: 85%;
+    max-width: 900px;
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.close-modal {
+    position: absolute;
+    right: 25px;
+    top: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.info-box {
+    margin-top: 20px;
+    background: #f8f8f8;
+    border-radius: 18px;
+    padding: 25px;
+    border: 1px solid #ddd;
+}
+
+.info-box table tr td {
+    padding: 8px 0;
+    vertical-align: top;
+}</style>
 
 <!-- WELCOME -->
 <div class="welcome-box">
@@ -84,7 +128,54 @@ $tahunSekarang = date('Y');
 
         <div class="inner-card">
     <div id="map"></div>
+<div id="detailModal" class="custom-modal">
+    <div class="custom-modal-content">
 
+        <span class="close-modal" onclick="closeDetailModal()">
+            &times;
+        </span>
+
+        <h3>Peta Sebaran Kasus 2025</h3>
+
+        <div class="info-box">
+
+            <h4><b>Informasi :</b></h4>
+
+            <table style="width:100%;">
+                <tr>
+                    <td>Nama Daerah</td>
+                    <td>: <span id="modalNama"></span></td>
+                </tr>
+
+                <tr>
+                    <td>Jumlah Penduduk</td>
+                    <td>: 2900</td>
+                </tr>
+
+                <tr>
+                    <td>Jumlah Kasus</td>
+                    <td>: <span id="modalKasus"></span></td>
+                </tr>
+
+                <tr>
+                    <td>Kategori Kasus</td>
+                    <td>: <span id="modalKategori"></span></td>
+                </tr>
+
+                <tr>
+                    <td>Rumah Diperiksa</td>
+                    <td>: 1200</td>
+                </tr>
+
+                <tr>
+                    <td>Rumah Positive Jentik</td>
+                    <td>: 5</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
     <script>
 
     /* 🔥 FIX NAMA */
@@ -186,17 +277,41 @@ $tahunSekarang = date('Y');
 
                     var item = dataFinal[namaFix];
 
-                    var isi = "<b>Kelurahan: " + namaAsli + "</b>";
+                    var isi = "<div style='min-width:220px;'>";
 
-                    if(item){
-                        isi += "<br>Total Kasus: " + item.total;
-                        isi += "<br>Kategori: " + item.kategori;
-                    } else {
-                        isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                    }
+isi += "<b>Kelurahan: " + namaAsli + "</b>";
 
-                    /* 🔥 POPUP */
-                    layer.bindPopup(isi);
+if(item){
+    isi += "<br>Total Kasus: " + item.total;
+    isi += "<br>Kategori: " + item.kategori;
+
+    isi += `
+        <br><br>
+        <button 
+            onclick="showDetailPopup(
+                '${namaAsli}',
+                '${item.total}',
+                '${item.kategori}'
+            )"
+            style="
+                background:#00CED1;
+                color:white;
+                border:none;
+                padding:8px 14px;
+                border-radius:8px;
+                cursor:pointer;
+                font-weight:600;
+            ">
+            Selengkapnya
+        </button>
+    `;
+} else {
+    isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
+}
+
+isi += "</div>";
+
+layer.bindPopup(isi);  
 
                     /* 🔥 LABEL NAMA DI PETA */
                     layer.bindTooltip(namaAsli, {
@@ -227,7 +342,19 @@ $tahunSekarang = date('Y');
         });
 
     });
+function showDetailPopup(nama, total, kategori)
+{
+    document.getElementById("modalNama").innerText = nama;
+    document.getElementById("modalKasus").innerText = total;
+    document.getElementById("modalKategori").innerText = kategori;
 
+    document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeDetailModal()
+{
+    document.getElementById("detailModal").style.display = "none";
+}
     </script>
 </div>
 
