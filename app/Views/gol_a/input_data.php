@@ -7,73 +7,62 @@
 <style>
 
 /* ===== STEP HEADER ===== */
-/* ===== STEP FIGMA FIX ===== */
+
 /* ===== STEP FINAL FIX ===== */
 .step-progress{
-    position:relative;
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:30px;
+display:flex;
+justify-content:space-between;
+margin-bottom:30px;
 }
 
-/* garis panjang */
-
-/* item */
 .step-item{
-    position:relative;
-    z-index:2;
-    width:33%;
-    text-align:center;
-    font-size:14px;
-    color:#999;
+width:33%;
+text-align:center;
+font-size:14px;
+color:#999;
 }
 
-/* bar kecil */
 .step-item .bar{
-    height:6px;
-    width:60%;
-    margin:0 auto 8px auto;
-    border-radius:10px;
-    background:#ddd;
+height:6px;
+width:60%;
+margin:auto;
+border-radius:10px;
+background:#ddd;
 }
 
-/* aktif */
 .step-item.active{
-    color:#00BBC2;
-    font-weight:600;
+color:#00BBC2;
+font-weight:600;
 }
 
 .step-item.active .bar{
-    background:#00BBC2;
-    box-shadow:0 0 6px rgba(0,187,194,0.4);
+background:#00BBC2;
 }
-/* ===== FORM ===== */
+
 .form-box{
-    background:#eef5f5;
-    padding:30px;
-    border-radius:20px;
+background:#eef5f5;
+padding:30px;
+border-radius:20px;
 }
+
 .custom-input{
-    border:none;
-    border-radius:10px;
-    background:#f7f7f7;
+border:none;
+border-radius:10px;
+background:#f7f7f7;
 }
 
-/* ===== BUTTON ===== */
 .btn-next{
-    background:#00BBC2;
-    color:white;
-    border:none;
-    padding:10px 25px;
-    border-radius:20px;
+background:#00BBC2;
+color:white;
+border:none;
+padding:10px 25px;
+border-radius:20px;
 }
 
-/* ===== SUMMARY ===== */
 .summary-box{
-    background:white;
-    padding:20px;
-    border-radius:15px;
+background:white;
+padding:20px;
+border-radius:15px;
 }
 
 /* ===== POPUP ===== */
@@ -96,7 +85,7 @@
 }
 </style>
 
-<div class="section-card">
+<main class="section-card" style="min-height:100vh;">
 
 <h4 class="mb-4">Input Data Pasien</h4>
 
@@ -214,121 +203,7 @@
 
 </div>
 
-            <script>
-                function prevStep(step){
-                document.getElementById('step1').style.display='none';
-                document.getElementById('step2').style.display='none';
-                document.getElementById('step3').style.display='none';
-                document.getElementById('step'+step).style.display='block';
-                document.getElementById('stepNav1').classList.remove('active');
-                document.getElementById('stepNav2').classList.remove('active');
-                document.getElementById('stepNav3').classList.remove('active');
-                document.getElementById('stepNav'+step).classList.add('active');
-}
-
-                var map;
-                var marker;
-
-                // 🔥 DATA KOORDINAT DESA (DEFAULT)
-                var koordinatDesa = {
-                    "Sumbersari": { lat: -8.1725, lng: 113.7033 },
-                    "Antirogo": { lat: -8.1570, lng: 113.6905 },
-                    "Karangrejo": { lat: -8.1652, lng: 113.6801 },
-                    "Wirolegi": { lat: -8.1498, lng: 113.7050 },
-                    "Tegal gede": { lat: -8.1801, lng: 113.6955 }
-                };
-
-                document.addEventListener("DOMContentLoaded", function(){
-
-                    // 🔥 INIT MAP
-                    map = L.map('mapPreview').setView([-8.1725, 113.7033], 13);
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OpenStreetMap'
-                    }).addTo(map);
-
-                    // 🔥 MARKER AWAL
-                    marker = L.marker([-8.1725, 113.7033]).addTo(map);
-
-                    // 🔥 FIX BUG MAP KOSONG (WAJIB kalau di step/tab)
-                    setTimeout(() => {
-                        map.invalidateSize();
-                    }, 300);
-
-                    // =========================================
-                    // 🔥 DEFAULT SAAT LOAD
-                    // =========================================
-                    var defaultDesa = document.getElementById("desa").value;
-
-                    if(koordinatDesa[defaultDesa]){
-                        var lat = koordinatDesa[defaultDesa].lat;
-                        var lng = koordinatDesa[defaultDesa].lng;
-
-                        document.getElementById("lat").value = lat;
-                        document.getElementById("lng").value = lng;
-
-                        map.setView([lat, lng], 15);
-                        marker.setLatLng([lat, lng]);
-                    }
-
-                    // =========================================
-                    // 🔥 PILIH DESA → AUTO PINDAH MAP
-                    // =========================================
-                    document.getElementById("desa").addEventListener("change", function(){
-
-                        var desa = this.value;
-
-                        if(koordinatDesa[desa]){
-                            var lat = koordinatDesa[desa].lat;
-                            var lng = koordinatDesa[desa].lng;
-
-                            document.getElementById("lat").value = lat;
-                            document.getElementById("lng").value = lng;
-
-                            map.setView([lat, lng], 15);
-                            marker.setLatLng([lat, lng]);
-                        }
-
-                    });
-
-                    // =========================================
-                    // 🔥 KLIK PETA → AMBIL TITIK RUMAH (INI INTI)
-                    // =========================================
-                    map.on('click', function(e){
-
-                        var lat = e.latlng.lat;
-                        var lng = e.latlng.lng;
-
-                        // isi input
-                        document.getElementById("lat").value = lat.toFixed(6);
-                        document.getElementById("lng").value = lng.toFixed(6);
-
-                        // pindah marker
-                        marker.setLatLng([lat, lng]);
-
-                        // zoom ke titik
-                        map.setView([lat, lng], 17);
-
-                    });
-
-                    // =========================================
-                    // 🔥 MANUAL INPUT LAT LNG → MAP IKUT GERAK
-                    // =========================================
-                    document.getElementById("lat").addEventListener("input", updateMap);
-                    document.getElementById("lng").addEventListener("input", updateMap);
-
-                    function updateMap(){
-                        var lat = parseFloat(document.getElementById("lat").value);
-                        var lng = parseFloat(document.getElementById("lng").value);
-
-                        if(!isNaN(lat) && !isNaN(lng)){
-                            map.setView([lat, lng], 17);
-                            marker.setLatLng([lat, lng]);
-                        }
-                    }
-
-                });
-                </script>
+           
 
 </div>
 
@@ -549,6 +424,124 @@
 <button class="btn-next" onclick="closePopup()">OK</button>
 </div>
 </div>
+
+</main>
+
+ <script>
+                function prevStep(step){
+                document.getElementById('step1').style.display='none';
+                document.getElementById('step2').style.display='none';
+                document.getElementById('step3').style.display='none';
+                document.getElementById('step'+step).style.display='block';
+                document.getElementById('stepNav1').classList.remove('active');
+                document.getElementById('stepNav2').classList.remove('active');
+                document.getElementById('stepNav3').classList.remove('active');
+                document.getElementById('stepNav'+step).classList.add('active');
+}
+
+                var map;
+                var marker;
+
+                // 🔥 DATA KOORDINAT DESA (DEFAULT)
+                var koordinatDesa = {
+                    "Sumbersari": { lat: -8.1725, lng: 113.7033 },
+                    "Antirogo": { lat: -8.1570, lng: 113.6905 },
+                    "Karangrejo": { lat: -8.1652, lng: 113.6801 },
+                    "Wirolegi": { lat: -8.1498, lng: 113.7050 },
+                    "Tegal gede": { lat: -8.1801, lng: 113.6955 }
+                };
+
+                document.addEventListener("DOMContentLoaded", function(){
+
+                    // 🔥 INIT MAP
+                    map = L.map('mapPreview').setView([-8.1725, 113.7033], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap'
+                    }).addTo(map);
+
+                    // 🔥 MARKER AWAL
+                    marker = L.marker([-8.1725, 113.7033]).addTo(map);
+
+                    // 🔥 FIX BUG MAP KOSONG (WAJIB kalau di step/tab)
+                    setTimeout(() => {
+                        map.invalidateSize();
+                    }, 300);
+
+                    // =========================================
+                    // 🔥 DEFAULT SAAT LOAD
+                    // =========================================
+                    var defaultDesa = document.getElementById("desa").value;
+
+                    if(koordinatDesa[defaultDesa]){
+                        var lat = koordinatDesa[defaultDesa].lat;
+                        var lng = koordinatDesa[defaultDesa].lng;
+
+                        document.getElementById("lat").value = lat;
+                        document.getElementById("lng").value = lng;
+
+                        map.setView([lat, lng], 15);
+                        marker.setLatLng([lat, lng]);
+                    }
+
+                    // =========================================
+                    // 🔥 PILIH DESA → AUTO PINDAH MAP
+                    // =========================================
+                    document.getElementById("desa").addEventListener("change", function(){
+
+                        var desa = this.value;
+
+                        if(koordinatDesa[desa]){
+                            var lat = koordinatDesa[desa].lat;
+                            var lng = koordinatDesa[desa].lng;
+
+                            document.getElementById("lat").value = lat;
+                            document.getElementById("lng").value = lng;
+
+                            map.setView([lat, lng], 15);
+                            marker.setLatLng([lat, lng]);
+                        }
+
+                    });
+
+                    // =========================================
+                    // 🔥 KLIK PETA → AMBIL TITIK RUMAH (INI INTI)
+                    // =========================================
+                    map.on('click', function(e){
+
+                        var lat = e.latlng.lat;
+                        var lng = e.latlng.lng;
+
+                        // isi input
+                        document.getElementById("lat").value = lat.toFixed(6);
+                        document.getElementById("lng").value = lng.toFixed(6);
+
+                        // pindah marker
+                        marker.setLatLng([lat, lng]);
+
+                        // zoom ke titik
+                        map.setView([lat, lng], 17);
+
+                    });
+
+                    // =========================================
+                    // 🔥 MANUAL INPUT LAT LNG → MAP IKUT GERAK
+                    // =========================================
+                    document.getElementById("lat").addEventListener("input", updateMap);
+                    document.getElementById("lng").addEventListener("input", updateMap);
+
+                    function updateMap(){
+                        var lat = parseFloat(document.getElementById("lat").value);
+                        var lng = parseFloat(document.getElementById("lng").value);
+
+                        if(!isNaN(lat) && !isNaN(lng)){
+                            map.setView([lat, lng], 17);
+                            marker.setLatLng([lat, lng]);
+                        }
+                    }
+
+                });
+                </script>
 
 <script>
 
