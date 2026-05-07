@@ -91,6 +91,12 @@ $routes->get('peta_sebaran', 'dbd::peta');
 $routes->get('dashboard', 'Kepala::dashboard');
 $routes->get('peta_sebaran/kepala', 'Kepala::peta_sebaran');
 $routes->get('detail_peta', 'Kepala::detail_peta');
+$routes->get('kepala/pelaporan_kader', 'Kepala::pelaporan_kader');
+$routes->get('/kepala/daftar_laporan', 'Kepala::daftar_laporan');
+$routes->get('pelaporan-kader', 'Kepala::pelaporan_kader');
+$routes->get('pelaporan-kader/daftar', 'Kepala::daftar_laporan');
+$routes->get('pelaporan-kader/delete/(:num)', 'Kepala::delete_laporan/$1');
+
 
 /* ========================= */
 /* DASHBOARD KEPALA */
@@ -202,3 +208,20 @@ $routes->post('tbc/update/(:num)', 'AdminTbc\Pasien::update/$1');
 
 $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
 
+// ================= Video DBD =================
+$routes->get('/video/kelola_video', 'VideoDbd::index');
+$routes->get('/video', 'VideoDbd::index');
+$routes->get('/video/publish', 'VideoDbd::publish');
+$routes->get('/video/draft', 'VideoDbd::draft');
+$routes->get('/video/tambah2', 'VideoDbd::tambah2');
+$routes->post('video/simpanDetail', 'VideoDbd::simpanDetail');
+
+$routes->get('/video/view/(:num)', 'VideoDbd::view/$1');
+
+$routes->get('/video/tambah1', 'VideoDbd::tambah');
+$routes->post('/video/simpan', 'VideoDbd::simpan');
+
+$routes->get('/video/tambah2/(:num)', 'VideoDbd::edit/$1');
+$routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
+
+$routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');

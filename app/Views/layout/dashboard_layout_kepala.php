@@ -171,8 +171,8 @@ $menu = $menu ?? '';
             <i class="fa-regular fa-file-lines me-2"></i> Rekap Skrining 
         </a>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/skrining_1') ?>"
-            class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
+       <a href="<?= base_url('kepala/pelaporan_kader') ?>"
+            class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
             <i class="fa-regular fa-folder-open me-2"></i>Pelaporan Kader
         </a>
         
