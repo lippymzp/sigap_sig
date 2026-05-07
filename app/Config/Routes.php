@@ -75,6 +75,7 @@ $routes->get('/dashboard', 'Dashboard::index');
 $routes->get('dbd/dashboard', 'Dashboard::dbd');
 $routes->get('dbd/input_data', 'Dbd::inputData');
 $routes->get('dbd/hasil', 'Dbd::hasil_data');
+$routes->get('data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
@@ -87,6 +88,9 @@ $routes->get('/diare/export', 'Diare::export');
 $routes->get('/kader/dashboard', 'dbd::dashboard');
 $routes->get('cekdb', 'Home::cekdb');
 $routes->get('peta_sebaran', 'dbd::peta');
+$routes->get('dashboard', 'Kepala::dashboard');
+$routes->get('peta_sebaran/kepala', 'Kepala::peta_sebaran');
+$routes->get('detail_peta', 'Kepala::detail_peta');
 
 /* ========================= */
 /* DASHBOARD KEPALA */

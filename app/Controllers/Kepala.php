@@ -29,4 +29,15 @@ class Kepala extends Controller
 
         return view('gol_a/export_kepala', $data);
     }
+    public function peta_sebaran()
+{
+    return view('gol_a/peta_sebaran_kepala', [
+        'menu' => 'peta_sebaran'
+    ]);
+}
+public function detail_peta()
+{
+    return view('gol_a/detail_peta');
+}
+
 }
