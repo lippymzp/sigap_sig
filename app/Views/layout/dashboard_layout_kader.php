@@ -14,20 +14,19 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
     <!-- FOOTER STYLE -->
-    <style>
-    /* ===== FOOTER FINAL (SESUAI GAMBAR) ===== */
-.footer {
-    position: relative;
-    left: -260px; /* tarik ke kiri sebesar sidebar */
-    width: calc(100% + 260px); /* tambah lebar supaya full */
-    
+ <style>
+/* ===== FIX FOOTER FULL + TIDAK KETUTUP SIDEBAR ===== */
+/* ===== FOOTER RESPONSIVE FIX ===== */
+/* ===== FOOTER RESPONSIVE FIX (RAPIH UI) ===== */
+/* ===== FOOTER RESPONSIVE FIX (RATA KIRI KANAN) ===== */
+ .footer {
     background: #11b5b9;
     color: white;
     padding: 35px 0 15px;
     margin-top: 40px;
 }
 
-/* biar ngikut konten (bukan sidebar) */
+/* penting: ikut main-content */
 .main-content .footer {
     width: 100%;
 }
@@ -50,11 +49,6 @@
     margin: 15px 0;
 }
 
-/* logo */
-.footer img {
-    margin-bottom: 8px;
-}
-
 /* responsive */
 @media (max-width: 768px) {
     .footer .col-md-4 {
@@ -62,6 +56,7 @@
         margin-bottom: 15px;
     }
 }
+
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -157,28 +152,31 @@ $menu = $menu ?? '';
         </div>
 
         <!-- FOOTER -->
-        <footer class="footer mt-4">
-            <div class="container-fluid py-4 px-4">
-                <div class="row">
+<footer class="footer">
 
-                    <!-- LOGO -->
+<div class="container text-white py-3">
+<div class="row align-items-start">
+
+    <!-- LOGO -->
     <div class="col-md-4 text-center mb-2">
 
-        <div class="logo mb-1">
-            <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
-                 alt="Logo SIGAP" 
+         <div class="logo mb-1">
+            <img src="<?= base_url('img/logo_denggis.png') ?>" 
+                 alt="Logo Denggis" 
                  style="max-width:55px;">
         </div>
 
-        <h6 class="fw-bold mb-1">SIGAP</h6>
+        <h6 class="fw-bold mb-1">DENGGIS</h6>
 
         <p class="small mb-0" style="line-height:1.3;">
-            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-        </p>
+    Sistem Informasi Geografis Analisis<br>
+    & Pemantauan Penyakit
+</p>
 
     </div>
 
-                     <!-- SOSIAL -->
+
+    <!-- SOSIAL -->
     <div class="col-md-4 mb-2">
         <h6 class="fw-bold mb-1">Media Sosial</h6>
 

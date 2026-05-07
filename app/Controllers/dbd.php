@@ -262,6 +262,88 @@ class Dbd extends BaseController
     }
 
 
+    // ==============================================================
+    // FUNGSI BARU: PROSES UPDATE DATA (DATABASE)
+    // ==============================================================
+    public function edit_pelaporan($id)
+    {
+        $laporan = $this->pelaporanModel->find($id);
+
+        if (!$laporan) {
+            return redirect()->to(base_url('dbd/pelaporan'))->with('error', 'Data tidak ditemukan.');
+        }
+
+        $data = [
+            'title'   => 'Edit Pelaporan Kader',
+            'judul'   => 'Edit Pelaporan',
+            'menu'    => 'riwayat_jentik',
+            'laporan' => $laporan
+        ];
+
+        return view('gol_a/formkader/edit_pelaporan', $data);
+    }
+
+    // FUNGSI BARU: PROSES UPDATE DATA (DATABASE)
+    // ==============================================================
+    public function update_pelaporan($id)
+    {
+        $periodeLengkap = $this->request->getPost('periode'); 
+        $idPuskesmas    = $this->request->getPost('id_puskesmas');
+        $idKelurahan    = $this->request->getPost('id_kelurahan');
+        $idPosyandu     = $this->request->getPost('id_posyandu');
+        $diperiksa      = $this->request->getPost('diperiksa');
+        $positif        = $this->request->getPost('positif');
+        $bagian         = $this->request->getPost('bagian');
+
+        // 1. Ekstrak ulang Bulan dan Minggu
+        $minggu = ''; $bulan = '';
+        if (strpos($periodeLengkap, '(') !== false) {
+            $parts = explode('(', $periodeLengkap);
+            $minggu = trim($parts[0]);
+            $datePart = str_replace(')', '', $parts[1]);
+            $dateArray = explode(' ', $datePart);
+            if (count($dateArray) >= 3) { $bulan = $dateArray[count($dateArray) - 2]; }
+        }
+
+        // 2. Hitung ulang ABJ
+        $abj = ($diperiksa > 0) ? (($diperiksa - $positif) / $diperiksa) * 100 : 0;
+
+        // 3. Kelola Foto (Jika ada upload baru, kita gabungkan atau ganti)
+        // Untuk saat ini, kita gunakan logika: jika ada upload baru, maka ganti semua foto lama.
+        $laporanLama = $this->pelaporanModel->find($id);
+        $fotoFinal = $laporanLama['foto'];
+
+        $imagefile = $this->request->getFiles();
+        if (!empty($imagefile['foto'][0]->getName())) {
+            $namaFotoArray = [];
+            foreach ($imagefile['foto'] as $img) {
+                if ($img->isValid() && ! $img->hasMoved()) {
+                    $newName = $img->getRandomName();
+                    $img->move(FCPATH . 'uploads/pelaporan', $newName);
+                    $namaFotoArray[] = $newName;
+                }
+            }
+            $fotoFinal = json_encode($namaFotoArray);
+        }
+
+        // 4. Update Database
+        $this->pelaporanModel->update($id, [
+            'bulan'           => $bulan,
+            'minggu'          => $minggu,
+            'periode_lengkap' => $periodeLengkap,
+            'id_puskesmas'    => $idPuskesmas,
+            'id_kelurahan'    => $idKelurahan,
+            'id_posyandu'     => $idPosyandu,
+            'diperiksa'       => $diperiksa,
+            'positif'         => $positif,
+            'bagian'          => $bagian,
+            'foto'            => $fotoFinal,
+            'abj'             => $abj
+        ]);
+
+        return redirect()->to(base_url('dbd/pelaporan'))->with('success', 'Perubahan data berhasil disimpan!');
+    }
+
     // ================= REKAP + FILTER =================
     public function rekappsn()
     {
@@ -353,15 +435,36 @@ class Dbd extends BaseController
     }
 
     // ================= DETAIL =================
-    public function detailpsn(int $pos)
+    public function detail_pelaporan($id)
     {
-        $session = session();
-        $laporanpsn = $session->get('laporanpsn') ?? [];
+        // 1. Ambil data dari database berdasarkan ID
+        $laporan = $this->pelaporanModel->find($id);
 
-        return view('gol_a/formkader/detail', [
-            'pos' => $pos,
-            'data' => $laporanpsn[$pos] ?? null
-        ]);
+        if (!$laporan) {
+            return redirect()->to(base_url('dbd/pelaporan'))->with('error', 'Data tidak ditemukan.');
+        }
+
+        // 2. Mapping ID Kelurahan & Puskesmas ke Nama Teks
+        $kelurahanMap = [
+            1 => 'Sumbersari',
+            2 => 'Wirolegi',
+            3 => 'Antirogo',
+            4 => 'Tegal Gede',
+            5 => 'Karangrejo'
+        ];
+
+        $laporan['nama_puskesmas'] = ($laporan['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
+        $laporan['nama_kelurahan'] = isset($kelurahanMap[$laporan['id_kelurahan']]) ? $kelurahanMap[$laporan['id_kelurahan']] : '-';
+        $laporan['nama_posyandu']  = 'CATLEYA ' . $laporan['id_posyandu'];
+
+        $data = [
+            'title'   => 'Detail Pelaporan Kader',
+            'judul'   => 'Detail Pelaporan',
+            'menu'    => 'riwayat_jentik',
+            'laporan' => $laporan
+        ];
+
+        return view('gol_a/formkader/detail_pelaporan', $data);
     }
 
     public function exportrekappsn()
@@ -495,7 +598,7 @@ class Dbd extends BaseController
     // ======================
     return view('gol_a/dashboard_kader', [
         'menu' => 'dashboard',
-        'judul' => 'Dashboard Kepala',
+        'judul' => 'Dashboard Kader',
         'nama_puskesmas' => 'Puskesmas Panti, Jember',
 
         'total_kasus' => 20,

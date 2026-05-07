@@ -9,9 +9,7 @@
     .banner-text h4 { margin: 0; font-weight: 700; font-size: 18px; }
     .banner-text p { margin: 0; font-size: 13px; opacity: 0.9; margin-top: 3px; }
     .form-card { background: #FFFFFF; border-radius: 15px; padding: 40px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-    
     .form-label { font-weight: 700; color: #333; font-size: 14px; margin-bottom: 5px; display: block; }
-    .form-label .text-danger { color: #DC3545; } /* Tanda bintang merah untuk wajib diisi */
     .form-sublabel { font-size: 11px; color: #888; margin-bottom: 10px; display: block; font-weight: normal; }
     
     .form-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; padding: 12px 18px; width: 100%; font-size: 14px; color: #333; margin-bottom: 20px; outline: none; transition: all 0.3s; appearance: none; }
@@ -57,7 +55,6 @@
     /* --- STYLE UPLOAD AREA & PREVIEW --- */
     .upload-area { position: relative; border: 2px dashed #D0D0D0; border-radius: 15px; padding: 40px 20px; text-align: center; background-color: #FAFAFA; margin-bottom: 30px; transition: 0.3s; min-height: 250px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
     .upload-area.has-files { border-color: #D0D0D0; background-color: #FAFAFA; padding: 30px 20px; }
-    .upload-area.error-upload { border-color: #DC3545; background-color: #FFF0F1; } /* Indikator error foto */
     .upload-default { cursor: pointer; }
     .upload-default h5 { font-weight: bold; color: #000; margin-bottom: 20px; }
     .upload-icon-circle { width: 80px; height: 80px; background: linear-gradient(135deg, #E0F7F6, #C1F0ED); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 8px 15px rgba(0, 206, 209, 0.2); transition: 0.3s; }
@@ -92,7 +89,7 @@
 
     /* --- ACTION BUTTONS --- */
     .action-buttons { display: flex; gap: 15px; }
-    .btn-batal { flex: 1; background: #FFF; border: 1px solid #D0D0D0; color: #333; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; text-decoration: none; text-align: center; }
+    .btn-batal { flex: 1; background: #FFF; border: 1px solid #D0D0D0; color: #333; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; text-decoration: none; text-align: center;}
     .btn-batal:hover { background: #F5F5F5; border-color: #B0B0B0; }
     .btn-kirim { flex: 1; background: #00CED1; border: 1px solid #00CED1; color: #FFF; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; cursor: pointer; }
     .btn-kirim:hover { background: #00B3B5; }
@@ -101,26 +98,26 @@
 
 <div class="page-wrapper">
     <div class="banner-top">
-        <div class="banner-icon"><i class="fa-solid fa-shield-medical"></i></div>
+        <div class="banner-icon"><i class="fa-solid fa-pen-to-square"></i></div>
         <div class="banner-text">
-            <h4>Tambah Pelaporan Kader</h4>
-            <p>Silahkan isi data dengan lengkap dan benar</p>
+            <h4>Edit Pelaporan Kader</h4>
+            <p>Silahkan perbarui data dengan benar</p>
         </div>
     </div>
 
     <div class="form-card">
-        <form id="formTambahData" action="<?= base_url('dbd/simpanpsn') ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= base_url('dbd/update_pelaporan/' . $laporan['id_laporan']) ?>" method="POST" enctype="multipart/form-data">
             
-            <label class="form-label">Periode Pemeriksaan Jentik <span class="text-danger">*</span></label>
+            <label class="form-label">Periode Pemeriksaan Jentik</label>
             <div class="input-icon-wrap" id="periodeContainer">
-                <input type="text" name="periode" id="periode_input" class="form-input" placeholder="Pilih periode pemeriksaan jentik" readonly style="cursor: pointer;" required>
+                <input type="text" name="periode" id="periode_input" class="form-input" value="<?= $laporan['periode_lengkap'] ?>" readonly style="cursor: pointer;" required>
                 <i class="fa-regular fa-calendar" style="cursor: pointer;"></i>
                 <div id="calendarPopup" class="calendar-popup">
                     <div class="calendar-header">
                         <button type="button" id="prevMonth">&#10094;</button>
                         <div class="calendar-title">
-                            <span id="monthSelectBtn" class="header-clickable"></span>
-                            <span id="yearSelectBtn" class="header-clickable" style="color: #333;"></span>
+                            <span id="monthSelectBtn" class="header-clickable">April</span>
+                            <span id="yearSelectBtn" class="header-clickable" style="color: #333;">2026</span>
                         </div>
                         <button type="button" id="nextMonth">&#10095;</button>
                     </div>
@@ -133,52 +130,49 @@
                 </div>
             </div>
 
-            <label class="form-label">Wilayah Kerja Puskesmas <span class="text-danger">*</span></label>
+            <label class="form-label">Wilayah Kerja Puskesmas</label>
             <div class="input-icon-wrap">
                 <select name="id_puskesmas" class="form-input" required>
-                    <option value="" disabled selected>Pilih puskesmas</option>
-                    <option value="1">PKM Sumbersari</option>
+                    <option value="1" <?= $laporan['id_puskesmas'] == 1 ? 'selected' : '' ?>>PKM Sumbersari</option>
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
 
-            <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
+            <label class="form-label">Kelurahan</label>
             <div class="input-icon-wrap">
                 <select name="id_kelurahan" id="kelurahanSelect" class="form-input" required>
-                    <option value="" disabled selected>Pilih kelurahan</option>
-                    <option value="1">Sumbersari</option>
-                    <option value="2">Wirolegi</option>
-                    <option value="3">Antirogo</option>
-                    <option value="4">Tegal Gede</option>
-                    <option value="5">Karangrejo</option>
+                    <option value="1" <?= $laporan['id_kelurahan'] == 1 ? 'selected' : '' ?>>Sumbersari</option>
+                    <option value="2" <?= $laporan['id_kelurahan'] == 2 ? 'selected' : '' ?>>Wirolegi</option>
+                    <option value="3" <?= $laporan['id_kelurahan'] == 3 ? 'selected' : '' ?>>Antirogo</option>
+                    <option value="4" <?= $laporan['id_kelurahan'] == 4 ? 'selected' : '' ?>>Tegal Gede</option>
+                    <option value="5" <?= $laporan['id_kelurahan'] == 5 ? 'selected' : '' ?>>Karangrejo</option>
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
 
-            <label class="form-label">Pos Posyandu <span class="text-danger">*</span></label>
+            <label class="form-label">Pos Posyandu</label>
             <div class="input-icon-wrap">
                 <select name="id_posyandu" id="posyanduSelect" class="form-input" required>
-                    <option value="" disabled selected>Pilih kelurahan terlebih dahulu</option>
-                </select>
+                    </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
 
             <div class="row mt-4">
                 <div class="col-md-6">
-                    <label class="form-label">Jumlah Rumah/KK yang Diperiksa <span class="text-danger">*</span></label>
+                    <label class="form-label">Jumlah Rumah/KK yang Diperiksa</label>
                     <span class="form-sublabel">Sebutkan Jumlah Rumah / KK yang diperiksa</span>
                     <div class="counter-container mb-3">
                         <button type="button" class="btn-counter" onclick="decrement('diperiksa')"><i class="fa-solid fa-minus"></i></button>
-                        <input type="number" id="diperiksa" name="diperiksa" class="counter-input" value="0" min="0" oninput="validateJentik()" required>
+                        <input type="number" id="diperiksa" name="diperiksa" class="counter-input" value="<?= $laporan['diperiksa'] ?>" min="0" oninput="validateJentik()" required>
                         <button type="button" class="btn-counter" onclick="increment('diperiksa')"><i class="fa-solid fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Jumlah Rumah/KK yang Positif Jentik <span class="text-danger">*</span></label>
+                    <label class="form-label">Jumlah Rumah/KK yang Positif Jentik</label>
                     <span class="form-sublabel">Sebutkan Jumlah Rumah / KK yang positif jentik</span>
                     <div class="counter-container">
                         <button type="button" class="btn-counter" onclick="decrement('positif')"><i class="fa-solid fa-minus"></i></button>
-                        <input type="number" id="positif" name="positif" class="counter-input" value="0" min="0" oninput="validateJentik()" required>
+                        <input type="number" id="positif" name="positif" class="counter-input" value="<?= $laporan['positif'] ?>" min="0" oninput="validateJentik()" required>
                         <button type="button" class="btn-counter" onclick="increment('positif')"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <div id="warningPositif" class="warning-text">
@@ -188,15 +182,15 @@
                 </div>
             </div>
 
-            <label class="form-label mt-2">Bagian yang Positif <span class="text-danger">*</span></label>
-            <input type="text" name="bagian" class="form-input" placeholder="(Wajib diisi. Ketik strip '-' jika tidak ada yang positif)" required>
+            <label class="form-label mt-2">Bagian yang Positif</label>
+            <input type="text" name="bagian" class="form-input" value="<?= $laporan['bagian'] ?>" placeholder="(Sebutkan, contoh : kamar mandi, vas bunga, dll)">
 
-            <label class="form-label mt-2">Upload Gambar saat Pemeriksaan Jentik <span class="text-danger">*</span></label>
+            <label class="form-label mt-2">Upload Gambar saat Pemeriksaan Jentik</label>
             <div class="upload-area" id="uploadArea">
                 <div id="uploadDefault" class="upload-default" onclick="showUploadOverlay()">
                     <h5>Unggah foto di sini</h5>
                     <div class="upload-icon-circle"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                    <p>Format yang didukung: JPG, JPEG, PNG. Wajib melampirkan minimal 1 foto.</p>
+                    <p>Format yang didukung: JPG, JPEG, PNG.</p>
                 </div>
                 <div class="upload-overlay" id="uploadOverlay">
                     <div class="upload-options-box">
@@ -211,17 +205,19 @@
                     </div>
                 </div>
                 <div class="preview-container" id="previewContainer">
-                    <div class="preview-header" id="previewTitle">0 foto berhasil diunggah!</div>
+                    <div class="preview-header" id="previewTitle">Foto berhasil diunggah!</div>
                     <div class="preview-grid" id="previewGrid"></div>
                 </div>
             </div>
 
             <input type="file" id="inputFile" multiple accept=".jpg, .jpeg, .png" style="display: none;" onchange="handleFileSelect(this)">
             <input type="file" name="foto[]" id="realSubmitInput" multiple style="display: none;">
+            
+            <div id="keepPhotosContainer"></div>
 
             <div class="action-buttons">
                 <a href="<?= base_url('dbd/pelaporan') ?>" class="btn-batal">Batal</a>
-                <button type="submit" id="btnKirim" class="btn-kirim">Kirim Data</button>
+                <button type="submit" id="btnKirim" class="btn-kirim">Simpan Perubahan</button>
             </div>
         </form>
     </div>
@@ -239,27 +235,6 @@
 <canvas id="cameraCanvas" style="display:none;"></canvas>
 
 <script>
-    /* ----- VALIDASI WAJIB ISI (FOTO) SEBELUM SUBMIT ----- */
-    document.getElementById('formTambahData').addEventListener('submit', function(e) {
-        // Cek apakah ada file foto yang sudah diupload ke array
-        if (selectedFilesArray.length === 0) {
-            e.preventDefault(); // Hentikan proses pengiriman formulir
-            
-            // Ubah gaya kotak upload menjadi merah untuk memberitahu user
-            document.getElementById('uploadArea').classList.add('error-upload');
-            
-            // Tampilkan alert peringatan
-            alert('PERINGATAN: Anda belum melampirkan foto! Mohon unggah minimal 1 foto bukti pemeriksaan jentik sebelum mengirim data.');
-            
-            // Gulir otomatis ke bagian upload foto
-            document.getElementById('uploadArea').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
-        } else {
-            // Hilangkan gaya error jika foto sudah ada
-            document.getElementById('uploadArea').classList.remove('error-upload');
-        }
-    });
-
     /* ----- 1. LOGIKA DINAMIS POS POSYANDU BERDASARKAN ID_KELURAHAN ----- */
     const posyanduData = {
         "1": ["CATLEYA 01", "CATLEYA 02", "CATLEYA 03", "CATLEYA 04", "CATLEYA 05", "CATLEYA 06", "CATLEYA 07", "CATLEYA 08", "CATLEYA 09", "CATLEYA 10", "CATLEYA 11", "CATLEYA 12", "CATLEYA 13", "CATLEYA 14", "CATLEYA 15", "CATLEYA 16", "CATLEYA 17", "CATLEYA 18", "CATLEYA 19", "CATLEYA 20", "CATLEYA 21", "CATLEYA 22", "CATLEYA 23", "CATLEYA 24", "CATLEYA 25", "CATLEYA 26", "CATLEYA 27", "CATLEYA 28", "CATLEYA 29", "CATLEYA 30", "CATLEYA 31", "CATLEYA 32", "CATLEYA 33", "CATLEYA 34", "CATLEYA 35"],
@@ -269,27 +244,32 @@
         "5": ["CATLEYA 75", "CATLEYA 76", "CATLEYA 77", "CATLEYA 78", "CATLEYA 78A (BAYANGAN)", "CATLEYA 79", "CATLEYA 80", "CATLEYA 81", "CATLEYA 82", "CATLEYA 83", "CATLEYA 84", "CATLEYA 85", "CATLEYA 86", "CATLEYA 87", "CATLEYA 88", "CATLEYA 88A (BAYANGAN)", "CATLEYA 89", "CATLEYA 90", "CATLEYA 91", "CATLEYA 92", "CATLEYA 92A (BAYANGAN)", "CATLEYA 93", "CATLEYA 94", "CATLEYA 95", "CATLEYA 95A", "CATLEYA 95B (BAYANGAN)"]
     };
 
-    document.getElementById('kelurahanSelect').addEventListener('change', function() {
-        const selectedKelurahan = this.value;
-        const posyanduSelect = document.getElementById('posyanduSelect');
-
-        posyanduSelect.innerHTML = '<option value="" disabled selected>Pilih pos posyandu</option>';
-
-        if (posyanduData[selectedKelurahan]) {
-            posyanduData[selectedKelurahan].forEach(function(posyanduName) {
-                let option = document.createElement('option');
-                let idMatch = posyanduName.match(/CATLEYA\s([0-9A-Z]+)/);
-                let posyanduId = idMatch ? idMatch[1] : posyanduName;
-                option.value = posyanduId; 
-                option.text = posyanduName; 
-                posyanduSelect.appendChild(option);
+    const savedPosyanduId = "<?= $laporan['id_posyandu'] ?>";
+    function loadPosyandu(kelId) {
+        const select = document.getElementById('posyanduSelect');
+        select.innerHTML = '<option value="" disabled selected>Pilih pos posyandu</option>';
+        if (posyanduData[kelId]) {
+            posyanduData[kelId].forEach(name => {
+                let idMatch = name.match(/CATLEYA\s([0-9A-Z]+)/);
+                let id = idMatch ? idMatch[1] : name;
+                let opt = document.createElement('option');
+                opt.value = id; opt.text = name;
+                if(id === savedPosyanduId) opt.selected = true;
+                select.appendChild(opt);
             });
         }
-    });
+    }
+    document.getElementById('kelurahanSelect').addEventListener('change', function() { loadPosyandu(this.value); });
+    loadPosyandu(document.getElementById('kelurahanSelect').value);
 
     /* ----- 2. LOGIKA UPLOAD & KAMERA LIVE ----- */
-    let selectedFilesArray = [];
+    let keepPhotos = <?= !empty($laporan['foto']) ? $laporan['foto'] : '[]' ?>; // Foto dari DB
+    let newPhotos = []; // Foto baru
     let videoStream = null;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (keepPhotos && keepPhotos.length > 0) renderFullGallery();
+    });
 
     function showUploadOverlay() { document.getElementById('uploadOverlay').style.display = 'flex'; }
     document.getElementById('uploadOverlay').onclick = function(e) { if(e.target === this) { this.style.display = 'none'; } };
@@ -303,8 +283,8 @@
 
     function handleFileSelect(inputElement) {
         if (inputElement.files && inputElement.files.length > 0) {
-            for (let i = 0; i < inputElement.files.length; i++) { selectedFilesArray.push(inputElement.files[i]); }
-            inputElement.value = ""; renderPreviewGallery();
+            for (let i = 0; i < inputElement.files.length; i++) { newPhotos.push(inputElement.files[i]); }
+            inputElement.value = ""; renderFullGallery();
         }
     }
 
@@ -333,36 +313,46 @@
         canvas.toBlob(function(blob) {
             const fileName = "Kamera_" + new Date().getTime() + ".jpg";
             const file = new File([blob], fileName, { type: "image/jpeg" });
-            selectedFilesArray.push(file); renderPreviewGallery(); closeCamera();
+            newPhotos.push(file); renderFullGallery(); closeCamera();
         }, 'image/jpeg', 0.9);
     }
 
-    function removeFile(index, e) {
-        e.stopPropagation(); selectedFilesArray.splice(index, 1); renderPreviewGallery();
-    }
+    function removeOld(index) { keepPhotos.splice(index, 1); renderFullGallery(); }
+    function removeNew(index) { newPhotos.splice(index, 1); renderFullGallery(); }
 
-    function renderPreviewGallery() {
+    function renderFullGallery() {
         const defaultState = document.getElementById('uploadDefault'); 
         const previewState = document.getElementById('previewContainer');
         const previewGrid = document.getElementById('previewGrid'); 
-        const previewTitle = document.getElementById('previewTitle');
         const uploadArea = document.getElementById('uploadArea');
+        const keepContainer = document.getElementById('keepPhotosContainer');
 
-        // Reset error style if user uploads something
-        uploadArea.classList.remove('error-upload');
-
-        if (selectedFilesArray.length === 0) {
+        if (keepPhotos.length === 0 && newPhotos.length === 0) {
             defaultState.style.display = 'block'; previewState.style.display = 'none'; uploadArea.classList.remove('has-files');
+            keepContainer.innerHTML = '';
         } else {
             defaultState.style.display = 'none'; previewState.style.display = 'block'; uploadArea.classList.add('has-files');
-            previewTitle.innerText = selectedFilesArray.length + " foto berhasil diunggah!";
-            previewGrid.innerHTML = '';
-            selectedFilesArray.forEach((file, index) => {
+            let total = keepPhotos.length + newPhotos.length;
+            document.getElementById('previewTitle').innerText = total + " foto berhasil diunggah!";
+            
+            previewGrid.innerHTML = ''; keepContainer.innerHTML = '';
+            
+            // Tampilkan foto lama
+            keepPhotos.forEach((foto, index) => {
+                let div = document.createElement('div'); div.className = 'preview-item';
+                div.innerHTML = `<img src="<?= base_url('uploads/pelaporan/') ?>/${foto}"><div style="position:absolute; bottom:0; width:100%; background:rgba(0,0,0,0.5); color:white; font-size:10px; text-align:center;">Foto Lama</div><button type="button" class="btn-remove" onclick="removeOld(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+                previewGrid.appendChild(div);
+                keepContainer.innerHTML += `<input type="hidden" name="keep_photos[]" value="${foto}">`;
+            });
+
+            // Tampilkan foto baru
+            newPhotos.forEach((file, index) => {
                 let url = URL.createObjectURL(file);
                 let div = document.createElement('div'); div.className = 'preview-item';
-                div.innerHTML = `<img src="${url}" alt="Preview"><button type="button" class="btn-remove" onclick="removeFile(${index}, event)"><i class="fa-solid fa-xmark"></i></button>`;
+                div.innerHTML = `<img src="${url}"><button type="button" class="btn-remove" onclick="removeNew(${index})"><i class="fa-solid fa-xmark"></i></button>`;
                 previewGrid.appendChild(div);
             });
+
             let addBtn = document.createElement('button'); addBtn.type = 'button'; addBtn.className = 'btn-add-more';
             addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'; addBtn.onclick = function(e) { e.stopPropagation(); showUploadOverlay(); };
             previewGrid.appendChild(addBtn);
@@ -371,11 +361,14 @@
     }
 
     function syncDataTransfer() {
-        let dt = new DataTransfer(); selectedFilesArray.forEach(file => dt.items.add(file));
+        let dt = new DataTransfer(); newPhotos.forEach(file => dt.items.add(file));
         document.getElementById('realSubmitInput').files = dt.files;
     }
 
     /* ----- 3. LOGIKA COUNTER & VALIDASI JENTIK ----- */
+    // Pastikan tombol dipicu saat halaman pertama kali diload agar pengecekan aktif
+    window.onload = function() { validateJentik(); }
+
     function validateJentik() {
         var diperiksa = parseInt(document.getElementById('diperiksa').value, 10) || 0;
         var positif = parseInt(document.getElementById('positif').value, 10) || 0;
@@ -481,6 +474,7 @@
         let container = document.getElementById('periodeContainer');
         if (!container.contains(e.target)) { document.getElementById('calendarPopup').style.display = 'none'; }
     });
+
 </script>
 
 <?= $this->endSection() ?>
