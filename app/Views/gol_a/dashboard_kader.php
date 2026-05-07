@@ -51,32 +51,41 @@
     </div>
 
 </div>
-
 <!-- MAP -->
 <div class="section-card">
+<div class="section-block">
+<div class="section-header">
+    <div>
+        <h5>Peta Interaktif Penyebaran</h5>
+        <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
+    </div>
 
-    <!-- MAP -->
-    <div class="section-block">
+    <div class="filter">
+        <span>Periode:</span>
+            <?php $tahunMap = $_GET['tahun_map'] ?? date('Y'); ?>
 
-        <div class="section-header">
-            <div>
-                <h5>Peta Interaktif Penyebaran</h5>
-                <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
-            </div>
+<select id="periodeMap" onchange="updateMap()">
+    <?php for($t = 2024; $t <= date('Y'); $t++): ?>
+        <option value="<?= $t ?>" <?= ($t == $tahunMap ? 'selected' : '') ?>>
+            <?= $t ?>
+        </option>
+    <?php endfor; ?>
+</select>
+    </div>
+</div>
 
-            <div class="filter">
-                <span>Periode:</span>
-                <select>
-                    <option>2025</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="inner-card">
+<div class="inner-card">
     <div id="map"></div>
 
-    <script>
+<script>
+function updateMap(){
+    let tahun = document.getElementById("periodeMap").value;
 
+    let url = new URL(window.location.href);
+    url.searchParams.set('tahun_map', tahun);
+
+    window.location.href = url.toString();
+}
     /* 🔥 FIX NAMA */
     function fixNama(nama){
         return (nama || "")
@@ -219,6 +228,7 @@
 
     });
 
+
     </script>
 </div>
 
@@ -236,57 +246,107 @@
         </div>
 
     </div>
-
 <!-- GRAFIK -->
-<section id="grafik" class="container mt-5" data-aos="fade-up">
+<section id="grafik" class="container mt-5">
 
 <h4 class="text-teal mb-3 fw-bold">Grafik DBD</h4>
 
+<?php
+$bulan = $_GET['bulan'] ?? '';
+$tahun = $_GET['tahun'] ?? '';
+$usia  = $_GET['usia'] ?? '';
+$jk    = $_GET['jk'] ?? '';
+?>
+
+<form method="get">
+
+<!-- 🔥 FILTER HARUS DALAM ROW -->
 <div class="row mb-3">
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kelurahan</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kategori</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Tahun</option></select></div>
+
+    <div class="col-md-3">
+        <select name="usia" class="form-control" onchange="this.form.submit()">
+            <option value="">Semua Usia</option>
+            <option value="anak" <?= ($usia=='anak' ? 'selected' : '') ?>>0-14</option>
+            <option value="remaja" <?= ($usia=='remaja' ? 'selected' : '') ?>>15-24</option>
+            <option value="dewasa" <?= ($usia=='dewasa' ? 'selected' : '') ?>>25-59</option>
+            <option value="lansia" <?= ($usia=='lansia' ? 'selected' : '') ?>>60+</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="jk" class="form-control" onchange="this.form.submit()">
+            <option value="">Semua Gender</option>
+            <option value="L" <?= ($jk=='L' ? 'selected' : '') ?>>Laki-laki</option>
+            <option value="P" <?= ($jk=='P' ? 'selected' : '') ?>>Perempuan</option>
+        </select>
+    </div>
+
+    <!-- BULAN --> <div class="col-md-3"> 
+    <select name="bulan" class="form-control shadow-sm" onchange="this.form.submit()"> 
+    <option value="">Semua Bulan</option> 
+    <?php $bulanList = [ 1=>'Januari',2=>'Februari',3=>'Maret',4=>'April', 
+    5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus', 9=>'September',10=>'Oktober',11=>'November',
+    12=>'Desember' ]; foreach($bulanList as $key => $val): ?> <option value="<?= $key ?>" 
+    <?= request()->getGet('bulan') == $key ? 'selected' : '' ?>> <?= $val ?> </option> 
+    <?php endforeach; ?> </select> </div>
+
+    
+    <div class="col-md-3">
+        <select name="tahun" class="form-control" onchange="this.form.submit()">
+            <option value="">Semua Tahun</option>
+            <?php for($t=2020;$t<=date('Y');$t++): ?>
+                <option value="<?= $t ?>" <?= ($tahun==$t ? 'selected' : '') ?>>
+                    <?= $t ?>
+                </option>
+            <?php endfor; ?>
+        </select>
+    </div>
+
 </div>
 
+<input type="hidden" name="tahun_map" value="<?= $_GET['tahun_map'] ?? '' ?>">
+
+</form>
+
+<!-- 🔥 GRAFIK -->
 <div class="row">
-
-<div class="col-md-9">
-<div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-<canvas id="chartDBD"></canvas>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-<h6>Keterangan Grafik</h6>
-<p><span style="color:#8ecae6">■</span> Sembuh</p>
-<p><span style="color:#219ebc">■</span> Pengobatan</p>
-<p><span style="color:#90dbf4">■</span> Meninggal</p>
-</div>
+    <div class="col-md-9">
+        <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
+            <canvas id="chartDBD"></canvas>
+        </div>
+    </div>
 </div>
 
-</div>
+</section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
+    const dataGrafik = <?= json_encode($grafik ?? []) ?>;
+
+    let labels = [];
+    let total = [];
+
+    dataGrafik.forEach(item => {
+        labels.push(item.kelurahan);
+        total.push(item.total);
+    });
+
     new Chart(document.getElementById('chartDBD'), {
         type: 'bar',
         data: {
-            labels: ['Jan','Feb','Mar','Apr','Mei'],
-            datasets: [
-                { label:'Sembuh', data:[100,80,70,60,150], backgroundColor:'#8ecae6' },
-                { label:'Pengobatan', data:[90,150,120,90,95], backgroundColor:'#219ebc' },
-                { label:'Meninggal', data:[40,20,40,40,60], backgroundColor:'#90dbf4' }
-            ]
+            labels: labels,
+            datasets: [{
+                label:'Total Kasus',
+                data: total,
+                backgroundColor:'#00BBC2'
+            }]
         }
     });
 
 });
 </script>
-
-</section>
 
 <?= $this->endSection() ?>
