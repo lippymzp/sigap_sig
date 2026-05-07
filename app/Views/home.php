@@ -1,3 +1,24 @@
+<style>
+.map-box {
+    position: relative;
+}
+
+.map-info {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.map-info {
+    z-index: 9999;
+}
+</style>
+
 <?= $this->include('layout/header') ?>
 
 <!-- HERO -->
@@ -179,8 +200,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Fokus ke Jember
-    const map = L.map('map').setView([-8.17, 113.70], 11);
+    const map = L.map('map').setView([-8.17, 113.70], 10.5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -188,19 +208,19 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(res => res.json())
     .then(data => {
 
-        console.log(data.features[0].properties); // cek field
-
         function getColor(nama) {
-            return nama === "SUMBERSARI" ? "red" :
-                   nama === "KALIWATES" ? "blue" :
-                   nama === "AJUNG" ? "green" :
-                   nama === "PANTI" ? "orange" :
+            nama = (nama || "").toLowerCase().trim();
+
+            return nama.includes("sumbersari") ? "red" :
+                   nama.includes("kaliwates") ? "blue" :
+                   nama.includes("ajung") ? "green" :
+                   nama.includes("panti") ? "orange" :
                    "gray";
         }
 
         const geojson = L.geoJSON(data, {
             style: function(feature){
-                const nama = feature.properties.WADMKC; // ⚠️ sesuaikan ini
+                const nama = feature.properties?.KECAMATAN || "";
 
                 return {
                     color: "black",
@@ -209,10 +229,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     fillOpacity: 0.6
                 }
             },
+
             onEachFeature: function(feature, layer){
-                const nama = feature.properties.WADMKC; // ⚠️ sesuaikan juga
+
+                const nama = feature.properties?.KECAMATAN || "Tidak diketahui";
                 layer.bindPopup(nama);
+
+                // KLIK KECAMATAN
+                layer.on('click', function(){
+
+                    // 1. Zoom ke kecamatan
+                    map.fitBounds(layer.getBounds());
+
+                    // 2. Ambil titik tengah
+                    const center = layer.getBounds().getCenter();
+
+                    // 3. Tampilkan Lat Lng
+                    document.getElementById('lat').innerText = center.lat.toFixed(6);
+                    document.getElementById('lng').innerText = center.lng.toFixed(6);
+
+                });
+
             }
+
         }).addTo(map);
 
     });
