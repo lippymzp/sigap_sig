@@ -2215,5 +2215,36 @@ body {
 .wrapper.hide .main-content{
     margin-left:0;
 }
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
+.btn-action {
+    text-decoration: none;
+}
+
+.btn-action span {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.btn-view span {
+    background: #2F80ED;
+}
+
+.btn-edit span {
+    background: #F2C94C;
+}
+
+.btn-delete span {
+    background: #EB5757;
+}
 }
