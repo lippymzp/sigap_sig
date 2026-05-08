@@ -59,11 +59,12 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
         </li>
 
         <!-- TENTANG -->
-        <li class="nav-item">
-          <a class="nav-link <?= ($uri == 'tentang' ? 'active-menu' : '') ?>" href="#">
-            Tentang Kami
-          </a>
-        </li>
+<li class="nav-item">
+  <a class="nav-link <?= ($uri == 'tentang-kami' ? 'active-menu' : '') ?>" 
+     href="<?= base_url('tentang-kami') ?>">
+    Tentang Kami
+  </a>
+</li>
 
         <!-- DROPDOWN PENYAKIT -->
         <li class="nav-item dropdown">

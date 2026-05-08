@@ -236,3 +236,4 @@ $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
 // ================= Manajemen Banner DBD =================
 $routes->get('/manajemen_banner', 'ManajemenBanner::index');
 $routes->get('/unggah_banner', 'ManajemenBanner::unggah');
+$routes->get('/tentang-kami', 'Home::tentangKami');

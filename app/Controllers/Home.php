@@ -74,4 +74,8 @@ public function cekdb()
         echo $e->getMessage();
     }
 }
+public function tentangKami()
+{
+    return view('tentang_kami');
+}
 }
