@@ -42,6 +42,8 @@ $routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto', 'Profile2::uploadFoto');
 $routes->post('updateProfil', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
+$routes->post('profil/update_foto', 'Profile3::update_foto');
+$routes->post('profil/update_sandi', 'Profile3::update_sandi');
 /* ========================= */
 /* DIARE */
 /* ========================= */
