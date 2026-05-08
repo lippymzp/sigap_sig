@@ -1,49 +1,275 @@
-<footer class="footer mt-5">
+<footer class="footer-sigap mt-5">
 
-<div class="container text-white py-5">
+<div class="container">
 
-<div class="row">
+    <div class="row gy-5">
 
-    <!-- LOGO -->
-    <div class="col-md-4 mb-4" data-aos="fade-up">
-        <h5 class="fw-bold">LOGO</h5>
-        <p>
-            SIGAP<br>
-            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-        </p>
+        <!-- LOGO & DESKRIPSI -->
+        <div class="col-lg-6" data-aos="fade-up">
+
+            <div class="footer-brand">
+
+                <!-- GANTI medixa.png sesuai nama file logo -->
+                <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
+
+                <h3 class="footer-title">SIGAP</h3>
+
+                <p class="footer-desc">
+                    Sistem Informasi, Geografis Analisis & Pemantauan
+                </p>
+
+            </div>
+
+            <div class="footer-links mt-5">
+                <a href="#">Bantuan</a>
+                <a href="#">Tentang Kami</a>
+            </div>
+
+        </div>
+
+        <!-- SOSIAL -->
+        <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="100">
+
+            <h5 class="footer-heading">Media Sosial</h5>
+
+            <div class="social-item">
+                <i class="bi bi-instagram"></i>
+                <span>sigap.co.id</span>
+            </div>
+
+        </div>
+
+        <!-- KONTAK -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+
+            <h5 class="footer-heading">Informasi Kontak</h5>
+
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </div>
+
+                <div>
+                    <h6>Email</h6>
+                    <p>medixatechnology@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="contact-item mt-4">
+                <div class="contact-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+
+                <div>
+                    <h6>Lokasi</h6>
+                    <p>
+                        Jl. Mastrip, Krajan Timur, Sumbersari,
+                        Kec. Sumbersari, Kabupaten Jember,
+                        Jawa Timur 68121
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- SOSIAL -->
-    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
-        <h6 class="fw-bold mb-3">Media Sosial</h6>
+    <!-- GARIS -->
+    <div class="footer-line"></div>
 
-        <p>📷 Instagram</p>
-        <p>📘 Facebook</p>
-        <p>🐦 Twitter</p>
+    <!-- COPYRIGHT -->
+    <div class="footer-bottom">
+        <p>Hak Cipta © 2026 SIGAP</p>
     </div>
-
-    <!-- KONTAK -->
-    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
-        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
-
-        <p>📧 Email: email@kampus.ac.id</p>
-        <p>📍 Jember, Jawa Timur</p>
-    </div>
-
-</div>
-
-<hr style="border-color: rgba(255,255,255,0.3)">
-
-<p class="text-center mb-0">
-    Hak Cipta © 2026 SIGAP
-</p>
 
 </div>
 
 </footer>
 
+<style>
+
+/* =========================================
+   FOOTER SIGAP
+========================================= */
+
+.footer-sigap{
+    background:#014F4F;
+    padding:80px 0 30px;
+    position:relative;
+    overflow:hidden;
+}
+
+/* CONTAINER */
+.footer-sigap .container{
+    position:relative;
+    z-index:2;
+}
+
+/* LOGO */
+.footer-logo{
+    width:150px;
+    margin-bottom:25px;
+    filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
+}
+
+/* TITLE */
+.footer-title{
+    color:#fff;
+    font-weight:700;
+    font-size:2rem;
+    margin-bottom:12px;
+}
+
+/* DESC */
+.footer-desc{
+    color:#E8FFFF;
+    font-size:1.1rem;
+    line-height:1.8;
+    max-width:500px;
+}
+
+/* HEADING */
+.footer-heading{
+    color:#fff;
+    font-size:1.4rem;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+/* LINKS */
+.footer-links{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.footer-links a{
+    color:#fff;
+    text-decoration:underline;
+    font-size:1.2rem;
+    font-weight:600;
+    transition:0.3s;
+    width:fit-content;
+}
+
+.footer-links a:hover{
+    color:#40EDD0;
+    transform:translateX(5px);
+}
+
+/* SOCIAL */
+.social-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#fff;
+    font-size:1.1rem;
+}
+
+.social-item i{
+    font-size:1.3rem;
+}
+
+/* CONTACT */
+.contact-item{
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+}
+
+/* ICON */
+.contact-icon{
+    width:55px;
+    height:55px;
+    background:#E8FFFF;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.contact-icon i{
+    color:#014F4F;
+    font-size:1.3rem;
+}
+
+/* CONTACT TEXT */
+.contact-item h6{
+    color:#fff;
+    font-weight:700;
+    margin-bottom:6px;
+    font-size:1.1rem;
+}
+
+.contact-item p{
+    color:#E8FFFF;
+    line-height:1.7;
+    margin:0;
+    font-size:1rem;
+}
+
+/* LINE */
+.footer-line{
+    width:100%;
+    height:2px;
+    background:rgba(255,255,255,0.4);
+    margin:70px 0 25px;
+}
+
+/* COPYRIGHT */
+.footer-bottom{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.footer-bottom p{
+    color:#fff;
+    margin:0;
+    font-size:1rem;
+}
+
+/* RESPONSIVE */
+@media(max-width:991px){
+
+    .footer-bottom{
+        justify-content:center;
+        text-align:center;
+    }
+
+    .footer-logo{
+        width:120px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .footer-sigap{
+        padding:60px 0 25px;
+    }
+
+    .footer-title{
+        font-size:1.7rem;
+    }
+
+    .footer-desc{
+        font-size:1rem;
+    }
+
+    .footer-heading{
+        margin-top:10px;
+    }
+
+}
+
+</style>
+
 <!-- BOOTSTRAP -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- BOOTSTRAP ICON -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <!-- LEAFLET -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -53,10 +279,12 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
+
     AOS.init({
-        duration: 1000,
-        once: true
+        duration:1000,
+        once:true
     });
+
 });
 </script>
 

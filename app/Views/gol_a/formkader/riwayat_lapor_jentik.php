@@ -5,8 +5,21 @@
     /* --- STYLE DASAR --- */
     .page-wrapper { background-color: #E6F4F1; padding: 20px; border-radius: 15px; min-height: 100vh; }
     
-    .banner-top { background-color: #51C2B8; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .banner-icon { background: rgba(255, 255, 255, 0.2); padding: 12px 15px; border-radius: 10px; margin-right: 20px; font-size: 24px; display: flex; align-items: center; justify-content: center; }
+    .banner-top { background-color: #00BBC2; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    
+    /* Perbaikan Kotak Ikon agar persis dengan desain */
+    .banner-icon { 
+        background: rgba(255, 255, 255, 0.25); 
+        width: 60px; 
+        height: 60px; 
+        border-radius: 15px; 
+        margin-right: 20px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        flex-shrink: 0;
+    }
+    
     .banner-text h4 { margin: 0; font-weight: 700; font-size: 18px; }
     .banner-text p { margin: 0; font-size: 13px; opacity: 0.9; margin-top: 3px; }
 
@@ -15,24 +28,24 @@
     /* --- TOOLBAR PENCARIAN & TOMBOL --- */
     .toolbar-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
     .toolbar-left { display: flex; gap: 10px; }
-    .search-group { display: flex; border: 2px solid #00CED1; border-radius: 8px; overflow: hidden; background: white; }
-    .search-icon { background-color: #00CED1; color: white; padding: 8px 15px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; }
-    .search-icon:hover { background-color: #00B3B5; }
+    .search-group { display: flex; border: 2px solid #00BBC2; border-radius: 8px; overflow: hidden; background: white; }
+    .search-icon { background-color: #00BBC2; color: white; padding: 8px 15px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; }
+    .search-icon:hover { background-color: #009ca2; }
     .search-input { border: none; padding: 8px 15px; outline: none; width: 250px; font-size: 14px; }
     
-    .btn-filter { border: 2px solid #00CED1; background: transparent; color: #00CED1; padding: 8px 15px; border-radius: 8px; font-size: 18px; cursor: pointer; transition: 0.2s; }
-    .btn-filter:hover { background: #00CED1; color: white; }
+    .btn-filter { border: 2px solid #00BBC2; background: transparent; color: #00BBC2; padding: 8px 15px; border-radius: 8px; font-size: 18px; cursor: pointer; transition: 0.2s; }
+    .btn-filter:hover { background: #00BBC2; color: white; }
     .btn-filter.active-filter { background: #FF9800; border-color: #FF9800; color: white; box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3); }
     .btn-filter.active-filter:hover { background: #F57C00; border-color: #F57C00; }
     
     .toolbar-right { display: flex; align-items: center; gap: 20px; }
     .periode-text { font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-    .periode-nav { color: #00CED1; cursor: pointer; padding: 0 5px; user-select: none; transition: 0.2s; font-size: 16px; }
-    .periode-nav:hover { transform: scale(1.2); color: #00B3B5; }
+    .periode-nav { color: #00BBC2; cursor: pointer; padding: 0 5px; user-select: none; transition: 0.2s; font-size: 16px; }
+    .periode-nav:hover { transform: scale(1.2); color: #009ca2; }
     .periode-nav.disabled { color: #CCC; cursor: not-allowed; transform: none; }
     
-    .btn-add { background-color: #00CED1; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-    .btn-add:hover { background-color: #00B3B5; color: white; }
+    .btn-add { background-color: #00BBC2; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn-add:hover { background-color: #009ca2; color: white; }
 
     /* --- TABEL --- */
     .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 20px; }
@@ -44,14 +57,16 @@
     .action-buttons { display: flex; gap: 8px; justify-content: center; }
     .btn-action { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; border: none; cursor: pointer; transition: 0.2s; }
     .btn-action:hover { transform: scale(1.1); }
-    .btn-view { background-color: #0000FF; }
-    .btn-edit { background-color: #FFD700; color: #333; }
-    .btn-delete { background-color: #FF0000; }
+    
+    /* Tombol Aksi */
+    .btn-view { background-color: #0000FF; } /* Biru untuk Detail */
+    .btn-edit { background-color: #FFD700 !important; color: #333 !important; } /* Kuning Emas untuk Edit */
+    .btn-delete { background-color: #FF0000; } /* Merah untuk Hapus */
 
     .card-footer-custom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #888; margin-top: 20px; }
     .pagination-custom { display: flex; gap: 5px; list-style: none; padding: 0; margin: 0; }
     .pagination-custom li a, .pagination-custom li span { padding: 6px 12px; border: 1px solid #E0E0E0; border-radius: 4px; color: #555; text-decoration: none; background: white; transition: 0.2s; }
-    .pagination-custom li a:hover { background-color: #00CED1; color: white; border-color: #00CED1; }
+    .pagination-custom li a:hover { background-color: #00BBC2; color: white; border-color: #00BBC2; }
     .pagination-custom li.active span { background-color: #E0E0E0; font-weight: bold; }
 
     /* =========================================
@@ -82,7 +97,7 @@
     .filter-body .form-label { font-weight: 700; color: #333; font-size: 13px; margin-bottom: 8px; display: block; }
     .filter-body .input-icon-wrap { position: relative; margin-bottom: 20px; }
     .filter-body .form-input { background-color: #F4F6F8; border: 1px solid #F4F6F8; border-radius: 10px; padding: 12px 18px; width: 100%; font-size: 13px; color: #555; outline: none; appearance: none; }
-    .filter-body .form-input:focus { border-color: #00CED1; background-color: #FFF; }
+    .filter-body .form-input:focus { border-color: #00BBC2; background-color: #FFF; }
     .filter-body .input-icon-wrap .form-input { padding-right: 40px; }
     .filter-body .input-icon-wrap i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #555; pointer-events: none; }
 
@@ -94,8 +109,8 @@
     .btn-modal-reset:hover { background-color: #E0A800; }
     .btn-modal-batal { background-color: #DC3545; color: #FFF; }
     .btn-modal-batal:hover { background-color: #C82333; }
-    .btn-modal-terapkan { background-color: #00CED1; color: #FFF; }
-    .btn-modal-terapkan:hover { background-color: #00B3B5; }
+    .btn-modal-terapkan { background-color: #00BBC2; color: #FFF; }
+    .btn-modal-terapkan:hover { background-color: #009ca2; }
     .btn-modal-abu { background-color: #E0E0E0; color: #333; }
     .btn-modal-abu:hover { background-color: #CFCFCF; }
 
@@ -108,11 +123,11 @@
     .calendar-overlay-fixed.show .calendar-popup-fixed { transform: scale(1); }
     .calendar-header-custom { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .calendar-header-custom button { background: #F4F6F8; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #333; font-weight: bold; font-size: 12px; transition: 0.2s; }
-    .calendar-header-custom button:hover { background: #EAEFEF; color: #00CED1; }
+    .calendar-header-custom button:hover { background: #EAEFEF; color: #00BBC2; }
     .calendar-header-custom button.disabled-btn { opacity: 0.3; pointer-events: none; }
     .calendar-title-custom { font-weight: bold; font-size: 15px; color: #333; display: flex; align-items: center; gap: 5px; }
     .header-clickable { cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: 0.2s; display: inline-block; }
-    .header-clickable:hover { background: #E6F4F1; color: #00CED1 !important; }
+    .header-clickable:hover { background: #E6F4F1; color: #00BBC2 !important; }
     .calendar-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
     .calendar-table th { font-size: 12px; color: #888; padding-bottom: 8px; font-weight: 600; text-align: center; }
     .calendar-table td { text-align: center; padding: 8px 0; cursor: pointer; font-size: 13px; color: #333; transition: 0.2s; }
@@ -121,18 +136,24 @@
     .calendar-table tr.week-row { border-radius: 8px; transition: background 0.2s; }
     .calendar-table tr.week-row:hover { background-color: #F0FCFC; }
     .calendar-table tr.selected-week { background-color: #E6F4F1; }
-    .calendar-table td.selected-day { background-color: #00CED1 !important; color: white !important; font-weight: bold; border-radius: 6px !important; }
+    .calendar-table td.selected-day { background-color: #00BBC2 !important; color: white !important; font-weight: bold; border-radius: 6px !important; }
     .grid-view { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px 0; }
     .grid-item { text-align: center; padding: 10px 0; background: #F4F6F8; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: #333; transition: 0.2s; }
-    .grid-item:hover { background: #00CED1; color: white; }
-    .grid-item.active { background: #00CED1; color: white; }
+    .grid-item:hover { background: #00BBC2; color: white; }
+    .grid-item.active { background: #00BBC2; color: white; }
     .grid-item.disabled-grid { background: #FFF; color: #E0E0E0; cursor: not-allowed; }
 </style>
 
 <div class="page-wrapper">
 
     <div class="banner-top">
-        <div class="banner-icon"><i class="fa-solid fa-shield-medical"></i></div>
+        <div class="banner-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="34" height="34">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+        </div>
         <div class="banner-text">
             <h4>Pelaporan Kader</h4>
             <p>Menampilkan riwayat pelaporan jentik</p>

@@ -43,6 +43,8 @@ $routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto', 'Profile2::uploadFoto');
 $routes->post('updateProfil', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
+$routes->post('profil/update_foto', 'Profile3::update_foto');
+$routes->post('profil/update_sandi', 'Profile3::update_sandi');
 /* ========================= */
 /* DIARE */
 /* ========================= */
@@ -275,3 +277,4 @@ $routes->get('funfact/hapus/(:num)', 'dbd::hapusFunfact/$1');
 $routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'dbd::view/$1');;
+$routes->get('/tentang-kami', 'Home::tentangKami');

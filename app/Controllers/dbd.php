@@ -658,7 +658,7 @@ class Dbd extends BaseController
         ];
 
         // Ganti 'peta_view' dengan nama file view peta Anda (misalnya 'kader/peta_view')
-        return view('gol_a/peta_sebaran_kader', $data); 
+        return view('gol_a/dashboard_kader', $data); 
     }
 
 

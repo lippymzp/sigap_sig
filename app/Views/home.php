@@ -139,8 +139,9 @@
         <p>
             Platform berbasis Sistem Informasi Geografis yang menghadirkan pemetaan dan visualisasi data penyakit Demam Berdarah Dengue, Tuberkulosis, Pneumonia, dan Diare dalam satu sistem terintegrasi. Dikembangkan untuk mendukung transparansi dan akses data kesehatan masyarakat secara menyeluruh dan akurat.
         </p>
-        <button class="btn btn-teal">Selengkapnya</button>
-    </div>
+        <a href="<?= base_url('tentang-kami') ?>" class="btn btn-teal">
+    Selengkapnya
+</a>
 
 </div>
 
