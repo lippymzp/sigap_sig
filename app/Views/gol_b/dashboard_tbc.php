@@ -1,5 +1,6 @@
 <?= $this->extend('layout/dashboard_layout') ?>
 <?= $this->section('content') ?>
+<?php helper('text'); ?>
 
 <!-- WELCOME -->
 <div class="welcome-box">
@@ -284,49 +285,88 @@ document.addEventListener("DOMContentLoaded", function(){
 <div class="content-section">
 
     <h4 class="section-title">Berita</h4>
-    <p class="section-sub">Informasi dan Edukasi tentang Pencegahan serta Penanganan</p>
+    <p class="section-sub">
+        Informasi terkini seputar pencegahan, penanganan, dan edukasi penyakit TBC.
+    </p>
 
-    <div class="info-card">
+    <?php if (!empty($berita)) : ?>
+        <div class="berita-slider">
+        <?php foreach ($berita as $b) : ?>
 
-        <div class="info-text">
-            <h5>Pneumonia Pada Anak: <br> Pahami Penyebab dan Cara Mengatasinya</h5>
-            <p>
-                Pneumonia pada anak adalah infeksi paru serius yang dapat menyebabkan gangguan pernapasan.
-                Ketahui gejala, penyebab dan cara mengatasinya.
-            </p>
-            <small>Medis • 10 Jan 2025</small>
+            <?php
+$link = !empty($b['url_berita'])
+    ? $b['url_berita']
+    : base_url('tbc/berita/detail/' . $b['id_berita']);
+?>
+
+<a href="<?= $link ?>"
+   class="info-card berita-card" 
+   <?= !empty($b['url_berita']) ? 'target="_blank"' : '' ?>>
+
+                <div class="info-text">
+                    <h5><?= esc($b['judul_berita']) ?></h5>
+
+                <?php if ($b['deskripsi_berita'] != 'Kutip berita luar') : ?>
+
+    <p>
+        <?= word_limiter(strip_tags($b['deskripsi_berita']), 20) ?>
+    </p>
+
+<?php endif; ?>
+
+                    <small>
+                        <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                    </small>
+                </div>
+
+                <div class="info-image">
+                    <?php if (!empty($b['gambar_berita'])) : ?>
+                    <img src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>">
+                <?php else : ?>
+                    <img src="<?= base_url('img/default-news.png') ?>">
+                <?php endif; ?>
+                </div>
+
+                </a>
+
+        <?php endforeach ?>
         </div>
-
-        <div class="info-image">
-            <img src="<?= base_url('img/pneumonia.png') ?>">
-        </div>
-
-    </div>
+    <?php endif ?>
 
 </div>
-
 
 <!-- SECTION FUNFACT -->
 <div class="content-section">
 
     <h4 class="section-title">Funfact</h4>
-    <p class="section-sub">Informasi dan Edukasi berdasarkan sumber terpercaya</p>
 
-    <div class="info-card small">
+    <p class="section-sub">
+        Fakta menarik dan edukasi singkat seputar penyakit TBC.
+    </p>
 
-        <div class="info-text">
-            <h5>Pneumonia</h5>
-            <p>
-                Pneumonia adalah infeksi pada paru-paru yang menyebabkan kantung udara terisi cairan,
-                sehingga mengganggu proses pernapasan.
-            </p>
+    <?php if (!empty($funfact)) : ?>
+
+        <div class="info-card small">
+
+            <div class="info-text">
+
+                <h5>
+                    <?= esc($funfact['judul_funfact']) ?>
+                </h5>
+
+                <p>
+                    <?= esc($funfact['deskripsi_funfact']) ?>
+                </p>
+
+            </div>
+
+            <div class="info-image">
+                <img src="<?= base_url('uploads/funfact/' . $funfact['gambar_funfact']) ?>">
+            </div>
+
         </div>
 
-        <div class="info-image">
-            <img src="<?= base_url('img/pneumonia2.png') ?>">
-        </div>
-
-    </div>
+    <?php endif; ?>
 
 </div>
 
@@ -354,4 +394,108 @@ function confirmLogout(url) {
 }
 </script>
 
+<style>
+
+.berita-slider{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    gap:25px;
+    padding-bottom:15px;
+}
+
+.berita-slider .berita-card{
+    min-width:850px !important;
+    max-width:850px !important;
+
+    flex:0 0 auto !important;
+
+    display:flex !important;
+    flex-direction:row !important;
+
+    align-items:center;
+    justify-content:space-between;
+
+    border-radius:25px;
+    padding:35px;
+
+    text-decoration:none;
+}
+
+.berita-slider .berita-card .info-text{
+    width:65%;
+}
+
+.berita-slider .berita-card .info-image{
+    width:30%;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.berita-slider .berita-card .info-image img{
+    width:220px !important;
+    height:160px !important;
+    object-fit:cover;
+    border-radius:20px;
+}
+
+</style>
+
 <?= $this->endSection() ?>
+<style>
+
+.berita-slider{
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+}
+
+.berita-slider::-webkit-scrollbar{
+    height: 8px;
+}
+
+.berita-slider::-webkit-scrollbar-thumb{
+    background: #14c7d4;
+    border-radius: 20px;
+}
+
+.berita-card{
+    min-width: 850px;
+    flex-shrink: 0;
+}
+
+</style>
+.berita-slider{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto;
+}
+
+.berita-card{
+    min-width:850px;
+    max-width:850px;
+    flex:0 0 auto;
+
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center;
+    justify-content:space-between;
+}
+.berita-card .info-text{
+    width:65%;
+}
+
+.berita-card .info-image{
+    width:30%;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.berita-card .info-image img{
+    width:220px;
+    height:150px;
+    object-fit:cover;
+    border-radius:20px;
+}

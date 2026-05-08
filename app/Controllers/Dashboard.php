@@ -143,12 +143,26 @@ $dbd = $builderDbd->get()->getResultArray();
 
 
     public function tbc()
-    {
-        return view('gol_b/dashboard_tbc', [
-            'menu' => 'dashboard',
-            'artikels' => []
-        ]);
-    }
+{
+    $beritaModel = new BeritaTbcModel();
+    $funfactModel = new FunfactTbcModel();
+
+    $berita = $beritaModel
+        ->where('status_berita', 'Publish')
+        ->orderBy('id_berita', 'DESC')
+        ->findAll();
+
+    $funfact = $funfactModel
+        ->where('status_funfact', 'Publish')
+        ->orderBy('id_funfact', 'DESC')
+        ->first();
+
+    return view('gol_b/dashboard_tbc', [
+        'menu' => 'dashboard',
+        'berita' => $berita,
+        'funfact' => $funfact
+    ]);
+}
 
     public function pneumonia()
     {
