@@ -169,6 +169,21 @@ html,body{
     margin-left:0;
 }
 
+/* ===== LOGO SIDEBAR FIX ===== */
+.logo-sidebar{
+    width: 110px;     /* ukuran logo */
+    max-width: 100%;
+    height: auto;
+
+    display: block;
+    margin: 0 auto;   /* center */
+}
+
+/* kalau masih terasa besar */
+.sidebar .logo{
+    padding: 5px 0 10px;
+}
+
 </style>
 </head>
 
@@ -200,8 +215,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <div class="sidebar">
 
 <div class="logo text-center mb-3">
-    <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
-         alt="Logo SIGAP" 
+    <img src="<?= base_url('img/logo_denggis.png') ?>" 
+         alt="Logo DENGGIS" 
          class="logo-sidebar">
 </div>
 <div class="menu-label">HOME</div>
@@ -240,15 +255,15 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <div class="menu-label">Informasi</div>
 
-<a href="<?= base_url('Berita') ?>">
+<a href="<?= base_url('berita') ?>">
   <i class="fa-solid fa-newspaper me-2"></i> Berita
 </a>
 
-<a href="<?= base_url('Fun Fact') ?>">
+<a href="<?= base_url('Funfact') ?>">
   <i class="fa-solid fa-lightbulb me-2"></i> Fun Fact
 </a>
 
-<a href="<?= base_url('Video') ?>">
+<a href="<?= base_url('video') ?>">
   <i class="fa-solid fa-video me-2"></i> Video
 </a>
 
@@ -347,12 +362,12 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <div class="col-md-4 text-center mb-2">
 
          <div class="logo mb-1">
-            <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
-                 alt="Logo SIGAP" 
+            <img src="<?= base_url('img/logo_denggis.png') ?>" 
+                 alt="Logo DENGGIS" 
                  style="max-width:55px;">
         </div>
 
-        <h6 class="fw-bold mb-1">SIGAP</h6>
+        <h6 class="fw-bold mb-1">DENGGIS</h6>
 
         <p class="small mb-0" style="line-height:1.3;">
     Sistem Informasi Geografis Analisis<br>

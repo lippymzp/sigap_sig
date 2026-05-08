@@ -232,3 +232,7 @@ $routes->get('/video/tambah2/(:num)', 'VideoDbd::edit/$1');
 $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 
 $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
+
+// ================= Manajemen Banner DBD =================
+$routes->get('/manajemen_banner', 'ManajemenBanner::index');
+$routes->get('/unggah_banner', 'ManajemenBanner::unggah');
