@@ -121,6 +121,79 @@ body {
 body {
     font-family: 'Poppins', sans-serif;
 }
+.footer{
+    background:#22c1c9;
+    color:#fff;
+    padding:55px 0 20px;
+    font-family:'Poppins', sans-serif;
+}
+
+.footer-container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.footer-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.footer-box{
+    flex:1;
+    min-width:250px;
+}
+
+/* logo */
+.footer-brand{
+    text-align:center;
+}
+
+.footer-logo{
+    width:90px;
+    margin-bottom:10px;
+}
+
+.footer-brand p{
+    font-size:14px;
+    line-height:1.7;
+    margin:0;
+}
+
+/* judul */
+.footer-title{
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+/* teks kecil */
+.footer-box p{
+    font-size:14px;
+}
+
+/* icon jarak */
+.footer-box i{
+    margin-right:8px;
+}
+
+/* copyright */
+.footer-bottom{
+    text-align:center;
+    margin-top:40px;
+    font-size:14px;
+    opacity:.9;
+}
+
+/* responsive */
+@media(max-width:768px){
+    .footer-content{
+        flex-direction:column;
+        text-align:center;
+    }
+}
 </style>
 </head>
 
@@ -235,33 +308,48 @@ body {
 </div>
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
+<footer class="footer">
 
-<div class="col-md-4">
-<div class="logo-footer">LOGO</div>
-<p class="mt-3"><b>SIGAP</b><br>
-Sistem Informasi, Geografis Analisis & Pemantauan</p>
-<a href="#">Tentang Kami</a>
+<div class="footer-container">
+
+<div class="footer-content">
+
+    <!-- BRAND -->
+    <div class="footer-box footer-brand">
+        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
+        <p>
+            Dengue Geographic <br> Information System
+        </p>
+    </div>
+
+    <!-- SOSIAL -->
+    <div class="footer-box">
+        <h6 class="footer-title">Media Sosial</h6>
+
+        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
+        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
+        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
+    </div>
+
+    <!-- KONTAK -->
+    <div class="footer-box">
+        <h6 class="footer-title">Informasi Kontak</h6>
+
+        <p class="mb-0 small">📧 email@kampus.ac.id</p>
+        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
+        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
+        <p class="mb-0 small">📞 087851132933</p>
+    </div>
+
 </div>
 
-<div class="col-md-4">
-<h6>Media Sosial</h6>
-<p>@username</p>
-</div>
-
-<div class="col-md-4">
-<h6>Informasi Kontak</h6>
-<p>Email: email@company.com</p>
-<p>Lokasi: Jember, Jawa Timur</p>
+<div class="footer-bottom">
+    © 2026 SIGAP
 </div>
 
 </div>
-<hr>
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-</div>
+
+</footer>
 </div>
 
 <!-- SCRIPT -->

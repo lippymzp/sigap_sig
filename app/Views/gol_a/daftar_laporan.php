@@ -268,8 +268,24 @@ th {
                             <?php if(!empty($listCatleya)): ?>
                                 <?php foreach($listCatleya as $posyandu): ?>
                                     <td>
-                                        <?php if (isset($dataLaporan[$minggu][$posyandu])): ?>
-                                            <a href="<?= base_url('pelaporan-kader/view/' . $dataLaporan[$minggu][$posyandu]) ?>">
+                                        <?php 
+                                            // LOGIKA BARU: Normalisasi key posyandu agar aman dicari (tanpa dan dengan 0 di depan)
+                                            $posWithoutZero = ltrim($posyandu, '0');
+                                            $posWithZero = str_pad($posWithoutZero, 2, "0", STR_PAD_LEFT);
+
+                                            $idLaporan = null;
+                                            
+                                            if (isset($dataLaporan[$minggu][$posyandu])) {
+                                                $idLaporan = $dataLaporan[$minggu][$posyandu];
+                                            } elseif (isset($dataLaporan[$minggu][$posWithZero])) {
+                                                $idLaporan = $dataLaporan[$minggu][$posWithZero];
+                                            } elseif (isset($dataLaporan[$minggu][$posWithoutZero])) {
+                                                $idLaporan = $dataLaporan[$minggu][$posWithoutZero];
+                                            }
+                                        ?>
+
+                                        <?php if ($idLaporan): ?>
+                                            <a href="<?= base_url('pelaporan-kader/view/' . $idLaporan) ?>">
                                                 <i class="fa-solid fa-circle-check status-check"></i>
                                             </a>
                                         <?php else: ?>
@@ -327,7 +343,7 @@ th {
                             $bAktif = isset($bulanAktif) ? $bulanAktif : '';
                             foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $b): 
                             ?>
-                                <option value="<?= $b ?>" <?= ($bAktif == $b) ? 'selected' : '' ?>><?= $b ?></option>
+                                <option value="<?= $b ?>" <?= ($bAktif == $b) ? 'selected' : '' ?>><option value="<?= $b ?>" <?= ($bAktif == $b) ? 'selected' : '' ?>><?= $b ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -342,9 +358,9 @@ th {
 </div>
 
 <script>
-    // 1. DATA POSYANDU & LOGIKA DROPDOWN KELURAHAN (YANG TADI KEHAPUS)
+    // 1. DATA POSYANDU & LOGIKA DROPDOWN KELURAHAN
     const dataPosyandu = {
-        'Sumbersari': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
+        'Sumbersari': ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
         'Wirolegi': ['36','36A','37','38','39','40','41','42','43','44','44A','45','46','47','48','49','50','51','52','53','54'],
         'Karangrejo': ['75','76','77','78','78A','79','80','81','82','83','84','85','86','87','88','88A','89','90','91','92','92A','93','94','95','95A','95B'],
         'Tegalgede': ['68','69','70','71','72','73','74','74A','74B'],

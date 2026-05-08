@@ -32,28 +32,27 @@ class Profile2 extends Controller
 
     // UPLOAD FOTO
     public function uploadFoto()
-    {
-        $model = new PetugasModel();
+{
+    $file = $this->request->getFile('foto');
+
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+
+        $namaBaru = $file->getRandomName();
+        $file->move(ROOTPATH . 'public/uploads/profil', $namaBaru);
 
         $id_petugas = session()->get('id_petugas');
 
-        $file = $this->request->getFile('foto');
+        $model = new \App\Models\PetugasModel();
+        $model->saveFoto($id_petugas, $namaBaru);
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-
-            $namaFoto = $file->getRandomName();
-
-            $file->move(FCPATH . 'uploads/profil/', $namaFoto);
-
-            $model->saveFoto($id_petugas, $namaFoto);
-
-            return redirect()->to(base_url('profil_admin'))
-                ->with('success', 'Foto berhasil diupload');
-        }
-
-        return redirect()->to(base_url('profil_admin'))
-            ->with('error', 'Upload gagal');
+        return redirect()->back()
+            ->with('success', 'Foto berhasil diupload');
     }
+
+    return redirect()->back()
+        ->with('error', 'Upload gagal');
+}
+
 
     //update
     public function updateProfil()

@@ -16,7 +16,7 @@ $rt_rw = $rt_rw ?? '';
 $hasil = $hasil ?? '';
 $alasan = $alasan ?? '';
 $totalSkor = $totalSkor ?? 0;
-
+$kategori = ($kategori_usia <= 19) ? 'Anak-anak' : 'Dewasa';
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +25,7 @@ $totalSkor = $totalSkor ?? 0;
 <title>Hasil Skrining</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 body {
     background: #ffffff;
@@ -239,8 +240,78 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+/* ===== CARD MODERN ===== */
+.tips-card {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-top: 20px;
+    animation: fadeUp 0.6s ease-in-out;
+    transition: 0.3s;
+}
 
+/* animasi masuk */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* HEADER */
+.tips-header-modern {
+    padding: 18px 20px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+/* CONTENT */
+.tips-content-modern {
+    padding: 18px 22px;
+    background: #f9fcfc;
+}
+
+.tips-content-modern p {
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.tips-content-modern ul {
+    padding-left: 18px;
+}
+
+.tips-content-modern li {
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.tips-content-modern li:hover {
+    transform: translateX(5px);
+}
+
+/* VARIAN WARNA */
+.bg-danger-modern {
+    background: linear-gradient(135deg, #ff6b6b, #d64545);
+}
+
+.bg-warning-modern {
+    background: linear-gradient(135deg,  #ffd86b, #c9a227);
+}
+
+.bg-success-modern {
+    background: linear-gradient(135deg, #00BBC2, #007f6b);
+}
 </style>
+
+
 </head>
 
 <body>
@@ -272,9 +343,10 @@ body {
 
     <label class="mt-3">Tanggal Lahir</label>
     <input type="text" class="form-control" value="<?= $tanggal_lahir ?>" readonly>
-
-    <label class="mt-3">Kategori Usia</label>
-    <input type="text" class="form-control" value="<?= $kategori_usia ?>" readonly>
+<label class="mt-3">Usia</label>
+<label class="mt-3">Kategori Usia</label>
+<input type="text" class="form-control" value="<?= $kategori ?>" readonly>
+    
 </div>
 
 <div class="col-md-6">
@@ -319,8 +391,8 @@ body {
 
 <?php 
 $pertanyaan = [
-    "Apakah Anda menguras TPA?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda menguras Tempat Penampungan Air?",
+    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di dalam rumah?",
     "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
     "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
     "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
@@ -331,15 +403,15 @@ $pertanyaan = [
     "Apakah Anda menanam tanaman pengusir nyamuk?",
     "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
     "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
-    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus?",
+    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?",
+    "Apakah hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M?",
+    "Apakah Anda menggantungkan baju di rumah?",
+    "Apakah semua anggota keluarga Anda menggantungkan baju di rumah?",
     "Apakah di rumah Anda banyak genangan air?",
-    "Apakah Anda memiliki kebiasaan menggantungkan baju di rumah?",
-    "Apakah semua anggota keluarga Anda sering menggantungkan baju di rumah?",
     "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
-    "Apakah akhir-akhir ini Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
-    "Apakah baru-baru ini Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
-    "Apakah belakangan ini Anda sering berkunjung ke tempat umum atau lokasi ramai?",
-    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?"
+    "Apakah dalam 2 minggu terakhir Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
+    "Apakah dalam 2 minggu terakhir Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
+    "Apakah dalam 2 minggu terakhir Anda sering berkunjung ke tempat umum atau lokasi ramai?"
 ];
 ?>
 
@@ -385,23 +457,70 @@ if ($value == 1):
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
 
-<!-- TIPS -->
+<!-- TIPS / REKOMENDASI BERDASARKAN HASIL -->
+<?php if (strpos($hasil, 'Buruk') !== false): ?>
 
-<div class="tips-box">
-    <div class="tips-header">
-        📚 Tips Kesehatan
+    <div class="tips-card">
+    <div class="tips-header-modern bg-danger-modern">
+        🚨🦟 Risiko Tinggi Nyamuk Aedes aegypti
     </div>
 
-    <div class="tips-content">
+    <div class="tips-content-modern">
+        <p>Lingkungan sangat berisiko terhadap perkembangan nyamuk penyebab DBD.</p>
+
         <ul>
-            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
-            <li>Rutin berolahraga minimal 30 menit</li>
-            <li>Istirahat yang cukup</li>
-            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
+            <li>🧼 Lakukan 3M Plus secara menyeluruh</li>
+            <li>🪣 Bersihkan tempat air minimal 1x seminggu</li>
+            <li>💊 Gunakan larvasida (abate)</li>
+            <li>👕 Hindari menggantung pakaian</li>
+            <li>🔍 Rutin cek jentik di rumah</li>
+            <li>🏥 Segera ke fasilitas kesehatan jika ada gejala</li>
         </ul>
     </div>
 </div>
 
+<?php elseif (strpos($hasil, 'Cukup') !== false): ?>
+
+    <div class="tips-box">
+        <div class="tips-card">
+    <div class="tips-header-modern bg-warning-modern">
+        ⚡🦟 Lingkungan Perlu Ditingkatkan
+    </div>
+
+    <div class="tips-content-modern">
+        <p>Pencegahan sudah dilakukan, tetapi belum konsisten.</p>
+
+        <ul>
+            <li>🧽 Tingkatkan rutinitas 3M Plus</li>
+            <li>👨‍👩‍👧 Libatkan seluruh keluarga</li>
+            <li>🔍 Cek jentik setiap minggu</li>
+            <li>💡 Perbaiki ventilasi & cahaya rumah</li>
+            <li>🌿 Gunakan pengusir nyamuk alami</li>
+        </ul>
+    </div>
+</div>
+
+<?php else: ?>
+
+    <div class="tips-card">
+    <div class="tips-header-modern bg-success-modern">
+        🎉✨ Lingkungan Sehat & Terjaga
+    </div>
+
+    <div class="tips-content-modern">
+        <p>Kondisi lingkungan sudah baik dan aman dari risiko tinggi DBD.</p>
+
+        <ul>
+            <li>🌟 Pertahankan 3M Plus</li>
+            <li>🔍 Tetap rutin cek jentik</li>
+            <li>🏘️ Ajak lingkungan sekitar ikut menjaga</li>
+            <li>💚 Jaga PHBS keluarga</li>
+            <li>🌧️ Tetap waspada musim hujan</li>
+        </ul>
+    </div>
+</div>
+
+<?php endif; ?>
 <!-- BUTTON -->
 
 <!-- CETAK (SENDIRI DI ATAS) -->
@@ -414,7 +533,7 @@ if ($value == 1):
 <!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-    <a href="/skrining" class="btn btn-kembali">
+    <a href="/skriningdbd" class="btn btn-kembali">
         Kembali
     </a>
 

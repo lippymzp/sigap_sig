@@ -45,7 +45,7 @@
     </div>
 
     <div class="col-lg-3 col-md-6">
-        <a href="<?= base_url('artikel') ?>" class="text-decoration-none">
+        <a href="<?= base_url('berita/list_berita') ?>" class="text-decoration-none">
             <div class="fitur-box shadow-sm p-3 rounded">
                 📄 Berita Kesehatan
 </div>

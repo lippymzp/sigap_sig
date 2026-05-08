@@ -1,7 +1,12 @@
 <?php /** @var array $berita */ ?>
 
 <?= $this->extend('layout/dashboard_layout_admin'); ?>
+
 <?= $this->section('content'); ?>
+<?php
+$status = $_GET ['status'] ?? '';
+$keyword = $keyword ?? '';
+?>
 
 <style>
 /* WRAPPER */
@@ -21,12 +26,20 @@
 
 /* SEARCH */
 .search-box {
+    position: relative;
     margin-bottom: 20px;
 }
-
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 14px;
+}
 .search-box input {
     width: 100%;
-    padding: 12px 18px;
+    padding: 12px 18px 12px 42px;
     border: 1px solid #ddd;
     border-radius: 8px;
     outline: none;
@@ -77,14 +90,21 @@
     cursor: pointer;
     background: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+
+    color: #333;
+    text-decoration: none;
+    transition: 0.2s;
 }
 
 .tab-btn.active {
     background: #18c4c9;
-    color: white;
+    color: #fff !important;
     font-weight: 600;
     transform: scale(1.05);
-    transition: 0.2s;
+}
+.tab-btn:hover {
+    background: #18c4c9;
+    color: white;
 }
 
 .add-btn {
@@ -200,6 +220,105 @@
     padding: 6px 12px;
     border-radius: 20px;
 }
+/* ================= MODAL ================= */
+
+.modal-overlay,
+.notif-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box,
+.notif-box {
+    width: 340px;
+    background: white;
+    border-radius: 18px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    animation: popupShow .25s ease;
+}
+
+@keyframes popupShow {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-icon,
+.notif-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 28px;
+}
+
+.modal-delete {
+    background: #ff4d4f;
+}
+
+.modal-archive {
+    background: #13c5d3;
+}
+
+.notif-success {
+    background: #20bf55;
+}
+
+.notif-error {
+    background: #ff4d4f;
+}
+
+.modal-title,
+.notif-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.modal-text,
+.notif-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.modal-btn,
+.notif-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-yes,
+.notif-btn {
+    background: #13c5d3;
+    color: white;
+}
+
+.btn-no {
+    background: #eee;
+}
 </style>
 
 <!-- Tambahkan ini di <head> agar icon Font Awesome muncul -->
@@ -210,9 +329,27 @@
     <div class="page-title">Kelola Berita</div>
 
     <!-- SEARCH -->
-    <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Cari berita disini">
-    </div>
+    <form method="get" action="<?= current_url(); ?>">
+
+        <input type="hidden"
+               name="status"
+               value="<?= esc(is_string($status) ? $status : 'publish') ?>">
+
+        <div class="search-box">
+
+            <i class="fa fa-search"></i>
+
+            <input type="text"
+                   id="searchInput"
+                   name="keyword"
+                   class="search-input"
+                   placeholder="Cari berita disini"
+                   value="<?= esc($keyword ?? '') ?>">
+
+        </div>
+
+    </form>
+
 
     <!-- SUMMARY -->
     <div class="summary-box">
@@ -226,31 +363,32 @@
 </div>
 
 <!-- FILTER -->
-<?php $uri = service('uri')->getSegment(2); ?>
 <div class="filter-tabs">
-<div class="left-tabs">
 
-<a href="/berita"
-   class="tab-btn <?= ($uri == null) ? 'active' : '' ?>">
-    Semua
-</a>
+    <div class="left-tabs">
 
-<a href="/berita/publish"
-   class="tab-btn <?= ($uri == 'publish') ? 'active' : '' ?>">
-    Terunggah
-</a>
+        <a href="<?= site_url('berita'); ?>"
+           class="tab-btn <?= empty($status) ? 'active' : '' ?>">
+            Semua
+        </a>
 
-<a href="/berita/draft"
-   class="tab-btn <?= ($uri == 'draft') ? 'active' : '' ?>">
-    Draft
-</a>
+        <a href="<?= site_url('berita?status=publish'); ?>"
+           class="tab-btn <?= ($status == 'publish') ? 'active' : '' ?>">
+            Terunggah
+        </a>
+
+        <a href="<?= site_url('berita?status=draft'); ?>"
+           class="tab-btn <?= ($status == 'draft') ? 'active' : '' ?>">
+            Draft
+        </a>
+
+    </div>
+
+    <a href="/berita/tambah" class="add-btn">
+        Tambah Berita
+    </a>
 
 </div>
-
-        <a href="/berita/tambah" class="add-btn">
-            Tambah Berita
-        </a>
-    </div>
 
 
     <!-- LIST BERITA -->
@@ -268,19 +406,24 @@
                     <h4><?= $b['judul_berita'] ?? '' ?></h4>
 
                     <p>
-                        <?= $b['deskripsi_berita'] ?? '', 0, 120 ?>...
+                        <?= substr(strip_tags($b['isi_berita'] ?? ''), 0, 120) ?>...
+                    </p>
+
+                    <p>
+                        <?= substr(strip_tags($b['deskripsi_berita'] ?? ''), 0, 120) ?>...
                     </p>
 
                     <small><?= $b['tanggal_berita'] ?? '' ?></small>
 
                     <div class="upload-status">
-                    <?php 
-                        $status = strtolower(trim($b['status_berita'] ?? 'draft'));
-                        ?>
 
-                        <div class="upload-status">
-                            Status: <?= $status ?>
-                        </div>
+                    <?php 
+                    $statusBerita = strtolower(trim($b['status_berita'] ?? 'draft'));
+                    ?>
+
+                    <div class="upload-status">
+                        Status: <?= $statusBerita ?>
+                    </div>
                     </div>
 
                 </div>
@@ -293,7 +436,7 @@
                 <div class="action-icons">
 
                                 <!-- VIEW -->
-                <a href="/berita/view/<?= $b['id_berita']; ?>" class="icon-btn view">
+                <a href="/berita/view_berita/<?= $b['id_berita']; ?>" class="icon-btn view">
                     <i class="fas fa-eye"></i>
                 </a>
 
@@ -303,10 +446,12 @@
                 </a>
 
                 <!-- DELETE -->
-                <a href="/berita/delete/<?= $b['id_berita']; ?>"
-                class="icon-btn delete"
-                onclick="return confirm('Hapus berita ini?')">
+                <a href="javascript:void(0)"
+                onclick="openDeleteModal('/berita/delete/<?= $b['id_berita']; ?>')"
+                class="icon-btn delete">
+
                     <i class="fas fa-trash"></i>
+
                 </a>
 
 
@@ -323,45 +468,298 @@
     <?php endif; ?>
 
 </div>
+
+<!-- MODAL DELETE -->
+
+<div class="modal-overlay" id="deleteModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon modal-delete">
+
+            <i class="fa fa-trash"></i>
+
+        </div>
+
+        <div class="modal-title">
+
+            Hapus Berita
+
+        </div>
+
+        <div class="modal-text">
+
+            Apakah Anda Yakin<br>
+            Ingin Menghapus<br>
+            Berita Ini?
+
+        </div>
+
+        <a href="#"
+           id="deleteLink"
+           class="modal-btn btn-yes d-flex justify-content-center align-items-center text-decoration-none">
+
+            Ya
+
+        </a>
+
+        <button class="modal-btn btn-no"
+                onclick="closeDeleteModal()">
+
+            Tidak
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL UNGGAH -->
+
+<div class="modal-overlay" id="uploadModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon modal-archive">
+
+            <i class="fa fa-arrow-up"></i>
+
+        </div>
+
+        <div class="modal-title">
+
+            Unggah Berita
+
+        </div>
+
+        <div class="modal-text">
+
+            Apakah Anda Ingin<br>
+            Mengunggah<br>
+            Berita ini?
+
+        </div>
+
+        <a href="#"
+           id="uploadLink"
+           class="modal-btn btn-yes d-flex justify-content-center align-items-center text-decoration-none">
+
+            Ya
+
+        </a>
+
+        <button class="modal-btn btn-no"
+                onclick="closeUploadModal()">
+
+            Tidak
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- NOTIFIKASI SUCCESS -->
+
+<?php if(session()->getFlashdata('success')) : ?>
+
+<div class="notif-overlay" id="successNotif">
+
+    <div class="notif-box">
+
+        <div class="notif-icon notif-success">
+
+            <i class="fa fa-check"></i>
+
+        </div>
+
+        <div class="notif-title">
+
+            Berhasil
+
+        </div>
+
+        <div class="notif-text">
+
+            <?= session()->getFlashdata('success'); ?>
+
+        </div>
+
+        <button class="notif-btn"
+                onclick="closeSuccessNotif()">
+
+            Oke
+
+        </button>
+
+    </div>
+
+</div>
+
+<?php endif; ?>
+
+<!-- NOTIFIKASI ERROR -->
+
+<?php if(session()->getFlashdata('error')) : ?>
+
+<div class="notif-overlay" id="errorNotif">
+
+    <div class="notif-box">
+
+        <div class="notif-icon notif-error">
+
+            <i class="fa fa-xmark"></i>
+
+        </div>
+
+        <div class="notif-title">
+
+            Gagal
+
+        </div>
+
+        <div class="notif-text">
+
+            <?= session()->getFlashdata('error'); ?>
+
+        </div>
+
+        <button class="notif-btn"
+                onclick="closeErrorNotif()">
+
+            Coba Lagi
+
+        </button>
+
+    </div>
+
+</div>
+
+<?php endif; ?>
+
 <script>
 window.onload = function () {
 
 const input = document.getElementById("searchInput");
 
+if (!input) return;
+
 input.addEventListener("input", function () {
 
-let keyword = this.value.toLowerCase().trim();
+    let keyword = this.value.toLowerCase().trim();
 
-document.querySelectorAll(".card-berita").forEach(function (item) {
-
-    let data = item.getAttribute("data-search") || "";
-
-    if (data.includes(keyword)) {
-        item.style.display = "flex";
-    } else {
-        item.style.display = "none";
-    }
     let found = false;
 
-document.querySelectorAll(".card-berita").forEach(function (item) {
-    let data = item.getAttribute("data-search") || "";
+    document.querySelectorAll(".card-berita")
+    .forEach(function (item) {
 
-    if (data.includes(keyword)) {
-        item.style.display = "flex";
-        found = true;
-    } else {
-        item.style.display = "none";
-    }
-});
+        let data =
+            item.getAttribute("data-search") || "";
 
-if (!found) {
-    console.log("Tidak ada hasil");
-}
+        if (data.includes(keyword)) {
+
+            item.style.display = "flex";
+            found = true;
+
+        } else {
+
+            item.style.display = "none";
+        }
     });
+
+    if (!found) {
+        console.log("Tidak ada hasil");
+    }
 
 });
 
 };
+
+/* ================= DELETE ================= */
+
+function openDeleteModal(link)
+{
+    document.getElementById('deleteModal')
+    .style.display = 'flex';
+
+    document.getElementById('deleteLink')
+    .href = link;
+}
+
+function closeDeleteModal()
+{
+    document.getElementById('deleteModal')
+    .style.display = 'none';
+}
+
+/* ================= UPLOAD ================= */
+
+function openUploadModal(link)
+{
+    document.getElementById('uploadModal')
+    .style.display = 'flex';
+
+    document.getElementById('uploadLink')
+    .href = link;
+}
+
+function closeUploadModal()
+{
+    document.getElementById('uploadModal')
+    .style.display = 'none';
+}
+
+/* ================= NOTIF ================= */
+
+function closeSuccessNotif()
+{
+    let el = document.getElementById('successNotif');
+
+    if(el)
+    {
+        el.style.display = 'none';
+    }
+}
+
+function closeErrorNotif()
+{
+    let el = document.getElementById('errorNotif');
+
+    if(el)
+    {
+        el.style.display = 'none';
+    }
+}
+
+/* ================= CLOSE MODAL ================= */
+
+window.onclick = function(e)
+{
+    let editModal =
+    document.getElementById('editModal');
+
+    let deleteModal =
+    document.getElementById('deleteModal');
+
+    let uploadModal =
+    document.getElementById('uploadModal');
+
+    if(e.target == editModal)
+    {
+        closeEditModal();
+    }
+
+    if(e.target == deleteModal)
+    {
+        closeDeleteModal();
+    }
+
+    if(e.target == uploadModal)
+    {
+        closeUploadModal();
+    }
+}
+
 
 </script>
 

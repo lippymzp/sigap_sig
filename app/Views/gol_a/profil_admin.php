@@ -99,7 +99,7 @@
 <?php
 $foto = (!empty($petugas['foto_profil']))
     ? base_url('uploads/profil/' . $petugas['foto_profil'])
-    : 'https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png';
+    : base_url('uploads/profil/default.png');
 
 $passBintang = str_repeat('*', strlen($petugas['password']));
 ?>
@@ -116,7 +116,9 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
 
             <img id="previewFoto"
                 src="<?= $foto ?>"
-                class="preview-foto">
+                class="preview-foto"
+                onclick="document.getElementById('uploadFoto').click()"
+                style="cursor:pointer;">
 
             <input type="file"
                 name="foto"
@@ -170,7 +172,7 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
             <!-- BUTTON KEMBALI -->
             <div class="d-flex justify-content-end mt-3">
 
-                <a href="<?= base_url('dbd/dashboard') ?>"
+                <a href="<?= base_url('dbd/dashboard/admin') ?>"
                     class="btn btn-kembali">
 
                     Kembali

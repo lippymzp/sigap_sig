@@ -4,17 +4,20 @@ namespace App\Controllers;
 
 use App\Models\InputDataPasienModel;
 use App\Models\PelaporanModel; // <-- DITAMBAHKAN: Panggil Model Pelaporan
+use App\Models\FunfactModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
 class Dbd extends BaseController
 {
+    protected $funfact;
     protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
 
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
     public function __construct()
     {
         $this->pelaporanModel = new PelaporanModel();
+        $this->funfact = new FunfactModel();
     }
 
     public function inputData()
@@ -39,23 +42,56 @@ class Dbd extends BaseController
     }
 
    public function simpandatapasien()
-    {
-        $model = new InputDataPasienModel();
+{
+    $model = new InputDataPasienModel();
 
-        // ambil semua data dari form
-        $data = $this->request->getPost();
-        $data['id_petugas'] = session()->get('id_petugas');
+    $data = [
 
-        // 🔥 panggil model (di sinilah insert terjadi)
-        $success = $model->simpanSemua($data);
+        // ======================
+        // DATA WILAYAH
+        // ======================
+        'provinsi' => $this->request->getPost('provinsi'),
+        'kabupaten' => $this->request->getPost('kabupaten'),
+        'kecamatan' => $this->request->getPost('kecamatan'),
+        'desa' => $this->request->getPost('desa'),
 
-        // 🔥 respon hasil
-        if ($success) {
-            return redirect()->back()->with('success', 'Data pasien & wilayah berhasil disimpan');
-        } else {
-            return redirect()->back()->with('error', 'Gagal menyimpan data');
-        }
+        'rt' => $this->request->getPost('rt'),
+        'rw' => $this->request->getPost('rw'),
+
+        'alamat' => $this->request->getPost('alamat'),
+
+        'lat' => $this->request->getPost('lat'),
+        'lng' => $this->request->getPost('lng'),
+
+        // ======================
+        // DATA PASIEN
+        // ======================
+        'nama' => $this->request->getPost('nama'),
+
+        'tanggal' => $this->request->getPost('tanggal'),
+
+        'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+
+        'usia' => $this->request->getPost('usia'),
+
+        'catatan' => $this->request->getPost('catatan'),
+    ];
+
+    $simpan = $model->simpanSemua($data);
+
+    if ($simpan) {
+
+        return redirect()
+            ->back()
+            ->with('success', 'Data pasien berhasil disimpan');
+
+    } else {
+
+        return redirect()
+            ->back()
+            ->with('error', 'Data gagal disimpan');
     }
+}
 
     public function export()
     {
@@ -641,25 +677,45 @@ class Dbd extends BaseController
     $jenis_kelamin = $this->request->getPost('jenis_kelamin');
     $tanggal_lahir = $this->request->getPost('tanggal_lahir');
     $kategori_usia = $this->request->getPost('kategori_usia');
-
-    $kabupaten = $this->request->getPost('kabupaten');
-    $kecamatan = $this->request->getPost('kecamatan');
-    $kelurahan = $this->request->getPost('kelurahan');
+    $nik = $this->request->getPost('nik');
+    $telepon = $this->request->getPost('telepon');
+   $provinsi = $this->request->getPost('provinsi_nama');
+$kabupaten = $this->request->getPost('kabupaten_nama');
+$kecamatan = $this->request->getPost('kecamatan_nama');
+$kelurahan = $this->request->getPost('kelurahan'); // ini sudah nama
+if (empty($provinsi) || empty($kabupaten) || empty($kecamatan) || empty($kelurahan)) {
+    return redirect()->to('/skriningdbd')->with('error', 'Data wilayah wajib diisi');
+}
 
     // ======================
     // SIMPAN pasien_skrining
     // ======================
+$modelWilayah = new \App\Models\WilayahSkriningDbdModel();
+
+$modelWilayah->save([
+     'provinsi' => $provinsi ?? '-',
+    'kabupaten' => $kabupaten ?? '-',
+    'kecamatan' => $kecamatan ?? '-',
+    'kelurahan' => $kelurahan ?? '-',
+    'rt' => 0,
+    'rw' => 0,
+    'alamat_lengkap' => $kelurahan . ', ' . $kecamatan . ', ' . $kabupaten
+    
+]);
+
+$id_wilayah = $modelWilayah->insertID();
 
  $modelPasien = new \App\Models\PasienSkriningdbdModel();
 
 $modelPasien->save([
+    'nik' => $nik,
     'nama_pasien_skrining' => $nama,
     'jenis_kelamin' => $jenis_kelamin,
     'tanggal_lahir' => $tanggal_lahir,
     'usia' => $kategori_usia,
-    'alamat' => $kelurahan . ', ' . $kecamatan . ', ' . $kabupaten,
+    'no_hp' => $telepon,
     'created_at' => date('Y-m-d H:i:s'),
-    'id_wilayah' => 1
+    'id_wilayah' => $id_wilayah
 ]);
 
     $id_pasien_skrining = $modelPasien->insertID();
@@ -670,7 +726,7 @@ $modelPasien->save([
 
             $totalSkor = 0;
 
-        $reverse = [14, 15, 16, 17, 18, 19, 20];
+        $reverse = [14, 15, 16, 17, 18, 19, 20, 21];
 
         for ($i = 1; $i <= 21; $i++) {
             $nilai = $this->request->getPost("p".$i) ?? 0;
@@ -751,11 +807,14 @@ $modelPasien->save([
         'hasil' => $hasil
     ]);
 
-    $data = $this->request->getPost();
-    $data['hasil'] = $hasil;
-    $data['alasan'] = $alasan;
-    $data['totalSkor'] = $totalSkor;
-    return view('gol_a/skrining3', $data);
+   $data = $this->request->getPost();
+$data['provinsi']  = $provinsi;   // sudah berisi nama
+$data['kabupaten'] = $kabupaten;
+$data['kecamatan'] = $kecamatan;
+$data['hasil']     = $hasil;
+$data['alasan']    = $alasan;
+$data['totalSkor'] = $totalSkor;
+return view('gol_a/skrining3', $data);
 }
 
 public function rekap_skrining()
@@ -763,26 +822,79 @@ public function rekap_skrining()
     $db = \Config\Database::connect();
 
     $builder = $db->table('skrining as s');
+
     $builder->select('
         s.id_skrining,
+        p.nik,
+        p.no_hp,
+        p.tanggal_lahir,
         p.nama_pasien_skrining,
         p.jenis_kelamin,
         p.usia,
-        p.alamat,
+
+        w.provinsi,
+        w.kabupaten,
+        w.kecamatan,
+        w.kelurahan,
+        w.rt,
+        w.rw,
+
         s.hasil,
         s.tanggal
-        
     ');
+
     $builder->join(
         'pasien_skrining p',
         'p.id_pasien_skrining = s.id_pasien_skrining'
     );
+
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah'
+    );
+
     $builder->orderBy('s.id_skrining', 'DESC');
 
-    $data['skrining'] = $builder->get()->getResultArray();
-    $data['title'] = 'Rekap Skrining';
+    // PAGINATION
+    $perPage = 10;
+    $page = $this->request->getVar('page') ?? 1;
 
-    return view('gol_a/rekap_skrining', $data);
+    $data['skrining'] = $builder
+        ->limit($perPage, ($page - 1) * $perPage)
+        ->get()
+        ->getResultArray();
+
+    // total data
+    $total = $db->table('skrining')->countAll();
+
+    // PAGER
+    $pager = \Config\Services::pager();
+
+    $data['pagerLinks'] = $pager->makeLinks(
+        $page,
+        $perPage,
+        $total
+    );
+
+    $data = [
+    'menu' => 'skrining',
+    'judul' => 'Rekap Skrining',   
+    'skrining' => $data['skrining'],
+    'pagerLinks' => $data['pagerLinks']
+    ];
+
+    return view('gol_a/rekap_skrining', $data)
+    ;
+}
+
+public function hapus_skrining($id)
+{
+    $model = new \App\Models\SkriningdbdModel();
+
+    $model->delete($id);
+
+    return redirect()->back()
+                     ->with('success', 'Data berhasil dihapus');
 }
 // ==================================
     // HASIL DATA PASIEN EXPOR PDF EXCEL
@@ -967,4 +1079,398 @@ public function rekap_skrining()
         exit;
     }
 }
+// ======================================================
+    // ===================== FUNFACT ========================
+    // ======================================================
+
+    // =========================
+    // LIST FUNFACT
+    // =========================
+
+    public function funfact()
+    {
+        $model = new FunfactModel();
+
+        $keyword = $this->request->getGet('keyword');
+        $status  = $this->request->getGet('status');
+
+        $query = $model;
+
+        if (!empty($keyword)) {
+
+            $query = $query
+                ->groupStart()
+                ->like('judul_funfact', $keyword)
+                ->orLike('isi_funfact', $keyword)
+                ->orLike('penulis', $keyword)
+                ->groupEnd();
+        }
+
+        $funfact = $query
+            ->orderBy('id_funfact', 'DESC')
+            ->findAll();
+
+        $totalUpload = (new FunfactModel())
+            ->where('status_funfact', 'upload')
+            ->countAllResults();
+
+        $totalDraft = (new FunfactModel())
+            ->where('status_funfact', 'draft')
+            ->countAllResults();
+
+        $totalFunfact = (new FunfactModel())
+            ->countAllResults();
+
+        $data = [
+
+            'title'        => 'Kelola Funfact',
+
+            'menu'         => 'funfact',
+
+            'penyakit'     => 'dbd',
+
+            'funfact'      => $funfact,
+
+            'status'       => $status,
+
+            'keyword'      => $keyword,
+
+            'totalUpload'  => $totalUpload,
+
+            'totalDraft'   => $totalDraft,
+
+            'totalFunfact' => $totalFunfact
+        ];
+
+        return view('gol_a/funfact', $data);
+    }
+
+    // =========================
+    // FORM UNGGAH / EDIT
+    // =========================
+
+    public function unggahfunfact($id = null)
+    {
+        $funfact = null;
+
+        if ($id != null) {
+
+            $funfact = $this->funfact->find($id);
+
+            if (!$funfact) {
+
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            }
+        }
+
+        $data = [
+
+            'title'    => ($id) ? 'Edit Funfact' : 'Unggah Funfact',
+
+            'menu'     => 'funfact',
+
+            'penyakit' => 'dbd',
+
+            'f'        => $funfact
+        ];
+
+        return view('gol_a/unggahfunfact', $data);
+    }
+
+    // =========================
+    // SIMPAN FUNFACT
+    // =========================
+
+ public function simpanFunfact()
+{
+    $status = $this->request->getPost('status_funfact');
+
+    $gambar = $this->request->getFile('gambar_funfact');
+    $namaGambar = null;
+
+    if($gambar && $gambar->isValid() && !$gambar->hasMoved()){
+
+        $namaGambar = $gambar->getRandomName();
+
+        $gambar->move(
+            ROOTPATH . 'public/uploads/funfact',
+            $namaGambar
+        );
+    }
+
+    $data = [
+
+        'judul_funfact'     => $this->request->getPost('judul_funfact'),
+
+        'isi_funfact'       => $this->request->getPost('isi_funfact'),
+
+        'deskripsi_funfact' => $this->request->getPost('deskripsi_funfact'),
+
+        'url'               => $this->request->getPost('url'),
+
+        'penulis'           => $this->request->getPost('penulis'),
+
+        'tanggal_funfact'   => $this->request->getPost('tanggal_funfact'),
+
+        'status_funfact'    => $status,
+    ];
+
+    // upload gambar
+    if ($namaGambar) {
+        $data['gambar_funfact'] = $namaGambar;
+    }
+
+    // simpan data
+    $this->funfact->insert($data);
+
+    // ambil id terbaru
+    $id = $this->funfact->getInsertID();
+
+    /* =========================
+       JIKA DRAFT
+    ========================= */
+
+    if($status == 'draft'){
+
+        return redirect()->to(
+            base_url('funfact?status=draft')
+        )->with(
+            'success',
+            'Funfact berhasil disimpan ke draft'
+        );
+    }
+
+    /* =========================
+       JIKA KLIK LIHAT TAMPILAN
+    ========================= */
+
+    if($this->request->getPost('redirect_view')){
+
+        return redirect()->to(
+            base_url('funfact/view/'.$id)
+        );
+    }
+
+    /* =========================
+       DEFAULT -> KE KELOLA FUNFACT
+    ========================= */
+
+    return redirect()->to(
+        base_url('funfact?status=upload')
+    )->with(
+        'success',
+        'Funfact berhasil diunggah'
+    );
+}
+
+    // =========================
+    // EDIT
+    // =========================
+
+    public function editFunfact($id)
+    {
+        $f = $this->funfact
+            ->where('id_funfact', $id)
+            ->first();
+
+        if (!$f) {
+
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return view('gol_a/unggahfunfact', [
+
+            'title'    => 'Edit Funfact',
+
+            'menu'     => 'funfact',
+
+            'penyakit' => 'dbd',
+
+            'f'        => $f
+        ]);
+    }
+
+    // =========================
+    // UPDATE
+    // =========================
+
+    public function updateFunfact($id)
+{
+    $funfact = $this->funfact->find($id);
+
+    if (!$funfact) {
+        return redirect()->to(base_url('funfact'))
+            ->with('error', 'Data funfact tidak ditemukan');
+    }
+
+    $status = $this->request->getPost('status_funfact');
+
+    $data = [
+        'judul_funfact'     => $this->request->getPost('judul_funfact'),
+        'isi_funfact'       => $this->request->getPost('isi_funfact'),
+        'deskripsi_funfact' => $this->request->getPost('deskripsi_funfact'),
+        'url'               => $this->request->getPost('url'),
+        'penulis'           => $this->request->getPost('penulis'),
+        'tanggal_funfact'   => $this->request->getPost('tanggal_funfact'),
+        'status_funfact'    => $status
+    ];
+
+    /* =========================
+       UPDATE GAMBAR
+    ========================= */
+    $gambar = $this->request->getFile('gambar_funfact');
+
+    if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+
+        $namaGambar = $gambar->getRandomName();
+
+        $gambar->move(FCPATH . 'uploads/funfact', $namaGambar);
+
+        $data['gambar_funfact'] = $namaGambar;
+
+        if (!empty($funfact['gambar_funfact'])) {
+            $path = FCPATH . 'uploads/funfact/' . $funfact['gambar_funfact'];
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+    }
+
+    $this->funfact->update($id, $data);
+
+  /* =========================
+   REDIRECT SESUAI STATUS
+========================= */
+
+if ($status == 'draft') {
+
+    return redirect()->to(base_url('funfact?status=draft'))
+        ->with('success', 'Funfact berhasil disimpan ke draft');
+}
+
+/* =========================
+   JIKA KLIK LIHAT TAMPILAN
+========================= */
+
+if($this->request->getPost('redirect_view'))
+{
+    return redirect()->to(
+        base_url('funfact/view/'.$id)
+    );
+}
+
+/* =========================
+   JIKA DARI DRAFT -> UPLOAD
+========================= */
+
+if($funfact['status_funfact'] == 'draft' && $status == 'upload')
+{
+    return redirect()->to(base_url('funfact?status=upload'))
+        ->with('success', 'Funfact berhasil diunggah');
+}
+
+/* =========================
+   EDIT FUNFACT UPLOAD
+========================= */
+
+return redirect()->to(base_url('funfact?status=upload'))
+    ->with('success', 'Funfact berhasil diperbarui');
+}
+
+    // =========================
+    // HAPUS
+    // =========================
+
+    public function hapusFunfact($id)
+{
+    $funfact = $this->funfact->find($id);
+
+    if ($funfact) {
+
+        if (!empty($funfact['gambar_funfact'])) {
+
+            $path = FCPATH . 'uploads/funfact/' . $funfact['gambar_funfact'];
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+
+        $this->funfact->delete($id);
+
+        $status = $funfact['status_funfact'];
+
+        return redirect()->to(base_url('funfact?status='.$status))
+            ->with('success', 'Funfact berhasil dihapus');
+    }
+
+    return redirect()->to(base_url('funfact'))
+        ->with('error', 'Funfact tidak ditemukan');
+}
+
+    // =========================
+    // UPLOAD FUNFACT
+    // =========================
+
+    public function uploadFunfact($id)
+    {
+        $model = new FunfactModel();
+
+        $model->update($id, [
+            'status_funfact' => 'upload'
+        ]);
+
+        return redirect()->to(site_url('funfact?status=upload'))
+            ->with('success', 'Funfact berhasil diunggah');
+    }
+
+/* =========================
+        VIEW
+========================= */
+
+ public function view($id)
+{
+    $funfact = $this->funfact->find($id);
+
+    // cek data ada atau tidak
+    if (!$funfact) {
+
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(
+            'Data funfact tidak ditemukan'
+        );
+    }
+
+    return view('gol_a/view_funfact', [
+
+        'title'    => 'FunFact',
+
+        'menu'     => 'funfact',
+
+        'penyakit' => 'dbd',
+
+        'funfact'  => $funfact
+    ]);
+}
+
+/* =========================
+SIMPAN KE DRAFT
+========================= */
+
+public function simpanDraft($id)
+{
+    $funfact = $this->funfact->find($id);
+
+    if(!$funfact)
+    {
+        return redirect()->to(base_url('funfact'));
+    }
+
+    $this->funfact->update($id, [
+
+        'status_funfact' => 'draft'
+    ]);
+
+    return redirect()->to(base_url('funfact?status=draft'));
+}
+
 }

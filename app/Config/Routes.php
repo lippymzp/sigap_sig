@@ -34,6 +34,7 @@ $routes->get('/skriningdbd', 'Dbd::skriningdbd');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Dbd::skriningdbd2');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Dbd::skriningdbd3');
 $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
+$routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 /* PROFIL dan Logut */
 /* ========================= */
 
@@ -74,7 +75,7 @@ $routes->post('/otp-reset', 'Auth::verifyOtpReset');
 /* ========================= */
 
 $routes->get('/dashboard', 'Dashboard::index');
-$routes->get('dbd/dashboard', 'Dashboard::dbd');
+$routes->get('dbd/dashboard/admin', 'Dashboard::dbd');
 $routes->get('dbd/input_data', 'Dbd::inputData');
 $routes->get('dbd/hasil', 'Dbd::hasil_data');
 $routes->get('data_kepala/hasil', 'Dbd::hasil_data_kepala');
@@ -107,7 +108,16 @@ $routes->get('pelaporan-kader/delete/(:num)', 'Kepala::delete_laporan/$1');
 $routes->get('/dashboard_kepala', 'Kepala::dashboard');
 $routes->get('/dashboard_kepala', 'Kepala::dashboard');
 $routes->get('/export_kepala', 'Kepala::export');
-
+$routes->get('dashboard', 'Kepala::dashboard');
+$routes->get('peta_sebaran/kepala', 'Kepala::peta_sebaran');
+$routes->get('detail_peta', 'Kepala::detail_peta');
+$routes->get('kepala/pelaporan_kader', 'Kepala::pelaporan_kader');
+$routes->get('/kepala/daftar_laporan', 'Kepala::daftar_laporan');
+$routes->get('pelaporan-kader', 'Kepala::pelaporan_kader');
+$routes->get('pelaporan-kader/daftar', 'Kepala::daftar_laporan');
+$routes->get('pelaporan-kader/delete/(:num)', 'Kepala::delete_laporan/$1');
+$routes->get('hasil_data_kepala/hasil', 'Kepala::hasil_data_kepala');
+$routes->get('kepala/view_laporan/(:num)', 'Kepala::view_laporan/$1');
 
 /* ========================= */
 /* BERITA TBC */
@@ -197,6 +207,11 @@ $routes->get('/berita/delete/(:num)', 'BeritaDbd::delete/$1');
 $routes->get('/berita', 'BeritaDbd::index');
 $routes->get('/berita/publish', 'BeritaDbd::publish');
 $routes->get('/berita/draft', 'BeritaDbd::draft');
+$routes->get('/berita/view_berita/(:num)', 'BeritaDbd::view/$1');
+$routes->get('berita/view_berita/(:any)', 'BeritaDbd::view/$1');
+$routes->get('berita/list_berita', 'BeritaDbd::list_berita');
+$routes->get('/berita/view_user/(:num)', 'BeritaDbd::viewUser/$1');
+$routes->post('berita/upload-editor-image', 'BeritaDbd::uploadEditorImage');
 
 $routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
 $routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');
@@ -234,3 +249,29 @@ $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
 // ================= Manajemen Banner DBD =================
 $routes->get('/manajemen_banner', 'ManajemenBanner::index');
 $routes->get('/unggah_banner', 'ManajemenBanner::unggah');
+
+
+// ================= MANEJEMEN USER =================
+$routes->get('/manajemen-user', 'ManajemenUser::index');
+
+$routes->get('/manajemen-user/tambah', 'ManajemenUser::form');
+$routes->post('/manajemen-user/simpan', 'ManajemenUser::simpan');
+
+$routes->get('/manajemen-user/edit/(:num)', 'ManajemenUser::form/$1/edit');
+$routes->post('/manajemen-user/update/(:num)', 'ManajemenUser::update/$1');
+
+$routes->get('/manajemen-user/view/(:num)', 'ManajemenUser::form/$1/view');
+
+$routes->get('/manajemen-user/hapus/(:num)', 'ManajemenUser::hapus/$1');
+
+// ================= FUNFACT =================
+$routes->get('funfact', 'dbd::funfact');
+$routes->get('dbd/unggahfunfact', 'dbd::unggahfunfact');
+$routes->get('dbd/unggahfunfact/(:num)', 'dbd::unggahfunfact/$1');
+$routes->post('funfact/simpan', 'dbd::simpanFunfact');
+$routes->get('funfact/edit/(:num)', 'dbd::editFunfact/$1');
+$routes->post('funfact/update/(:num)', 'dbd::updateFunfact/$1');
+$routes->get('funfact/hapus/(:num)', 'dbd::hapusFunfact/$1');
+$routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
+$routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
+$routes->get('funfact/view/(:num)', 'dbd::view/$1');;

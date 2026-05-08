@@ -18,52 +18,83 @@
 <?= $this->renderSection('style'); ?>
 
 <style>
-   .footer {
+/* ===== FIX FOOTER FULL + TIDAK KETUTUP SIDEBAR ===== */
+.footer {
     background: #11b5b9;
     color: white;
     padding: 35px 0 15px;
     margin-top: 40px;
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    transition: all 0.3s ease;
 }
 
-/* penting: ikut main-content */
-.main-content .footer {
+.wrapper.hide ~ .footer {
+    margin-left: 0;
     width: 100%;
 }
 
-/* text */
+.footer .container {
+    text-align: initial;
+}
+
+.footer .row {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.footer .col-md-4 {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
 .footer h6 {
     font-weight: 600;
-    font-size: 15px;
-    margin-bottom: 10px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
 }
 
 .footer p {
     font-size: 13px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+    opacity: 0.95;
 }
 
-/* garis */
 .footer hr {
-    border-color: rgba(255,255,255,0.2);
-    margin: 15px 0;
+    border-color: rgba(255,255,255,0.25);
+    margin: 12px 0;
 }
 
-/* responsive */
+.footer .copyright,
+.footer p.text-center {
+    text-align: center;
+}
+
 @media (max-width: 768px) {
+    .footer {
+        margin-left: 0;
+        width: 100%;
+    }
+
     .footer .col-md-4 {
-        text-align: center !important;
+        text-align: center;
         margin-bottom: 15px;
+    }
+
+    .footer .logo {
+        justify-content: center;
     }
 }
 
 /* 🔥 FIX 1: jangan kunci halaman */
 html,body{
-    height:auto;              /* FIX */
+    height:auto;
     margin:0;
-    overflow-x:hidden;        /* FIX (hapus hidden total) */
+    overflow-x:hidden;
     font-family:'Poppins',sans-serif;
 }
-
 
 /* 🔥 SIDEBAR FIX SCROLL */
 .sidebar{
@@ -72,29 +103,23 @@ html,body{
     position:fixed;
     left:0;
     top:0;
-
     padding:20px 15px;
-
-    overflow-y:auto;   /* ✅ INI KUNCI */
+    overflow-y:auto;
     overflow-x:hidden;
-
     box-shadow:2px 0 10px rgba(0,0,0,0.05);
 }
 
 /* WRAPPER */
 .wrapper{
     display:flex;
-    min-height:100vh;         /* FIX (bukan height) */
+    min-height:100vh;
 }
-
-
 
 /* MAIN */
 .main-content{
     margin-left:260px;
     width:100%;
-    min-height:100vh;         /* FIX */
-    
+    min-height:100vh;
 }
 
 /* TOPBAR */
@@ -107,12 +132,10 @@ html,body{
 /* CONTENT */
 .content-body{
     flex:1;
-    overflow-y:auto;          /* penting */
+    overflow-y:auto;
     padding:25px;
     background:#f8f9fc;
 }
-
-
 
 /* TOGGLE */
 .wrapper.hide .sidebar{
@@ -121,7 +144,6 @@ html,body{
 .wrapper.hide .main-content{
     margin-left:0;
 }
-
 </style>
 </head>
 
@@ -134,7 +156,6 @@ $menu = $menu ?? '';
 
 <div class="wrapper" id="wrapper">
 
-<!-- SIDEBAR -->
 <div class="sidebar">
 
 <div class="logo text-center mb-3">
@@ -144,49 +165,53 @@ $menu = $menu ?? '';
 </div>
 <div class="menu-label">HOME</div>
 <a href="<?= base_url('dashboard_kepala') ?>"
-            class="<?= ($menu == 'dashboard_kepala') ? 'active' : '' ?>">
-            <i class="fa-solid fa-house me-2"></i> Dashboard
-        </a>
+    class="<?= ($menu == 'dashboard_kepala') ? 'active' : '' ?>">
+    <i class="fa-solid fa-house me-2"></i> Dashboard
+</a>
 
-    <div class="menu-label">MENU UTAMA</div>
+<div class="menu-label">MENU UTAMA</div>
 
+<a href="<?= base_url('dashboard_kepala') ?>#map"
+    class="<?= ($menu == 'peta') ? 'active' : '' ?>">
+    <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
+</a>
 
-        <a href="<?= base_url('peta_sebaran/kepala') ?>"
-            class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
-            <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
-        </a>
+<a href="<?= base_url('dashboard_kepala') ?>#grafik"
+    class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
+    <i class="fa-solid fa-chart-column me-2"></i> Grafik
+</a>
 
-        <a href="<?= base_url('dashboard_kepala') ?>#grafik"
-            class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
-            <i class="fa-solid fa-chart-column me-2"></i> Grafik
-        </a>
+<a href="<?= base_url('hasil_data_kepala/hasil') ?>"
+    class="<?= ($menu == 'hasil_data_kepala') ? 'active' : '' ?>">
+    <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
+</a>
 
-        <a href="<?= base_url('data_kepala/hasil') ?>"
-            class="<?= ($menu == 'hasil_data_kepala') ? 'active' : '' ?>">
-            <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
-        </a>
+<a href="<?= base_url('index.php/' . $penyakit . '/skrining_1') ?>"
+    class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
+    <i class="fa-regular fa-file-lines me-2"></i> Rekap Skrining 
+</a>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/skrining_1') ?>"
-            class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
-            <i class="fa-regular fa-file-lines me-2"></i> Rekap Skrining 
-        </a>
+<a href="<?= base_url('kepala/pelaporan_kader') ?>"
+    class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
+    <i class="fa-regular fa-folder-open me-2"></i> Pelaporan Kader
+</a>
 
-       <a href="<?= base_url('kepala/pelaporan_kader') ?>"
-            class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
-            <i class="fa-regular fa-folder-open me-2"></i>Pelaporan Kader
-        </a>
-        
+<div class="menu-label">Informasi</div>
 
-        <div class="menu-label">Informasi </div>
-        <a href="<?= base_url('profil_kepala') ?>"
-            class="<?= ($menu == 'profil_kepala') ? 'active' : '' ?>">
-            <i class="fa-regular fa-user me-2"></i>
-            Profil
-        </a>
-       
-       
-    </div>
-<!-- MAIN -->
+<a href="<?= base_url('profil_kepala') ?>"
+    class="<?= ($menu == 'profil_kepala') ? 'active' : '' ?>">
+    <i class="fa-regular fa-user me-2"></i> Profil
+</a>
+
+<div class="menu-label">Master Data</div>
+
+<a href="<?= base_url('manajemen_user') ?>"
+    class="<?= ($menu == 'manajemen_user') ? 'active' : '' ?>">
+    <i class="fa-solid fa-users me-2"></i> Manajemen User
+</a>
+
+</div>
+
 <div class="main-content">
 
 <div class="topbar d-flex justify-content-between align-items-center">
@@ -212,14 +237,12 @@ $menu = $menu ?? '';
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li>
-                    <a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
+                    <a class="dropdown-item" href="<?= base_url('profil_kepala') ?>">
                         Profile
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item"
-                       href="<?= base_url('/logout') ?>"
-                       onclick="return confirm('Yakin mau keluar?')">
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="confirmLogout('<?= base_url('/logout') ?>')">
                         Keluar
                     </a>
                 </li>
@@ -229,23 +252,21 @@ $menu = $menu ?? '';
 
 </div>
 
-<!-- CONTENT -->
 <div class="content-body">
     <?= $this->renderSection('content'); ?>
 </div>
 
 </div>
 </div>
-<!-- FOOTER -->
+
 <footer class="footer">
 
 <div class="container text-white py-3">
 <div class="row align-items-start">
 
-    <!-- LOGO -->
     <div class="col-md-4 text-center mb-2">
 
-        <div class="logo mb-1">
+         <div class="logo mb-1">
             <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
                  alt="Logo SIGAP" 
                  style="max-width:55px;">
@@ -254,12 +275,13 @@ $menu = $menu ?? '';
         <h6 class="fw-bold mb-1">SIGAP</h6>
 
         <p class="small mb-0" style="line-height:1.3;">
-            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-        </p>
+    Sistem Informasi Geografis Analisis<br>
+    & Pemantauan Penyakit
+</p>
 
     </div>
 
-    <!-- SOSIAL -->
+
     <div class="col-md-4 mb-2">
         <h6 class="fw-bold mb-1">Media Sosial</h6>
 
@@ -268,7 +290,6 @@ $menu = $menu ?? '';
         <p class="mb-0 small"><i class="fab fa-twitter me-2"></i>Twitter</p>
     </div>
 
-    <!-- KONTAK -->
     <div class="col-md-4 mb-2">
         <h6 class="fw-bold mb-1">Informasi Kontak</h6>
 
@@ -289,6 +310,25 @@ $menu = $menu ?? '';
 </div>
 </footer>
 
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 320px;">
+        <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.15);">
+            <div class="modal-body text-center p-4">
+                
+                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: #ff4d4f; border-radius: 50%;">
+                    <i class="fa-solid fa-xmark text-white fs-2"></i>
+                </div>
+                
+                <h5 class="fw-bold mb-4 text-dark" style="font-size: 18px;">Apakah anda yakin<br>keluar?</h5>
+                
+                <div class="d-grid gap-2">
+                    <a href="#" id="btnConfirmLogout" class="btn text-white py-2" style="background-color: #11b5b9; border-radius: 8px; font-weight: 500;">Ya</a>
+                    <button type="button" class="btn text-white py-2" data-bs-dismiss="modal" style="background-color: #d1d1d1; border-radius: 8px; font-weight: 500;">Tidak</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -302,9 +342,23 @@ document.addEventListener("DOMContentLoaded", function() {
     if (toggle && wrapper) {
         toggle.addEventListener("click", function() {
             wrapper.classList.toggle("hide");
+            
+            // Trigger resize agar Chart.js ikut menyesuaikan jika disembunyikan/ditampilkan
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 300);
         });
     }
 });
+
+// FUNGSI LOGOUT KUSTOM
+function confirmLogout(url) {
+    // Set link tombol "Ya" ke url logout
+    document.getElementById('btnConfirmLogout').href = url;
+    // Panggil dan tampilkan modal Bootstrap
+    var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    logoutModal.show();
+}
 </script>
 
 <?= $this->renderSection('script'); ?>

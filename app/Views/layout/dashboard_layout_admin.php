@@ -220,7 +220,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
          class="logo-sidebar">
 </div>
 <div class="menu-label">HOME</div>
-<a href="<?= base_url('dbd/dashboard') ?>"
+<a href="<?= base_url('dbd/dashboard/admin') ?>"
             class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
@@ -242,7 +242,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
             <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
         </a>
 
-        <a href="<?= base_url('dbd/dashboard') ?>#map"
+        <a href="<?= base_url('dbd/dashboard/admin') ?>#map"
             class="<?= ($menu == 'peta') ? 'active' : '' ?>">
             <i class="fa-solid fa-map-location-dot me-2"></i>Peta Sebaran
         </a>
@@ -259,7 +259,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
   <i class="fa-solid fa-newspaper me-2"></i> Berita
 </a>
 
-<a href="<?= base_url('Funfact') ?>">
+<a href="<?= base_url('funfact') ?>">
   <i class="fa-solid fa-lightbulb me-2"></i> Fun Fact
 </a>
 
@@ -273,8 +273,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <div class="menu-label">Master Data</div>
 
-<a href="<?= base_url('manajemen_user') ?>">
-  <i class="fa-solid fa-users me-2"></i> Manajemen User
+<a href="<?= base_url('manajemen-user') ?>"
+   class="<?= ($menu == 'manajemen_user') ? 'active' : '' ?>">
+    <i class="fa-solid fa-users me-2"></i> Manajemen User
 </a>
 
 <a href="<?= base_url('manajemen_puskesmas') ?>">
@@ -364,10 +365,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
          <div class="logo mb-1">
             <img src="<?= base_url('img/logo_denggis.png') ?>" 
                  alt="Logo DENGGIS" 
-                 style="max-width:55px;">
+                 style="max-width:70px;">
         </div>
 
-        <h6 class="fw-bold mb-1">DENGGIS</h6>
 
         <p class="small mb-0" style="line-height:1.3;">
     Sistem Informasi Geografis Analisis<br>
@@ -412,18 +412,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const toggle = document.getElementById("toggleSidebar");
-    const wrapper = document.getElementById("wrapper");
 
-    if (toggle && wrapper) {
-        toggle.addEventListener("click", function() {
-            wrapper.classList.toggle("hide");
-        });
-    }
-});
-</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {

@@ -77,17 +77,18 @@ class Kepala extends Controller
     // 🔥 KIRIM KE VIEW
     // ======================
     return view('gol_a/dashboard_kepala', [
-        'menu' => 'dashboard',
-        'judul' => 'Dashboard Kepala',
-        'nama_puskesmas' => 'Puskesmas Panti, Jember',
+    'menu' => 'dashboard_kepala',
+    'judul' => 'Dashboard Kepala Puskesmas',
+    'nama_puskesmas' => 'Puskesmas Panti, Jember',
 
-        'total_kasus' => 20,
-        'kasus_baru' => 2,
-        'wilayah' => 6,
+    'total_kasus' => 20,
+    'kasus_baru' => 2,
+    'wilayah' => 6,
 
-        'grafik' => $grafik, // 🔥 TAMBAH
-        'dbd' => $dbd        // 🔥 TAMBAH
-    ]);}
+    'grafik' => $grafik,
+    'dbd' => $dbd
+]);
+;}
     public function export()
     {
         $data = [
@@ -106,20 +107,7 @@ class Kepala extends Controller
 public function detail_peta()
 {
     return view('gol_a/detail_peta');
-}
-public function pelaporan_kader()
-    {
-        
-        $model = new \App\Models\PelaporanModel();
 
-        $data = [
-            'title' => 'Pelaporan Kader',
-            'judul' => 'Pelaporan Kader',
-            'menu'  => 'pelaporan_kader',
-            'pelaporan' => $model->findAll()
-        ];
-
-        return view('gol_a/rekap_kader', $data);
     }
 
     public function rekap_kader()
@@ -171,7 +159,7 @@ public function pelaporan_kader()
 
     // Data mapping Kelurahan ke Posyandu (Sama dengan yang ada di JS View)
     $dataMapping = [
-        'Sumbersari' => ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
+        'Sumbersari' => ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
         'Wirolegi'   => ['36','36A','37','38','39','40','41','42','43','44','44A','45','46','47','48','49','50','51','52','53','54'],
         'Karangrejo' => ['75','76','77','78','78A','79','80','81','82','83','84','85','86','87','88','88A','89','90','91','92','92A','93','94','95','95A','95B'],
         'Tegalgede'  => ['68','69','70','71','72','73','74','74A','74B'],
@@ -231,40 +219,95 @@ public function pelaporan_kader()
     return view('gol_a/daftar_laporan', $data);
 }
 
-    public function edit_laporan(int $id)
-    {
-    $model = new \App\Models\PelaporanModel();
-    
-    // Ambil data berdasarkan ID laporan
-    $data['laporan'] = $model->find($id);
-
-    if (!$data['laporan']) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Data tidak ditemukan");
-    }
-
-    return view('gol_a/edit_kader', $data); // Sesuaikan dengan nama file view edit kamu
-    }
-
-    public function delete_laporan(int $id)
+public function pelaporan_kader()
 {
-    // 1. Inisialisasi Model (pastikan nama model sesuai dengan file model kamu)
     $model = new \App\Models\PelaporanModel();
 
-    // 2. Cek apakah data dengan ID tersebut ada di database
-    $cekData = $model->find($id);
+    // Ambil parameter GET
+    $search     = $this->request->getGet('search');
+    $kelurahan  = $this->request->getGet('kelurahan');
+    $posyandu   = $this->request->getGet('posyandu');
+    $bulan      = $this->request->getGet('bulan');
 
-    if ($cekData) {
-        // 3. Jika ada, hapus datanya
-        $model->delete($id);
+    $builder = $model;
 
-        // 4. Redirect kembali ke halaman daftar dengan pesan sukses
-        return redirect()->to(base_url('pelaporan-kader/daftar'))
-                         ->with('success', 'Data laporan berhasil dihapus.');
-    } else {
-        // 5. Jika data tidak ditemukan
-        return redirect()->to(base_url('pelaporan-kader/daftar'))
-                         ->with('error', 'Gagal menghapus! Data tidak ditemukan.');
+    // SEARCH
+    if (!empty($search)) {
+        $builder = $builder->groupStart()
+            ->like('bulan', $search)
+            ->orLike('minggu', $search)
+            ->orLike('id_posyandu', $search)
+            ->groupEnd();
     }
+
+    // FILTER KELURAHAN
+    $mapKelurahan = [
+        'Antirogo'   => 1,
+        'Karangrejo' => 2,
+        'Sumbersari' => 3,
+        'Tegalgede'  => 4,
+        'Wirolegi'   => 5,
+    ];
+
+    if (!empty($kelurahan) && isset($mapKelurahan[$kelurahan])) {
+        $builder = $builder->where('id_kelurahan', $mapKelurahan[$kelurahan]);
+    }
+
+    // FILTER POSYANDU
+    if (!empty($posyandu)) {
+        $cleanPosyandu = str_replace('Catleya ', '', $posyandu);
+
+        $builder = $builder->where('id_posyandu', $cleanPosyandu);
+    }
+
+    // FILTER BULAN
+    if (!empty($bulan)) {
+        $builder = $builder->where('bulan', $bulan);
+    }
+
+    $data = [
+        'title'      => 'Pelaporan Kader',
+        'judul'      => 'Pelaporan Kader',
+        'menu'       => 'pelaporan_kader',
+        'pelaporan'  => $builder->findAll()
+    ];
+
+    return view('gol_a/rekap_kader', $data);
 }
 
+public function hasil_data_kepala()
+{
+    $pasien = session()->get('pasien') ?? [];
+
+    return view('gol_a/hasil_data_kepala', [
+        'menu' => 'hasil_data_kepala',
+        'penyakit' => 'dbd',
+        'judul' => 'Hasil Data Pasien',
+        'pasien' => $pasien
+    ]);
 }
+
+public function view_laporan($id)
+{
+    $db = \Config\Database::connect();
+    
+    // Ambil data detail laporan berdasarkan ID
+    $laporan = $db->table('rekap_pelaporan_kader')
+                  ->where('id_laporan', $id)
+                  ->get()
+                  ->getRowArray();
+
+    if (!$laporan) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan');
+    }
+
+    $data = [
+        'title'   => 'Pratinjau Hasil Pemeriksaan',
+        'laporan' => $laporan,
+        'menu'    => 'pelaporan_kader'
+    ];
+
+    return view('gol_a/view_laporan', $data);
+}
+
+} // Ini adalah penutup class Kepala. Jangan ada apa-apa lagi di bawahnya.

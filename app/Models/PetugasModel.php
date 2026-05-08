@@ -22,6 +22,13 @@ class PetugasModel extends Model
         'created_at'
     ];
 
+    public function getPetugas()
+    {
+        return $this->select('petugas.*, jabatan.nama_jabatan')
+                    ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan')
+                    ->findAll();
+    }
+
     // AMBIL DATA PROFIL + FOTO
     public function getProfil($id_petugas)
     {
