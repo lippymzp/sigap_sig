@@ -10,6 +10,27 @@ use App\Models\SkriningPneumoniaModel;
 class Pneumonia extends BaseController
 {
 
+    public function inputData()
+    {
+        return view('gol_c/input_data', [
+            'menu' => 'inputdata',
+            'penyakit' => 'pneumonia',
+            'judul' => 'Input Data Pasien'
+        ]);
+    }
+
+    public function hasil_data()
+    {
+        $pasien = session()->get('pasien') ?? [];
+
+        return view('gol_c/hasil_data_pasien/hasil_data_c', [
+            'menu' => 'hasil',
+            'penyakit' => 'pneumonia',
+            'judul' => 'Hasil Data Pasien',
+            'pasien' => $pasien
+        ]);
+    }
+
     public function simpandatapasien()
     {
         $model = new InputDataPasienModel();

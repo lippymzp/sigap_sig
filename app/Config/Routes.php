@@ -29,15 +29,15 @@ $routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Home::
 /* ========================= */
 /* SKRINING DBD */
 /* ========================= */
-
 $routes->get('/skriningdbd', 'Dbd::skriningdbd');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Dbd::skriningdbd2');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Dbd::skriningdbd3');
 $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
 $routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
+
+/* ========================= */
 /* PROFIL dan Logut */
 /* ========================= */
-
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->post('uploadFoto_kepala', 'Profile::uploadFoto');
 $routes->post('updateProfil_kepala', 'Profile::updateProfil');
@@ -47,6 +47,14 @@ $routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
 $routes->post('uploadFoto_kader', 'Profile3::uploadFoto');
 $routes->post('updateProfil_kader', 'Profile3::updateProfil');
+
+/* ========================= */
+/* PROFIL dan Logut Pneumonia*/
+/* ========================= */
+$routes->get('pneumonia/profil_admin', 'Profile_admin_pneumonia::profil_admin');
+$routes->post('uploadFoto_admin', 'Profile_admin_pneumonia::uploadFoto');
+$routes->post('updateProfil_admin', 'Profile_admin_pneumonia::updateProfil');
+
 /* ========================= */
 /* DIARE */
 /* ========================= */
@@ -86,7 +94,9 @@ $routes->get('data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
-$routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
+$routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
+$routes->get('pneumonia/input_data', 'pneumonia::inputData');
+$routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
 $routes->get('diare/dashboard', 'Dashboard::diare');
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
