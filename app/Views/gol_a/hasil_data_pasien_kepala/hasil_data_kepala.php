@@ -8,6 +8,8 @@
 <style>
 * { font-family: 'Poppins', sans-serif; }
 
+
+
 /* CARD */
 .custom-card {
     border-radius: 20px;
@@ -23,6 +25,7 @@
     width: 45px;
     height: 45px;
     border-radius: 10px 0 0 10px;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,9 +51,10 @@
     height: 45px;
     border-radius: 10px;
     color: #20B8BE;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease; /* 🔥 biar halus */
 }
 
+/* 🔥 INI YANG KAMU BUTUH */
 .filter-btn:hover {
     background: #169fa5;
     color: white;
@@ -58,6 +62,7 @@
     box-shadow: 0 4px 10px rgba(32,184,190,0.4);
 }
 
+/* BIAR ICON IKUT PUTIH */
 .filter-btn i {
     font-size: 16px;
 }
@@ -66,9 +71,9 @@
     color: white;
 }
 
-/* ================= PERIODE ================= */
+/* ================= PERIODE (FIXED) ================= */
 .periode {
-    font-size: 16px;
+    font-size: 16px; /* samain sama teks lain */
     display: flex;
     align-items: center;
     gap: 8px;
@@ -76,12 +81,13 @@
 
 .periode a {
     text-decoration: none;
-    font-size: 40px;
+    font-size: 40px; /* panah agak gede dikit */
     color: #20B8BE;
     font-weight: bold;
     transition: 0.1s;
 }
 
+/* hover halus tanpa kotak */
 .periode a:hover {
     color: #169fa5;
     transform: scale(1.2);
@@ -93,7 +99,6 @@
     color: #2b2b2b;
     font-weight: 600;
     border: none;
-    padding: 15px;
 }
 
 .custom-table tbody tr {
@@ -104,18 +109,15 @@
     background: #F4FAFB;
 }
 
-.custom-table td {
-    padding: 12px;
-}
-
-/* EXPORT BUTTON */
+/* EXPORT BUTTON (DALAM CARD) */
 .btn-export {
     background: #20B8BE;
     color: white;
     padding: 10px 20px;
     border-radius: 10px;
     font-weight: 500;
-    text-decoration: none !important;
+
+    text-decoration: none !important; /* 🔥 hilangin garis */
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -123,6 +125,7 @@
 
 .btn-export:hover {
     color: white;
+    text-decoration: none !important;
     background: #169fa5;
 }
 
@@ -172,95 +175,149 @@
 
 </style>
 
+<!-- HEADER -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <h4 class="mb-0" style="color: #2b2b2b; font-weight: 600;">Hasil Data Pasien</h4>
-    </div> 
+    <div></div> 
 
+    <div class="periode">
+        <span>Periode :</span>
+
+        <a href="#"
+        onclick="gantiTahun(<?= $tahun > 2020 ? $tahun - 1 : 2020 ?>)">‹</a>
+
+        <span id="tahun-text"><?= $tahun ?></span>
+
+        <a href="#"
+        onclick="gantiTahun(<?= $tahun < date('Y') ? $tahun + 1 : date('Y') ?>)">›</a>
     </div>
+</div>
 
 <div class="custom-card">
 
+    <!-- SEARCH + FILTER -->
     <div class="d-flex align-items-center gap-2 mb-3">
         <div class="search-icon">
             <i class="fa fa-search"></i>
         </div>
-        <input type="text" id="searchInput" class="search-input" placeholder="Cari Kecamatan atau Desa...">
+        <input type="text" id="searchInput" class="search-input" placeholder="Ketik untuk mencari...">
         <button class="filter-btn" onclick="openFilter()">
             <i class="fa fa-filter"></i>
         </button>
     </div>
 
+    <!-- TABLE -->
     <table class="table text-center align-middle custom-table">
         <thead>
             <tr>
-                <th>No</th>
-                <th>Kecamatan</th>
-                <th>Desa</th>
-                <th>Jenis Kelamin</th>
-                <th>Usia</th>
-                <th>Jumlah Kasus</th>
+                <th rowspan="2">No</th>
+                <th rowspan="2">Bulan</th>
+                <th rowspan="2">Kelurahan</th>
+                <th colspan="2">Rentang Usia Tertinggi</th>
+                <th colspan="2">Jenis Kelamin Tertinggi</th>
+                <th rowspan="2">Jumlah Kasus</th>
+            </tr>
+            <tr>
+                <th>Anak-anak</th>
+                <th>Dewasa</th>
+                <th>Laki-laki</th>
+                <th>Perempuan</th>
             </tr>
         </thead>
 
         <tbody id="table-body">
-            </tbody>
+        <?php if(!empty($data)): ?>
+            <?php $no=1; foreach($data as $d): ?>
+            <tr>
+                <td><?= $no++ ?></td>
+                <td><?= $d['bulan'] ?></td>
+                <td><?= $d['kelurahan'] ?></td>
+                <td><?= $d['anak'] ?? 0 ?></td>
+                <td><?= $d['dewasa'] ?? 0 ?></td>
+                <td><?= $d['laki'] ?? 0 ?></td>
+                <td><?= $d['perempuan'] ?? 0 ?></td>
+                <td><?= $d['jumlah'] ?></td>
+            </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="8">Belum ada data</td>
+            </tr>
+        <?php endif; ?>
+        </tbody>
     </table>
 
+    <!-- EXPORT BUTTON (DALAM CARD KANAN BAWAH) -->
     <div class="d-flex justify-content-end mt-3">
-        <a href="<?= base_url('kepala/export_hasil_data_kepala') ?>" class="btn-export">
+        <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>" class="btn-export">
             <i class="fa fa-download"></i> Export Data
         </a>
     </div>
 
 </div>
 
+<!-- MODAL FILTER -->
 <div id="filterModal" class="modal-filter">
     <div class="modal-content">
 
         <div class="d-flex justify-content-between mb-3">
-            <h5>Filter Data Pasien</h5>
-            <span onclick="closeFilter()" style="cursor:pointer; font-size: 18px;">✖</span>
+            <h5>Filter Hasil Data Pasien</h5>
+            <span onclick="closeFilter()" style="cursor:pointer;">✖</span>
         </div>
 
-        <label>Jenis Kelamin</label>
-        <select id="filterJK" class="filter-input">
+        <label>Bulan</label>
+        <select id="filterBulan" class="filter-input">
             <option value="">Semua</option>
-            <option value="Laki-laki">Laki-laki</option>
-            <option value="Perempuan">Perempuan</option>
+            <option>Januari</option>
+            <option>Februari</option>
+            <option>Maret</option>
+            <option>April</option>
+            <option>Mei</option>
+            <option>Juni</option>
+            <option>Juli</option>
+            <option>Agustus</option>
+            <option>September</option>
+            <option>Oktober</option>
+            <option>November</option>
+            <option>Desember</option>
         </select>
 
-        <label>Kecamatan</label>
-        <select id="filterKecamatan" class="filter-input">
+        <label>Kelurahan</label>
+        <select id="filterKelurahan" class="filter-input">
             <option value="">Semua</option>
-            </select>
+            <option>Sumbersari</option>
+            <option>Antirogo</option>
+            <option>Tegalgede</option>
+            <option>Wirolegi</option>
+            <option>Karangrejo</option>
+        </select>
+
+        <label>Urutkan</label>
+        <select id="filterUrut" class="filter-input">
+            <option value="">Default</option>
+            <option value="asc">Tertinggi</option>
+            <option value="desc">Terendah</option>
+        </select>
 
         <div class="d-flex justify-content-between mt-4">
-            <button onclick="resetFilter()" class="btn btn-secondary" style="border-radius: 10px;">Reset</button>
-            <button onclick="closeFilter()" class="btn btn-secondary" style="border-radius: 10px;">Batal</button>
+            <button onclick="resetFilter()" class="btn btn-secondary">Reset</button>
+            <button onclick="closeFilter()" class="btn btn-secondary">Batal</button>
             <button onclick="applyFilter()" class="btn-terapkan">Terapkan</button>
         </div>
 
     </div>
 </div>
 
+<!-- JAVASCRIPT -->
 <script>
-// Ambil data langsung dari variabel PHP yang dipassing oleh Controller
-let rawData = <?= json_encode($pasien ?? []) ?>;
+let currentTahun = <?= $tahun ?>;
 
-// Setup dropdown kecamatan agar dinamis
-function setupFilterKecamatan() {
-    let select = document.getElementById('filterKecamatan');
-    let kecamatanList = [...new Set(rawData.map(item => item.kecamatan))];
-    
-    kecamatanList.forEach(kec => {
-        if(kec) {
-            let option = document.createElement('option');
-            option.value = kec;
-            option.text = kec;
-            select.appendChild(option);
-        }
-    });
+// =====================
+// GANTI TAHUN
+// =====================
+function gantiTahun(tahun){
+    currentTahun = tahun;
+    document.getElementById('tahun-text').innerText = tahun;
+    loadData();
 }
 
 // =====================
@@ -275,9 +332,9 @@ function closeFilter(){
 }
 
 function resetFilter(){
-    document.getElementById('filterJK').value = "";
-    document.getElementById('filterKecamatan').value = "";
-    document.getElementById('searchInput').value = "";
+    document.getElementById('filterBulan').value = "";
+    document.getElementById('filterKelurahan').value = "";
+    document.getElementById('filterUrut').value = "";
     loadData();
 }
 
@@ -287,57 +344,82 @@ function applyFilter(){
 }
 
 // =====================
-// LOAD & FILTER DATA
+// LOAD DATA DARI DATABASE
 // =====================
 function loadData(){
+
     let keyword = document.getElementById('searchInput').value.toLowerCase();
-    let jk = document.getElementById('filterJK').value;
-    let kecamatan = document.getElementById('filterKecamatan').value;
+    let bulan = document.getElementById('filterBulan').value;
+    let kelurahan = document.getElementById('filterKelurahan').value;
+    let urut = document.getElementById('filterUrut').value;
 
-    // Filter array bawaan PHP
-    let filteredData = rawData.filter(d => {
-        let matchSearch = (d.kecamatan && d.kecamatan.toLowerCase().includes(keyword)) || 
-                          (d.desa && d.desa.toLowerCase().includes(keyword));
-        let matchJK = jk === "" || d.jk === jk;
-        let matchKecamatan = kecamatan === "" || d.kecamatan === kecamatan;
+    fetch(`<?= base_url('dbd/get-data-pasien-by-tahun') ?>?tahun=${currentTahun}`)
+    .then(res => res.json())
+    .then(data => {
 
-        return matchSearch && matchJK && matchKecamatan;
-    });
+        // =====================
+        // FILTER DATA
+        // =====================
+        data = data.filter(d => {
+            return (
+                (bulan === "" || d.bulan === bulan) &&
+                (kelurahan === "" || d.kelurahan === kelurahan) &&
+                (
+                    d.bulan.toLowerCase().includes(keyword) ||
+                    d.kelurahan.toLowerCase().includes(keyword)
+                )
+            );
+        });
 
-    // Render ke tabel
-    let tbody = document.getElementById('table-body');
-    tbody.innerHTML = "";
+        // =====================
+        // SORT DATA
+        // =====================
+        if(urut === "asc"){
+            data.sort((a,b)=> a.jumlah - b.jumlah);
+        } else if(urut === "desc"){
+            data.sort((a,b)=> b.jumlah - a.jumlah);
+        }
 
-    if(filteredData.length === 0){
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4">Belum ada data</td></tr>`;
-        return;
-    }
+        // =====================
+        // RENDER TABLE
+        // =====================
+        let tbody = document.getElementById('table-body');
+        tbody.innerHTML = "";
 
-    let no = 1;
-    filteredData.forEach(d => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${no++}</td>
-                <td>${d.kecamatan}</td>
-                <td>${d.desa}</td>
-                <td>${d.jk}</td>
-                <td>${d.usia}</td>
-                <td>1</td>
-            </tr>
-        `;
+        if(data.length === 0){
+            tbody.innerHTML = `<tr><td colspan="8">Belum ada data</td></tr>`;
+            return;
+        }
+
+        let no = 1;
+        data.forEach(d => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${no++}</td>
+                    <td>${d.bulan}</td>
+                    <td>${d.kelurahan}</td>
+                    <td>${d.anak ?? 0}</td>
+                    <td>${d.dewasa ?? 0}</td>
+                    <td>${d.laki ?? 0}</td>
+                    <td>${d.perempuan ?? 0}</td>
+                    <td>${d.jumlah}</td>
+                </tr>
+            `;
+        });
+
     });
 }
 
 // =====================
-// EVENT LISTENER
+// SEARCH REALTIME
 // =====================
 document.getElementById('searchInput').addEventListener('keyup', loadData);
 
-// Eksekusi saat halaman pertama dimuat
-window.onload = function() {
-    setupFilterKecamatan();
-    loadData();
-};
+// =====================
+// AUTO LOAD SAAT HALAMAN DIBUKA
+// =====================
+window.onload = loadData;
+
 </script>
 
 <?= $this->endSection() ?>

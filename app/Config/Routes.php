@@ -312,3 +312,10 @@ $routes->get('/tentang-kami', 'Home::tentangKami');
 $routes->get('profil_sistem', 'ProfilSistem::index');
 $routes->get('profil_sistem/edit', 'ProfilSistem::edit');
 $routes->post('profil_sistem/update', 'ProfilSistem::update');
+
+// ================= PELAPORAN KADER DI ADMIN =================
+$routes->get('dbd/pelaporan-kader/admin', 'Dbd::pelaporan_kader');
+$routes->get('dbd/pelaporan-kader/daftar/admin', 'Dbd::daftar_laporan');
+$routes->get('pelaporan-kader/delete/(:num)', 'Dbd::delete_laporan/$1');
+$routes->get('hasil_data_kepala/hasil', 'Dbd::hasil_data_kepala');
+$routes->get('dbd/view_laporan_kader/admin/(:num)', 'Dbd::view_laporan/$1');

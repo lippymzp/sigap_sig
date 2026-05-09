@@ -199,8 +199,11 @@ public function detail_peta()
         }
     }
 
-    // 4. Ambil Data Laporan dari DB
-    $laporanDb = $model->where('bulan', $bulanNama)->findAll();
+    
+    // 4. Ambil Data Laporan dari DB (Menggunakan YEAR(created_at))
+    $laporanDb = $model->where('bulan', $bulanNama)
+                       ->where('YEAR(created_at)', $tahun)
+                       ->findAll();
     $dataLaporan = [];
     foreach ($laporanDb as $row) {
         $dataLaporan[$row['minggu']][$row['id_posyandu']] = $row['id_laporan'];
@@ -228,8 +231,12 @@ public function pelaporan_kader()
     $kelurahan  = $this->request->getGet('kelurahan');
     $posyandu   = $this->request->getGet('posyandu');
     $bulan      = $this->request->getGet('bulan');
+    $tahun      = $this->request->getGet('tahun') ?: date('Y'); // Tangkap tahun
 
     $builder = $model;
+
+    // FILTER TAHUN (Solusi Error)
+    $builder = $builder->where('YEAR(created_at)', $tahun);
 
     // SEARCH
     if (!empty($search)) {
@@ -256,7 +263,6 @@ public function pelaporan_kader()
     // FILTER POSYANDU
     if (!empty($posyandu)) {
         $cleanPosyandu = str_replace('Catleya ', '', $posyandu);
-
         $builder = $builder->where('id_posyandu', $cleanPosyandu);
     }
 
@@ -277,13 +283,45 @@ public function pelaporan_kader()
 
 public function hasil_data_kepala()
 {
-    $pasien = session()->get('pasien') ?? [];
+    $db = \Config\Database::connect();
+    $builder = $db->table('pasien p');
+    
+    // Agregasi Data persis seperti tampilan Admin
+    $builder->select("
+        MONTH(p.tgl_kunjungan) as bulan_angka,
+        w.kelurahan,
+        SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
+        SUM(CASE WHEN p.umur > 18 THEN 1 ELSE 0 END) as dewasa,
+        SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+        SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+        COUNT(*) as jumlah
+    ");
+    
+    // Join tabel wilayah untuk mendapatkan kelurahan
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+    
+    // Kelompokkan berdasarkan Bulan dan Kelurahan
+    $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
+    $builder->orderBy('bulan_angka', 'ASC');
+    
+    $dataPasien = $builder->get()->getResultArray();
+
+    // Ubah angka bulan menjadi nama bulan
+    $bulanMap = [
+        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+    ];
+
+    foreach ($dataPasien as &$d) {
+        $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
+    }
 
     return view('gol_a/hasil_data_pasien_kepala/hasil_data_kepala', [
         'menu' => 'hasil_data_kepala',
         'penyakit' => 'dbd',
         'judul' => 'Hasil Data Pasien',
-        'pasien' => $pasien
+        'pasien' => $dataPasien // Kirim data rekap ke view
     ]);
 }
 

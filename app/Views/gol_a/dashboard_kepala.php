@@ -2,12 +2,79 @@
 
 <?= $this->section('style'); ?>
 <style>
-/* CSS main-content dihapus karena sudah diatur di layout utama */
-#chartDBD {
-    height: 300px !important;
+/* --- STYLE MODAL DETAIL --- */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    justify-content: center;
+    align-items: center;
 }
 
-/* Pindah ke atas agar lebih rapi */
+.custom-modal-content {
+    background: #fff;
+    width: 85%;
+    max-width: 760px;
+    border-radius: 20px;
+    padding: 30px 35px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close-modal {
+    position: absolute;
+    right: 25px;
+    top: 12px;
+    font-size: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #444;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 18px;
+}
+
+.info-box {
+    background: #f8f8f8;
+    border-radius: 18px;
+    padding: 25px 30px;
+    border: 1px solid #e2e2e2;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    color: #333;
+}
+
+.info-table tr td {
+    padding: 6px 0;
+    vertical-align: top;
+    line-height: 1.6;
+}
+
+.info-table tr td.label { width: 45%; color: #2b2b2b; }
+.info-table tr td.colon { width: 18px; text-align: center; }
+.info-table tr td.value { color: #111; font-weight: 500; }
+.info-table tr.sub td.label { padding-left: 28px; color: #444; }
+
+.kategori-tinggi { color: #dc3545; font-weight: 600; }
+.kategori-sedang { color: #d39e00; font-weight: 600; }
+.kategori-rendah { color: #28a745; font-weight: 600; }
+
+/* --- STYLE MAP LABEL --- */
 .label-desa {
     background: rgba(0,0,0,0.6);
     color: white;
@@ -16,9 +83,103 @@
     font-size: 11px;
     border-radius: 6px;
 }
+
+/* --- SLIDE TOGGLE STYLING --- */
+.slide-toggle-container {
+    position: relative;
+    display: flex;
+    background: #fff;
+    border: 1px solid #00BBC2; 
+    border-radius: 35px;
+    width: 100%;
+    max-width: 400px;
+    height: 45px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+.btn-toggle {
+    flex: 1;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    font-weight: 800;
+    color: #00BBC2;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-size: 14px;
+}
+.btn-toggle.active { color: #fff; }
+.slide-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: #00BBC2;
+    border-radius: 30px;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* --- FILTER DESAIN --- */
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+.filter-col {
+    flex: 1;
+    min-width: 140px;
+    max-width: 180px;
+}
+.filter-label {
+    font-weight: 900;
+    color: #000;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+.filter-rect {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+    width: 100%;
+}
+.pill-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+.pill-select {
+    background-color: #00BBC2;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    padding: 8px 30px 8px 12px;
+    font-weight: bold;
+    width: 100%;
+    appearance: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+.arrow-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+#chartWrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
 </style>
 <?= $this->endSection(); ?>
-
 
 <?= $this->section('content'); ?>
 
@@ -35,13 +196,28 @@
     </div>
 </div>
 
+<?php
+    $dbStat = \Config\Database::connect();
+    
+    $totalKasus = $dbStat->table('pasien')->countAllResults();
+    $hariIni = date('Y-m-d');
+    $kasusHariIni = $dbStat->table('pasien')
+                           ->where('DATE(tgl_kunjungan)', $hariIni)
+                           ->countAllResults();
+
+    $kelurahanTerdampak = $dbStat->table('pasien')
+                                 ->select('id_wilayah')
+                                 ->distinct()
+                                 ->countAllResults();
+    
+    $tahunMap = $_GET['tahun_map'] ?? date('Y');
+?>
+
 <div class="stat-row">
     <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fa-solid fa-chart-column"></i>
-        </div>
+        <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
         <div class="stat-info">
-            <h3 class="red">20</h3>
+            <h3 class="red"><?= $totalKasus; ?></h3>
             <p>Total Kasus Aktif Hari Ini</p>
         </div>
     </div>
@@ -52,23 +228,21 @@
             <i class="fa-solid fa-arrow-down"></i>
         </div>
         <div class="stat-info">
-            <h3 class="green">2</h3>
+            <h3 class="green"><?= $kasusHariIni; ?></h3>
             <p>Kasus Baru Hari Ini</p>
         </div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon">
-            <i class="fa-solid fa-map"></i>
-        </div>
+        <div class="stat-icon"><i class="fa-solid fa-map"></i></div>
         <div class="stat-info">
-            <h3 class="blue">6</h3>
+            <h3 class="blue"><?= $kelurahanTerdampak; ?></h3>
             <p>Kelurahan Terdampak</p>
         </div>
     </div>
 </div>
 
-<div class="section-card">
+<div id="peta-sebaran" class="section-card">
     <div class="section-block">
         <div class="section-header">
             <div>
@@ -78,7 +252,6 @@
 
             <div class="filter">
                 <span>Periode:</span>
-                <?php $tahunMap = $_GET['tahun_map'] ?? date('Y'); ?>
                 <select id="periodeMap" onchange="updateMap()">
                     <?php for($t = 2024; $t <= date('Y'); $t++): ?>
                         <option value="<?= $t ?>" <?= ($t == $tahunMap ? 'selected' : '') ?>>
@@ -90,80 +263,289 @@
         </div>
 
         <div class="inner-card">
-            <div id="map" style="height: 400px; width: 100%;"></div>
-        </div> </div> </div> <section id="grafik" class="container mt-5" data-aos="fade-up">
-    <h4 class="text-teal mb-3 fw-bold">Grafik DBD</h4>
+            <div id="map" style="height: 400px; width: 100%; z-index: 1;"></div>
+        </div> 
+    </div> 
+</div> 
 
-    <?php
-    $bulan = $_GET['bulan'] ?? '';
-    $tahun = $_GET['tahun'] ?? '';
-    $usia  = $_GET['usia'] ?? '';
-    $jk    = $_GET['jk'] ?? '';
-    ?>
-
-    <form method="get">
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <select name="usia" class="form-control" onchange="this.form.submit()">
-                    <option value="">Semua Usia</option>
-                    <option value="anak" <?= ($usia=='anak' ? 'selected' : '') ?>>0-14</option>
-                    <option value="remaja" <?= ($usia=='remaja' ? 'selected' : '') ?>>15-24</option>
-                    <option value="dewasa" <?= ($usia=='dewasa' ? 'selected' : '') ?>>25-59</option>
-                    <option value="lansia" <?= ($usia=='lansia' ? 'selected' : '') ?>>60+</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select name="jk" class="form-control" onchange="this.form.submit()">
-                    <option value="">Semua Gender</option>
-                    <option value="L" <?= ($jk=='L' ? 'selected' : '') ?>>Laki-laki</option>
-                    <option value="P" <?= ($jk=='P' ? 'selected' : '') ?>>Perempuan</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select name="bulan" class="form-control shadow-sm" onchange="this.form.submit()">
-                    <option value="">Semua Bulan</option>
-                    <?php
-                    $bulanList = [
-                        1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',
-                        5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',
-                        9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
-                    ];
-
-                    foreach($bulanList as $key => $val):
-                    ?>
-                        <option value="<?= $key ?>" <?= request()->getGet('bulan') == $key ? 'selected' : '' ?>>
-                            <?= $val ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select name="tahun" class="form-control" onchange="this.form.submit()">
-                    <option value="">Semua Tahun</option>
-                    <?php for($t=2020;$t<=date('Y');$t++): ?>
-                        <option value="<?= $t ?>" <?= ($tahun==$t ? 'selected' : '') ?>>
-                            <?= $t ?>
-                        </option>
-                    <?php endfor; ?>
-                </select>
-            </div>
+<div id="detailModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <span class="close-modal" onclick="closeDetailModal()">&times;</span>
+        <div class="modal-title">
+            Peta Sebaran Kasus <span id="modalTahun"><?= $tahunMap ?></span>
         </div>
-        <input type="hidden" name="tahun_map" value="<?= $_GET['tahun_map'] ?? '' ?>">
-    </form>
 
-    <div class="row">
-        <div class="col-md-9">
-            <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-                <canvas id="chartDBD"></canvas>
-            </div>
+        <div class="info-box">
+            <h4>Informasi :</h4>
+            <table class="info-table">
+                <tr>
+                    <td class="label">Nama Daerah</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalNama">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Jumlah Penduduk</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalPenduduk">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Jumlah Kasus</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalKasus">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Kategori Kasus</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalKategori">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Rentang usia</td>
+                    <td class="colon">:</td>
+                    <td class="value"></td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Anak-anak</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalAnak">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Dewasa</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalDewasa">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Lansia</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalLansia">0</td>
+                </tr>
+                <tr>
+                    <td class="label">Rentang usia dengan kasus tertinggi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalUsiaTertinggi">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Desa dengan kasus tertinggi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalDesaTertinggi">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Jenis kelamin terinfeksi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalJkTotal">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Laki-laki</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalLaki">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Perempuan</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalPerempuan">0</td>
+                </tr>
+                <tr>
+                    <td class="label">Rumah Diperiksa</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRumahPeriksa">0</td>
+                </tr>
+                <tr>
+                    <td class="label">Rumah Positive Jentik</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRumahJentik">0</td>
+                </tr>
+            </table>
         </div>
     </div>
-</section> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
+
+<section id="grafik" class="container mt-5 mb-5 p-0" data-aos="fade-up">
+    <h4 id="titleGrafik" class="text-teal mb-4 fw-bold">Grafik Kasus DBD</h4>
+
+    <div class="bg-white shadow-sm" style="border-radius: 30px; border: 1px solid #eee; padding: 40px 30px;">
+        
+        <div class="d-flex justify-content-center mb-5">
+            <div class="slide-toggle-container">
+                <div id="slideIndicator" class="slide-indicator"></div>
+                <button type="button" class="btn-toggle active" id="tabKasus" onclick="switchTab('kasus')">KASUS</button>
+                <button type="button" class="btn-toggle" id="tabABJ" onclick="switchTab('abj')">ABJ</button>
+            </div>
+        </div>
+
+        <form method="get" id="filterForm">
+            <input type="hidden" name="tab" id="activeTabInput" value="<?= $_GET['tab'] ?? 'kasus' ?>">
+            <input type="hidden" name="tahun_map" value="<?= $_GET['tahun_map'] ?? '' ?>">
+
+            <div id="wrapperKasus" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'kasus' ? 'block' : 'none' ?>;">
+                <div class="filter-row">
+                    <div class="filter-col">
+                        <label class="filter-label">WILAYAH</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="wilayah" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="Antirogo" <?= request()->getGet('wilayah') == 'Antirogo' ? 'selected' : '' ?>>Antirogo</option>
+                                    <option value="Sumbersari" <?= request()->getGet('wilayah') == 'Sumbersari' ? 'selected' : '' ?>>Sumbersari</option>
+                                    <option value="Karangrejo" <?= request()->getGet('wilayah') == 'Karangrejo' ? 'selected' : '' ?>>Karangrejo</option>
+                                    <option value="Tegalgede" <?= request()->getGet('wilayah') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
+                                    <option value="Wirolegi" <?= request()->getGet('wilayah') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">USIA</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="usia" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-14</option>
+                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>15-24</option>
+                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>25-59</option>
+                                    <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>60+</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">JENIS KELAMIN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="jk" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="L" <?= request()->getGet('jk') == 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                    <option value="P" <?= request()->getGet('jk') == 'P' ? 'selected' : '' ?>>Perempuan</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">BULAN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="bulan" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php 
+                                    $bulanList = [1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'];
+                                    foreach($bulanList as $k => $v): ?>
+                                        <option value="<?= $k ?>" <?= request()->getGet('bulan') == $k ? 'selected' : '' ?>><?= $v ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">TAHUN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="tahun" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php for($t=2024; $t<=date('Y'); $t++): ?>
+                                        <option value="<?= $t ?>" <?= request()->getGet('tahun') == $t ? 'selected' : '' ?>><?= $t ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wrapperABJ" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'abj' ? 'block' : 'none' ?>;">
+                <div class="filter-row">
+                    <div class="filter-col">
+                        <label class="filter-label">WILAYAH</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="wilayah_abj" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="Antirogo" <?= request()->getGet('wilayah_abj') == 'Antirogo' ? 'selected' : '' ?>>Antirogo</option>
+                                    <option value="Sumbersari" <?= request()->getGet('wilayah_abj') == 'Sumbersari' ? 'selected' : '' ?>>Sumbersari</option>
+                                    <option value="Karangrejo" <?= request()->getGet('wilayah_abj') == 'Karangrejo' ? 'selected' : '' ?>>Karangrejo</option>
+                                    <option value="Tegalgede" <?= request()->getGet('wilayah_abj') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
+                                    <option value="Wirolegi" <?= request()->getGet('wilayah_abj') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">BULAN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="bulan_abj" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php foreach($bulanList as $k => $v): ?>
+                                        <option value="<?= $k ?>" <?= request()->getGet('bulan_abj') == $k ? 'selected' : '' ?>><?= $v ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">TAHUN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="tahun_abj" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php for($t=2024; $t<=date('Y'); $t++): ?>
+                                        <option value="<?= $t ?>" <?= request()->getGet('tahun_abj') == $t ? 'selected' : '' ?>><?= $t ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chartWrapper" style="position: relative; height: 350px;">
+                <canvas id="chartKasus" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'kasus' ? 'block' : 'none' ?>;"></canvas>
+                <canvas id="chartABJ" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'abj' ? 'block' : 'none' ?>;"></canvas>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<?php
+    $db = \Config\Database::connect();
+    $builderABJ = $db->table('rekap_pelaporan_kader'); 
+    $reqBulanABJ = $_GET['bulan_abj'] ?? '';
+    $reqTahunABJ = $_GET['tahun_abj'] ?? '';
+    $reqWilayahABJ = $_GET['wilayah_abj'] ?? '';
+    $bulanMap = [1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April', 5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus', 9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'];
+    if (!empty($reqBulanABJ) && isset($bulanMap[$reqBulanABJ])) { $builderABJ->where('bulan', $bulanMap[$reqBulanABJ]); }
+    if (!empty($reqTahunABJ)) { $builderABJ->like('periode_lengkap', $reqTahunABJ); }
+    $builderABJ->select('id_kelurahan, minggu, AVG(abj) as avg_abj');
+    $builderABJ->groupBy('id_kelurahan, minggu');
+    $rawDB_ABJ = $builderABJ->get()->getResultArray();
+    $kelMap = [1 => 'Sumbersari', 2 => 'Wirolegi', 3 => 'Antirogo', 4 => 'Tegalgede', 5 => 'Karangrejo'];
+    $dataFinalABJ = [];
+    foreach ($kelMap as $id => $nama) { $dataFinalABJ[$nama] = [null, null, null, null]; }
+    foreach ($rawDB_ABJ as $row) {
+        $namaKel = $kelMap[$row['id_kelurahan']] ?? '';
+        if ($namaKel && preg_match('/(\d+)/', $row['minggu'], $matches)) {
+            $idx = intval($matches[1]) - 1;
+            if ($idx >= 0 && $idx <= 3) { $dataFinalABJ[$namaKel][$idx] = round($row['avg_abj'], 2); }
+        }
+    }
+    if (!empty($reqWilayahABJ)) { foreach ($dataFinalABJ as $nama => $val) { if ($nama !== $reqWilayahABJ) unset($dataFinalABJ[$nama]); } }
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// === SCRIPT UPDATE URL MAP ===
+// --- DATA DARI CONTROLLER ---
+var dataDBD = <?= json_encode($dbd ?? []) ?>;
+var detailDesa = <?= json_encode($detailDesa ?? []) ?>;
+var desaTertinggi = <?= json_encode($desaTertinggi ?? '-') ?>;
+var tahunSekarang = <?= json_encode($tahunMap) ?>;
+
+// --- SCRIPT UPDATE URL MAP ---
 function updateMap(){
     let tahun = document.getElementById("periodeMap").value;
     let url = new URL(window.location.href);
@@ -171,32 +553,92 @@ function updateMap(){
     window.location.href = url.toString();
 }
 
-// === SCRIPT INISIALISASI PETA ===
-function fixNama(nama){
-    return (nama || "").toLowerCase().trim().replace(/\s+/g, " ").replace(/[^a-z0-9 ]/g, "");
+// --- SCRIPT SLIDE TAB KASUS VS ABJ ---
+function switchTab(type) {
+    const indicator = document.getElementById('slideIndicator');
+    const tabKasus = document.getElementById('tabKasus');
+    const tabABJ = document.getElementById('tabABJ');
+    const title = document.getElementById('titleGrafik');
+    const input = document.getElementById('activeTabInput');
+    const wrapKasus = document.getElementById('wrapperKasus');
+    const wrapABJ = document.getElementById('wrapperABJ');
+    const chartK = document.getElementById('chartKasus');
+    const chartA = document.getElementById('chartABJ');
+
+    input.value = type;
+    title.innerText = type === 'kasus' ? 'Grafik Kasus DBD' : 'Grafik Angka Bebas Jentik (ABJ)';
+
+    if (type === 'kasus') {
+        indicator.style.transform = 'translateX(0%)';
+        tabKasus.classList.add('active'); tabABJ.classList.remove('active');
+        wrapKasus.style.display = 'block'; wrapABJ.style.display = 'none';
+        chartK.style.display = 'block'; chartA.style.display = 'none';
+    } else {
+        indicator.style.transform = 'translateX(100%)';
+        tabABJ.classList.add('active'); tabKasus.classList.remove('active');
+        wrapABJ.style.display = 'block'; wrapKasus.style.display = 'none';
+        chartA.style.display = 'block'; chartK.style.display = 'none';
+    }
 }
 
-var aliasDesa = {
-    "kemuningsarilor": "kemuning sari lor"
-};
+// --- SCRIPT MODAL DETAIL ---
+function showDetailPopup(namaFix, namaAsli){
+    var d = detailDesa[namaFix] 
+         || detailDesa[namaAsli.toLowerCase().replace(/\s/g,'')] 
+         || {};
 
-var dataDBD = <?= json_encode($dbd ?? []) ?>;
+    var kategori   = d.kategori   || '-';
+    var kategoriCls = '';
+    if(kategori.toLowerCase() === 'tinggi') kategoriCls = 'kategori-tinggi';
+    else if(kategori.toLowerCase() === 'sedang') kategoriCls = 'kategori-sedang';
+    else if(kategori.toLowerCase() === 'rendah') kategoriCls = 'kategori-rendah';
+
+    document.getElementById("modalTahun").innerText        = tahunSekarang;
+    document.getElementById("modalNama").innerText         = namaAsli;
+    document.getElementById("modalPenduduk").innerText     = d.jumlah_penduduk ?? 0;
+    document.getElementById("modalKasus").innerText        = d.jumlah_kasus    ?? 0;
+
+    var elKat = document.getElementById("modalKategori");
+    elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
+    elKat.className = 'value ' + kategoriCls;
+
+    document.getElementById("modalAnak").innerText         = d.anak    ?? 0;
+    document.getElementById("modalDewasa").innerText       = d.dewasa  ?? 0;
+    document.getElementById("modalLansia").innerText       = d.lansia  ?? 0;
+    document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
+    document.getElementById("modalDesaTertinggi").innerText = desaTertinggi;
+
+    var lk = parseInt(d.laki ?? 0);
+    var pr = parseInt(d.perempuan ?? 0);
+    document.getElementById("modalJkTotal").innerText      = (lk > 0 ? 1 : 0) + (pr > 0 ? 1 : 0);
+    document.getElementById("modalLaki").innerText         = lk;
+    document.getElementById("modalPerempuan").innerText    = pr;
+    document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
+    document.getElementById("modalRumahJentik").innerText  = d.rumah_positif ?? 0;
+
+    document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeDetailModal(){
+    document.getElementById("detailModal").style.display = "none";
+}
+
+// --- SCRIPT INISIALISASI PETA ---
+function fixNama(nama){
+    return (nama || "").toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+}
+
+var aliasDesa = { "kemuningsarilor": "kemuning sari lor" };
 var dataFinal = {};
 
-/* Olah Data */
 dataDBD.forEach(item => {
     var desa = fixNama(item.desa);
     if(aliasDesa[desa]){ desa = aliasDesa[desa]; }
-    
-    if(!dataFinal[desa]){
-        dataFinal[desa] = { total: 0, jumlah: 0 };
-    }
-    
+    if(!dataFinal[desa]){ dataFinal[desa] = { total: 0, jumlah: 0 }; }
     dataFinal[desa].total += parseInt(item.kasus);
     dataFinal[desa].jumlah++;
 });
 
-/* Kategori */
 for(var key in dataFinal){
     var rata = dataFinal[key].total / dataFinal[key].jumlah;
     if(rata >= 20) dataFinal[key].kategori = "tinggi";
@@ -205,11 +647,43 @@ for(var key in dataFinal){
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+
+    // --- LOGIKA HIGHLIGHT SIDEBAR ---
+    const navLinks = document.querySelectorAll('.sidebar-menu a'); // Sesuaikan selector dengan layout
+    const sections = [document.getElementById('peta-sebaran'), document.getElementById('grafik')];
+
+    window.addEventListener('scroll', () => {
+        let current = "";
+        sections.forEach(section => {
+            if (section) {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active'); // Ganti dengan class highlight Anda, misal: 'active-menu'
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // --- LOGIKA AUTO SCROLL FILTER ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasFilter = urlParams.has('wilayah') || urlParams.has('tab');
+
+    if (hasFilter) {
+        const grafikSection = document.getElementById('grafik');
+        if (grafikSection) { grafikSection.scrollIntoView({ behavior: 'auto', block: 'start' }); }
+    }
+
     // Init Map
     var map = L.map('map').setView([-8.1, 113.5], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    // GeoJSON
     fetch("<?= base_url('assets/peta/db.geojson') ?>")
     .then(res => res.json())
     .then(data => {
@@ -226,12 +700,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     else if(item.kategori == "rendah") warna = "#28a745";
                 }
 
-                return {
-                    color: "#00CED1",
-                    weight: 2,
-                    fillColor: warna,
-                    fillOpacity: 0.7
-                };
+                return { color: "#00CED1", weight: 2, fillColor: warna, fillOpacity: 0.7 };
             },
             onEachFeature: function(feature, layer){
                 var namaAsli = feature.properties.NAMOBJ || "Kelurahan";
@@ -239,28 +708,24 @@ document.addEventListener("DOMContentLoaded", function() {
                 if(aliasDesa[namaFix]){ namaFix = aliasDesa[namaFix]; }
                 var item = dataFinal[namaFix];
                 
-                var isi = "<b>Kelurahan: " + namaAsli + "</b>";
+                var isi = "<div style='min-width:220px;'><b>Kelurahan: " + namaAsli + "</b>";
                 if(item){
                     isi += "<br>Total Kasus: " + item.total;
                     isi += "<br>Kategori: " + item.kategori;
+                    isi += `<br><br><button onclick="showDetailPopup('${namaFix}','${namaAsli}')" 
+                            style="background:#00CED1; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">
+                            Selengkapnya</button>`;
                 } else {
                     isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
                 }
+                isi += "</div>";
 
                 layer.bindPopup(isi);
-                layer.bindTooltip(namaAsli, {
-                    permanent: true,
-                    direction: "center",
-                    className: "label-desa"
-                });
+                layer.bindTooltip(namaAsli, { permanent: true, direction: "center", className: "label-desa" });
 
                 layer.on({
-                    mouseover: function(e){
-                        e.target.setStyle({ weight: 3, color: '#000' });
-                    },
-                    mouseout: function(e){
-                        geo.resetStyle(e.target);
-                    }
+                    mouseover: function(e){ e.target.setStyle({ weight: 3, color: '#000' }); },
+                    mouseout: function(e){ geo.resetStyle(e.target); }
                 });
             }
         }).addTo(map);
@@ -268,27 +733,47 @@ document.addEventListener("DOMContentLoaded", function() {
         map.fitBounds(geo.getBounds());
     });
 
-    // === SCRIPT GRAFIK DBD ===
-    const dataGrafik = <?= json_encode($grafik ?? []) ?>;
-    let labels = [];
-    let total = [];
+    // Init Sliding Tab
+    switchTab("<?= $_GET['tab'] ?? 'kasus' ?>");
 
-    dataGrafik.forEach(item => {
-        labels.push(item.kelurahan);
-        total.push(item.total);
+    // Grafik Kasus
+    const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
+    let labelsKasus = []; let totalKasus = [];
+    dataGrafikKasus.forEach(item => { 
+        labelsKasus.push(item.kelurahan || item.desa); 
+        totalKasus.push(item.total || item.kasus); 
+    });
+    
+    new Chart(document.getElementById('chartKasus').getContext('2d'), {
+        type: 'bar', 
+        data: { labels: labelsKasus, datasets: [{ label: 'Total Kasus', data: totalKasus, backgroundColor: '#00BBC2', borderRadius: 8 }] },
+        options: { responsive: true, maintainAspectRatio: false }
     });
 
-    new Chart(document.getElementById('chartDBD'), {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Total Kasus',
-                data: total,
-                backgroundColor: '#00BBC2'
-            }]
+    // Grafik ABJ
+    const rawDataABJ = <?= json_encode($dataFinalABJ) ?>;
+    const colorMapping = { 'Antirogo': '#1f4e5b', 'Sumbersari': '#00BBC2', 'Karangrejo': '#b2dfdb', 'Tegalgede': '#5cb85c', 'Wirolegi': '#4fc3f7' };
+    let datasetsABJ = [];
+    
+    for (const kelurahan in rawDataABJ) {
+        datasetsABJ.push({ 
+            label: kelurahan, 
+            data: rawDataABJ[kelurahan], 
+            borderColor: colorMapping[kelurahan] || '#333', 
+            backgroundColor: colorMapping[kelurahan] || '#333', 
+            fill: false, tension: 0.2, pointRadius: 4, borderWidth: 2, spanGaps: true 
+        });
+    }
+
+    new Chart(document.getElementById('chartABJ').getContext('2d'), {
+        type: 'line', 
+        data: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], datasets: datasetsABJ },
+        options: { 
+            responsive: true, maintainAspectRatio: false,
+            scales: { y: { min: 0, max: 100, ticks: { callback: function(v) { return v + '%'; } } } }
         }
     });
+
 });
 </script>
 <?= $this->endSection(); ?>

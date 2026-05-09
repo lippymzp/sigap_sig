@@ -79,10 +79,11 @@
             <tr>
                 <td class="center"><?= $no++ ?></td>
                 <td><?= esc((string) ($d['kecamatan'] ?? '-')) ?></td>
-                <td><?= esc((string) ($d['desa'] ?? '-')) ?></td>
-                <td class="center"><?= esc((string) ($d['jk'] ?? '-')) ?></td>
-                <td class="center"><?= esc((string) ($d['usia'] ?? '-')) ?></td>
-                <td class="center">1</td> </tr>
+                <td><?= esc((string) ($d['kelurahan'] ?? '-')) ?></td>
+                <td class="center"><?= esc((string) ($d['jenis_kelamin'] ?? '-')) ?></td>
+                <td class="center"><?= esc((string) ($d['umur'] ?? '-')) ?></td>
+                <td class="center">1</td> 
+            </tr>
             <?php endforeach; ?>
         <?php else : ?>
             <tr>

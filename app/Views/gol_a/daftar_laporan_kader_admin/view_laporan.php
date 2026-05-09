@@ -1,12 +1,8 @@
-<?= $this->extend('layout/dashboard_layout_kepala'); ?>
+<?= $this->extend('layout/dashboard_layout_admin'); ?>
 
 <?= $this->section('style'); ?>
 <style>
-    /* Import font Poppins dari Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
-    /* Ubah font-family menjadi Poppins */
-    .content-body { background: #e6f6f5; padding: 30px; font-family: 'Poppins', sans-serif; }
+    .content-body { background: #e6f6f5; padding: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     
     /* Header Banner (Warna Tosca) */
     .header-banner { background: #48b8b4; color: white; border-radius: 12px; padding: 20px 25px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(72, 184, 180, 0.2); }

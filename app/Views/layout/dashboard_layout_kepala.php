@@ -94,6 +94,7 @@ html,body{
     margin:0;
     overflow-x:hidden;
     font-family:'Poppins',sans-serif;
+    scroll-behavior: smooth; /* Menambahkan efek smooth scroll */
 }
 
 /* 🔥 SIDEBAR FIX SCROLL */
@@ -190,9 +191,7 @@ $menu = $menu ?? '';
 
 <?php
 $db = \Config\Database::connect();
-
 $id_petugas = session()->get('id_petugas');
-
 $profil = $db->table('profil')
     ->where('id_petugas', $id_petugas)
     ->get()
@@ -213,19 +212,19 @@ $fotoNavbar = (!empty($profil['foto_profil']))
          class="logo-sidebar">
 </div>
 <div class="menu-label">HOME</div>
-<a href="<?= base_url('dbd/dashboard/kepala') ?>"
+<a href="<?= base_url('dbd/dashboard/kepala') ?>" id="nav-dashboard"
     class="<?= ($menu == 'dashboard_kepala') ? 'active' : '' ?>">
     <i class="fa-solid fa-house me-2"></i> Dashboard
 </a>
 
 <div class="menu-label">MENU UTAMA</div>
 
-<a href="<?= base_url('dbd/dashboard/kepala') ?>#map"
+<a href="<?= base_url('dbd/dashboard/kepala') ?>#map" id="nav-peta"
     class="<?= ($menu == 'peta') ? 'active' : '' ?>">
     <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
 </a>
 
-<a href="<?= base_url('dbd/dashboard/kepala') ?>#grafik"
+<a href="<?= base_url('dbd/dashboard/kepala') ?>#grafik" id="nav-grafik"
     class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
     <i class="fa-solid fa-chart-column me-2"></i> Grafik
 </a>
@@ -264,10 +263,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <div class="main-content">
 
 <div class="topbar d-flex justify-content-between align-items-center">
-
     <div class="d-flex align-items-center">
         <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
-
         <div class="fs-4 fw-bold text-dark">
             <?= $judul ?? 'Dashboard' ?>
         </div>
@@ -282,38 +279,16 @@ $fotoNavbar = (!empty($profil['foto_profil']))
         <div class="dropdown avatar-dropdown">
             <div class="avatar-circle"
                 data-bs-toggle="dropdown"
-                style="
-                    cursor:pointer;
-                    width:45px;
-                    height:45px;
-                    border-radius:50%;
-                    overflow:hidden;
-                ">
-
-                <img src="<?= $fotoNavbar; ?>"
-                    style="
-                        width:100%;
-                        height:100%;
-                        object-fit:cover;
-                    ">
-
+                style="cursor:pointer; width:45px; height:45px; border-radius:50%; overflow:hidden;">
+                <img src="<?= $fotoNavbar; ?>" style="width:100%; height:100%; object-fit:cover;">
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li>
-                    <a class="dropdown-item" href="<?= base_url('profil_kepala') ?>">
-                        Profile
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="javascript:void(0)" onclick="confirmLogout('<?= base_url('/logout') ?>')">
-                        Keluar
-                    </a>
-                </li>
+                <li><a class="dropdown-item" href="<?= base_url('profil_kepala') ?>">Profile</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="confirmLogout('<?= base_url('/logout') ?>')">Keluar</a></li>
             </ul>
         </div>
     </div>
-
 </div>
 
 <div class="content-body">
@@ -324,67 +299,40 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 </div>
 
 <footer class="footer">
-
 <div class="container text-white py-3">
 <div class="row align-items-start">
-
     <div class="col-md-4 text-center mb-2">
-
          <div class="logo mb-1">
-            <img src="<?= base_url('img/logo_sigap.png') ?>" 
-                 alt="Logo SIGAP" 
-                 style="max-width:70px;">
+            <img src="<?= base_url('img/logo_sigap.png') ?>" alt="Logo SIGAP" style="max-width:70px;">
         </div>
-
         <h6 class="fw-bold mb-1">SIGAP</h6>
-
-        <p class="small mb-0" style="line-height:1.3;">
-    Sistem Informasi Geografis Analisis<br>
-    & Pemantauan Penyakit
-</p>
-
+        <p class="small mb-0" style="line-height:1.3;">Sistem Informasi Geografis Analisis<br>& Pemantauan Penyakit</p>
     </div>
 
-
-    <!-- SOSIAL -->
     <div class="col-md-4 mb-2">
         <h6 class="fw-bold mb-1">Media Sosial</h6>
-
         <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
-       
     </div>
 
-    <!-- KONTAK -->
     <div class="col-md-4 mb-2">
     <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
-
     <div class="contact-item mb-3">
         <i class="fa-solid fa-envelope"></i>
         <span>medixatechnology@gmail.com</span>
     </div>
-
     <div class="contact-item mb-3">
         <i class="fa-solid fa-location-dot"></i>
-        <span>
-            Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari,
-            Kabupaten Jember, Jawa Timur 68121
-        </span>
+        <span>Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121</span>
     </div>
-
     <div class="contact-item">
         <i class="fa-solid fa-phone"></i>
         <span>087888888888</span>
     </div>
 </div>
-
 </div>
 
 <hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
-
-<p class="text-center small mb-0">
-    © 2026 SIGAP
-</p>
-
+<p class="text-center small mb-0">© 2026 SIGAP</p>
 </div>
 </footer>
 
@@ -392,18 +340,14 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <div class="modal-dialog modal-dialog-centered" style="max-width: 320px;">
         <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.15);">
             <div class="modal-body text-center p-4">
-                
                 <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: #ff4d4f; border-radius: 50%;">
                     <i class="fa-solid fa-xmark text-white fs-2"></i>
                 </div>
-                
                 <h5 class="fw-bold mb-4 text-dark" style="font-size: 18px;">Apakah anda yakin<br>keluar?</h5>
-                
                 <div class="d-grid gap-2">
                     <a href="#" id="btnConfirmLogout" class="btn text-white py-2" style="background-color: #11b5b9; border-radius: 8px; font-weight: 500;">Ya</a>
                     <button type="button" class="btn text-white py-2" data-bs-dismiss="modal" style="background-color: #d1d1d1; border-radius: 8px; font-weight: 500;">Tidak</button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -414,26 +358,62 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // --- FITUR TOGGLE SIDEBAR ---
     const toggle = document.getElementById("toggleSidebar");
     const wrapper = document.getElementById("wrapper");
 
     if (toggle && wrapper) {
         toggle.addEventListener("click", function() {
             wrapper.classList.toggle("hide");
-            
-            // Trigger resize agar Chart.js ikut menyesuaikan jika disembunyikan/ditampilkan
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 300);
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 300);
         });
+    }
+
+    // --- FITUR AKTIF MENU OTOMATIS BERDASARKAN SCROLL (SCROLLSPY) ---
+    const navDashboard = document.getElementById('nav-dashboard');
+    const navPeta = document.getElementById('nav-peta');
+    const navGrafik = document.getElementById('nav-grafik');
+
+    // Hanya jalankan jika berada di halaman dashboard
+    if (window.location.href.includes('dashboard/kepala') && navDashboard && navPeta && navGrafik) {
+        
+        function updateActiveNav() {
+            // Mengambil elemen section (ID peta-sebaran/map dan grafik dari dashboard_kepala.php)
+            const mapSection = document.getElementById('map') || document.getElementById('peta-sebaran');
+            const grafikSection = document.getElementById('grafik');
+            
+            // Jarak toleransi dari atas layar
+            let scrollPos = window.scrollY + 200; 
+
+            let currentActive = navDashboard; // Default di paling atas adalah Dashboard
+
+            // Cek section mana yang sedang dilihat
+            if (grafikSection && scrollPos >= grafikSection.offsetTop) {
+                currentActive = navGrafik;
+            } else if (mapSection && scrollPos >= mapSection.offsetTop) {
+                currentActive = navPeta;
+            }
+
+            // Hapus class active dari ketiga menu tersebut
+            navDashboard.classList.remove('active');
+            navPeta.classList.remove('active');
+            navGrafik.classList.remove('active');
+
+            // Tambahkan class active ke menu yang sesuai dengan posisi layar
+            currentActive.classList.add('active');
+        }
+
+        // Jalankan fungsi saat pengguna melakukan scroll
+        window.addEventListener('scroll', updateActiveNav);
+        
+        // Jalankan fungsi satu kali saat halaman pertama kali dimuat
+        setTimeout(updateActiveNav, 100);
     }
 });
 
 // FUNGSI LOGOUT KUSTOM
 function confirmLogout(url) {
-    // Set link tombol "Ya" ke url logout
     document.getElementById('btnConfirmLogout').href = url;
-    // Panggil dan tampilkan modal Bootstrap
     var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
     logoutModal.show();
 }

@@ -501,12 +501,31 @@
     </div>
 
     <!-- CHECK -->
-    <div class="form-check mt-3">
-        <input class="form-check-input" type="checkbox" id="confirm">
-        <label class="form-check-label">
-            Saya mengonfirmasi data benar
-        </label>
-    </div>
+    <div class="form-check mt-3" style="padding-left: 2rem;">
+    <input 
+        class="form-check-input" 
+        type="checkbox" 
+        id="confirm"
+        style="
+            width: 22px;
+            height: 22px;
+            border: 2px solid #0d6efd;
+            cursor: pointer;
+            margin-top: 2px;
+        "
+    >
+    <label 
+        class="form-check-label fw-semibold" 
+        for="confirm"
+        style="
+            font-size: 15px;
+            margin-left: 8px;
+            cursor: pointer;
+        "
+    >
+        Saya mengonfirmasi data benar
+    </label>
+</div>
 
 </div>
 
