@@ -86,7 +86,7 @@ $routes->get('data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
-$routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
+$routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
 $routes->get('diare/dashboard', 'Dashboard::diare');
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
