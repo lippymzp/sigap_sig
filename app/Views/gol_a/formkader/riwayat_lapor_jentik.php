@@ -224,7 +224,7 @@
                             <td><?= esc($row['bulan']) ?></td>
                             <td><?= esc($row['minggu']) ?></td>
                             <td><?= esc($row['nama_puskesmas']) ?></td> 
-                            <td><?= esc($row['nama_kelurahan']) ?></td> 
+                            <td><?= esc($row['kelurahan']) ?></td> 
                             <td><?= esc($row['nama_posyandu']) ?></td>  
                             <td class="text-center"><?= round($row['abj']) ?>%</td>
                             <td>

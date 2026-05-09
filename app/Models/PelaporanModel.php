@@ -10,19 +10,7 @@ class PelaporanModel extends Model
     protected $primaryKey = 'id_laporan';
     protected $useAutoIncrement = true;
 
-    protected $allowedFields = [
-        'bulan',
-        'minggu',
-        'periode_lengkap',
-        'id_puskesmas',
-        'id_kelurahan',
-        'id_posyandu',
-        'diperiksa',
-        'positif',
-        'bagian',
-        'foto',
-        'abj'
-    ];
+    protected $allowedFields = ['bulan', 'minggu', 'periode_lengkap', 'id_puskesmas', 'id_kelurahan', 'kelurahan', 'id_posyandu', 'diperiksa', 'positif', 'bagian', 'foto', 'abj'];
 
     protected $useTimestamps = true;
 }

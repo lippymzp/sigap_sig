@@ -145,7 +145,7 @@ class Dbd extends BaseController
         // 3. Format data (Mengubah ID angka menjadi teks yang bisa dibaca)
         foreach ($dataPelaporan as &$row) {
             $row['nama_puskesmas'] = ($row['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
-            $row['nama_kelurahan'] = isset($kelurahanMap[$row['id_kelurahan']]) ? $kelurahanMap[$row['id_kelurahan']] : '-';
+            $row['kelurahan'] = isset($kelurahanMap[$row['id_kelurahan']]) ? $kelurahanMap[$row['id_kelurahan']] : '-';
             $row['nama_posyandu']  = 'Catleya ' . $row['id_posyandu'];
         }
 
@@ -165,31 +165,42 @@ class Dbd extends BaseController
     // FUNGSI BARU: PELAPORAN KADER (READ & TAMPILKAN TABEL)
     // ==============================================================
     public function pelaporan()
-    {
-        $dataPelaporan = $this->pelaporanModel->orderBy('created_at', 'DESC')->findAll();
+{
+    $dataPelaporan = $this->pelaporanModel->orderBy('created_at', 'DESC')->findAll();
 
-        $kelurahanMap = [
-            1 => 'Sumbersari',
-            2 => 'Wirolegi',
-            3 => 'Antirogo',
-            4 => 'Tegal Gede',
-            5 => 'Karangrejo'
-        ];
+    $kelurahanMap = [
+        1 => 'Sumbersari',
+        2 => 'Wirolegi',
+        3 => 'Antirogo',
+        4 => 'Tegal Gede',
+        5 => 'Karangrejo'
+    ];
 
-        foreach ($dataPelaporan as &$row) {
-            $row['nama_puskesmas'] = ($row['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
-            $row['nama_kelurahan'] = isset($kelurahanMap[$row['id_kelurahan']]) ? $kelurahanMap[$row['id_kelurahan']] : '-';
-            $row['nama_posyandu']  = 'Catleya ' . $row['id_posyandu'];
+    foreach ($dataPelaporan as &$row) {
+        // Logika Puskesmas
+        $row['nama_puskesmas'] = ($row['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
+        
+        // Logika Kelurahan yang diperbarui: 
+        // Cek apakah 'kelurahan' ada dan tidak kosong di database. 
+        // Jika kosong, gunakan $kelurahanMap (sebagai fallback untuk data lama).
+        if (!empty($row['kelurahan'])) {
+            $row['kelurahan'] = $row['kelurahan'];
+        } else {
+            $row['kelurahan'] = isset($kelurahanMap[$row['id_kelurahan']]) ? $kelurahanMap[$row['id_kelurahan']] : '-';
         }
 
-        $data = [
-            'title'     => 'Riwayat Pelaporan Kader',
-            'menu'      => 'pelaporan',
-            'pelaporan' => $dataPelaporan 
-        ];
-
-        return view('riwayat_pelaporan', $data);
+        // Logika Posyandu
+        $row['nama_posyandu']  = 'Catleya ' . $row['id_posyandu'];
     }
+
+    $data = [
+        'title'     => 'Riwayat Pelaporan Kader',
+        'menu'      => 'pelaporan',
+        'pelaporan' => $dataPelaporan 
+    ];
+
+    return view('riwayat_pelaporan', $data);
+}
 
     public function hapus_pelaporan(int $id)
     {
@@ -243,6 +254,10 @@ class Dbd extends BaseController
         $periodeLengkap = $this->request->getPost('periode'); 
         $idPuskesmas    = $this->request->getPost('id_puskesmas');
         $idKelurahan    = $this->request->getPost('id_kelurahan');
+        
+        // --- DIUBAH: Menangkap atribut kelurahan dari view ---
+        $kelurahan      = $this->request->getPost('kelurahan'); 
+        
         $idPosyandu     = $this->request->getPost('id_posyandu');
         $diperiksa      = $this->request->getPost('diperiksa');
         $positif        = $this->request->getPost('positif');
@@ -286,6 +301,10 @@ class Dbd extends BaseController
             'periode_lengkap' => $periodeLengkap,
             'id_puskesmas'    => $idPuskesmas,
             'id_kelurahan'    => $idKelurahan,
+            
+            // --- DIUBAH: Menyimpan ke kolom 'kelurahan' di database ---
+            'kelurahan'       => $kelurahan, 
+            
             'id_posyandu'     => $idPosyandu,
             'diperiksa'       => $diperiksa,
             'positif'         => $positif,
@@ -326,6 +345,7 @@ class Dbd extends BaseController
         $periodeLengkap = $this->request->getPost('periode'); 
         $idPuskesmas    = $this->request->getPost('id_puskesmas');
         $idKelurahan    = $this->request->getPost('id_kelurahan');
+        $Kelurahan      = $this->request->getPost('kelurahan');
         $idPosyandu     = $this->request->getPost('id_posyandu');
         $diperiksa      = $this->request->getPost('diperiksa');
         $positif        = $this->request->getPost('positif');
@@ -490,7 +510,7 @@ class Dbd extends BaseController
         ];
 
         $laporan['nama_puskesmas'] = ($laporan['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
-        $laporan['nama_kelurahan'] = isset($kelurahanMap[$laporan['id_kelurahan']]) ? $kelurahanMap[$laporan['id_kelurahan']] : '-';
+        $laporan['nkelurahan'] = isset($kelurahanMap[$laporan['id_kelurahan']]) ? $kelurahanMap[$laporan['id_kelurahan']] : '-';
         $laporan['nama_posyandu']  = 'CATLEYA ' . $laporan['id_posyandu'];
 
         $data = [
