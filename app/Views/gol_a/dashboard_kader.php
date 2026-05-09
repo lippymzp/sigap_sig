@@ -12,6 +12,104 @@
     border-radius: 6px;
 }
 
+/* =================== MODAL DETAIL DESA =================== */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    background: #fff;
+    width: 85%;
+    max-width: 760px;
+    border-radius: 20px;
+    padding: 30px 35px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close-modal {
+    position: absolute;
+    right: 25px;
+    top: 12px;
+    font-size: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #444;
+}
+
+.close-modal:hover { color: #000; }
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 18px;
+}
+
+.info-box {
+    background: #f8f8f8;
+    border-radius: 18px;
+    padding: 25px 30px;
+    border: 1px solid #e2e2e2;
+}
+
+.info-box h4 {
+    font-size: 16px;
+    margin: 0 0 14px 0;
+    color: #222;
+    font-weight: 700;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    color: #333;
+}
+
+.info-table tr td {
+    padding: 6px 0;
+    vertical-align: top;
+    line-height: 1.6;
+}
+
+.info-table tr td.label {
+    width: 45%;
+    color: #2b2b2b;
+}
+
+.info-table tr td.colon {
+    width: 18px;
+    text-align: center;
+    color: #555;
+}
+
+.info-table tr td.value {
+    color: #111;
+    font-weight: 500;
+}
+
+.info-table tr.sub td.label {
+    padding-left: 28px;
+    color: #444;
+    font-weight: 400;
+}
+
+.kategori-tinggi { color: #dc3545; font-weight: 600; }
+.kategori-sedang { color: #d39e00; font-weight: 600; }
+.kategori-rendah { color: #28a745; font-weight: 600; }
+
 /* --- SLIDE TOGGLE STYLING --- */
 .slide-toggle-container {
     position: relative;
@@ -117,62 +215,6 @@
     height: 100% !important;
 }
 
-/* --- WIDGET STATISTIK KADER DESAIN BARU --- */
-.kader-stat-card {
-    background-color: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0px 8px 18px rgba(0, 187, 194, 0.25);
-    border: 1px solid rgba(0, 187, 194, 0.1);
-    padding: 25px 20px;
-    position: relative;
-    min-height: 125px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-}
-.kader-stat-card:hover {
-    transform: translateY(-5px);
-}
-.kader-stat-icon {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #bcf0f2;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.kader-stat-icon i {
-    font-size: 24px;
-    color: #215a6b;
-}
-.kader-stat-content {
-    text-align: center;
-    padding-left: 55px;
-    width: 100%;
-}
-.kader-stat-number {
-    font-size: 40px;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 8px;
-}
-.kader-stat-label {
-    font-size: 15px;
-    font-weight: 500;
-    color: #222;
-}
-
-/* Specific text colors matching the image */
-.text-red-custom { color: #E54B4B; }
-.text-green-custom { color: #48B65A; }
-.text-blue-custom { color: #1C559A; }
 </style>
 
 <div class="welcome-box">
@@ -205,41 +247,35 @@
                                  ->countAllResults();
 ?>
 
-<div class="row mb-4" style="margin-top: 20px;">
-    <div class="col-md-4 mb-3">
-        <div class="kader-stat-card">
-            <div class="kader-stat-icon">
-                <i class="fa-solid fa-chart-column"></i>
-            </div>
-            <div class="kader-stat-content">
-                <div class="kader-stat-number text-red-custom"><?= $totalKasus; ?></div>
-                <div class="kader-stat-label">Total Kasus Aktif Hari Ini</div>
-            </div>
+<div class="stat-row">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-chart-column"></i>
         </div>
-    </div>
-    
-    <div class="col-md-4 mb-3">
-        <div class="kader-stat-card">
-            <div class="kader-stat-icon">
-                <i class="fa-solid fa-arrow-up" style="font-size: 18px;"></i>
-                <i class="fa-solid fa-arrow-down" style="font-size: 18px; margin-left: 4px;"></i>
-            </div>
-            <div class="kader-stat-content">
-                <div class="kader-stat-number text-green-custom"><?= $kasusHariIni; ?></div>
-                <div class="kader-stat-label">Kasus Baru Hari Ini</div>
-            </div>
+        <div class="stat-info">
+            <h3 class="red"><?= $totalKasus; ?></h3>
+            <p>Total Kasus Aktif Hari Ini</p>
         </div>
     </div>
 
-    <div class="col-md-4 mb-3">
-        <div class="kader-stat-card">
-            <div class="kader-stat-icon">
-                <i class="fa-solid fa-map-location-dot"></i>
-            </div>
-            <div class="kader-stat-content">
-                <div class="kader-stat-number text-blue-custom"><?= $kelurahanTerdampak; ?></div>
-                <div class="kader-stat-label">Kelurahan Terdampak</div>
-            </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-arrow-up"></i>
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+        <div class="stat-info">
+            <h3 class="green"><?= $kasusHariIni; ?></h3>
+            <p>Kasus Baru Hari Ini</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <div class="stat-info">
+            <h3 class="blue"><?= $kelurahanTerdampak; ?></h3>
+            <p>Kelurahan Terdampak</p>
         </div>
     </div>
 </div>
@@ -263,14 +299,42 @@
         </div>
         <div class="inner-card">
             <div id="map" style="height: 400px; z-index: 1;"></div>
-        </div>
+            
+            <div id="detailModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <span class="close-modal" onclick="closeDetailModal()">&times;</span>
+                    <div class="modal-title">
+                        Peta Sebaran Kasus <span id="modalTahun"><?= $tahunMap ?></span>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>Informasi :</h4>
+                        <table class="info-table">
+                            <tr><td class="label">Nama Daerah</td><td class="colon">:</td><td class="value" id="modalNama">-</td></tr>
+                            <tr><td class="label">Jumlah Penduduk</td><td class="colon">:</td><td class="value" id="modalPenduduk">-</td></tr>
+                            <tr><td class="label">Jumlah Kasus</td><td class="colon">:</td><td class="value" id="modalKasus">-</td></tr>
+                            <tr><td class="label">Kategori Kasus</td><td class="colon">:</td><td class="value" id="modalKategori">-</td></tr>
+                            <tr><td class="label">Rentang usia</td><td class="colon">:</td><td class="value"></td></tr>
+                            <tr class="sub"><td class="label">Anak-anak</td><td class="colon">:</td><td class="value" id="modalAnak">0</td></tr>
+                            <tr class="sub"><td class="label">Dewasa</td><td class="colon">:</td><td class="value" id="modalDewasa">0</td></tr>
+                            <tr class="sub"><td class="label">Lansia</td><td class="colon">:</td><td class="value" id="modalLansia">0</td></tr>
+                            <tr><td class="label">Rentang usia dengan kasus tertinggi</td><td class="colon">:</td><td class="value" id="modalUsiaTertinggi">-</td></tr>
+                            <tr><td class="label">Desa dengan kasus tertinggi</td><td class="colon">:</td><td class="value" id="modalDesaTertinggi">-</td></tr>
+                            <tr><td class="label">Jenis kelamin terinfeksi</td><td class="colon">:</td><td class="value" id="modalJkTotal">0</td></tr>
+                            <tr class="sub"><td class="label">Laki-laki</td><td class="colon">:</td><td class="value" id="modalLaki">0</td></tr>
+                            <tr class="sub"><td class="label">Perempuan</td><td class="colon">:</td><td class="value" id="modalPerempuan">0</td></tr>
+                            <tr><td class="label">Rumah Diperiksa</td><td class="colon">:</td><td class="value" id="modalRumahPeriksa">0</td></tr>
+                            <tr><td class="label">Rumah Positive Jentik</td><td class="colon">:</td><td class="value" id="modalRumahJentik">0</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
     </div>
 </div>
 
 <section id="grafik" class="container mt-5 mb-5 p-0">
-
     <h4 id="titleGrafik" class="text-dark mb-4 fw-bold">Grafik Kasus DBD</h4>
-
     <div class="bg-white shadow-sm" style="border-radius: 30px; border: 1px solid #eee; padding: 40px 30px;">
         
         <div class="d-flex justify-content-center mb-5">
@@ -423,6 +487,7 @@
 </section>
 
 <?php
+    // --- AMBIL DATA GRAFIK ABJ ---
     $db = \Config\Database::connect();
     $builderABJ = $db->table('rekap_pelaporan_kader'); 
     $reqBulanABJ = $_GET['bulan_abj'] ?? '';
@@ -445,11 +510,171 @@
         }
     }
     if (!empty($reqWilayahABJ)) { foreach ($dataFinalABJ as $nama => $val) { if ($nama !== $reqWilayahABJ) unset($dataFinalABJ[$nama]); } }
+
+    // =========================================================================
+    // LOGIKA PENARIKAN DATA PETA DARI DATABASE (Tabel: pasien & wilayah)
+    // =========================================================================
+    $dbMap = \Config\Database::connect();
+    $tahunMapFilter = $_GET['tahun_map'] ?? date('Y');
+
+    // 1. Ambil Pasien (Usia, Gender, Daerah)
+    $bPasien = $dbMap->table('pasien');
+    $bPasien->select('pasien.umur, pasien.jenis_kelamin, wilayah.kelurahan as nama_kelurahan');
+    $bPasien->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah', 'left');
+    $bPasien->where('YEAR(pasien.tgl_kunjungan)', $tahunMapFilter);
+    $pasienDetail = $bPasien->get()->getResultArray();
+
+    // 2. Ambil Rekap Jentik
+    $bJentik = $dbMap->table('rekap_pelaporan_kader');
+    $bJentik->select('kelurahan, SUM(diperiksa) as total_diperiksa, SUM(positif) as total_positif');
+    $bJentik->like('periode_lengkap', $tahunMapFilter);
+    $bJentik->groupBy('kelurahan');
+    $jentikDetail = $bJentik->get()->getResultArray();
+
+    // Variabel untuk menampung olahan
+    $detailMap = [];
+    $dbdMap = [];
+    $maxKasus = 0;
+    $desaTertinggiVal = '-';
+
+    // (Dummy Penduduk karena tabel wilayah tidak mempunyai jumlah_penduduk)
+    $dummyPenduduk = [
+        'sumbersari' => 35000, 'wirolegi' => 25000, 
+        'antirogo' => 20000, 'tegalgede' => 22000, 'karangrejo' => 28000
+    ];
+
+    foreach($pasienDetail as $row) {
+        $nKel = trim($row['nama_kelurahan'] ?? '');
+        if($nKel == '') continue;
+
+        // Data utama map pin
+        $dbdMap[] = ['desa' => $nKel, 'kasus' => 1];
+
+        $kKel = strtolower(str_replace(' ', '', $nKel));
+
+        if (!isset($detailMap[$kKel])) {
+            $detailMap[$kKel] = [
+                'nama' => $nKel,
+                'jumlah_penduduk' => $dummyPenduduk[$kKel] ?? 20000,
+                'jumlah_kasus' => 0,
+                'anak' => 0, 'dewasa' => 0, 'lansia' => 0,
+                'laki' => 0, 'perempuan' => 0,
+                'kategori' => 'rendah', 'usia_tertinggi' => '-',
+                'rumah_diperiksa' => 0, 'rumah_positif' => 0
+            ];
+        }
+
+        // Tambah kasus
+        $detailMap[$kKel]['jumlah_kasus'] += 1;
+
+        // Klasifikasi Usia
+        $u = (int)$row['umur'];
+        if ($u <= 14) $detailMap[$kKel]['anak'] += 1;
+        else if ($u <= 59) $detailMap[$kKel]['dewasa'] += 1;
+        else $detailMap[$kKel]['lansia'] += 1;
+
+        // Klasifikasi Gender
+        if (strtolower($row['jenis_kelamin']) == 'laki-laki') $detailMap[$kKel]['laki'] += 1;
+        else $detailMap[$kKel]['perempuan'] += 1;
+    }
+
+    // Gabung data Pemeriksaan Jentik
+    foreach($jentikDetail as $j) {
+        $kKel = strtolower(str_replace(' ', '', $j['kelurahan']));
+        if (isset($detailMap[$kKel])) {
+            $detailMap[$kKel]['rumah_diperiksa'] += $j['total_diperiksa'];
+            $detailMap[$kKel]['rumah_positif'] += $j['total_positif'];
+        }
+    }
+
+    // Eksekusi Kategori dan Nilai Tertinggi
+    foreach($detailMap as $k => &$d) {
+        // Tentukan Kategori Kasus
+        if ($d['jumlah_kasus'] >= 20) $d['kategori'] = 'tinggi';
+        else if ($d['jumlah_kasus'] >= 10) $d['kategori'] = 'sedang';
+        else $d['kategori'] = 'rendah';
+
+        // Tentukan Usia Tertinggi
+        $mU = max($d['anak'], $d['dewasa'], $d['lansia']);
+        if ($mU == 0) $d['usia_tertinggi'] = '-';
+        else if ($mU == $d['anak']) $d['usia_tertinggi'] = 'Anak-anak';
+        else if ($mU == $d['dewasa']) $d['usia_tertinggi'] = 'Dewasa';
+        else $d['usia_tertinggi'] = 'Lansia';
+
+        // Set Desa dengan Kasus Terbanyak
+        if ($d['jumlah_kasus'] > $maxKasus) {
+            $maxKasus = $d['jumlah_kasus'];
+            $desaTertinggiVal = $d['nama'];
+        }
+    }
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+// --- VARIABEL GLOBAL MAP LANGSUNG DARI DATABASE ---
+var dataDBD = <?= json_encode($dbdMap) ?>;
+var detailDesa = <?= json_encode($detailMap) ?>;
+var desaTertinggi = "<?= $desaTertinggiVal ?>";
+var tahunSekarang = "<?= $tahunMapFilter ?>";
+
+// --- FUNGSI GLOBAL MAP ---
+function fixNama(nama){ return (nama || "").toLowerCase().trim().replace(/[^a-z0-9]/g, ""); }
+var aliasDesa = { "kemuningsarilor": "kemuning sari lor", "tegalgede": "tegalgede", "tegalgedei": "tegalgede" };
+
+function showDetailPopup(namaFix, namaAsli){
+    var d = detailDesa[namaFix] || detailDesa[namaAsli.toLowerCase().replace(/\s/g,'')] || {};
+
+    if(!d || Object.keys(d).length === 0){
+        for(let key in detailDesa){
+            if(key.includes(namaFix) || namaFix.includes(key)){
+                d = detailDesa[key]; break;
+            }
+        }
+    }
+    d = d || {};
+
+    var kategori = d.kategori || '-';
+    var kategoriCls = '';
+    if(kategori.toLowerCase() === 'tinggi') kategoriCls = 'kategori-tinggi';
+    else if(kategori.toLowerCase() === 'sedang') kategoriCls = 'kategori-sedang';
+    else if(kategori.toLowerCase() === 'rendah') kategoriCls = 'kategori-rendah';
+
+    document.getElementById("modalTahun").innerText        = tahunSekarang;
+    document.getElementById("modalNama").innerText         = d.nama || namaAsli;
+    document.getElementById("modalPenduduk").innerText     = d.jumlah_penduduk ?? 0;
+    document.getElementById("modalKasus").innerText        = d.jumlah_kasus    ?? 0;
+
+    var elKat = document.getElementById("modalKategori");
+    elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
+    elKat.className = 'value ' + kategoriCls;
+
+    document.getElementById("modalAnak").innerText         = d.anak    ?? 0;
+    document.getElementById("modalDewasa").innerText       = d.dewasa  ?? 0;
+    document.getElementById("modalLansia").innerText       = d.lansia  ?? 0;
+    document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
+    document.getElementById("modalDesaTertinggi").innerText = desaTertinggi    || '-';
+
+    var lk = parseInt(d.laki ?? 0);
+    var pr = parseInt(d.perempuan ?? 0);
+    var jkUnik = (lk > 0 ? 1 : 0) + (pr > 0 ? 1 : 0);
+
+    document.getElementById("modalJkTotal").innerText      = jkUnik;
+    document.getElementById("modalLaki").innerText         = lk;
+    document.getElementById("modalPerempuan").innerText    = pr;
+    document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
+    document.getElementById("modalRumahJentik").innerText  = d.rumah_positif ?? 0;
+
+    document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeDetailModal(){ document.getElementById("detailModal").style.display = "none"; }
+
+window.addEventListener('click', function(e){
+    var modal = document.getElementById('detailModal');
+    if(e.target === modal) closeDetailModal();
+});
+
 function updateMap(){
     let tahun = document.getElementById("periodeMap").value;
     let url = new URL(window.location.href);
@@ -499,43 +724,61 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // --- INISIALISASI PETA ---
-    function fixNama(nama){ return (nama || "").toLowerCase().trim().replace(/\s+/g, " ").replace(/[^a-z0-9 ]/g, ""); }
-    var aliasDesa = { "kemuningsarilor": "kemuning sari lor" };
-    var dataDBD = <?= json_encode($dbd ?? []) ?>;
-    var dataFinalMap = {};
+    // --- INISIALISASI PETA (AUTO CALCULATE DARI DB) ---
+    var dataFinal = {};
     dataDBD.forEach(item => {
         var desa = fixNama(item.desa); if(aliasDesa[desa]) desa = aliasDesa[desa];
-        if(!dataFinalMap[desa]) dataFinalMap[desa] = { total: 0, jumlah: 0 };
-        dataFinalMap[desa].total += parseInt(item.kasus); dataFinalMap[desa].jumlah++;
+        if(!dataFinal[desa]) dataFinal[desa] = { total: 0, jumlah: 0 };
+        dataFinal[desa].total += parseInt(item.kasus); dataFinal[desa].jumlah++;
     });
-    for(var key in dataFinalMap){
-        var rata = dataFinalMap[key].total / dataFinalMap[key].jumlah;
-        if(rata >= 20) dataFinalMap[key].kategori = "tinggi";
-        else if(rata >= 10) dataFinalMap[key].kategori = "sedang";
-        else dataFinalMap[key].kategori = "rendah";
+
+    for(var key in dataFinal){
+        var rata = dataFinal[key].total / dataFinal[key].jumlah;
+        if(rata >= 20) dataFinal[key].kategori = "tinggi";
+        else if(rata >= 10) dataFinal[key].kategori = "sedang";
+        else dataFinal[key].kategori = "rendah";
     }
+
     var map = L.map('map').setView([-8.1,113.5], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    
     fetch("<?= base_url('assets/peta/db.geojson') ?>").then(res => res.json()).then(data => {
         var geo = L.geoJSON(data, {
             style: function(feature){
                 var nama = fixNama(feature.properties.NAMOBJ); if(aliasDesa[nama]) nama = aliasDesa[nama];
-                var item = dataFinalMap[nama]; var warna = "#cccccc";
-                if(item){ if(item.kategori == "tinggi") warna = "#dc3545"; else if(item.kategori == "sedang") warna = "#ffc107"; else if(item.kategori == "rendah") warna = "#28a745"; }
+                var item = dataFinal[nama]; var warna = "#cccccc";
+                if(item){ 
+                    if(item.kategori == "tinggi") warna = "#dc3545"; 
+                    else if(item.kategori == "sedang") warna = "#ffc107"; 
+                    else if(item.kategori == "rendah") warna = "#28a745"; 
+                }
                 return { color: "#00CED1", weight: 2, fillColor: warna, fillOpacity: 0.7 };
             },
             onEachFeature: function(feature, layer){
                 var namaAsli = feature.properties.NAMOBJ || "Kelurahan";
                 var namaFix  = fixNama(namaAsli); if(aliasDesa[namaFix]) namaFix = aliasDesa[namaFix];
-                var item = dataFinalMap[namaFix];
-                var isi = "<b>Kelurahan: " + namaAsli + "</b>";
-                if(item){ isi += "<br>Total Kasus: " + item.total + "<br>Kategori: " + item.kategori; } 
-                else { isi += "<br><span style='color:red'>Data tidak ditemukan</span>"; }
-                layer.bindPopup(isi); layer.bindTooltip(namaAsli, { permanent: true, direction: "center", className: "label-desa" });
+                var item = dataFinal[namaFix];
+                
+                var isi = "<div style='min-width:220px;'>";
+                isi += "<b>Kelurahan: " + namaAsli + "</b>";
+
+                if(item){ 
+                    isi += "<br>Total Kasus: " + item.total;
+                    isi += "<br>Kategori: " + item.kategori;
+                    isi += `<br><br><button onclick="showDetailPopup('${namaFix}','${namaAsli}')" style="background:#00CED1;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;">Selengkapnya</button>`;
+                } 
+                else { 
+                    isi += "<br><span style='color:red'>Data tidak ditemukan</span>"; 
+                }
+                
+                isi += "</div>";
+                
+                layer.bindPopup(isi); 
+                layer.bindTooltip(namaAsli, { permanent: true, direction: "center", className: "label-desa" });
                 layer.on({ mouseover: function(e){ e.target.setStyle({ weight: 3, color: '#000' }); }, mouseout: function(e){ geo.resetStyle(e.target); } });
             }
-        }).addTo(map); map.fitBounds(geo.getBounds());
+        }).addTo(map); 
+        map.fitBounds(geo.getBounds());
     });
 
     // --- INISIALISASI SLIDING TAB ---

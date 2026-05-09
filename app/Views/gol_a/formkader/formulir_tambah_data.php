@@ -4,10 +4,26 @@
 <style>
     /* --- STYLE DASAR --- */
     .page-wrapper { background-color: #E6F4F1; padding: 20px; border-radius: 15px; min-height: 100vh; }
-    .banner-top { background-color: #51C2B8; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .banner-icon { background: rgba(255, 255, 255, 0.2); padding: 12px 15px; border-radius: 10px; margin-right: 20px; font-size: 24px; display: flex; align-items: center; justify-content: center; }
+    
+    /* DISAMAKAN DENGAN RIWAYAT LAPOR JENTIK */
+    .banner-top { background-color: #00BBC2; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    
+    /* Perbaikan Kotak Ikon agar persis dengan desain riwayat */
+    .banner-icon { 
+        background: rgba(255, 255, 255, 0.25); 
+        width: 60px; 
+        height: 60px; 
+        border-radius: 15px; 
+        margin-right: 20px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        flex-shrink: 0;
+    }
+    
     .banner-text h4 { margin: 0; font-weight: 700; font-size: 18px; }
     .banner-text p { margin: 0; font-size: 13px; opacity: 0.9; margin-top: 3px; }
+
     .form-card { background: #FFFFFF; border-radius: 15px; padding: 40px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
     
     .form-label { font-weight: 700; color: #333; font-size: 14px; margin-bottom: 5px; display: block; }
@@ -101,7 +117,13 @@
 
 <div class="page-wrapper">
     <div class="banner-top">
-        <div class="banner-icon"><i class="fa-solid fa-shield-medical"></i></div>
+        <div class="banner-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="34" height="34">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+        </div>
         <div class="banner-text">
             <h4>Tambah Pelaporan Kader</h4>
             <p>Silahkan isi data dengan lengkap dan benar</p>
