@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
 
 <!-- WELCOME -->
@@ -6,7 +6,7 @@
     <div class="welcome-text">
         <h5>Selamat datang kembali,</h5>
         <h3>Anda masuk sebagai ADMIN</h3>
-        <p>Puskesmas Kaliwates, Jember</p>
+        <p>Puskesmas Ajung, Jember</p>
     </div>
 
     <div class="welcome-icon">

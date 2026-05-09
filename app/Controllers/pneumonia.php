@@ -5,6 +5,27 @@ namespace App\Controllers;
 class Pneumonia extends BaseController
 {
 
+    public function inputData()
+    {
+        return view('gol_c/input_data', [
+            'menu' => 'inputdata',
+            'penyakit' => 'pneumonia',
+            'judul' => 'Input Data Pasien'
+        ]);
+    }
+
+    public function hasil_data()
+    {
+        $pasien = session()->get('pasien') ?? [];
+
+        return view('gol_c/hasil_data_pasien/hasil_data_c', [
+            'menu' => 'hasil',
+            'penyakit' => 'pneumonia',
+            'judul' => 'Hasil Data Pasien',
+            'pasien' => $pasien
+        ]);
+    }
+
     public function simpandatapasien()
     {
         $model = new \App\Models\InputDataPasienModel();
@@ -12,10 +33,10 @@ class Pneumonia extends BaseController
         // ambil semua data dari form
         $data = $this->request->getPost();
 
-        // 🔥 panggil model (di sinilah insert terjadi)
+        // panggil model (di sinilah insert terjadi)
         $success = $model->simpanSemua($data);
 
-        // 🔥 respon hasil
+        // respon hasil
         if ($success) {
             return redirect()->back()->with('success', 'Data pasien & wilayah berhasil disimpan');
         } else {
