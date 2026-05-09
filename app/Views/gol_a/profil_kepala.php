@@ -137,7 +137,7 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
     </h4>
 
     <!-- FORM UPDATE -->
-    <form action="<?= base_url('updateProfil') ?>" method="post">
+    <form action="<?= base_url('updateProfil_kepala') ?>" method="post">
 
         <div class="form-wrapper">
 

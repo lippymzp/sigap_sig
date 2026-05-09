@@ -326,8 +326,6 @@ $keyword = $keyword ?? '';
 
 <div class="berita-wrapper">
 
-    <div class="page-title">Kelola Berita</div>
-
     <!-- SEARCH -->
     <form method="get" action="<?= current_url(); ?>">
 

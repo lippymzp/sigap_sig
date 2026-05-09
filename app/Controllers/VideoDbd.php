@@ -33,7 +33,8 @@ class VideoDbd extends Controller
         }
 
         return view('gol_a/video/kelola_video', [
-
+            'menu' => 'video',
+            'judul' => 'Kelola Video', 
             'video'     => $video,
             'total'     => count($video),
             'publish'   => $publish,

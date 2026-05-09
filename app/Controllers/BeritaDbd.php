@@ -54,6 +54,8 @@ class BeritaDbd extends Controller
     }
 
     $data = [
+        'menu' => 'berita',
+        'judul' => 'Kelola Berita', 
         'berita' => $berita,
         'total' => count($berita),
         'publish' => $publish,

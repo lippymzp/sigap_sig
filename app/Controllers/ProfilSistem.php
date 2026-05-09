@@ -32,8 +32,11 @@ class ProfilSistem extends BaseController
         }
 
         $data['profil_sistem'] = $profil;
-
-        return view('gol_a/profil_sistem', $data);
+        $data = [
+        'menu' => 'profil_sistem',
+        'judul' => 'Profil Sistem',
+            ];
+        return view('gol_a/profil_sistem', $data); 
     }
 
     // ================= EDIT =================
