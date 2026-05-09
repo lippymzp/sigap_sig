@@ -94,6 +94,41 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
         }
         .btn-logout-tidak:hover { background-color: #C0C0C0; color: white; }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: white;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .contact-item i {
+            width: 20px;
+            min-width: 20px;
+            font-size: 16px;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+
+        .contact-item span {
+            flex: 1;
+        }
+.sidebar .logo {
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.sidebar .logo img {
+    max-width: 115px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+}
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -107,26 +142,42 @@ $penyakit = session('penyakit') ?? 'dbd';
 $menu = $menu ?? '';
 ?>
 
+<?php
+$db = \Config\Database::connect();
+
+$id_petugas = session()->get('id_petugas');
+
+$profil = $db->table('profil')
+    ->where('id_petugas', $id_petugas)
+    ->get()
+    ->getRowArray();
+
+$fotoNavbar = (!empty($profil['foto_profil']))
+    ? base_url('uploads/profil/' . $profil['foto_profil'])
+    : 'https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png';
+?>
+
 <div class="wrapper" id="wrapper">
 
     <div class="sidebar">
         <div class="logo text-center">
-            <img src="/assets/img/logo_nama.svg" alt="Logo SIGAP" style="max-width: 160px;">
-        </div>
+    <img src="<?= base_url('img/logo_denggis.png') ?>" 
+         alt="Logo SIGAP">
+</div>
 
         <div class="menu-label">HOME</div>
 
-        <a href="<?= base_url('kader/dashboard') ?>" id="nav-dashboard" class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
+        <a href="<?= base_url('dbd/dashboard/kader') ?>" id="nav-dashboard" class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
 
         <div class="menu-label">MENU UTAMA</div>
 
-        <a href="<?= base_url('kader/dashboard#map') ?>" id="nav-map" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
+        <a href="<?= base_url('dbd/dashboard/kader#map') ?>" id="nav-map" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
             <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
         </a>
 
-        <a href="<?= base_url('kader/dashboard#grafik') ?>" id="nav-grafik" class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
+        <a href="<?= base_url('dbd/dashboard/kader#grafik') ?>" id="nav-grafik" class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
             <i class="fa-solid fa-chart-column me-2"></i> Grafik
         </a>
 
@@ -159,9 +210,24 @@ $menu = $menu ?? '';
                 </div>
 
                 <div class="dropdown avatar-dropdown">
-                    <div class="avatar-circle" data-bs-toggle="dropdown" style="cursor:pointer;">
-                        <i class="fa-regular fa-user text-white"></i>
-                    </div>
+                        <div class="avatar-circle"
+                            data-bs-toggle="dropdown"
+                            style="
+                                cursor:pointer;
+                                width:45px;
+                                height:45px;
+                                border-radius:50%;
+                                overflow:hidden;
+                            ">
+
+                            <img src="<?= $fotoNavbar; ?>"
+                                style="
+                                    width:100%;
+                                    height:100%;
+                                    object-fit:cover;
+                                ">
+
+                        </div>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li>
@@ -188,26 +254,41 @@ $menu = $menu ?? '';
                 <div class="row align-items-start">
                     <div class="col-md-4 text-center mb-2">
                         <div class="logo mb-1">
-                            <img src="<?= base_url('img/logo_denggis.png') ?>" alt="Logo Denggis" style="max-width:55px;">
+                            <img src="<?= base_url('img/logo_sigap.png') ?>" alt="Logo Sigap" style="max-width:70px;">
                         </div>
-                        <h6 class="fw-bold mb-1">DENGGIS</h6>
+                        <h6 class="fw-bold mb-1">SIGAP</h6>
                         <p class="small mb-0" style="line-height:1.3;">Sistem Informasi Geografis Analisis<br>& Pemantauan Penyakit</p>
                     </div>
 
-                    <div class="col-md-4 mb-2">
-                        <h6 class="fw-bold mb-1">Media Sosial</h6>
-                        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>Instagram</p>
-                        <p class="mb-0 small"><i class="fab fa-facebook me-2"></i>Facebook</p>
-                        <p class="mb-0 small"><i class="fab fa-twitter me-2"></i>Twitter</p>
-                    </div>
+                    <!-- SOSIAL -->
+    <div class="col-md-4 mb-2">
+        <h6 class="fw-bold mb-1">Media Sosial</h6>
 
-                    <div class="col-md-4 mb-2">
-                        <h6 class="fw-bold mb-1">Informasi Kontak</h6>
-                        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-                        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-                        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-                        <p class="mb-0 small">📞 087851132933</p>
-                    </div>
+        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
+       
+    </div>
+
+    <!-- KONTAK -->
+    <div class="col-md-4 mb-2">
+    <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
+
+    <div class="contact-item mb-3">
+        <i class="fa-solid fa-envelope"></i>
+        <span>medixatechnology@gmail.com</span>
+    </div>
+
+    <div class="contact-item mb-3">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>
+            Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari,
+            Kabupaten Jember, Jawa Timur 68121
+        </span>
+    </div>
+
+    <div class="contact-item">
+        <i class="fa-solid fa-phone"></i>
+        <span>087888888888</span>
+    </div>
                 </div>
                 <hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
                 <p class="text-center small mb-0">© 2026 SIGAP</p>

@@ -430,4 +430,4 @@ function slideScroll(dir){
 }
 </style>
 
-<?= $this->include('layout/footer_a') ?>
+<?= $this->include('layout/footer') ?>

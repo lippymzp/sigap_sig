@@ -110,19 +110,19 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
     <div class="avatar-box text-center">
 
         <!-- FORM FOTO -->
-        <form action="<?= base_url('uploadFoto') ?>"
+        <form action="<?= base_url('uploadFoto_admin') ?>"
             method="post"
             enctype="multipart/form-data">
 
             <img id="previewFoto"
                 src="<?= $foto ?>"
                 class="preview-foto"
-                onclick="document.getElementById('uploadFoto').click()"
+                onclick="document.getElementById('uploadFoto_admin').click()"
                 style="cursor:pointer;">
 
             <input type="file"
                 name="foto"
-                id="uploadFoto"
+                id="uploadFoto_admin"
                 accept="image/*"
                 style="display:none"
                 onchange="previewImage(event); this.form.submit()">
@@ -137,7 +137,7 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
     </h4>
 
     <!-- FORM UPDATE -->
-    <form action="<?= base_url('updateProfil') ?>" method="post">
+    <form action="<?= base_url('updateProfil_admin') ?>" method="post">
 
         <div class="form-wrapper">
 

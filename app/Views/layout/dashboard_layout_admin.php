@@ -183,6 +183,26 @@ html,body{
 .sidebar .logo{
     padding: 5px 0 10px;
 }
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: white;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.contact-item i {
+    width: 20px;
+    min-width: 20px;
+    font-size: 16px;
+    color: #ffffff;
+    margin-top: 4px;
+}
+
+.contact-item span {
+    flex: 1;
+}
 
 </style>
 </head>
@@ -363,11 +383,12 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <div class="col-md-4 text-center mb-2">
 
          <div class="logo mb-1">
-            <img src="<?= base_url('img/logo_denggis.png') ?>" 
+            <img src="<?= base_url('img/logo_sigap.png') ?>" 
                  alt="Logo DENGGIS" 
                  style="max-width:70px;">
         </div>
 
+        <h6 class="fw-bold mb-1">SIGAP</h6>
 
         <p class="small mb-0" style="line-height:1.3;">
     Sistem Informasi Geografis Analisis<br>
@@ -381,20 +402,32 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <div class="col-md-4 mb-2">
         <h6 class="fw-bold mb-1">Media Sosial</h6>
 
-        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook me-2"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter me-2"></i>Twitter</p>
+        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
+       
     </div>
 
     <!-- KONTAK -->
     <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Informasi Kontak</h6>
+    <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
 
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
+    <div class="contact-item mb-3">
+        <i class="fa-solid fa-envelope"></i>
+        <span>medixatechnology@gmail.com</span>
     </div>
+
+    <div class="contact-item mb-3">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>
+            Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari,
+            Kabupaten Jember, Jawa Timur 68121
+        </span>
+    </div>
+
+    <div class="contact-item">
+        <i class="fa-solid fa-phone"></i>
+        <span>087888888888</span>
+    </div>
+</div>
 
 </div>
 

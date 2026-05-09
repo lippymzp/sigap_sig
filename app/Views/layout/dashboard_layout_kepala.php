@@ -144,6 +144,40 @@ html,body{
 .wrapper.hide .main-content{
     margin-left:0;
 }
+/* ===== LOGO SIDEBAR FIX ===== */
+.logo-sidebar{
+    width: 110px;     /* ukuran logo */
+    max-width: 100%;
+    height: auto;
+
+    display: block;
+    margin: 0 auto;   /* center */
+}
+
+/* kalau masih terasa besar */
+.sidebar .logo{
+    padding: 5px 0 10px;
+}
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: white;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.contact-item i {
+    width: 20px;
+    min-width: 20px;
+    font-size: 16px;
+    color: #ffffff;
+    margin-top: 4px;
+}
+
+.contact-item span {
+    flex: 1;
+}
 </style>
 </head>
 
@@ -154,29 +188,44 @@ $penyakit = session('penyakit') ?? 'dbd';
 $menu = $menu ?? '';
 ?>
 
+<?php
+$db = \Config\Database::connect();
+
+$id_petugas = session()->get('id_petugas');
+
+$profil = $db->table('profil')
+    ->where('id_petugas', $id_petugas)
+    ->get()
+    ->getRowArray();
+
+$fotoNavbar = (!empty($profil['foto_profil']))
+    ? base_url('uploads/profil/' . $profil['foto_profil'])
+    : 'https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png';
+?>
+
 <div class="wrapper" id="wrapper">
 
 <div class="sidebar">
 
 <div class="logo text-center mb-3">
-    <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
-         alt="Logo SIGAP" 
+    <img src="<?= base_url('img/logo_denggis.png') ?>" 
+         alt="Logo DENGGIS" 
          class="logo-sidebar">
 </div>
 <div class="menu-label">HOME</div>
-<a href="<?= base_url('dashboard_kepala') ?>"
+<a href="<?= base_url('dbd/dashboard/kepala') ?>"
     class="<?= ($menu == 'dashboard_kepala') ? 'active' : '' ?>">
     <i class="fa-solid fa-house me-2"></i> Dashboard
 </a>
 
 <div class="menu-label">MENU UTAMA</div>
 
-<a href="<?= base_url('dashboard_kepala') ?>#map"
+<a href="<?= base_url('dbd/dashboard/kepala') ?>#map"
     class="<?= ($menu == 'peta') ? 'active' : '' ?>">
     <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
 </a>
 
-<a href="<?= base_url('dashboard_kepala') ?>#grafik"
+<a href="<?= base_url('dbd/dashboard/kepala') ?>#grafik"
     class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
     <i class="fa-solid fa-chart-column me-2"></i> Grafik
 </a>
@@ -186,8 +235,8 @@ $menu = $menu ?? '';
     <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
 </a>
 
-<a href="<?= base_url('index.php/' . $penyakit . '/skrining_1') ?>"
-    class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
+<a href="<?= base_url('kepala/rekap_skrining') ?>"
+    class="<?= ($menu == 'rekap_skrining_kepala') ? 'active' : '' ?>">
     <i class="fa-regular fa-file-lines me-2"></i> Rekap Skrining 
 </a>
 
@@ -199,14 +248,14 @@ $menu = $menu ?? '';
 <div class="menu-label">Informasi</div>
 
 <a href="<?= base_url('profil_kepala') ?>"
-    class="<?= ($menu == 'profil_kepala') ? 'active' : '' ?>">
+    class="<?= ($menu == 'profil') ? 'active' : '' ?>">
     <i class="fa-regular fa-user me-2"></i> Profil
 </a>
 
 <div class="menu-label">Master Data</div>
 
-<a href="<?= base_url('manajemen_user') ?>"
-    class="<?= ($menu == 'manajemen_user') ? 'active' : '' ?>">
+<a href="<?= base_url('kepala/manajemen_user') ?>"
+    class="<?= ($menu == 'manajemen_user_kepala') ? 'active' : '' ?>">
     <i class="fa-solid fa-users me-2"></i> Manajemen User
 </a>
 
@@ -231,8 +280,23 @@ $menu = $menu ?? '';
         </div>
 
         <div class="dropdown avatar-dropdown">
-            <div class="avatar-circle" data-bs-toggle="dropdown" style="cursor:pointer;">
-                <i class="fa-regular fa-user text-white"></i>
+            <div class="avatar-circle"
+                data-bs-toggle="dropdown"
+                style="
+                    cursor:pointer;
+                    width:45px;
+                    height:45px;
+                    border-radius:50%;
+                    overflow:hidden;
+                ">
+
+                <img src="<?= $fotoNavbar; ?>"
+                    style="
+                        width:100%;
+                        height:100%;
+                        object-fit:cover;
+                    ">
+
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -267,9 +331,9 @@ $menu = $menu ?? '';
     <div class="col-md-4 text-center mb-2">
 
          <div class="logo mb-1">
-            <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
+            <img src="<?= base_url('img/logo_sigap.png') ?>" 
                  alt="Logo SIGAP" 
-                 style="max-width:55px;">
+                 style="max-width:70px;">
         </div>
 
         <h6 class="fw-bold mb-1">SIGAP</h6>
@@ -282,22 +346,36 @@ $menu = $menu ?? '';
     </div>
 
 
+    <!-- SOSIAL -->
     <div class="col-md-4 mb-2">
         <h6 class="fw-bold mb-1">Media Sosial</h6>
 
-        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook me-2"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter me-2"></i>Twitter</p>
+        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
+       
     </div>
 
+    <!-- KONTAK -->
     <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Informasi Kontak</h6>
+    <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
 
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
+    <div class="contact-item mb-3">
+        <i class="fa-solid fa-envelope"></i>
+        <span>medixatechnology@gmail.com</span>
     </div>
+
+    <div class="contact-item mb-3">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>
+            Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari,
+            Kabupaten Jember, Jawa Timur 68121
+        </span>
+    </div>
+
+    <div class="contact-item">
+        <i class="fa-solid fa-phone"></i>
+        <span>087888888888</span>
+    </div>
+</div>
 
 </div>
 

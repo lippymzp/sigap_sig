@@ -1,7 +1,11 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_admin') ?>
 
 <?= $this->section('content') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<?php
+$berita = $berita ?? [];
+$newId = session()->getFlashdata('new_id');
+?>
 
 <style>
 :root {
@@ -120,12 +124,14 @@
     z-index: 9999;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: 0.25s ease;
 }
 
 .popup-success.show {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .popup-box {
@@ -320,8 +326,8 @@
         </small>
 
         <form id="formBerita"
-        action="<?= isset($berita) 
-            ? base_url('/berita/update/'.$berita['id_berita']) 
+        action="<?= !empty($berita['id_berita'] ?? null) 
+            ? base_url('/berita/update/'.($berita['id_berita'] ?? '')) 
             : base_url('/berita/simpan') ?>"
             method="post"
             enctype="multipart/form-data">
@@ -527,6 +533,7 @@
 </div>
 
 </div>
+</div> <!-- col-md-4 -->
 
 </div> <!-- row -->
 </div> <!-- formTulis -->
@@ -632,8 +639,8 @@
                 : 'berita berhasil diunggah' ?>
         </div>
 
- <button class="modal-btn"
-        id="lihatTampilanBtn">
+<button class="modal-btn lihat-btn"
+        data-id="<?= session()->getFlashdata('new_id') ?>">
     Lihat Tampilan
 </button>
 
@@ -769,426 +776,225 @@
 </div>
 
 <script>
+// Ambil Flashdata dari Session CodeIgniter
+// Ini adalah kunci agar popup muncul setelah halaman reload
+const showSuccess = <?= json_encode(session()->getFlashdata('success')) ?>;
+const showDraft = <?= json_encode(session()->getFlashdata('draft')) ?>;
+const newId = <?= json_encode(session()->getFlashdata('new_id')) ?>;
 
 let savedRange = null;
 let pendingStatus = "";
 
 // =======================
-// EDITOR
+// DOM READY (Logika Utama)
+// =======================
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // 1. Cek apakah ada flashdata untuk menampilkan popup
+    if (showSuccess) {
+        showPopup("successModal");
+    } else if (showDraft) {
+        showPopup("draftModal");
+    }
+
+    // 2. Event Listener untuk tombol "Lihat Tampilan"
+    document.querySelectorAll(".lihat-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            // Gunakan ID dari flashdata jika atribut data-id kosong
+            const id = this.getAttribute("data-id") || newId;
+
+            if (!id) {
+                alert("ID berita tidak tersedia");
+                return;
+            }
+            window.location.href = "<?= base_url('berita/view_berita/') ?>" + id;
+        });
+    });
+
+    // 3. Event Listener tombol tutup/selesai
+    document.getElementById("closeErrorModal")?.addEventListener("click", () => closePopup("errorModal"));
+    
+    document.getElementById("selesaiBtn")?.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "<?= base_url('berita') ?>";
+    });
+
+    document.getElementById("draftOkBtn")?.addEventListener("click", function () {
+        // Karena data sudah tersimpan (refresh), arahkan saja ke list
+        window.location.href = "<?= base_url('berita') ?>";
+    });
+
+    // 4. Inisialisasi Mode Tab (Kutip atau Tulis)
+    <?php if (!empty($berita['url_berita'])): ?>
+        switchTab("kutip");
+    <?php else: ?>
+        switchTab("tulis");
+    <?php endif; ?>
+});
+
+// =======================
+// FUNGSI POPUP
+// =======================
+function showPopup(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add("show");
+}
+
+function closePopup(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove("show");
+}
+
+// =======================
+// EDITOR LOGIC
 // =======================
 const editor = document.getElementById("editor");
 
 if (editor) {
-
     editor.addEventListener("mouseup", saveSelection);
     editor.addEventListener("keyup", saveSelection);
 }
 
 function saveSelection() {
-
     const sel = window.getSelection();
-
     if (sel.rangeCount > 0) {
         savedRange = sel.getRangeAt(0);
     }
 }
 
 function formatText(cmd, value = null) {
-
+    if (!editor) return;
     editor.focus();
-
     document.execCommand(cmd, false, value);
 }
 
-function changeFont(font) {
-    formatText("fontName", font);
-}
-
-function changeFontSize(size) {
-    formatText("fontSize", size);
-}
+function changeFont(font) { formatText("fontName", font); }
+function changeFontSize(size) { formatText("fontSize", size); }
 
 function insertLink() {
-
     let url = prompt("Masukkan URL");
+    if (url) formatText("createLink", url);
+}
 
-    if (url) {
-        formatText("createLink", url);
+// =======================
+// SUBMIT LOGIC
+// =======================
+function submitWithStatus(status) {
+    const form = document.getElementById("formBerita");
+    const hidden = document.getElementById("hiddenInput");
+
+    if (!form) return;
+
+    // Sync isi editor ke hidden textarea
+    if (hidden && editor) {
+        hidden.value = editor.innerHTML;
+    }
+
+    // Validasi sederhana sebelum kirim
+    const isTulis = document.getElementById("formTulis")?.style.display !== "none";
+    if (isTulis) {
+        const judul = document.querySelector("input[name='judul_berita']")?.value.trim();
+        if (!judul || editor.innerHTML.trim() === "") {
+            showPopup("errorModal");
+            return;
+        }
+    }
+
+    // Tambah/Update input status_berita
+    let statusInput = form.querySelector("input[name='status_berita']");
+    if (!statusInput) {
+        statusInput = document.createElement("input");
+        statusInput.type = "hidden";
+        statusInput.name = "status_berita";
+        form.appendChild(statusInput);
+    }
+    statusInput.value = status;
+
+    // Kirim data (Halaman akan reload/refresh)
+    form.submit();
+}
+
+// =======================
+// TAB & IMAGE PREVIEW
+// =======================
+function switchTab(mode) {
+    const formTulis = document.getElementById("formTulis");
+    const formKutip = document.getElementById("formKutip");
+    const tabTulis = document.getElementById("tabTulis");
+    const tabKutip = document.getElementById("tabKutip");
+
+    if (mode === "tulis") {
+        formTulis.style.display = "block";
+        formKutip.style.display = "none";
+        tabTulis?.classList.add("active");
+        tabKutip?.classList.remove("active");
+    } else {
+        formTulis.style.display = "none";
+        formKutip.style.display = "block";
+        tabTulis?.classList.remove("active");
+        tabKutip?.classList.add("active");
     }
 }
 
-// =======================
-// THUMBNAIL PREVIEW
-// =======================
+// Thumbnail Preview
 const inputGambar = document.getElementById("inputGambar");
-
 if (inputGambar) {
-
-    inputGambar.addEventListener("change", function(e){
-
+    inputGambar.addEventListener("change", function (e) {
         const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => document.getElementById("previewImg").src = ev.target.result;
+            reader.readAsDataURL(file);
+        }
+    });
+}
 
+// Upload Gambar Editor
+function triggerImageUpload() { document.getElementById("uploadImageEditor").click(); }
+const uploadInput = document.getElementById("uploadImageEditor");
+if (uploadInput) {
+    uploadInput.addEventListener("change", function () {
+        const file = this.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
+        const formData = new FormData();
+        formData.append("image", file);
 
-        reader.onload = function(ev){
-
-            document.getElementById("previewImg").src =
-                ev.target.result;
-        };
-
-        reader.readAsDataURL(file);
-    });
-}
-
-// =======================
-// UPLOAD IMAGE EDITOR
-// =======================
-function triggerImageUpload() {
-
-    document.getElementById("uploadImageEditor").click();
-}
-
-document.getElementById("uploadImageEditor")
-.addEventListener("change", function(){
-
-    const file = this.files[0];
-
-    if (!file) return;
-
-    const formData = new FormData();
-
-    formData.append("image", file);
-
-    fetch("<?= base_url('berita/upload-editor-image') ?>", {
-
-        method: "POST",
-        body: formData
-
-    })
-    .then(response => response.json())
-
-    .then(result => {
-
-        if(result.status === "success"){
-
-            insertImageToEditor(result.url);
-
-        } else {
-            fetch("<?= base_url('berita/upload-editor-image') ?>", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-
-                console.log(result);
-
-                if (result.status === "success") {
-                    insertImageToEditor(result.url);
-                } else {
-                    alert(result.message || "Upload gagal");
-                }
+        fetch("<?= base_url('berita/upload-editor-image') ?>", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.status === "success") {
+                insertImageToEditor(result.url);
+            } else {
+                alert(result.message || "Upload gagal");
             }
-            )}
-
-    })
-    .catch(error => {
-        console.log(error);
-        alert("Terjadi error upload");
+        })
+        .catch(() => alert("Upload error"));
+        this.value = "";
     });
+}
 
-    this.value = "";
-    console.log("FILE UPLOAD:", file);
-    console.log("SERVER RESPONSE:", result);
-});
-
-function insertImageToEditor(src){
-
+function insertImageToEditor(src) {
+    if (!editor) return;
     editor.focus();
-
     const img = document.createElement("img");
     img.src = src;
     img.style.width = "50%";
-    img.style.height = "auto";
     img.style.display = "block";
     img.style.margin = "10px auto";
 
-    const selection = window.getSelection();
-
+    const sel = window.getSelection();
     if (savedRange) {
-
-        selection.removeAllRanges();
-        selection.addRange(savedRange);
-
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
         savedRange.insertNode(img);
-
     } else {
-
         editor.appendChild(img);
     }
 }
-
-// =======================
-// TAB
-// =======================
-function switchTab(mode){
-
-    const formTulis =
-        document.getElementById("formTulis");
-
-    const formKutip =
-        document.getElementById("formKutip");
-
-    const tabTulis =
-        document.getElementById("tabTulis");
-
-    const tabKutip =
-        document.getElementById("tabKutip");
-
-    if (mode === "tulis") {
-
-        formTulis.style.display = "block";
-        formKutip.style.display = "none";
-
-        tabTulis.classList.add("active");
-        tabKutip.classList.remove("active");
-
-        enableForm("#formTulis", true);
-        enableForm("#formKutip", false);
-
-    } else {
-
-        formTulis.style.display = "none";
-        formKutip.style.display = "block";
-
-        tabTulis.classList.remove("active");
-        tabKutip.classList.add("active");
-
-        enableForm("#formTulis", false);
-        enableForm("#formKutip", true);
-    }
-}
-
-function enableForm(parent, enable){
-
-    document.querySelectorAll(
-    parent + " input:not([type='file']), " +
-    parent + " textarea, " +
-    parent + " select"
-)
-    .forEach(el => {
-
-        if (el.type === "hidden") return;
-
-        el.disabled = !enable;
-    });
-}
-
-// =======================
-// POPUP
-// =======================
-function showPopup(modalId){
-
-    const modal = document.getElementById(modalId);
-
-    if(!modal) return;
-
-    modal.classList.add("show");
-}
-
-function closePopup(modalId){
-
-    const modal = document.getElementById(modalId);
-
-    if(modal){
-        modal.classList.remove("show");
-    }
-}
-
-// =======================
-// SUBMIT
-// =======================
-function submitWithStatus(status){
-
-    const form =
-        document.getElementById("formBerita");
-
-    pendingStatus = status;
-
-    // ambil isi editor
-    if (editor) {
-    editor.addEventListener("input", function () {
-    document.getElementById("hiddenInput").value =
-        editor.innerHTML;
-});
-    }
-
-    const isTulis =
-        document.getElementById("formTulis")
-        .style.display !== "none";
-
-    const isKutip =
-        document.getElementById("formKutip")
-        .style.display !== "none";
-
-    // ===================
-    // VALIDASI TULIS
-    // ===================
-    if (isTulis) {
-
-        let judul =
-            document.querySelector(
-                "input[name='judul_berita']"
-            ).value.trim();
-
-        let isi =
-            editor.innerText
-            .replace(/\s+/g, '')
-            .trim();
-
-        let tanggal =
-            document.querySelector(
-                "input[name='tanggal_berita']"
-            ).value.trim();
-
-        if (!judul || !isi || !tanggal) {
-
-            showPopup("errorModal");
-            return;
-        }
-    }
-
-    // ===================
-    // VALIDASI KUTIP
-    // ===================
-    if (isKutip) {
-
-        let judul =
-            document.querySelector(
-                "input[name='judul_berita1']"
-            ).value.trim();
-
-        let url =
-            document.querySelector(
-                "input[name='url_berita']"
-            ).value.trim();
-
-        if (!judul || !url) {
-
-            showPopup("errorModal");
-            return;
-        }
-    }
-
-    // hapus status lama
-    let old =
-        document.querySelector(
-            "input[name='status_berita']"
-        );
-
-    if (old) old.remove();
-
-    // buat status baru
-    let input = document.createElement("input");
-
-    input.type = "hidden";
-    input.name = "status_berita";
-    input.value = status;
-
-    form.appendChild(input);
-
-    // tampilkan popup dulu
-    if(status === "publish"){
-        showPopup("successModal");
-    } else {
-        showPopup("draftModal");
-    }
-}
-
-// =======================
-// AUTO MODE EDIT
-// =======================
-<?php if (!empty($berita['url_berita'])): ?>
-
-switchTab("kutip");
-
-<?php else: ?>
-
-switchTab("tulis");
-
-<?php endif; ?>
-
-// =======================
-// DOM READY
-// =======================
-document.addEventListener("DOMContentLoaded", function () {
-
-    // =========================
-    // ERROR MODAL
-    // =========================
-    const closeError =
-        document.getElementById("closeErrorModal");
-
-    if(closeError){
-
-        closeError.addEventListener("click", function () {
-
-            closePopup("errorModal");
-        });
-    }
-
-    // =========================
-    // LIHAT TAMPILAN
-    // =========================
-    const lihatBtn =
-    document.getElementById("lihatTampilanBtn");
-
-    if (lihatBtn) {
-
-        lihatBtn.addEventListener("click", function () {
-
-            window.location.href =
-                "<?= base_url('berita/view_berita/' . ($berita['id_berita'] ?? '')) ?>";
-
-        });
-    }
-
-    // =========================
-    // SELESAI
-    // =========================
-    const selesaiBtn =
-        document.getElementById("selesaiBtn");
-
-    if (selesaiBtn) {
-
-        selesaiBtn.addEventListener("click", function (e) {
-
-            e.preventDefault();
-
-            window.location.href =
-                "<?= base_url('berita') ?>";
-        });
-    }
-
-    // =========================
-    // DRAFT
-    // =========================
-    const draftBtn =
-        document.getElementById("draftOkBtn");
-
-    if (draftBtn) {
-
-        draftBtn.addEventListener("click", function () {
-
-            document.getElementById("formBerita").submit();
-        });
-    }
-
-});
-
 </script>
-
 
 <?= $this->endSection() ?>

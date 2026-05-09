@@ -124,7 +124,7 @@ class BeritaDbd extends Controller
             'title' => 'Tambah Berita'
         ]);
     }
-
+    
     private function cleanHtml(?string $text): ?string
 {
     if (!$text) return $text;
@@ -145,42 +145,20 @@ class BeritaDbd extends Controller
     // PROSES SIMPAN DATA
     public function simpan()
 {
-    if ($this->request->getPost('judul_berita')) {
-
-        $rules = [
-            'judul_berita' => 'required',
-            'isi_berita'=> 'required',
-            'deskripsi_berita'=> 'required',
-            'tanggal_berita' => 'required',
-            'penulis' => 'required',
-        ];
-
-    } else {
-
-        $rules = [
-            'judul_berita1' => 'required',
-            'url_berita' => 'required',
-        ];
-    }
-
-    if (!$this->validate($rules)) {
-        dd($this->validator->getErrors());
-    }
+    $model = new BeritaDbdModel();
 
     $file = $this->request->getFile('gambar_berita');
-    if ($file && $file->isValid() && !$file->hasMoved()) {
+    $namaFile = null;
 
-        $path = FCPATH . 'uploads/berita';
-
-    if (!is_dir($path)) {
-        mkdir($path, 0777, true);
-    }
-
-    $namaFile = null; // ✅ WAJIB INIT
+    // =====================
+    // UPLOAD GAMBAR
+    // =====================
     $file = $this->request->getFile('gambar_berita');
+    $namaFile = null;
+
     if ($file && $file->isValid() && !$file->hasMoved()) {
 
-        $path = FCPATH . 'uploads/berita';
+        $path = FCPATH . 'uploads/';
 
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
@@ -189,32 +167,37 @@ class BeritaDbd extends Controller
         $namaFile = $file->getRandomName();
         $file->move($path, $namaFile);
     }
-    }
+    // =====================
+    // AMBIL JUDUL
+    // =====================
+    $judul = $this->request->getPost('judul_berita')
+        ?? $this->request->getPost('judul_berita1');
 
-    $status = $this->request->getPost('status_berita') ?? 'draft';
-    $judul = $this->request->getPost('judul_berita');
-
-    if (!$judul) {
-        $judul = $this->request->getPost('judul_berita1');
-    }
-
+    // =====================
+    // DATA INSERT
+    // =====================
     $data = [
-        'penulis'           => $this->request->getPost('penulis'),
-        'judul_berita'      => $judul,
-        'isi_berita'        => $this->cleanHtml($this->request->getPost('isi_berita')),
-        'deskripsi_berita'  => $this->request->getPost('deskripsi_berita'),
-        'url_berita'        => $this->request->getPost('url_berita'),
-        'gambar_berita'     => $namaFile,
-        'tanggal_berita'    => $this->request->getPost('tanggal_berita'),
-        'status_berita'     => $status
+        'penulis'          => $this->request->getPost('penulis'),
+        'judul_berita'     => $judul,
+        'isi_berita'       => $this->request->getPost('isi_berita'),
+        'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
+        'url_berita'       => $this->request->getPost('url_berita'),
+        'gambar_berita'    => $namaFile,
+        'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
+        'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
     ];
 
-    $model = new BeritaDbdModel();
-
     $model->insert($data);
-    return redirect()->to('/berita')
-                     ->with('success', 'Berita berhasil disimpan!');
+        // ambil ID hasil insert
+    $newId = $model->insertID();
+
+    // FLASHDATA (untuk popup & redirect)
+    session()->setFlashdata('success', 'Berita berhasil disimpan!');
+    session()->setFlashdata('new_id', $newId);
+
+    return redirect()->back();
 }
+
 
     // =========================
     // FILTER PUBLISH
@@ -320,7 +303,7 @@ public function update(int $id)
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
 
-        $path = FCPATH . 'uploads/berita';
+        $path = FCPATH . 'uploads/';
 
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
@@ -340,7 +323,7 @@ public function update(int $id)
 
     $model->update($id, [
         'judul_berita'     => $judul,
-        'isi_berita'        => $this->cleanHtml($this->request->getPost('isi_berita')),
+        'isi_berita'        => $this->request->getPost('isi_berita'),
         'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
         'url_berita'       => $this->request->getPost('url_berita'),
         'gambar_berita'    => $namaFile,
@@ -348,7 +331,9 @@ public function update(int $id)
         'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
     ]);
 
-    return redirect()->to('/berita')->with('success', 'Berita berhasil diupdate!');
+    return redirect()->to('/berita')
+    ->with('success', 'Berita berhasil diupdate!')
+    ->with('new_id', $id);
 }
 public function list_berita()
 {

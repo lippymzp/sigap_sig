@@ -39,12 +39,14 @@ $routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 /* ========================= */
 
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
+$routes->post('uploadFoto_kepala', 'Profile::uploadFoto');
+$routes->post('updateProfil_kepala', 'Profile::updateProfil');
 $routes->get('/profil_admin', 'Profile2::profil_admin');
-$routes->post('uploadFoto', 'Profile2::uploadFoto');
-$routes->post('updateProfil', 'Profile2::updateProfil');
+$routes->post('uploadFoto_admin', 'Profile2::uploadFoto');
+$routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
-$routes->post('profil/update_foto', 'Profile3::update_foto');
-$routes->post('profil/update_sandi', 'Profile3::update_sandi');
+$routes->post('uploadFoto_kader', 'Profile3::uploadFoto');
+$routes->post('updateProfil_kader', 'Profile3::updateProfil');
 /* ========================= */
 /* DIARE */
 /* ========================= */
@@ -90,7 +92,7 @@ $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
-$routes->get('/kader/dashboard', 'dbd::dashboard');
+$routes->get('dbd/dashboard/kader', 'dbd::dashboard');
 $routes->get('cekdb', 'Home::cekdb');
 $routes->get('peta_sebaran', 'dbd::peta');
 $routes->get('dashboard', 'Kepala::dashboard');
@@ -107,8 +109,7 @@ $routes->get('pelaporan-kader/delete/(:num)', 'Kepala::delete_laporan/$1');
 /* DASHBOARD KEPALA */
 /* ========================= */
 
-$routes->get('/dashboard_kepala', 'Kepala::dashboard');
-$routes->get('/dashboard_kepala', 'Kepala::dashboard');
+$routes->get('dbd/dashboard/kepala', 'Kepala::dashboard');
 $routes->get('/export_kepala', 'Kepala::export');
 $routes->get('dashboard', 'Kepala::dashboard');
 $routes->get('peta_sebaran/kepala', 'Kepala::peta_sebaran');
@@ -120,6 +121,34 @@ $routes->get('pelaporan-kader/daftar', 'Kepala::daftar_laporan');
 $routes->get('pelaporan-kader/delete/(:num)', 'Kepala::delete_laporan/$1');
 $routes->get('hasil_data_kepala/hasil', 'Kepala::hasil_data_kepala');
 $routes->get('kepala/view_laporan/(:num)', 'Kepala::view_laporan/$1');
+
+// ==========================================
+// ROUTES UNTUK HASIL DATA KEPALA
+// ==========================================
+$routes->get('kepala/export_hasil_data_kepala', 'Kepala::export_hasil_data_kepala');
+
+// Tambahkan juga ini agar fungsi AJAX/Fetch untuk filter tahun tidak error (jika digunakan)
+$routes->get('kepala/get_data_pasien_by_tahun', 'Kepala::get_data_pasien_by_tahun');
+$routes->get('kepala/get_tahun_list', 'Kepala::get_tahun_list');
+
+// ===============================================
+// ROUTE MANAJEMEN USER KEPALA
+// ===============================================
+
+$routes->get('kepala/manajemen_user', 'Kepala::manajemen_user');
+$routes->get('kepala/form_user', 'Kepala::form_user');
+$routes->get('kepala/form_user/(:num)/edit', 'Kepala::form_user/$1/edit');
+$routes->post('kepala/simpan_user', 'Kepala::simpan_user');
+$routes->post('kepala/update_user/(:num)', 'Kepala::update_user/$1');
+$routes->get('kepala/hapus_user/(:num)', 'Kepala::hapus_user/$1');
+$routes->get('kepala/view_user/(:num)', 'Kepala::view_user/$1');
+
+// ===============================================
+// ROUTE REKAP SKRINING KEPALA
+// ===============================================
+
+$routes->get('kepala/rekap_skrining', 'Kepala::rekap_skrining');
+$routes->get('kepala/hapus_skrining/(:num)', 'Kepala::hapus_skrining/$1');
 
 /* ========================= */
 /* BERITA TBC */
@@ -278,3 +307,8 @@ $routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'dbd::view/$1');;
 $routes->get('/tentang-kami', 'Home::tentangKami');
+
+// PROFIL SISTEM
+$routes->get('profil_sistem', 'ProfilSistem::index');
+$routes->get('profil_sistem/edit', 'ProfilSistem::edit');
+$routes->post('profil_sistem/update', 'ProfilSistem::update');

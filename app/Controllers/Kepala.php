@@ -279,7 +279,7 @@ public function hasil_data_kepala()
 {
     $pasien = session()->get('pasien') ?? [];
 
-    return view('gol_a/hasil_data_kepala', [
+    return view('gol_a/hasil_data_pasien_kepala/hasil_data_kepala', [
         'menu' => 'hasil_data_kepala',
         'penyakit' => 'dbd',
         'judul' => 'Hasil Data Pasien',
@@ -309,5 +309,402 @@ public function view_laporan($id)
 
     return view('gol_a/view_laporan', $data);
 }
+// ==================================
+    // HASIL DATA PASIEN EXPORT KEPALA
+    // ==================================
+
+    // ================= buat hasil data pasien (versi kepala) =================
+    public function get_data_pasien_by_tahun()
+    {
+        $tahun = $this->request->getGet('tahun');
+
+        $db = \Config\Database::connect();
+        $builder = $db->table('pasien p');
+
+        // QUERY UTAMA (Disesuaikan untuk Kepala: Fokus ke Kecamatan)
+        $builder->select("
+            MONTH(p.tgl_kunjungan) as bulan_angka,
+            w.kecamatan,
+
+            SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
+            SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
+
+            SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+            SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+
+            COUNT(*) as jumlah
+        ");
+
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+        // FILTER TAHUN
+        if (!empty($tahun)) {
+            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+        }
+
+        // GROUP BY WAJIB (Berdasarkan Bulan dan Kecamatan)
+        $builder->groupBy('MONTH(p.tgl_kunjungan), w.kecamatan');
+
+        // URUT BULAN
+        $builder->orderBy('bulan_angka', 'ASC');
+
+        $data = $builder->get()->getResultArray();
+
+        // CONVERT BULAN KE INDONESIA
+        $bulanMap = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        foreach ($data as &$d) {
+            $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    // ================= list tahun di export data =================
+    public function get_tahun_list()
+    {
+        $db = \Config\Database::connect();
+
+        $data = $db->table('pasien')
+            ->select('YEAR(tgl_kunjungan) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON($data);
+    }
+
+    // ================= HALAMAN EXPORT =================
+    public function export_hasil_data_kepala()
+    {
+        $type = $this->request->getGet('type');
+
+        $mode = $this->request->getGet('mode');
+        $tahun = $this->request->getGet('tahun');
+        $waktu = $this->request->getGet('waktu');
+        $kecamatan = $this->request->getGet('kecamatan'); // Menggunakan Kecamatan untuk Kepala
+
+        // Asumsi kamu memiliki method di Model untuk filter ini (harus support parameter kecamatan)
+        // Jika modelmu bernama InputDataPasienModel:
+        $model = new \App\Models\InputDataPasienModel();
+        
+        // PENTING: Pastikan Model getDataExport / getDataExportKepala bisa menerima $kecamatan
+        // Contoh pemanggilan:
+        $data = $model->getDataExport($mode, $tahun, $waktu, $kecamatan); 
+
+        // 1. Tampilkan Halaman UI jika belum klik tombol tipe export
+        if (!$type) {
+            return view('gol_a/hasil_data_pasien_kepala/export_data_kepala', [
+                'menu' => 'export_hasil_data_kepala',
+                'penyakit' => 'dbd',
+                'judul' => 'Eksport Data Pasien',
+                'data' => $data
+            ]);
+        }
+
+        // 2. EXPORT EXCEL
+        if ($type == 'excel') {
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap_Data_Pasien_Kepala.xls");
+
+            echo "<html>";
+            echo "<head>
+                    <meta charset='UTF-8'>
+                    <style>
+                        body { font-family: Arial; font-size: 12px; }
+                        h2 { text-align: center; color: #2c3e50; }
+                        .sub { text-align: center; font-size: 11px; margin-bottom: 10px; color: #555; }
+                        table { border-collapse: collapse; width: 100%; }
+                        th { background: #00BBC2; color: #fff; padding: 6px; border: 1px solid #009fa5; }
+                        td { border: 1px solid #ddd; padding: 5px; }
+                        .center { text-align: center; }
+                    </style>
+                </head>";
+
+            echo "<body>";
+            echo "<h2>REKAPITULASI DATA PASIEN DBD</h2>";
+            echo "<div class='sub'>Hasil Export Berdasarkan Filter Kepala</div>";
+
+            echo "<table>";
+            echo "<tr>
+                    <th>No</th>
+                    <th>Kecamatan</th>
+                    <th>Desa</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Usia</th>
+                    <th>Jumlah Kasus</th>
+                </tr>";
+
+            $no = 1;
+
+            if (!empty($data)) {
+                foreach ($data as $d) {
+                    $kec = esc((string) ($d['kecamatan'] ?? '-'));
+                    $desa = esc((string) ($d['desa'] ?? '-'));
+                    $jk = esc((string) ($d['jk'] ?? '-'));
+                    $usia = esc((string) ($d['usia'] ?? '-'));
+
+                    echo "<tr>
+                            <td class='center'>{$no}</td>
+                            <td>{$kec}</td>
+                            <td>{$desa}</td>
+                            <td class='center'>{$jk}</td>
+                            <td class='center'>{$usia}</td>
+                            <td class='center'>1</td>
+                        </tr>";
+                    $no++;
+                }
+            } else {
+                echo "<tr>
+                        <td colspan='6' class='center'>Data tidak tersedia</td>
+                    </tr>";
+            }
+
+            echo "</table>";
+            echo "</body></html>";
+            exit;
+        }
+
+        // 3. EXPORT PDF
+        if ($type == 'pdf') {
+            // Memanggil file template PDF khusus kepala yang kita buat sebelumnya
+            $html = view('gol_a/hasil_data_pasien_kepala/export_pdf_kepala', ['data' => $data]);
+
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait'); // Bisa ganti ke 'landscape' jika kurang lebar
+            $dompdf->render();
+            $dompdf->stream("Rekap_Data_Pasien_Kepala.pdf", ["Attachment" => true]);
+            exit;
+        }
+    }
+
+    // ==================================
+    // MANAJEMEN USER (VERSI KEPALA)
+    // ==================================
+    
+    public function manajemen_user()
+    {
+        $petugasModel = new \App\Models\PetugasModel();
+        $jabatanModel = new \App\Models\JabatanModel();
+
+        $keyword = $this->request->getGet('keyword');
+        $jabatan = $this->request->getGet('jabatan');
+
+        $perPage = 8;
+
+        // QUERY
+        $petugasModel->select('petugas.*, jabatan.nama_jabatan')
+                     ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan');
+
+        // SEARCH
+        if (!empty($keyword)) {
+            $petugasModel->groupStart()
+                ->like('nama_petugas', $keyword)
+                ->orLike('email', $keyword)
+                ->orLike('NIP', $keyword)
+            ->groupEnd();
+        }
+
+        // FILTER
+        if (!empty($jabatan)) {
+            $petugasModel->where('petugas.id_jabatan', $jabatan);
+        }
+
+        // TOTAL DATA
+        $total = $petugasModel->countAllResults(false);
+
+        // PAGINATION
+        $petugas = $petugasModel->paginate($perPage, 'default');
+        $pager = $petugasModel->pager;
+        $currentPage = $pager->getCurrentPage('default');
+        $start = ($currentPage - 1) * $perPage + 1;
+        $end = min($start + $perPage - 1, $total);
+
+        $data = [
+            'petugas' => $petugas,
+            'pager' => $pager,
+            'total' => $total,
+            'start' => $start,
+            'end' => $end,
+            'jabatan_list' => $jabatanModel->findAll(),
+            'keyword' => $keyword,
+            'selected_jabatan' => $jabatan,
+            'menu' => 'manajemen_user_kepala',
+            'judul' => 'Manajemen User'
+        ];
+
+        return view('gol_a/manajemen_user_kepala/index', $data);
+    }
+
+    public function form_user($id = null, $mode = 'tambah')
+    {
+        $petugasModel = new \App\Models\PetugasModel();
+        $jabatanModel = new \App\Models\JabatanModel();
+        $instansiModel = new \App\Models\InstansiModel();
+
+        $data = [
+            'jabatan' => $jabatanModel->findAll(),
+            'instansi' => $instansiModel->findAll(),
+            'mode' => $mode,
+            'menu' => 'manajemen_user_kepala',
+            'judul' => 'Manajemen User'
+        ];
+
+        if ($id) {
+            $data['user'] = $petugasModel->find($id);
+        }
+
+        return view('gol_a/manajemen_user_kepala/form', $data);
+    }
+
+    public function simpan_user()
+    {
+        $petugasModel = new \App\Models\PetugasModel();
+
+        if ($this->request->getPost('password') != $this->request->getPost('konfirmasi_password')) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Konfirmasi password tidak sama.');
+        }
+
+        $petugasModel->save([
+            'NIP'           => $this->request->getPost('nip'),
+            'nama_petugas'  => $this->request->getPost('nama_petugas'),
+            'id_jabatan'    => $this->request->getPost('id_jabatan'),
+            'id_instansi'   => $this->request->getPost('id_instansi'),
+            'id_penyakit'   => 1, // otomatis
+            'no_telp'       => $this->request->getPost('no_telp'),
+            'email'         => $this->request->getPost('email'),
+            'password'      => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+
+        return redirect()->to('/kepala/manajemen_user')
+            ->with('success', 'Data berhasil ditambahkan.');
+    }
+
+    public function update_user($id)
+    {
+        $petugasModel = new \App\Models\PetugasModel();
+
+        if ($this->request->getPost('password')) {
+            if ($this->request->getPost('password') != $this->request->getPost('konfirmasi_password')) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Konfirmasi password tidak sama.');
+            }
+        }
+
+        $data = [
+            'id_petugas'    => $id,
+            'NIP'           => $this->request->getPost('nip'),
+            'nama_petugas'  => $this->request->getPost('nama_petugas'),
+            'id_jabatan'    => $this->request->getPost('id_jabatan'),
+            'id_instansi'   => $this->request->getPost('id_instansi'),
+            'id_penyakit'   => 1,
+            'no_telp'       => $this->request->getPost('no_telp'),
+            'email'         => $this->request->getPost('email'),
+        ];
+
+        if ($this->request->getPost('password')) {
+            $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+        }
+
+        $petugasModel->save($data);
+
+        return redirect()->to('/kepala/manajemen_user')
+            ->with('success', 'Data berhasil diupdate.');
+    }
+
+    public function hapus_user($id)
+    {
+        $petugasModel = new \App\Models\PetugasModel();
+        $db = \Config\Database::connect();
+
+        $jumlahPasien = $db->table('pasien')
+            ->where('id_petugas', $id)
+            ->countAllResults();
+
+        if ($jumlahPasien > 0) {
+            return redirect()->to('/kepala/manajemen_user')
+                ->with('error', 'Data petugas tidak bisa dihapus karena masih digunakan pada data pasien.');
+        }
+
+        $petugasModel->delete($id);
+
+        return redirect()->to('/kepala/manajemen_user')
+            ->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function view_user($id)
+    {
+        $petugasModel = new \App\Models\PetugasModel();
+        $jabatanModel = new \App\Models\JabatanModel();   // Panggil model jabatan
+        $instansiModel = new \App\Models\InstansiModel(); // Panggil model instansi
+        
+        $data['user'] = $petugasModel
+            ->select('petugas.*, jabatan.nama_jabatan')
+            ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan')
+            ->find($id);
+
+        // Kirimkan data jabatan dan instansi ke view form.php
+        $data['jabatan']  = $jabatanModel->findAll();
+        $data['instansi'] = $instansiModel->findAll();
+        
+        $data['mode']     = 'view';
+        $data['menu']     = 'manajemen_user_kepala';
+        $data['judul']    = 'Detail User';
+
+        // Arahkan ke file form yang sama
+        return view('gol_a/manajemen_user_kepala/form', $data);
+    }
+
+    // ... baris-baris kode sebelumnya (seperti view_user, dll) ...
+
+    // TARUH DI SINI (Sebelum tanda kurung kurawal terakhir)
+    
+    public function rekap_skrining()
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table('skrining as s');
+        $builder->select('
+            s.id_skrining, p.nik, p.no_hp, p.tanggal_lahir, 
+            p.nama_pasien_skrining, p.jenis_kelamin, p.usia,
+            w.provinsi, w.kabupaten, w.kecamatan, w.kelurahan, w.rt, w.rw,
+            s.hasil, s.tanggal
+        ');
+        $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+        $builder->orderBy('s.id_skrining', 'DESC');
+
+        $perPage = 10;
+        $page = $this->request->getVar('page') ?? 1;
+        $skrining = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
+        $total = $db->table('skrining')->countAll();
+        $pager = \Config\Services::pager();
+
+        $data = [
+            'menu'       => 'rekap_skrining_kepala',
+            'judul'      => 'Rekap Skrining',   
+            'skrining'   => $skrining,
+            'pagerLinks' => $pager->makeLinks($page, $perPage, $total)
+        ];
+
+        return view('gol_a/rekap_skrining_kepala', $data);
+    }
+
+    public function hapus_skrining($id)
+    {
+        $model = new \App\Models\SkriningdbdModel();
+        $model->delete($id);
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
+    }
+// <--- INI ADALAH KURUNG KURAWAL PENUTUP CLASS (JANGAN DIHAPUS)
 
 } // Ini adalah penutup class Kepala. Jangan ada apa-apa lagi di bawahnya.

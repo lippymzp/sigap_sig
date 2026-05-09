@@ -54,23 +54,26 @@ body{
 
 /* BUTTON BACK */
 .back-btn{
-    width:48px;
-    height:48px;
-    border-radius:12px;
-    background:#009ea3;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-decoration:none;
-    font-size:20px;
-    transition:.2s;
-    flex-shrink:0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Teks di tengah */
+    gap: 10px;
+    background: #11c5d8; /* Warna cyan sesuai screenshot */
+    color: white;
+    width: 100%; /* MEMBUAT FULL WIDTH */
+    padding: 15px 0;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.3s ease;
+    border: none;
 }
 
 .back-btn:hover{
     background:#00848a;
     color:white;
+    text-decoration: none;
     transform:scale(1.03);
 }
 
@@ -377,6 +380,13 @@ $bulan = [
             </div>
 
         <?php endif; ?>
+
+        <!-- TOMBOL KEMBALI DI BAWAH -->
+        <div class="berita-footer">
+            <br><br><a href="<?= base_url('berita') ?>" class="back-btn">
+                <i class="fa-solid"></i> Kembali
+            </a>
+        </div>
 
     </div>
 

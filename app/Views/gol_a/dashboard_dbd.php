@@ -483,7 +483,6 @@ document.addEventListener("DOMContentLoaded", function(){
 <!-- ARTIKEL -->
 <section id="artikel" class="artikel-section my-5">
     <div class="artikel-header">
-        <h2 class="section-title">Berita, Artikel & Majalah Kesehatan</h2>
     </div>
 
     <div id="artikel-scroll" class="artikel-scroll">
@@ -524,7 +523,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="text-muted">Belum ada artikel yang ditambahkan.</div>
         <?php endif; ?>
     </div>
 </section>
