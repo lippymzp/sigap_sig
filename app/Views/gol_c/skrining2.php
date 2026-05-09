@@ -236,36 +236,7 @@ $pertanyaan = [
 </div>
 
 <!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
-
-<div class="col-md-4">
-    <div class="logo-footer">LOGO</div>
-    <p class="mt-3"><b>SIGAP</b><br>
-    Sistem Informasi, Geografis Analisis & Pemantauan</p>
-    <a href="#">Tentang Kami</a>
-</div>
-
-<div class="col-md-4 text-center">
-    <h6>Media Sosial</h6>
-    <p>@username</p>
-</div>
-
-<div class="col-md-4 text-end">
-    <h6>Informasi Kontak</h6>
-    <p>Email: email@company.com</p>
-    <p>Lokasi: Jember, Jawa Timur</p>
-</div>
-
-</div>
-
-<hr>
-
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-
-</div>
-</div>
+<?= $this->include('layout/footer') ?>
 
 <!-- SCRIPT OPSI -->
 <script>

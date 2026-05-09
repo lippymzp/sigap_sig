@@ -308,49 +308,7 @@ body {
 </div>
 </div>
 
-<footer class="footer">
-
-<div class="footer-container">
-
-<div class="footer-content">
-
-    <!-- BRAND -->
-    <div class="footer-box footer-brand">
-        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
-        <p>
-            Dengue Geographic <br> Information System
-        </p>
-    </div>
-
-    <!-- SOSIAL -->
-    <div class="footer-box">
-        <h6 class="footer-title">Media Sosial</h6>
-
-        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
-    </div>
-
-    <!-- KONTAK -->
-    <div class="footer-box">
-        <h6 class="footer-title">Informasi Kontak</h6>
-
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
-    </div>
-
-</div>
-
-<div class="footer-bottom">
-    © 2026 SIGAP
-</div>
-
-</div>
-
-</footer>
-</div>
+<?= $this->include('layout/footer') ?>
 
 <!-- SCRIPT -->
 <script>
