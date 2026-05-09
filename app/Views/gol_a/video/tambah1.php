@@ -719,25 +719,33 @@ form.addEventListener('submit', function(e){
 
     xhr.onload = function(){
 
-        if(xhr.status == 200){
+console.log(xhr.responseText);
 
-            setTimeout(() => {
+if(xhr.status == 200){
 
-                window.location.href =
-                "<?= base_url('video/tambah2') ?>";
+    let response = JSON.parse(xhr.responseText);
 
-            }, 1000);
+    if(response.status === 'success'){
 
-        }else{
+        setTimeout(() => {
 
-            alert('Upload gagal!');
-        }
+            window.location.href =
+            "<?= base_url('video/tambah2') ?>";
+
+        }, 1000);
+
+    }
+
+    }else{
+
+        alert('Upload gagal!');
+    }
 
     };
 
-    xhr.send(formData);
+        xhr.send(formData);
 
-});
+    });
 
 </script>
 

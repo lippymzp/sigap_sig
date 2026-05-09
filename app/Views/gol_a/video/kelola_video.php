@@ -280,7 +280,39 @@ body{
     font-size:18px;
     margin-top:30px;
 }
+/* MODAL VIDEO */
 
+.video-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.video-content{
+    width:90%;
+    max-width:900px;
+    position:relative;
+}
+
+.video-content video{
+    width:100%;
+    border-radius:16px;
+    background:#000;
+}
+
+.close-video{
+    position:absolute;
+    top:-45px;
+    right:0;
+    color:#fff;
+    font-size:40px;
+    font-weight:bold;
+    cursor:pointer;
+}
 </style>
 
 <link rel="stylesheet"
@@ -288,6 +320,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
 <div class="video-wrapper">
 
+    <!-- TITLE -->
+    <div class="page-title">
+        Video
+    </div>
 
     <!-- SEARCH -->
     <div class="search-box">
@@ -438,10 +474,15 @@ echo $hari . ' ' . $bulan . ' ' . $tahun;
             <div class="action-icons">
 
                 <!-- VIEW -->
-                <a href="/video/view/<?= $b['id_video']; ?>"
-                class="icon-btn view">
+                <button
+                    type="button"
+                    class="icon-btn view"
+                    onclick="playVideo(
+                        '<?= base_url('uploads/video/' . $b['file_video']); ?>'
+                    )"
+                >
                     <i class="fas fa-eye"></i>
-                </a>
+                </button>
 
                 <!-- EDIT -->
                 <a href="/video/tambah2/<?= $b['id_video']; ?>"
@@ -490,7 +531,34 @@ echo $hari . ' ' . $bulan . ' ' . $tahun;
     <?php endif; ?>
 
 </div>
+<!-- MODAL VIDEO -->
+<div class="video-modal" id="videoModal">
 
+    <div class="video-content">
+
+        <!-- CLOSE -->
+        <span
+            class="close-video"
+            onclick="closeVideo()"
+        >
+            &times;
+        </span>
+
+        <!-- VIDEO -->
+        <video
+            id="myVideo"
+            controls
+        >
+            <source
+                id="videoSource"
+                src=""
+                type="video/mp4"
+            >
+        </video>
+
+    </div>
+
+</div>
 <script>
 
 window.onload = function(){
@@ -527,6 +595,60 @@ input.addEventListener('input', function(){
 });
 
 };
+
+// PLAY VIDEO
+function playVideo(videoUrl){
+
+    const modal =
+    document.getElementById('videoModal');
+
+    const video =
+    document.getElementById('myVideo');
+
+    const source =
+    document.getElementById('videoSource');
+
+    source.src = videoUrl;
+
+    video.load();
+
+    modal.style.display = 'flex';
+
+    video.play();
+
+}
+
+
+// CLOSE VIDEO
+function closeVideo(){
+
+    const modal =
+    document.getElementById('videoModal');
+
+    const video =
+    document.getElementById('myVideo');
+
+    modal.style.display = 'none';
+
+    video.pause();
+
+    video.currentTime = 0;
+
+}
+
+
+// CLOSE SAAT KLIK BACKGROUND
+window.addEventListener('click', function(e){
+
+    const modal =
+    document.getElementById('videoModal');
+
+    if(e.target === modal){
+
+        closeVideo();
+    }
+
+});
 
 </script>
 

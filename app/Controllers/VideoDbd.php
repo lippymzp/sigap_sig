@@ -33,8 +33,7 @@ class VideoDbd extends Controller
         }
 
         return view('gol_a/video/kelola_video', [
-            'menu' => 'video',
-            'judul' => 'Kelola Video', 
+
             'video'     => $video,
             'total'     => count($video),
             'publish'   => $publish,
@@ -155,9 +154,15 @@ class VideoDbd extends Controller
         session()->set('video_temp', $namaFile);
 
         // redirect ke step 2
-        return redirect()->to('/video/tambah2');
+        return $this->response->setJSON([
+            'status' => 'success'
+        ]);
     }
 
+    public function tambah2()
+{
+    return view('gol_a/video/tambah2');
+}
 
     // =========================
     // STEP 2
