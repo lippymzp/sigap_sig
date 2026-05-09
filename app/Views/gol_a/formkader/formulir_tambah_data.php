@@ -11,7 +11,7 @@
     .form-card { background: #FFFFFF; border-radius: 15px; padding: 40px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
     
     .form-label { font-weight: 700; color: #333; font-size: 14px; margin-bottom: 5px; display: block; }
-    .form-label .text-danger { color: #DC3545; } /* Tanda bintang merah untuk wajib diisi */
+    .form-label .text-danger { color: #DC3545; } 
     .form-sublabel { font-size: 11px; color: #888; margin-bottom: 10px; display: block; font-weight: normal; }
     
     .form-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; padding: 12px 18px; width: 100%; font-size: 14px; color: #333; margin-bottom: 20px; outline: none; transition: all 0.3s; appearance: none; }
@@ -57,7 +57,7 @@
     /* --- STYLE UPLOAD AREA & PREVIEW --- */
     .upload-area { position: relative; border: 2px dashed #D0D0D0; border-radius: 15px; padding: 40px 20px; text-align: center; background-color: #FAFAFA; margin-bottom: 30px; transition: 0.3s; min-height: 250px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
     .upload-area.has-files { border-color: #D0D0D0; background-color: #FAFAFA; padding: 30px 20px; }
-    .upload-area.error-upload { border-color: #DC3545; background-color: #FFF0F1; } /* Indikator error foto */
+    .upload-area.error-upload { border-color: #DC3545; background-color: #FFF0F1; } 
     .upload-default { cursor: pointer; }
     .upload-default h5 { font-weight: bold; color: #000; margin-bottom: 20px; }
     .upload-icon-circle { width: 80px; height: 80px; background: linear-gradient(135deg, #E0F7F6, #C1F0ED); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 8px 15px rgba(0, 206, 209, 0.2); transition: 0.3s; }
@@ -155,6 +155,8 @@
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
 
+            <input type="hidden" name="kelurahan" id="hiddenKelurahan">
+
             <label class="form-label">Pos Posyandu <span class="text-danger">*</span></label>
             <div class="input-icon-wrap">
                 <select name="id_posyandu" id="posyanduSelect" class="form-input" required>
@@ -241,26 +243,18 @@
 <script>
     /* ----- VALIDASI WAJIB ISI (FOTO) SEBELUM SUBMIT ----- */
     document.getElementById('formTambahData').addEventListener('submit', function(e) {
-        // Cek apakah ada file foto yang sudah diupload ke array
         if (selectedFilesArray.length === 0) {
-            e.preventDefault(); // Hentikan proses pengiriman formulir
-            
-            // Ubah gaya kotak upload menjadi merah untuk memberitahu user
+            e.preventDefault(); 
             document.getElementById('uploadArea').classList.add('error-upload');
-            
-            // Tampilkan alert peringatan
             alert('PERINGATAN: Anda belum melampirkan foto! Mohon unggah minimal 1 foto bukti pemeriksaan jentik sebelum mengirim data.');
-            
-            // Gulir otomatis ke bagian upload foto
             document.getElementById('uploadArea').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         } else {
-            // Hilangkan gaya error jika foto sudah ada
             document.getElementById('uploadArea').classList.remove('error-upload');
         }
     });
 
-    /* ----- 1. LOGIKA DINAMIS POS POSYANDU BERDASARKAN ID_KELURAHAN ----- */
+    /* ----- 1. LOGIKA DINAMIS POS POSYANDU & NAMA KELURAHAN ----- */
     const posyanduData = {
         "1": ["CATLEYA 01", "CATLEYA 02", "CATLEYA 03", "CATLEYA 04", "CATLEYA 05", "CATLEYA 06", "CATLEYA 07", "CATLEYA 08", "CATLEYA 09", "CATLEYA 10", "CATLEYA 11", "CATLEYA 12", "CATLEYA 13", "CATLEYA 14", "CATLEYA 15", "CATLEYA 16", "CATLEYA 17", "CATLEYA 18", "CATLEYA 19", "CATLEYA 20", "CATLEYA 21", "CATLEYA 22", "CATLEYA 23", "CATLEYA 24", "CATLEYA 25", "CATLEYA 26", "CATLEYA 27", "CATLEYA 28", "CATLEYA 29", "CATLEYA 30", "CATLEYA 31", "CATLEYA 32", "CATLEYA 33", "CATLEYA 34", "CATLEYA 35"],
         "2": ["CATLEYA 36", "CATLEYA 36A (BAYANGAN)", "CATLEYA 37", "CATLEYA 38", "CATLEYA 39", "CATLEYA 40", "CATLEYA 41", "CATLEYA 42", "CATLEYA 43", "CATLEYA 44", "CATLEYA 44A", "CATLEYA 45", "CATLEYA 46", "CATLEYA 47", "CATLEYA 48", "CATLEYA 49", "CATLEYA 50", "CATLEYA 51", "CATLEYA 52", "CATLEYA 53", "CATLEYA 54"],
@@ -272,6 +266,10 @@
     document.getElementById('kelurahanSelect').addEventListener('change', function() {
         const selectedKelurahan = this.value;
         const posyanduSelect = document.getElementById('posyanduSelect');
+
+        // MENGAMBIL TEKS (NAMA) KELURAHAN DAN MEMASUKKANNYA KE HIDDEN INPUT 'kelurahan'
+        const kelurahanText = this.options[this.selectedIndex].text;
+        document.getElementById('hiddenKelurahan').value = kelurahanText;
 
         posyanduSelect.innerHTML = '<option value="" disabled selected>Pilih pos posyandu</option>';
 
@@ -348,7 +346,6 @@
         const previewTitle = document.getElementById('previewTitle');
         const uploadArea = document.getElementById('uploadArea');
 
-        // Reset error style if user uploads something
         uploadArea.classList.remove('error-upload');
 
         if (selectedFilesArray.length === 0) {
