@@ -288,10 +288,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
 <div class="video-wrapper">
 
-    <!-- TITLE -->
-    <div class="page-title">
-        Video
-    </div>
 
     <!-- SEARCH -->
     <div class="search-box">

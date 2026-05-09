@@ -262,7 +262,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
             <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
         </a>
 
-        <a href="<?= base_url('dbd/dashboard/admin') ?>#map"
+        <a href="<?= base_url('dbd/dashboard/admin') ?>#map" id="nav-map"
             class="<?= ($menu == 'peta') ? 'active' : '' ?>">
             <i class="fa-solid fa-map-location-dot me-2"></i>Peta Sebaran
         </a>

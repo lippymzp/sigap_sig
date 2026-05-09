@@ -141,7 +141,7 @@ class ManajemenUser extends BaseController
 
             'email'         => $this->request->getPost('email'),
 
-            'password'      => $this->request->getPost('p'),
+            'password'      => $this->request->getPost('password'),
             'created_at'    => date('Y-m-d H:i:s')
         ]);
 
@@ -188,11 +188,9 @@ class ManajemenUser extends BaseController
 
         // update password kalau diisi
         if ($this->request->getPost('password')) {
-
-            $data['password'] = password_hash(
-                $this->request->getPost('password'),
-                PASSWORD_DEFAULT
-            );
+            if ($this->request->getPost('password')) {
+            $data['password'] = $this->request->getPost('password');
+        }
         }
 
         $this->petugas->save($data);

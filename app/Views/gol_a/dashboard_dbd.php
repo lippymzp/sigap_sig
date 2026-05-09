@@ -109,10 +109,97 @@ $tahunSekarang = date('Y');
     color: #444;
     font-weight: 400;
 }
+/* ================= GRAFIK ================= */
+
+/* Toggle KASUS / ABJ */
+.slide-toggle-container {
+    position: relative;
+    display: flex;
+    background: #fff;
+    border: 1px solid #00BBC2; 
+    border-radius: 35px;
+    width: 100%;
+    max-width: 400px;
+    height: 45px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.btn-toggle {
+    flex: 1;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    font-weight: 800;
+    color: #00BBC2;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-size: 14px;
+}
+
+.btn-toggle.active {
+    color: #fff;
+}
+
+.slide-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: #00BBC2;
+    border-radius: 30px;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+
+/* Canvas Chart Responsive */
+#chartWrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.filter-col {
+    flex: 1;
+    min-width: 140px;
+    max-width: 180px;
+}
+
+.filter-label {
+    font-weight: 900;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.filter-rect {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+}
+
+.pill-select {
+    background-color: #00BBC2;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    padding: 8px 30px 8px 12px;
+    font-weight: bold;
+    width: 100%;
+}
 
 .kategori-tinggi { color: #dc3545; font-weight: 600; }
 .kategori-sedang { color: #d39e00; font-weight: 600; }
 .kategori-rendah { color: #28a745; font-weight: 600; }
+
 </style>
 
 <!-- WELCOME -->
@@ -128,6 +215,25 @@ $tahunSekarang = date('Y');
              alt="map"
              style="width:280px; height:auto;">
     </div>
+
+<?php
+    $dbStat = \Config\Database::connect();
+    
+    // 1. Total Kasus Pasien
+    $totalKasus = $dbStat->table('pasien')->countAllResults();
+
+    // 2. Pasien Baru Hari Ini
+    $hariIni = date('Y-m-d');
+    $kasusHariIni = $dbStat->table('pasien')
+                           ->where('DATE(tgl_kunjungan)', $hariIni)
+                           ->countAllResults();
+
+    // 3. Kelurahan Terdampak
+    $kelurahanTerdampak = $dbStat->table('pasien')
+                                 ->select('id_wilayah')
+                                 ->distinct()
+                                 ->countAllResults();
+?>
 </div>
 
 <!-- STAT -->
@@ -135,7 +241,7 @@ $tahunSekarang = date('Y');
     <div class="stat-card">
         <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
         <div class="stat-info">
-            <h3 class="red">20</h3>
+            <h3 class="red"><?= $totalKasus; ?></h3>
             <p>Total Kasus Aktif Hari Ini</p>
         </div>
     </div>
@@ -146,7 +252,7 @@ $tahunSekarang = date('Y');
             <i class="fa-solid fa-arrow-down"></i>
         </div>
         <div class="stat-info">
-            <h3 class="green">2</h3>
+            <h3 class="green"><?= $kasusHariIni; ?></h3>
             <p>Kasus Baru Hari Ini</p>
         </div>
     </div>
@@ -154,7 +260,7 @@ $tahunSekarang = date('Y');
     <div class="stat-card">
         <div class="stat-icon"><i class="fa-solid fa-map"></i></div>
         <div class="stat-info">
-            <h3 class="blue">6</h3>
+            <h3 class="blue"><?= $kelurahanTerdampak; ?></h3>
             <p>Kelurahan Terdampak</p>
         </div>
     </div>
@@ -510,101 +616,163 @@ d = d || {};
 </div>
 
 <!-- GRAFIK -->
-<section id="grafik" class="container mt-5" data-aos="fade-up">
+<section id="grafik" class="container mt-5 mb-5 p-0">
 
-    <h4 class="text-teal mb-3 fw-bold">Grafik DBD</h4>
+    <h4 id="titleGrafik" class="text-dark mb-4 fw-bold">Grafik Kasus DBD</h4>
 
-    <form method="get">
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <select name="usia" class="form-control shadow-sm" onchange="this.form.submit()">
-                    <option value="">Semua Usia</option>
-                    <option value="anak"    <?= request()->getGet('usia')=='anak'    ? 'selected' : '' ?>>0-14</option>
-                    <option value="remaja"  <?= request()->getGet('usia')=='remaja'  ? 'selected' : '' ?>>15-24</option>
-                    <option value="dewasa"  <?= request()->getGet('usia')=='dewasa'  ? 'selected' : '' ?>>25-59</option>
-                    <option value="lansia"  <?= request()->getGet('usia')=='lansia'  ? 'selected' : '' ?>>60+</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select name="jk" class="form-control shadow-sm" onchange="this.form.submit()">
-                    <option value="">Semua Gender</option>
-                    <option value="L" <?= request()->getGet('jk')=='L' ? 'selected' : '' ?>>Laki-laki</option>
-                    <option value="P" <?= request()->getGet('jk')=='P' ? 'selected' : '' ?>>Perempuan</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select name="bulan" class="form-control shadow-sm" onchange="this.form.submit()">
-                    <option value="">Semua Bulan</option>
-                    <?php
-                    $bulanList = [
-                        1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',
-                        5=>'Mei',6=>'Jun',7=>'Jul',8=>'Ags',
-                        9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'
-                    ];
-                    foreach($bulanList as $key => $val): ?>
-                        <option value="<?= $key ?>" <?= request()->getGet('bulan') == $key ? 'selected' : '' ?>>
-                            <?= $val ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select name="tahun" class="form-control shadow-sm" onchange="this.form.submit()">
-                    <option value="">Semua Tahun</option>
-                    <?php for($t = 2020; $t <= date('Y'); $t++): ?>
-                        <option value="<?= $t ?>" <?= request()->getGet('tahun') == $t ? 'selected' : '' ?>>
-                            <?= $t ?>
-                        </option>
-                    <?php endfor; ?>
-                </select>
+    <div class="bg-white shadow-sm" style="border-radius: 30px; border: 1px solid #eee; padding: 40px 30px;">
+        
+        <div class="d-flex justify-content-center mb-5">
+            <div class="slide-toggle-container">
+                <div id="slideIndicator" class="slide-indicator"></div>
+                <button type="button" class="btn-toggle active" id="tabKasus" onclick="switchTab('kasus')">KASUS</button>
+                <button type="button" class="btn-toggle" id="tabABJ" onclick="switchTab('abj')">ABJ</button>
             </div>
         </div>
-    </form>
 
-    <div class="row">
-        <div class="col-md-9">
-            <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-                <canvas id="chartDBD"></canvas>
+        <form method="get" id="filterForm">
+            <input type="hidden" name="tab" id="activeTabInput" value="<?= $_GET['tab'] ?? 'kasus' ?>">
+            <input type="hidden" name="tahun_map" value="<?= $_GET['tahun_map'] ?? '' ?>">
+
+            <div id="wrapperKasus" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'kasus' ? 'block' : 'none' ?>;">
+                <div class="filter-row">
+                    <div class="filter-col">
+                        <label class="filter-label">WILAYAH</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="wilayah" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="Antirogo" <?= request()->getGet('wilayah') == 'Antirogo' ? 'selected' : '' ?>>Antirogo</option>
+                                    <option value="Sumbersari" <?= request()->getGet('wilayah') == 'Sumbersari' ? 'selected' : '' ?>>Sumbersari</option>
+                                    <option value="Karangrejo" <?= request()->getGet('wilayah') == 'Karangrejo' ? 'selected' : '' ?>>Karangrejo</option>
+                                    <option value="Tegalgede" <?= request()->getGet('wilayah') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
+                                    <option value="Wirolegi" <?= request()->getGet('wilayah') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">USIA</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="usia" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-14</option>
+                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>15-24</option>
+                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>25-59</option>
+                                    <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>60+</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">JENIS KELAMIN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="jk" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="L" <?= request()->getGet('jk') == 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                    <option value="P" <?= request()->getGet('jk') == 'P' ? 'selected' : '' ?>>Perempuan</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">BULAN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="bulan" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php 
+                                    $bulanList = [1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'];
+                                    foreach($bulanList as $k => $v): ?>
+                                        <option value="<?= $k ?>" <?= request()->getGet('bulan') == $k ? 'selected' : '' ?>><?= $v ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">TAHUN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="tahun" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php for($t=2024; $t<=date('Y'); $t++): ?>
+                                        <option value="<?= $t ?>" <?= request()->getGet('tahun') == $t ? 'selected' : '' ?>><?= $t ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <div id="wrapperABJ" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'abj' ? 'block' : 'none' ?>;">
+                <div class="filter-row">
+                    <div class="filter-col">
+                        <label class="filter-label">WILAYAH</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="wilayah_abj" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="Antirogo" <?= request()->getGet('wilayah_abj') == 'Antirogo' ? 'selected' : '' ?>>Antirogo</option>
+                                    <option value="Sumbersari" <?= request()->getGet('wilayah_abj') == 'Sumbersari' ? 'selected' : '' ?>>Sumbersari</option>
+                                    <option value="Karangrejo" <?= request()->getGet('wilayah_abj') == 'Karangrejo' ? 'selected' : '' ?>>Karangrejo</option>
+                                    <option value="Tegalgede" <?= request()->getGet('wilayah_abj') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
+                                    <option value="Wirolegi" <?= request()->getGet('wilayah_abj') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">BULAN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="bulan_abj" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php foreach($bulanList as $k => $v): ?>
+                                        <option value="<?= $k ?>" <?= request()->getGet('bulan_abj') == $k ? 'selected' : '' ?>><?= $v ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">TAHUN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="tahun_abj" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php for($t=2024; $t<=date('Y'); $t++): ?>
+                                        <option value="<?= $t ?>" <?= request()->getGet('tahun_abj') == $t ? 'selected' : '' ?>><?= $t ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chartWrapper" style="position: relative; height: 350px;">
+                <canvas id="chartKasus" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'kasus' ? 'block' : 'none' ?>;"></canvas>
+                <canvas id="chartABJ" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'abj' ? 'block' : 'none' ?>;"></canvas>
+            </div>
+
+        </form>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function(){
-        const dataGrafik = <?= json_encode($grafik) ?>;
-
-        let labels = [];
-        let totalKasus = [];
-
-        dataGrafik.forEach(function(item){
-    labels.push(item.desa);
-    totalKasus.push(item.kasus);
-});
-
-        new Chart(document.getElementById('chartDBD'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Total Kasus',
-                    data: totalKasus,
-                    backgroundColor: '#00BBC2'
-                }]
-            }
-        });
-    });
-    </script>
 </section>
-
 <!-- ARTIKEL -->
 <section id="artikel" class="artikel-section my-5">
     <div class="artikel-header">
-        <h2 class="section-title">Berita, Artikel & Majalah Kesehatan</h2>
     </div>
 
     <div id="artikel-scroll" class="artikel-scroll">
@@ -636,9 +804,117 @@ d = d || {};
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="text-muted">Belum ada artikel yang ditambahkan.</div>
         <?php endif; ?>
     </div>
 </section>
 
+<?php
+    $db = \Config\Database::connect();
+    $builderABJ = $db->table('rekap_pelaporan_kader'); 
+    $reqBulanABJ = $_GET['bulan_abj'] ?? '';
+    $reqTahunABJ = $_GET['tahun_abj'] ?? '';
+    $reqWilayahABJ = $_GET['wilayah_abj'] ?? '';
+    $bulanMap = [1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April', 5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus', 9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'];
+    if (!empty($reqBulanABJ) && isset($bulanMap[$reqBulanABJ])) { $builderABJ->where('bulan', $bulanMap[$reqBulanABJ]); }
+    if (!empty($reqTahunABJ)) { $builderABJ->like('periode_lengkap', $reqTahunABJ); }
+    $builderABJ->select('id_kelurahan, minggu, AVG(abj) as avg_abj');
+    $builderABJ->groupBy('id_kelurahan, minggu');
+    $rawDB_ABJ = $builderABJ->get()->getResultArray();
+    $kelMap = [1 => 'Sumbersari', 2 => 'Wirolegi', 3 => 'Antirogo', 4 => 'Tegalgede', 5 => 'Karangrejo'];
+    $dataFinalABJ = [];
+    foreach ($kelMap as $id => $nama) { $dataFinalABJ[$nama] = [null, null, null, null]; }
+    foreach ($rawDB_ABJ as $row) {
+        $namaKel = $kelMap[$row['id_kelurahan']] ?? '';
+        if ($namaKel && preg_match('/(\d+)/', $row['minggu'], $matches)) {
+            $idx = intval($matches[1]) - 1;
+            if ($idx >= 0 && $idx <= 3) { $dataFinalABJ[$namaKel][$idx] = round($row['avg_abj'], 2); }
+        }
+    }
+    if (!empty($reqWilayahABJ)) { foreach ($dataFinalABJ as $nama => $val) { if ($nama !== $reqWilayahABJ) unset($dataFinalABJ[$nama]); } }
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function updateMap(){
+    let tahun = document.getElementById("periodeMap").value;
+    let url = new URL(window.location.href);
+    url.searchParams.set('tahun_map', tahun);
+    window.location.href = url.toString();
+}
+
+function switchTab(type) {
+    const indicator = document.getElementById('slideIndicator');
+    const tabKasus = document.getElementById('tabKasus');
+    const tabABJ = document.getElementById('tabABJ');
+    const title = document.getElementById('titleGrafik');
+    const input = document.getElementById('activeTabInput');
+    const wrapKasus = document.getElementById('wrapperKasus');
+    const wrapABJ = document.getElementById('wrapperABJ');
+    const chartK = document.getElementById('chartKasus');
+    const chartA = document.getElementById('chartABJ');
+
+    input.value = type;
+    title.innerText = type === 'kasus' ? 'Grafik Kasus DBD' : 'Grafik Angka Bebas Jentik (ABJ)';
+
+    if (type === 'kasus') {
+        indicator.style.transform = 'translateX(0%)';
+        tabKasus.classList.add('active'); tabABJ.classList.remove('active');
+        wrapKasus.style.display = 'block'; wrapABJ.style.display = 'none';
+        chartK.style.display = 'block'; chartA.style.display = 'none';
+    } else {
+        indicator.style.transform = 'translateX(100%)';
+        tabABJ.classList.add('active'); tabKasus.classList.remove('active');
+        wrapABJ.style.display = 'block'; wrapKasus.style.display = 'none';
+        chartA.style.display = 'block'; chartK.style.display = 'none';
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // --- LOGIKA AUTO SCROLL SETELAH REFRESH/FILTER ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasFilter = urlParams.has('wilayah') || urlParams.has('usia') || urlParams.has('jk') || 
+                      urlParams.has('bulan') || urlParams.has('tahun') || urlParams.has('tab') ||
+                      urlParams.has('wilayah_abj') || urlParams.has('bulan_abj') || urlParams.has('tahun_abj');
+
+    if (hasFilter) {
+        const grafikSection = document.getElementById('grafik');
+        if (grafikSection) {
+            grafikSection.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+    }
+
+
+    // --- INISIALISASI SLIDING TAB ---
+    const currentTab = "<?= $_GET['tab'] ?? 'kasus' ?>";
+    switchTab(currentTab);
+
+    // --- GRAFIK KASUS ---
+    const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
+    let labelsKasus = []; let totalKasus = [];
+   dataGrafikKasus.forEach(item => {
+    labelsKasus.push(item.desa);
+    totalKasus.push(item.kasus);
+});
+    new Chart(document.getElementById('chartKasus').getContext('2d'), {
+        type: 'bar', data: { labels: labelsKasus, datasets: [{ label: 'Total Kasus', data: totalKasus, backgroundColor: '#00BBC2', borderRadius: 8 }] },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    // --- GRAFIK ABJ ---
+    const rawDataABJ = <?= json_encode($dataFinalABJ) ?>;
+    const colorMapping = { 'Antirogo': '#1f4e5b', 'Sumbersari': '#00BBC2', 'Karangrejo': '#b2dfdb', 'Tegalgede': '#5cb85c', 'Wirolegi': '#4fc3f7' };
+    let datasetsABJ = [];
+    for (const kelurahan in rawDataABJ) {
+        datasetsABJ.push({ label: kelurahan, data: rawDataABJ[kelurahan], borderColor: colorMapping[kelurahan] || '#333', backgroundColor: colorMapping[kelurahan] || '#333', fill: false, tension: 0.2, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2, spanGaps: true });
+    }
+    new Chart(document.getElementById('chartABJ').getContext('2d'), {
+        type: 'line', data: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], datasets: datasetsABJ },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } } },
+            scales: { y: { min: 0, max: 100, ticks: { stepSize: 25, callback: function(value) { return value + '%'; } }, grid: { borderDash: [5, 5] } }, x: { grid: { display: false } } }
+        }
+    });
+});
+</script>
 <?= $this->endSection() ?>
