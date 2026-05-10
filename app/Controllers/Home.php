@@ -45,7 +45,7 @@ class Home extends BaseController
 
     public function grafik()
     {
-    return view('grafik_pneumonia');
+    return view('gol_c/grafik_pneumonia');
     }
 
 public function diare_detail()

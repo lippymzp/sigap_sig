@@ -248,7 +248,7 @@
 
     <!-- EXPORT BUTTON (DALAM CARD KANAN BAWAH) -->
     <div class="d-flex justify-content-end mt-3">
-        <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>" class="btn-export">
+        <a href="<?= base_url('index.php/' . $penyakit . '/export_hasil_data_pasien') ?>" class="btn-export">
             <i class="fa fa-download"></i> Export Data
         </a>
     </div>

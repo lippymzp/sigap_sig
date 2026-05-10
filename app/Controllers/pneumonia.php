@@ -31,6 +31,190 @@ class Pneumonia extends BaseController
         ]);
     }
 
+    // ==================================
+    // HASIL DATA PASIEN EXPOR PDF EXCEL
+    // ==================================
+
+    // ================= buat hasil data pasiennn  =================
+    public function get_data_pasien_by_tahun()
+    {
+        $tahun = $this->request->getGet('tahun');
+
+        $db = \Config\Database::connect();
+        $builder = $db->table('pasien p');
+
+        // QUERY UTAMA
+        $builder->select("
+            MONTH(p.tgl_kunjungan) as bulan_angka,
+            w.kelurahan,
+
+            SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
+            SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
+
+            SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+            SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+
+            COUNT(*) as jumlah
+        ");
+
+        // JOIN
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+        // FILTER TAHUN
+        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+
+        // GROUP BY WAJIB (BIAR TIDAK ERROR ONLY_FULL_GROUP_BY)
+        $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
+
+        // URUT BULAN
+        $builder->orderBy('bulan_angka', 'ASC');
+
+        $data = $builder->get()->getResultArray();
+
+        // CONVERT BULAN KE INDONESIA
+        $bulanMap = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        foreach ($data as &$d) {
+            $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
+        }
+
+        return $this->response->setJSON($data);
+    }
+    
+    // ================= list tahun di export data =================
+    public function get_tahun_list()
+    {
+        $db = \Config\Database::connect();
+
+        $data = $db->table('pasien')
+            ->select('YEAR(tgl_kunjungan) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON($data);
+    }
+
+
+    // ================= HALAMAN =================
+    public function export_hasil_data_pasien()
+    {
+        $type = $this->request->getGet('type');
+
+        $mode = $this->request->getGet('mode');
+        $tahun = $this->request->getGet('tahun');
+        $waktu = $this->request->getGet('waktu');
+        $kelurahan = $this->request->getGet('kelurahan');
+
+        $model = new \App\Models\InputDataPasienModel();
+        $data = $model->getDataExport($mode, $tahun, $waktu, $kelurahan);
+
+        // kalau belum klik export → tampilkan halaman filter
+        if (!$type) {
+            return view('gol_c/hasil_data_pasien/export_hasil_data_pasien', [
+                'menu' => 'export_hasil_data_pasien',
+                'penyakit' => 'pneumonia',
+                'judul' => 'Eksport Data Pasien',
+                'data' => $data //
+            ]);
+        }
+
+    // EXPORT EXCEL
+        if ($type == 'excel') {
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=data_pasien.xls");
+
+        echo "<html>";
+        echo "<head>
+                <meta charset='UTF-8'>
+                <style>
+                    body { font-family: Arial; font-size: 12px; }
+                    h2 { text-align: center; }
+                    .sub { text-align: center; font-size: 11px; margin-bottom: 10px; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th { background: #2c3e50; color: #fff; padding: 6px; }
+                    td { border: 1px solid #ddd; padding: 5px; }
+                    .center { text-align: center; }
+                </style>
+            </head>";
+
+        echo "<body>";
+
+        // Judul
+        echo "<h2>DATA PASIEN DBD</h2>";
+        echo "<div class='sub'>Hasil Export Berdasarkan Filter</div>";
+
+        // Tabel
+        echo "<table border='1'>";
+        echo "<tr>
+                <th>No</th>
+                <th>No RM</th>
+                <th>Nama</th>
+                <th>Tanggal</th>
+                <th>JK</th>
+                <th>Usia</th>
+                <th>Kelurahan</th>
+                <th>Kecamatan</th>
+                <th>Alamat</th>
+            </tr>";
+
+        $no = 1;
+
+        if (!empty($data)) {
+            foreach ($data as $d) {
+                echo "<tr>
+                        <td class='center'>{$no}</td>
+                        <td>{$d['no_rm']}</td>
+                        <td>{$d['nama_pasien']}</td>
+                        <td class='center'>{$d['tgl_kunjungan']}</td>
+                        <td class='center'>{$d['jenis_kelamin']}</td>
+                        <td class='center'>{$d['umur']}</td>
+                        <td>{$d['kelurahan']}</td>
+                        <td>{$d['kecamatan']}</td>
+                        <td>{$d['alamat_lengkap']}</td>
+                    </tr>";
+                $no++;
+            }
+        } else {
+            echo "<tr>
+                    <td colspan='9' class='center'>Data tidak tersedia</td>
+                </tr>";
+        }
+
+        echo "</table>";
+        echo "</body></html>";
+
+        exit;
+        }
+
+        // EXPORT PDF
+        if ($type == 'pdf') {
+            $html = view('gol_c/hasil_data_pasien/export_pdf_pasien', ['data' => $data]);
+
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            $dompdf->stream("data_pasien.pdf", ["Attachment" => true]);
+            exit;
+        }
+    }
+
     public function simpandatapasien()
     {
         $model = new InputDataPasienModel();

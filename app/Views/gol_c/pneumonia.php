@@ -56,6 +56,8 @@
 <div class="col-md-6 text-center">
    
 </div>
+</div>
+</div>
 </section>
 
 
@@ -82,7 +84,7 @@
     border-radius: 20px;
     display: flex;
     align-items: center;
-    padding: 40px;
+    padding: 40px 20px;
     color: white;
 
     background: 
@@ -105,7 +107,8 @@
     100%{transform:translateY(0);}
 }
 .grafik-container{
-    width: 1000px;
+    width: 100%;
+    max-width: 1000px;
     margin: auto;
 }
 
@@ -328,7 +331,9 @@ fitur.forEach(btn => {
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
 
 <div class="carousel-wrapper">
+</div>
 
+</section>
 <!-- CTA SKRINING -->
 <section class="container mt-5" data-aos="zoom-in">
 
@@ -474,7 +479,7 @@ h5 {
         Lihat Selengkapnya →
     </a>
 </div>
-
+</div>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

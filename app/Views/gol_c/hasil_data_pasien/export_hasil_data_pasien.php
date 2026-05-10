@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout_admin') ?>
+<?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -148,7 +148,7 @@ function loadWaktu() {
 }
 
 // LOAD TAHUN
-fetch("<?= base_url('dbd/get-tahun-list') ?>")
+fetch("<?= base_url('pneumonia/get-tahun-list') ?>")
 .then(res=>res.json())
 .then(data=>{
     let t = document.getElementById('tahun');
@@ -162,7 +162,7 @@ function exportData(type) {
     let waktu = document.getElementById('waktu').value;
     let kel = document.getElementById('kelurahan').value;
 
-    let url = `<?= base_url('dbd/export-hasil-data-pasien') ?>?type=${type}&mode=${mode}&tahun=${tahun}&waktu=${waktu}&kelurahan=${kel}`;
+    let url = `<?= base_url('pneumonia/export_hasil_data_pasien') ?>?type=${type}&mode=${mode}&tahun=${tahun}&waktu=${waktu}&kelurahan=${kel}`;
     window.location.href = url;
 }
 
