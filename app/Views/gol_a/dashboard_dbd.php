@@ -584,7 +584,7 @@ d = d || {};
                 document.getElementById("modalPerempuan").innerText    = pr;
 
                 document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
-                document.getElementById("modalRumahJentik").innerText  = d.rumah_positif ?? 0;
+                document.getElementById("modalRumahJentik").innerText  = d.rumah_jentik ?? 0;
 
                 document.getElementById("detailModal").style.display = "flex";
             }

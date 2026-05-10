@@ -14,11 +14,16 @@ $routes->get('/', 'Home::index');
 $routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
-$routes->get('/dbd', 'Home::dbd');
 $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
 $routes->get('/grafik_pneumonia', 'Home::grafik');
+
+// ===============================================
+// ROUTE Landingpage DBD dan Dasboard
+// ===============================================
+$routes->get('/dbd', 'LandingpageDbd::index');
+$routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 
 /* ========================= */
 /* SKRINING Pneumonia */

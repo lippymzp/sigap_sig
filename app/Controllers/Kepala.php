@@ -73,10 +73,97 @@ class Kepala extends Controller
     $builderDbd->groupBy('w.kelurahan');
 
     // 🔥 BARU AMBIL DATA
-    $dbd = $builderDbd->get()->getResultArray();    // ======================
+    $dbd = $builderDbd->get()->getResultArray(); 
+    // ======================
+// 🔥 DETAIL DATA MODAL
+// ======================
+$builderDetail = $db->table('pasien p');
+
+$builderDetail->select("
+    w.kelurahan,
+
+    COUNT(*) as jumlah_kasus,
+
+    SUM(CASE WHEN p.umur <= 14 THEN 1 ELSE 0 END) as anak,
+    SUM(CASE WHEN p.umur BETWEEN 15 AND 59 THEN 1 ELSE 0 END) as dewasa,
+    SUM(CASE WHEN p.umur >= 60 THEN 1 ELSE 0 END) as lansia,
+
+    SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+    SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+
+    SUM(r.diperiksa) as rumah_diperiksa,
+    SUM(r.positif) as rumah_positif
+");
+
+$builderDetail->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+$builderDetail->join(
+    'rekap_pelaporan_kader r',
+    'r.kelurahan = w.kelurahan',
+    'left'
+);
+
+if (!empty($tahunMap)) {
+    $builderDetail->where('YEAR(p.tgl_kunjungan)', $tahunMap);
+}
+
+$builderDetail->groupBy('w.kelurahan');
+
+$rawDetail = $builderDetail->get()->getResultArray();
+
+$detailDesa = [];
+$maxKasus = 0;
+$desaTertinggi = '-';
+
+foreach ($rawDetail as $row) {
+
+    $jumlahKasus = (int)$row['jumlah_kasus'];
+
+    if ($jumlahKasus >= 20) {
+        $kategori = 'tinggi';
+    } elseif ($jumlahKasus >= 10) {
+        $kategori = 'sedang';
+    } else {
+        $kategori = 'rendah';
+    }
+
+    // usia tertinggi
+    $usiaTertinggi = 'Anak-anak';
+
+    if (
+        $row['dewasa'] >= $row['anak'] &&
+        $row['dewasa'] >= $row['lansia']
+    ) {
+        $usiaTertinggi = 'Dewasa';
+    } elseif (
+        $row['lansia'] >= $row['anak'] &&
+        $row['lansia'] >= $row['dewasa']
+    ) {
+        $usiaTertinggi = 'Lansia';
+    }
+
+    $key = strtolower(str_replace(' ', '', $row['kelurahan']));
+
+    $detailDesa[$key] = [
+        'jumlah_penduduk' => 0,
+        'jumlah_kasus'    => $jumlahKasus,
+        'kategori'        => $kategori,
+
+        'anak'            => (int)$row['anak'],
+        'dewasa'          => (int)$row['dewasa'],
+        'lansia'          => (int)$row['lansia'],
+
+        'usia_tertinggi'  => $usiaTertinggi,
+
+        'laki'            => (int)$row['laki'],
+        'perempuan'       => (int)$row['perempuan'],
+
+        'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
+        'rumah_positif'   => (int)$row['rumah_positif']
+    ];
+}   // ======================
     // 🔥 KIRIM KE VIEW
     // ======================
-    return view('gol_a/dashboard_kepala', [
+   return view('gol_a/dashboard_kepala', [
     'menu' => 'dashboard_kepala',
     'judul' => 'Dashboard Kepala Puskesmas',
     'nama_puskesmas' => 'Puskesmas Panti, Jember',
@@ -86,9 +173,13 @@ class Kepala extends Controller
     'wilayah' => 6,
 
     'grafik' => $grafik,
-    'dbd' => $dbd
+    'dbd' => $dbd,
+
+    // TAMBAHAN
+    'detailDesa' => $detailDesa,
+    'desaTertinggi' => $desaTertinggi
 ]);
-;}
+}
     public function export()
     {
         $data = [

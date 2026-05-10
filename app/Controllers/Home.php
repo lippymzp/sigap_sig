@@ -20,9 +20,8 @@ class Home extends BaseController
     }
     public function dbd()
     {
-        return view('gol_a/dbd');
+    return redirect()->to('/dbd');
     }
-
     public function tbc()
     {
         return view('gol_b/tbc');
@@ -32,9 +31,6 @@ class Home extends BaseController
     {
         return view('gol_d/diare');
 
-        
-         $data = $this->request->getPost();
-         return view('gol_a/skrining3', $data);
     }
     public function skrining_diare()
     {
