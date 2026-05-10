@@ -97,559 +97,136 @@ class Pneumonia extends BaseController
         return view('gol_c/skrining2', $data);
     }
 
-    public function skriningpneumonia3()
+    public function skriningdbd3()
     {
-
-        $nama = $this->request->getPost('nama');
-        $jenis_kelamin = $this->request->getPost('jenis_kelamin');
-        $tanggal_lahir = $this->request->getPost('tanggal_lahir');
-        $kategori_usia = $this->request->getPost('kategori_usia');
-        $nik = $this->request->getPost('nik');
-        $telepon = $this->request->getPost('telepon');
-
-        $provinsi = $this->request->getPost('provinsi_nama');
-        $kabupaten = $this->request->getPost('kabupaten_nama');
-        $kecamatan = $this->request->getPost('kecamatan_nama');
-        $kelurahan = $this->request->getPost('kelurahan');
-
-        /*
-        =====================================
-        VALIDASI
-        =====================================
-        */
-
-        if (
-            empty($provinsi) ||
-            empty($kabupaten) ||
-            empty($kecamatan) ||
-            empty($kelurahan)
-        ) {
-
-            return redirect()
-                ->to('/skriningpneumonia')
-                ->with('error', 'Data wilayah wajib diisi');
-        }
-
-        /*
-        =====================================
-        SIMPAN WILAYAH
-        =====================================
-        */
-
-        $modelWilayah = new wilayahskriningpneumonia();
-
-        $modelWilayah->save([
-            'provinsi' => $provinsi,
-            'kabupaten' => $kabupaten,
-            'kecamatan' => $kecamatan,
-            'kelurahan' => $kelurahan,
-            'rt' => 0,
-            'rw' => 0,
-            'alamat_lengkap' =>
-                $kelurahan . ', ' .
-                $kecamatan . ', ' .
-                $kabupaten
-        ]);
-
-        $id_wilayah = $modelWilayah->insertID();
-
-        /*
-        =====================================
-        SIMPAN PASIEN
-        =====================================
-        */
-
-        $modelPasien = new PasienPneumoniaModel();
-
-        $modelPasien->save([
-            'nik' => $nik,
-            'nama_pasien_skrining' => $nama,
-            'jenis_kelamin' => $jenis_kelamin,
-            'tanggal_lahir' => $tanggal_lahir,
-            'usia' => $kategori_usia,
-            'no_hp' => $telepon,
-            'created_at' => date('Y-m-d H:i:s'),
-            'id_wilayah' => $id_wilayah
-        ]);
-
-        $id_pasien_skrining =
-            $modelPasien->insertID();
-
-        /*
-        =====================================
-        INPUT USER
-        =====================================
-        */
-
-        $input = [];
-
-        for ($i = 1; $i <= 11; $i++) {
-
-            $input["var$i"] =
-                ($this->request->getPost("p$i") == 1)
-                ? 'iya'
-                : 'tidak';
-        }
-
-        /*
-        =====================================
-        LOAD DATASET CSV
-        =====================================
-        */
-
-        $dataset = $this->loadCSV();
-
-        /*
-        =====================================
-        ATRIBUT
-        =====================================
-        */
-
-        $attributes = [
-            'batuk',
-            'dahak',
-            'sesak',
-            'nyeri_dada',
-            'mual',
-            'lemas',
-            'nafsu_makan',
-            'demam',
-            'napas_cepat',
-            'dahak_dada',
-            'mengi'
-        ];
-
-        /*
-        =====================================
-        BUILD TREE C4.5
-        =====================================
-        */
-
-        $tree = $this->buildTree(
-            $dataset,
-            $attributes
-        );
-
-        /*
-        =====================================
-        MAPPING INPUT
-        =====================================
-        */
-
-        $mapping = [
-            'batuk' => $input['var1'],
-            'dahak' => $input['var2'],
-            'sesak' => $input['var3'],
-            'nyeri_dada' => $input['var4'],
-            'mual' => $input['var5'],
-            'lemas' => $input['var6'],
-            'nafsu_makan' => $input['var7'],
-            'demam' => $input['var8'],
-            'napas_cepat' => $input['var9'],
-            'dahak_dada' => $input['var10'],
-            'mengi' => $input['var11']
-        ];
-
-        /*
-        =====================================
-        PREDIKSI
-        =====================================
-        */
-
-        $hasilPrediksi = $this->predict(
-            $tree,
-            $mapping
-        );
-
-        /*
-        =====================================
-        HASIL
-        =====================================
-        */
-
-        if ($hasilPrediksi == 'positif') {
-
-            $hasil =
-                'Risiko Pneumonia';
-
-            $alasan =
-                'Hasil klasifikasi algoritma C4.5 menunjukkan risiko pneumonia.';
-
-        } else {
-
-            $hasil =
-                'Tidak Risiko Pneumonia';
-
-            $alasan =
-                'Hasil klasifikasi algoritma C4.5 menunjukkan tidak berisiko pneumonia.';
-        }
-
-        /*
-        =====================================
-        KONVERSI JAWABAN
-        =====================================
-        */
-
-        $jawaban = [];
-
-        for ($i = 1; $i <= 11; $i++) {
-
-            $jawaban[$i] =
-                ($this->request->getPost("p$i") == 1)
-                ? 'Iya'
-                : 'Tidak';
-        }
-
-        /*
-        =====================================
-        SIMPAN SKRINING
-        =====================================
-        */
-
-        $modelSkrining =
-            new SkriningPneumoniaModel();
-
-        $modelSkrining->save([
-
-            'id_pasien_skrining' =>
-                $id_pasien_skrining,
-
-            'id_penyakit' => 3,
-
-            'tanggal' => date('Y-m-d'),
-
-            'var1' => $jawaban[1],
-            'var2' => $jawaban[2],
-            'var3' => $jawaban[3],
-            'var4' => $jawaban[4],
-            'var5' => $jawaban[5],
-            'var6' => $jawaban[6],
-            'var7' => $jawaban[7],
-            'var8' => $jawaban[8],
-            'var9' => $jawaban[9],
-            'var10' => $jawaban[10],
-            'var11' => $jawaban[11],
-
-            'hasil' => $hasil
-        ]);
-
-        /*
-        =====================================
-        KIRIM KE VIEW
-        =====================================
-        */
-
-        $data = $this->request->getPost();
-
-        $data['provinsi'] = $provinsi;
-        $data['kabupaten'] = $kabupaten;
-        $data['kecamatan'] = $kecamatan;
-
-        $data['hasil'] = $hasil;
-        $data['alasan'] = $alasan;
-
-        return view(
-            'gol_c/skrining3',
-            $data
-        );
-    }
-
-    /*
-    =====================================
-    LOAD CSV
-    =====================================
-    */
-
-    private function loadCSV()
-{
-    $file = ROOTPATH . 'public/dataset/pneumonia.csv';
-
-    $rows = array_map('str_getcsv', file($file));
-
-    $header = array_shift($rows);
-
-    $dataset = [];
-
-    foreach ($rows as $row) {
-
-        $data = array_combine($header, $row);
-
-        // normalisasi semua value
-        foreach ($data as $key => $value) {
-
-            $data[$key] = strtolower(trim($value));
-        }
-
-        $dataset[] = $data;
-    }
-
-    return $dataset;
+    $nama = $this->request->getPost('nama');
+    $jenis_kelamin = $this->request->getPost('jenis_kelamin');
+    $tanggal_lahir = $this->request->getPost('tanggal_lahir');
+    $kategori_usia = $this->request->getPost('kategori_usia');
+    $nik = $this->request->getPost('nik');
+    $telepon = $this->request->getPost('telepon');
+   $provinsi = $this->request->getPost('provinsi_nama');
+$kabupaten = $this->request->getPost('kabupaten_nama');
+$kecamatan = $this->request->getPost('kecamatan_nama');
+$kelurahan = $this->request->getPost('kelurahan'); // ini sudah nama
+if (empty($provinsi) || empty($kabupaten) || empty($kecamatan) || empty($kelurahan)) {
+    return redirect()->to('/skriningpneumonia')->with('error', 'Data wilayah wajib diisi');
 }
 
-    /*
-    =====================================
-    ENTROPY
-    =====================================
-    */
+    // ======================
+    // SIMPAN pasien_skrining
+    // ======================
+$modelWilayah = new \App\Models\wilayahskriningpneumonia();
 
-    private function entropy($dataset)
-    {
-        $total = count($dataset);
+$modelWilayah->save([
+     'provinsi' => $provinsi ?? '-',
+    'kabupaten' => $kabupaten ?? '-',
+    'kecamatan' => $kecamatan ?? '-',
+    'kelurahan' => $kelurahan ?? '-',
+    'rt' => 0,
+    'rw' => 0,
+    'alamat_lengkap' => $kelurahan . ', ' . $kecamatan . ', ' . $kabupaten
+    
+]);
 
-        if ($total == 0) {
-            return 0;
-        }
+$id_wilayah = $modelWilayah->insertID();
 
-        $positif = 0;
-        $negatif = 0;
+ $modelPasien = new \App\Models\PasienPneumoniaModel();
 
-        foreach ($dataset as $row) {
+$modelPasien->save([
+    'nik' => $nik,
+    'nama_pasien_skrining' => $nama,
+    'jenis_kelamin' => $jenis_kelamin,
+    'tanggal_lahir' => $tanggal_lahir,
+    'usia' => $kategori_usia,
+    'no_hp' => $telepon,
+    'created_at' => date('Y-m-d H:i:s'),
+    'id_wilayah' => $id_wilayah
+]);
 
-            if ($row['hasil'] == 'positif') {
-                $positif++;
-            } else {
-                $negatif++;
-            }
-        }
+    $id_pasien_skrining = $modelPasien->insertID();
 
-        $pPos = $positif / $total;
-        $pNeg = $negatif / $total;
+    // ======================
+    // HITUNG SKOR
+    // ======================
 
-        $entropy = 0;
+            $totalSkor = 0;
 
-        if ($pPos > 0) {
-            $entropy -=
-                $pPos * log($pPos, 2);
-        }
+        $reverse = [14, 15, 16, 17, 18, 19, 20, 21];
 
-        if ($pNeg > 0) {
-            $entropy -=
-                $pNeg * log($pNeg, 2);
-        }
+        for ($i = 1; $i <= 21; $i++) {
+            $nilai = $this->request->getPost("p".$i) ?? 0;
 
-        return $entropy;
-    }
-
-    /*
-    =====================================
-    GAIN
-    =====================================
-    */
-
-    private function gain(
-        $dataset,
-        $attribute
-    )
-    {
-        $totalEntropy =
-            $this->entropy($dataset);
-
-        $values = ['iya', 'tidak'];
-
-        $weightedEntropy = 0;
-
-        foreach ($values as $value) {
-
-            $subset =
-                array_filter(
-                    $dataset,
-                    function($row)
-                    use ($attribute, $value) {
-
-                        return
-                            $row[$attribute]
-                            == $value;
-                    }
-                );
-
-            $subsetCount = count($subset);
-
-            if ($subsetCount == 0) {
-                continue;
+            if (in_array($i, $reverse)) {
+                $nilai = ($nilai == 1) ? 0 : 1;
             }
 
-            $weightedEntropy +=
-                ($subsetCount / count($dataset))
-                *
-                $this->entropy($subset);
+            $totalSkor += $nilai;
         }
 
-        return
-            $totalEntropy
-            -
-            $weightedEntropy;
-    }
-
-    /*
-    =====================================
-    MAJORITY CLASS
-    =====================================
-    */
-
-    private function majorityClass($dataset)
-    {
-        $positif = 0;
-        $negatif = 0;
-
-        foreach ($dataset as $row) {
-
-            if ($row['hasil'] == 'positif') {
-                $positif++;
-            } else {
-                $negatif++;
-            }
+        if ($totalSkor >= 0 && $totalSkor <= 6) {
+            $hasil = "Kategori Lingkungan Buruk";
+            $alasan = "Skor Anda: $totalSkor (0 - 6)";
+        }
+        elseif ($totalSkor >= 7 && $totalSkor <= 13) {
+            $hasil = "Kategori Lingkungan Cukup";
+            $alasan = "Skor Anda: $totalSkor (7 - 13)";
+        }
+        else {
+            $hasil = "Kategori Lingkungan Baik";
+            $alasan = "Skor Anda: $totalSkor (14 - 21)";
         }
 
-        return
-            ($positif >= $negatif)
-            ? 'positif'
-            : 'negatif';
-    }
+    // ======================
+    // SIMPAN tabel skrining
+    // ======================
 
-    /*
-    =====================================
-    BUILD TREE
-    =====================================
-    */
+    $modelSkrining = new \App\Models\SkriningPneumoniaModel();
+    $p1 = ($this->request->getPost('p1') == 1) ? 'Iya' : 'Tidak';
+    $p2 = ($this->request->getPost('p2') == 1) ? 'Iya' : 'Tidak';
+    $p3 = ($this->request->getPost('p3') == 1) ? 'Iya' : 'Tidak';
+    $p4 = ($this->request->getPost('p4') == 1) ? 'Iya' : 'Tidak';
+    $p5 = ($this->request->getPost('p5') == 1) ? 'Iya' : 'Tidak';
+    $p6 = ($this->request->getPost('p6') == 1) ? 'Iya' : 'Tidak';
+    $p7 = ($this->request->getPost('p7') == 1) ? 'Iya' : 'Tidak';
+    $p8 = ($this->request->getPost('p8') == 1) ? 'Iya' : 'Tidak';
+    $p9 = ($this->request->getPost('p9') == 1) ? 'Iya' : 'Tidak';
+    $p10 = ($this->request->getPost('p10') == 1) ? 'Iya' : 'Tidak';
+    $p11 = ($this->request->getPost('p11') == 1) ? 'Iya' : 'Tidak';
+    
+    $modelSkrining->save([
+        'id_pasien_skrining' => $id_pasien_skrining,
+        'id_penyakit' => 1,
+        'tanggal' => date('Y-m-d'),
 
-    private function buildTree(
-        $dataset,
-        $attributes
-    )
-    {
+        'var1' => $p1,
+        'var2' => $p2,
+        'var3' => $p3,
+        'var4' => $p4,
+        'var5' => $p5,
+        'var6' => $p6,
+        'var7' => $p7,
+        'var8' => $p8,
+        'var9' => $p9,
+        'var10' => $p10,
+        'var11' => $p11,
+        
 
-        $classes =
-            array_unique(
-                array_column(
-                    $dataset,
-                    'hasil'
-                )
-            );
+        'hasil' => $hasil
+    ]);
 
-        /*
-        semua class sama
-        */
+   $data = $this->request->getPost();
+$data['provinsi']  = $provinsi;   // sudah berisi nama
+$data['kabupaten'] = $kabupaten;
+$data['kecamatan'] = $kecamatan;
+$data['hasil']     = $hasil;
+$data['alasan']    = $alasan;
+$data['totalSkor'] = $totalSkor;
+return view('gol_c/skrining3', $data);
+}
+    
 
-        if (count($classes) == 1) {
-            return $classes[0];
-        }
-
-        /*
-        atribut habis
-        */
-
-        if (empty($attributes)) {
-
-            return
-                $this->majorityClass(
-                    $dataset
-                );
-        }
-
-        /*
-        cari gain terbesar
-        */
-
-        $bestGain = -1;
-        $bestAttribute = null;
-
-        foreach ($attributes as $attribute) {
-
-            $gain =
-                $this->gain(
-                    $dataset,
-                    $attribute
-                );
-
-            if ($gain > $bestGain) {
-
-                $bestGain = $gain;
-                $bestAttribute = $attribute;
-            }
-        }
-
-        $tree = [
-            'attribute' => $bestAttribute,
-            'nodes' => []
-        ];
-
-        foreach (['iya', 'tidak'] as $value) {
-
-            $subset =
-                array_filter(
-                    $dataset,
-                    function($row)
-                    use ($bestAttribute, $value) {
-
-                        return
-                            $row[$bestAttribute]
-                            == $value;
-                    }
-                );
-
-            if (empty($subset)) {
-
-                $tree['nodes'][$value] =
-                    $this->majorityClass(
-                        $dataset
-                    );
-
-            } else {
-
-                $remaining =
-                    array_diff(
-                        $attributes,
-                        [$bestAttribute]
-                    );
-
-                $tree['nodes'][$value] =
-                    $this->buildTree(
-                        array_values($subset),
-                        $remaining
-                    );
-            }
-        }
-
-        return $tree;
-    }
-
-    /*
-    =====================================
-    PREDICT
-    =====================================
-    */
-
-    private function predict(
-        $tree,
-        $input
-    )
-    {
-
-        if (is_string($tree)) {
-            return $tree;
-        }
-
-        $attribute =
-            $tree['attribute'];
-
-        $value =
-            $input[$attribute];
-
-        if (
-            !isset(
-                $tree['nodes'][$value]
-            )
-        ) {
-
-            return 'negatif';
-        }
-
-        return $this->predict(
-            $tree['nodes'][$value],
-            $input
-        );
-    }
-
+   
     public function export()
     {
         $pasien =

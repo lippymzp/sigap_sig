@@ -11,374 +11,539 @@ $provinsi = $provinsi ?? '';
 $kabupaten = $kabupaten ?? '';
 $kecamatan = $kecamatan ?? '';
 $kelurahan = $kelurahan ?? '';
+$rt_rw = $rt_rw ?? '';
 
-$hasil = $hasil ?? 'Prediksi Tidak Diketahui';
+$hasil = $hasil ?? '';
 $alasan = $alasan ?? '';
+$totalSkor = $totalSkor ?? 0;
+$kategori = ($kategori_usia <= 19) ? 'Anak-anak' : 'Dewasa';
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hasil Skrining Pneumonia</title>
-
+<title>Hasil Skrining</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-
-body{
-    background:#f5f7fa;
+body {
+    background: #ffffff;
 }
 
-.card-custom{
-    max-width:1000px;
-    margin:40px auto;
-    background:white;
-    border-radius:20px;
-    padding:35px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+/* CARD */
+.card-custom {
+    border-radius: 15px;
+    border: 2px solid #00BBC2;
+    background: #f1f3f5;
+    padding: 40px;
+    max-width: 1000px;
+    margin: 40px auto;
 }
 
-.section-title{
-    font-weight:bold;
-    margin-top:30px;
-    margin-bottom:15px;
-    color:#222;
+/* TITLE */
+.section-title {
+    font-weight: bold;
+    margin: 25px 0 15px;
 }
 
-.data-box{
-    background:#f8f9fa;
-    border-radius:15px;
-    padding:25px;
+/* BOX */
+.data-box {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-.form-control[readonly]{
-    background:white;
+/* HASIL */
+.hasil-box {
+    background: #00BBC2;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
 }
 
-.table th{
-    background:#00BBC2;
-    color:white;
+/* TABLE */
+.table th {
+    background: #00BBC2;
+    color: white;
+}
+.badge {
+    padding: 8px 15px;
+    font-size: 14px;
 }
 
-.hasil-box{
-    border-radius:15px;
-    padding:25px;
-    text-align:center;
-    color:white;
-    font-size:24px;
-    font-weight:bold;
+/* TIPS */
+.tips-box {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 10px;
 }
 
-.hasil-pneumonia{
-    background:linear-gradient(135deg,#ff4d4d,#c91818);
+.tips-header {
+    background: #00BBC2;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
 }
 
-.hasil-tidak{
-    background:linear-gradient(135deg,#00c896,#007f6b);
+.tips-content {
+    background: #cfe8f3;
+    padding: 15px;
 }
 
-.hasil-tidakdiketahui{
-    background:linear-gradient(135deg,#ffb84d,#cc8400);
+.tips-content ul {
+    margin: 0;
+    padding-left: 20px;
 }
 
-.tips-card{
-    border-radius:18px;
-    overflow:hidden;
-    margin-top:20px;
-    box-shadow:0 5px 18px rgba(0,0,0,0.08);
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    border-radius: 10px;
 }
 
-.tips-header{
-    padding:15px 20px;
-    color:white;
-    font-weight:bold;
-    font-size:17px;
+/* FOOTER */
+.footer-text {
+    text-align: center;
+    margin-top: 30px;
+    color: gray;
+    font-size: 14px;
+}
+.btn-custom {
+    height: 55px;
+    border-radius: 12px;
+    font-weight: 600;
 }
 
-.bg-danger-modern{
-    background:linear-gradient(135deg,#ff6b6b,#d64545);
+
+.btn-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
 }
 
-.bg-success-modern{
-    background:linear-gradient(135deg,#00BBC2,#007f6b);
+.btn-kembali, .btn-selesai, .btn-cetak {
+    width: 160px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
-.bg-warning-modern{
-    background:linear-gradient(135deg,#ffc107,#cc8a00);
+/* warna */
+.btn-kembali {
+    background: white;
+    border: 2px solid #00BBC2;
+    color: #00BBC2;
 }
 
-.tips-content{
-    background:#fff;
-    padding:20px;
+.btn-selesai {
+    background: #00BBC2;
+    color: white;
 }
 
-.btn-wrapper{
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin-top:35px;
+.btn-cetak {
+    width: 200px;
+    height: 50px;
+    background: #555;
+    color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    
+}
+@media print {
+    .btn-wrapper, .btn-cetak {
+        display: none;
+    }
+}
+.btn-cetak-full {
+    width: 100%;                 /* full lebar */
+    height: 50px;
+    background: #00BBC2;         /* warna tosca */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
 }
 
-.btn-custom{
-    width:180px;
-    height:50px;
-    border-radius:10px;
-    font-weight:600;
+.btn-cetak-full:hover {
+    opacity: 0.9;
+}
+/* TABLE ROUNDED */
+.table {
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-.footer-text{
-    text-align:center;
-    margin-top:30px;
-    color:gray;
-    font-size:14px;
+/* HEADER */
+.table thead tr th:first-child {
+    border-top-left-radius: 12px;
 }
 
+.table thead tr th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* FOOTER (baris terakhir) */
+.table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+
+.table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+/* BUTTON STYLE */ 
+.btn-kembali { 
+    background: white; 
+    color: #00BBC2; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); } 
+
+.btn-selesai { 
+    background: #00BBC2; 
+    color: white; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+/* SPACING BIAR NGGAK RAPET */
+.section-title {
+    margin-top: 35px;
+}
+
+.data-box {
+    margin-bottom: 25px;
+}
+
+.table {
+    margin-bottom: 25px;
+}
+
+.hasil-box {
+    margin-bottom: 15px;
+}
+
+.tips-box {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.cetak-wrapper {
+    margin-top: 20px;
+}
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== CARD MODERN ===== */
+.tips-card {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-top: 20px;
+    animation: fadeUp 0.6s ease-in-out;
+    transition: 0.3s;
+}
+
+/* animasi masuk */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* HEADER */
+.tips-header-modern {
+    padding: 18px 20px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+/* CONTENT */
+.tips-content-modern {
+    padding: 18px 22px;
+    background: #f9fcfc;
+}
+
+.tips-content-modern p {
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.tips-content-modern ul {
+    padding-left: 18px;
+}
+
+.tips-content-modern li {
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.tips-content-modern li:hover {
+    transform: translateX(5px);
+}
+
+/* VARIAN WARNA */
+.bg-danger-modern {
+    background: linear-gradient(135deg, #ff6b6b, #d64545);
+}
+
+.bg-warning-modern {
+    background: linear-gradient(135deg,  #ffd86b, #c9a227);
+}
+
+.bg-success-modern {
+    background: linear-gradient(135deg, #00BBC2, #007f6b);
+}
 </style>
+
+
 </head>
 
 <body>
 
+
 <div class="card-custom">
 
-<h3 class="text-center mb-4">
-    <b>Hasil Skrining Pneumonia</b>
-</h3>
+<!-- JUDUL -->
+<h4 class="text-center mb-4">
+    <b>Hasil Skrining Kesehatan Anda</b>
+</h4>
 
-<!-- INFORMASI -->
-<div class="section-title">Informasi Pasien</div>
+<!-- INFORMASI UMUM -->
+<div class="section-title">Informasi Umum</div>
+
 
 <div class="data-box">
-
-<div class="row">
-
-<div class="col-md-6">
-
-<label>Nama</label>
-<input type="text" class="form-control mb-3" value="<?= $nama ?>" readonly>
-
-<label>NIK</label>
-<input type="text" class="form-control mb-3" value="<?= $nik ?>" readonly>
-
-<label>Jenis Kelamin</label>
-<input type="text" class="form-control mb-3" value="<?= $jenis_kelamin ?>" readonly>
-
-<label>Tanggal Lahir</label>
-<input type="text" class="form-control mb-3" value="<?= $tanggal_lahir ?>" readonly>
-
-</div>
+<div class="row g-3">
 
 <div class="col-md-6">
+    <label>Nama Lengkap</label>
+    <input type="text" class="form-control" value="<?= $nama ?>" readonly>
 
-<label>Provinsi</label>
-<input type="text" class="form-control mb-3" value="<?= $provinsi ?>" readonly>
+    <label class="mt-3">Nomor Induk Kependudukan</label>
+    <input type="text" class="form-control" value="<?= $nik ?>" readonly>
 
-<label>Kabupaten</label>
-<input type="text" class="form-control mb-3" value="<?= $kabupaten ?>" readonly>
+    <label class="mt-3">Jenis Kelamin</label>
+    <input type="text" class="form-control" value="<?= $jenis_kelamin ?>" readonly>
 
-<label>Kecamatan</label>
-<input type="text" class="form-control mb-3" value="<?= $kecamatan ?>" readonly>
+    <label class="mt-3">Tanggal Lahir</label>
+    <input type="text" class="form-control" value="<?= $tanggal_lahir ?>" readonly>
+<label class="mt-3">Usia</label>
+<label class="mt-3">Kategori Usia</label>
+<input type="text" class="form-control" value="<?= $kategori ?>" readonly>
+    
+</div>
 
-<label>Kelurahan</label>
-<input type="text" class="form-control mb-3" value="<?= $kelurahan ?>" readonly>
+<div class="col-md-6">
+    <label>Tanggal Skrining</label>
+    <input type="text" 
+       class="form-control text-white" 
+       style="background:#00BBC2;" 
+       value="<?= date('d-m-Y') ?>" 
+       readonly>
 
+    <label class="mt-3">Provinsi</label>
+    <input type="text" class="form-control" value="<?= $provinsi ?>" readonly>
+
+    <label class="mt-3">Kabupaten</label>
+    <input type="text" class="form-control" value="<?= $kabupaten ?>" readonly>
+
+    <label class="mt-3">Kecamatan</label>
+    <input type="text" class="form-control" value="<?= $kecamatan ?>" readonly>
+
+    <label class="mt-3">Kelurahan</label>
+    <input type="text" class="form-control" value="<?= $kelurahan ?>" readonly>
+
+    <label class="mt-3">RT/RW</label>
+    <input type="text" class="form-control" value="<?= $rt_rw ?>" readonly>
 </div>
 
 </div>
-
 </div>
 
-<!-- RINCIAN -->
+<!-- RINCIAN JAWABAN -->
 <div class="section-title">Rincian Jawaban</div>
 
 <table class="table table-bordered">
-
 <thead>
 <tr>
-    <th width="5%">No</th>
-    <th>Pertanyaan</th>
-    <th width="15%">Jawaban</th>
+    <th class="text-center">No</th>
+    <th class="text-start">Pertanyaan</th>
+    <th class="text-center">Jawaban</th>
 </tr>
 </thead>
-
 <tbody>
 
-<?php
-
+<?php 
 $pertanyaan = [
-    1 => "Apakah Anda mengalami batuk dalam 7 hari terakhir?",
-    2 => "Apakah Anda mengeluarkan dahak saat batuk?",
-    3 => "Apakah Anda mengalami sesak napas?",
-    4 => "Apakah Anda merasakan nyeri dada saat bernapas atau batuk?",
-    5 => "Apakah Anda mengalami mual atau muntah?",
-    6 => "Apakah Anda merasa lemas?",
-    7 => "Apakah nafsu makan Anda menurun?",
-    8 => "Apakah Anda mengalami demam?",
-    9 => "Apakah napas terasa cepat?",
-    10 => "Apakah terdengar bunyi dahak saat bernapas?",
-    11 => "Apakah terdengar bunyi mengi?"
+    "Apakah Anda mengalami batuk dalam 7 hari terakhir?",
+    "Apakah Anda mengeluarkan dahak (sputum) saat batuk?",
+    "Apakah Anda mengalami sesak napas?",
+    "Apakah Anda merasakan nyeri dada saat bernapas atau batuk?",
+    "Apakah Anda mengalami mual atau muntah?",
+    "Apakah Anda merasa lemas?",
+    "Apakah nafsu makan Anda menurun?",
+    "Apakah Anda mengalami demam (≥38 derajat celcius)?",
+    "Apakah napas Anda terasa lebih cepat dari biasanya?",
+    "Apakah saat bernapas terdengar bunyi seperti mendengkur atau seperti ada dahak di dada?",
+    "Apakah saat Anda bernapas terdengar bunyi mengi (seperti siulan)?"
 ];
-
-foreach($pertanyaan as $no => $text):
-
-    $jawaban = ${"p".$no} ?? 0;
-
 ?>
 
+<?php foreach($pertanyaan as $i => $text): ?>
 <tr>
+    <td class="text-center"><?= $i+1 ?></td>
+    <td class="text-start"><?= $text ?></td>
+    <td class="text-center">
 
-<td class="text-center"><?= $no ?></td>
+<?php
+$value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
 
-<td><?= $text ?></td>
-
-<td class="text-center">
-
-<?php if($jawaban == 1): ?>
-
-<span class="badge bg-success">Ya</span>
-
+if ($value == 1):
+?>
+    <span class="badge bg-success">Ya</span>
 <?php else: ?>
-
-<span class="badge bg-danger">Tidak</span>
-
+    <span class="badge bg-danger">Tidak</span>
 <?php endif; ?>
 
 </td>
-
 </tr>
-
 <?php endforeach; ?>
+
+
 
 </tbody>
 </table>
 
 <!-- HASIL -->
-<div class="section-title">Hasil Prediksi</div>
+<div class="section-title">Hasil</div>
+<p class="text-muted">
 
-<?php
 
-$classHasil = 'hasil-tidakdiketahui';
 
-if($hasil == 'Risiko Pneumonia'){
-    $classHasil = 'hasil-pneumonia';
-}
-elseif($hasil == 'Tidak Risiko Pneumonia'){
-    $classHasil = 'hasil-tidak';
-}
-
-?>
-
-<div class="hasil-box <?= $classHasil ?>">
+<div class="hasil-box">
     <?= $hasil ?>
 </div>
 
-<p class="text-center mt-3 text-muted">
+<p class="text-center mt-2 text-muted">
     <?= $alasan ?>
 </p>
 
 <!-- REKOMENDASI -->
-
 <div class="section-title">Rekomendasi</div>
 
-<?php if($hasil == 'Risiko Pneumonia'): ?>
+<!-- TIPS / REKOMENDASI BERDASARKAN HASIL -->
+<?php if (strpos($hasil, 'Buruk') !== false): ?>
 
-<div class="tips-card">
+    <div class="tips-card">
+    <div class="tips-header-modern bg-danger-modern">
+        🚨🦟 Risiko Tinggi Nyamuk Aedes aegypti
+    </div>
 
-<div class="tips-header bg-danger-modern">
-🚨 Risiko Pneumonia
+    <div class="tips-content-modern">
+        <p>Lingkungan sangat berisiko terhadap perkembangan nyamuk penyebab DBD.</p>
+
+        <ul>
+            <li>🧼 Lakukan 3M Plus secara menyeluruh</li>
+            <li>🪣 Bersihkan tempat air minimal 1x seminggu</li>
+            <li>💊 Gunakan larvasida (abate)</li>
+            <li>👕 Hindari menggantung pakaian</li>
+            <li>🔍 Rutin cek jentik di rumah</li>
+            <li>🏥 Segera ke fasilitas kesehatan jika ada gejala</li>
+        </ul>
+    </div>
 </div>
 
-<div class="tips-content">
+<?php elseif (strpos($hasil, 'Cukup') !== false): ?>
 
-<p>
-Berdasarkan hasil skrining C4.5 terdapat indikasi pneumonia.
-</p>
+    <div class="tips-box">
+        <div class="tips-card">
+    <div class="tips-header-modern bg-warning-modern">
+        ⚡🦟 Lingkungan Perlu Ditingkatkan
+    </div>
 
-<ul>
-    <li>Segera lakukan pemeriksaan medis</li>
-    <li>Istirahat cukup</li>
-    <li>Perbanyak minum air putih</li>
-    <li>Gunakan masker bila batuk</li>
-    <li>Hindari asap rokok</li>
-</ul>
+    <div class="tips-content-modern">
+        <p>Pencegahan sudah dilakukan, tetapi belum konsisten.</p>
 
-</div>
-</div>
-
-<?php elseif($hasil == 'Tidak Risiko Pneumonia'): ?>
-
-<div class="tips-card">
-
-<div class="tips-header bg-success-modern">
-✅ Tidak Terindikasi Pneumonia
-</div>
-
-<div class="tips-content">
-
-<p>
-Hasil skrining menunjukkan risiko pneumonia rendah.
-</p>
-
-<ul>
-    <li>Tetap menjaga kesehatan</li>
-    <li>Konsumsi makanan bergizi</li>
-    <li>Olahraga rutin</li>
-    <li>Istirahat cukup</li>
-    <li>Tetap waspada bila muncul gejala</li>
-</ul>
-
-</div>
+        <ul>
+            <li>🧽 Tingkatkan rutinitas 3M Plus</li>
+            <li>👨‍👩‍👧 Libatkan seluruh keluarga</li>
+            <li>🔍 Cek jentik setiap minggu</li>
+            <li>💡 Perbaiki ventilasi & cahaya rumah</li>
+            <li>🌿 Gunakan pengusir nyamuk alami</li>
+        </ul>
+    </div>
 </div>
 
 <?php else: ?>
 
-<div class="tips-card">
+    <div class="tips-card">
+    <div class="tips-header-modern bg-success-modern">
+        🎉✨ Lingkungan Sehat & Terjaga
+    </div>
 
-<div class="tips-header bg-warning-modern">
-⚠️ Prediksi Tidak Diketahui
-</div>
+    <div class="tips-content-modern">
+        <p>Kondisi lingkungan sudah baik dan aman dari risiko tinggi DBD.</p>
 
-<div class="tips-content">
-
-<p>
-Data gejala belum cukup untuk menentukan hasil prediksi.
-</p>
-
-<ul>
-    <li>Pastikan jawaban sudah benar</li>
-    <li>Lakukan skrining ulang</li>
-    <li>Konsultasi ke tenaga kesehatan bila perlu</li>
-</ul>
-
-</div>
+        <ul>
+            <li>🌟 Pertahankan 3M Plus</li>
+            <li>🔍 Tetap rutin cek jentik</li>
+            <li>🏘️ Ajak lingkungan sekitar ikut menjaga</li>
+            <li>💚 Jaga PHBS keluarga</li>
+            <li>🌧️ Tetap waspada musim hujan</li>
+        </ul>
+    </div>
 </div>
 
 <?php endif; ?>
-
 <!-- BUTTON -->
 
+<!-- CETAK (SENDIRI DI ATAS) -->
+<div class="cetak-wrapper">
+    <button onclick="window.print()" class="btn-cetak-full">
+        🖨️ Cetak Hasil
+    </button>
+</div>
+
+<!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-<button onclick="window.print()" class="btn btn-dark btn-custom">
-🖨 Cetak
-</button>
+    <a href="/skriningdbd" class="btn btn-kembali">
+        Kembali
+    </a>
 
-<a href="<?= base_url('/skriningpneumonia') ?>" class="btn btn-outline-info btn-custom">
-Kembali
-</a>
+   <a href="<?= base_url('/') ?>" class="btn btn-selesai">
+    Selesai
+    </a>
 
-<a href="<?= base_url('/') ?>" class="btn btn-info text-white btn-custom">
-Selesai
-</a>
+</div>
+<!-- FOOTER -->
+<div class="footer-text">
+    Halaman 1 dari 1 <br>
+    Laporan ini dihasilkan otomatis dari SIGAP
+</div>
 
 </div>
 
-<div class="footer-text">
-Laporan otomatis SIGAP - Sistem Skrining Pneumonia
 </div>
 
 </div>
 
 </body>
 </html>
-
 <?= $this->include('layout/footer') ?>
