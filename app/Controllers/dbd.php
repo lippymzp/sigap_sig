@@ -10,7 +10,7 @@ use Dompdf\Options;
 
 class Dbd extends BaseController
 {
-    protected $funfact;
+    protected FunfactModel $funfact;
     protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
 
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
@@ -320,7 +320,7 @@ class Dbd extends BaseController
     // ==============================================================
     // FUNGSI BARU: PROSES UPDATE DATA (DATABASE)
     // ==============================================================
-    public function edit_pelaporan($id)
+    public function edit_pelaporan(int $id)
     {
         $laporan = $this->pelaporanModel->find($id);
 
@@ -340,7 +340,7 @@ class Dbd extends BaseController
 
     // FUNGSI BARU: PROSES UPDATE DATA (DATABASE)
     // ==============================================================
-    public function update_pelaporan($id)
+    public function update_pelaporan(int $id)
     {
         $periodeLengkap = $this->request->getPost('periode'); 
         $idPuskesmas    = $this->request->getPost('id_puskesmas');
@@ -446,8 +446,8 @@ class Dbd extends BaseController
         $start = $this->request->getGet('start');
         $end   = $this->request->getGet('end');
         $statusFilter = $this->request->getGet('status');
-        $kelFilter = strtolower($this->request->getGet('kelurahan'));
-        $posFilter = strtolower($this->request->getGet('posyandu'));
+        $kelFilter = strtolower((string) ($this->request->getGet('kelurahan') ?? ''));
+        $posFilter = strtolower((string) ($this->request->getGet('posyandu') ?? ''));
 
         $filtered = [];
         $totalPositif = 0;
@@ -459,13 +459,12 @@ class Dbd extends BaseController
             $status = $data ? 'sudah' : 'belum';
 
             // filter posyandu
-            if ($posFilter && strpos(strtolower($pos), $posFilter) === false) continue;
-
+            if ($posFilter && strpos(strtolower((string) $pos), $posFilter) === false) continue;
             // filter status
             if ($statusFilter && $status != $statusFilter) continue;
 
             // filter kelurahan
-            if ($kelFilter && strpos(strtolower($data['kelurahan'] ?? ''), $kelFilter) === false) continue;
+            if ($kelFilter && strpos(strtolower((string) ($data['kelurahan'] ?? '')), $kelFilter) === false) continue;
 
             // filter tanggal (AMAN)
             $tanggal = $data['tanggalinput'] ?? null;
@@ -491,7 +490,7 @@ class Dbd extends BaseController
     }
 
     // ================= DETAIL =================
-    public function detail_pelaporan($id)
+    public function detail_pelaporan(int $id)
     {
         // 1. Ambil data dari database berdasarkan ID
         $laporan = $this->pelaporanModel->find($id);
@@ -510,7 +509,9 @@ class Dbd extends BaseController
         ];
 
         $laporan['nama_puskesmas'] = ($laporan['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
-        $laporan['nkelurahan'] = isset($kelurahanMap[$laporan['id_kelurahan']]) ? $kelurahanMap[$laporan['id_kelurahan']] : '-';
+        $laporan['nkelurahan'] = isset($kelurahanMap[(string)$laporan['id_kelurahan']])
+        ? $kelurahanMap[(string)$laporan['id_kelurahan']]
+          : '-';
         $laporan['nama_posyandu']  = 'CATLEYA ' . $laporan['id_posyandu'];
 
         $data = [
@@ -907,7 +908,7 @@ public function rekap_skrining()
     ;
 }
 
-public function hapus_skrining($id)
+public function hapus_skrining(int $id)
 {
     $model = new \App\Models\SkriningdbdModel();
 
@@ -1287,7 +1288,7 @@ public function hapus_skrining($id)
     // EDIT
     // =========================
 
-    public function editFunfact($id)
+    public function editFunfact(int $id)
     {
         $f = $this->funfact
             ->where('id_funfact', $id)
@@ -1314,7 +1315,7 @@ public function hapus_skrining($id)
     // UPDATE
     // =========================
 
-    public function updateFunfact($id)
+    public function updateFunfact(int $id)
 {
     $funfact = $this->funfact->find($id);
 
@@ -1401,7 +1402,7 @@ return redirect()->to(base_url('funfact?status=upload'))
     // HAPUS
     // =========================
 
-    public function hapusFunfact($id)
+    public function hapusFunfact(int $id)
 {
     $funfact = $this->funfact->find($id);
 
@@ -1432,7 +1433,7 @@ return redirect()->to(base_url('funfact?status=upload'))
     // UPLOAD FUNFACT
     // =========================
 
-    public function uploadFunfact($id)
+    public function uploadFunfact(int $id)
     {
         $model = new FunfactModel();
 
@@ -1448,7 +1449,7 @@ return redirect()->to(base_url('funfact?status=upload'))
         VIEW
 ========================= */
 
- public function view($id)
+ public function view(int $id)
 {
     $funfact = $this->funfact->find($id);
 
@@ -1476,7 +1477,7 @@ return redirect()->to(base_url('funfact?status=upload'))
 SIMPAN KE DRAFT
 ========================= */
 
-public function simpanDraft($id)
+public function simpanDraft(int $id)
 {
     $funfact = $this->funfact->find($id);
 
@@ -1673,7 +1674,7 @@ public function pelaporan_kader()
     return view('gol_a/daftar_laporan_kader_admin/rekap_kader', $data);
 }
 
-    public function view_laporan($id)
+    public function view_laporan(int $id)
     {
         $db = \Config\Database::connect();
         
