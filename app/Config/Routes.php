@@ -18,6 +18,7 @@ $routes->get('/dbd', 'Home::dbd');
 $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
+$routes->get('/grafik_pneumonia', 'Home::grafik');
 
 /* ========================= */
 /* SKRINING Pneumonia */

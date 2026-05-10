@@ -68,27 +68,9 @@
     overflow: hidden;
     position: relative;
 }
-
-.pneu-hero h1{
-    font-size: 58px;
-    font-weight: 700;
-    margin-bottom: 18px;
-}
-
-.pneu-hero p{
-    font-size: 19px;
-    line-height: 1.8;
-    max-width: 520px;
-}
-
-.hero-btn{
-    background: #00a8cc;
-    color: #fff;
-    padding: 14px 30px;
-    border-radius: 50px;
-    font-weight: 600;
-    border: none;
-}
+.pneu-hero h1{ font-size: 58px; font-weight: 700; margin-bottom: 18px;}
+.pneu-hero p{font-size: 19px; line-height: 1.8; max-width: 520px; }
+.hero-btn{ background: #00a8cc; color: #fff; padding: 14px 30px; border-radius: 50px; font-weight: 600; border: none;}
 
 .hero-btn:hover{
     background:#0088aa;
@@ -122,7 +104,51 @@
     50%{transform:translateY(-10px);}
     100%{transform:translateY(0);}
 }
+.grafik-container{
+    width: 1000px;
+    margin: auto;
+}
 
+/* BUTTON POSISI */
+.btn-wrapper{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+/* BUTTON */
+.btn-selengkapnya{
+    background: linear-gradient(
+        135deg,
+        #14c7cf,
+        #18b7d3
+    );
+
+    color: white;
+    text-decoration: none;
+
+    padding: 12px 24px;
+    border-radius: 14px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+    transition: 0.3s;
+}
+
+.btn-selengkapnya:hover{
+    transform: translateY(-2px);
+
+    background: linear-gradient(
+        135deg,
+        #11b8c0,
+        #149fc0
+    );
+
+    color: white;
+}
 /* ================= FILTER ================= */
 .filter-container {
     display:flex;
@@ -203,10 +229,13 @@
 <h4 class="mb-4" style="color:#1aa6a6; font-weight:600;">
     Fitur Menarik yang Bisa Dimanfaatkan
 </h4>
-
 <div class="row g-4 justify-content-center">
-
-<!-- GRAFIK -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- GRAFIK FITUR -->
 <div class="col-md-3">
 <a href="#grafik" class="fitur-box d-block" data-target="grafik">
     <div class="icon">
@@ -215,8 +244,7 @@
     Grafik Kesehatan
 </a>
 </div>
-
-<!-- MAP -->
+<!-- MAP FITUR -->
 <div class="col-md-3">
 <a href="#mapSection" class="fitur-box d-block" data-target="map">
     <div class="icon">
@@ -225,8 +253,7 @@
     Peta Persebaran
 </a>
 </div>
-
-<!-- ARTIKEL -->
+<!-- ARTIKEL FITUR-->
 <div class="col-md-3">
 <a href="#" class="fitur-box d-block" data-target="artikel">
     <div class="icon">
@@ -235,8 +262,7 @@
     Artikel
 </a>
 </div>
-
-<!-- SKRINING -->
+<!-- SKRINING FITUR -->
 <div class="col-md-3">
 
 <a href="<?= base_url('skriningpneumonia') ?>" class="fitur-box d-block" data-target="skrining">
@@ -246,57 +272,34 @@
     Skrining
 </a>
 </div>
-
 </div>
-
 </section>
-
 <style>
 /* BOX FITUR */
 .fitur-box {
-    padding: 15px;
-    border-radius: 20px;
-    text-align: center;
-    color: white;
+    padding: 15px; border-radius: 20px; text-align: center; color: white;
     background: linear-gradient(135deg, #20c997, #0dcaf0);
-    text-decoration: none;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    transition: 0.3s;
+    text-decoration: none; box-shadow: 0 6px 15px rgba(0,0,0,0.15); transition: 0.3s;
 }
-
 /* HOVER */
 .fitur-box:hover {
-    transform: translateY(-5px);
-    color: white;
+    transform: translateY(-5px); color: white;
 }
-
 /* AKTIF */
 .fitur-box.active {
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
-
 /* ICON GARIS */
 .icon {
     margin-bottom: 10px;
 }
-
 .icon span {
-    display: inline-block;
-    width: 3px;
-    height: 18px;
-    background: white;
-    margin: 0 2px;
-    border-radius: 2px;
+    display: inline-block; width: 3px; height: 18px; background: white; margin: 0 2px; border-radius: 2px;
 }
-
 .icon span:nth-child(2) {
     height: 24px;
 }
-
-.icon span:nth-child(3) {
-    height: 14px;
-}
+.icon span:nth-child(3) {height: 14px;}
 </style>
 
 <script>
@@ -316,6 +319,56 @@ fitur.forEach(btn => {
     });
 });
 </script>
+
+
+<!-- INSIGHT -->
+<section class="container mt-5" data-aos="fade-up">
+
+<h6 class="text-center text-muted">Insights</h6>
+<h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
+
+<div class="carousel-wrapper">
+
+<!-- CTA SKRINING -->
+<section class="container mt-5" data-aos="zoom-in">
+
+<div class="cta-box shadow-sm">
+
+    <h5 class="fw-bold">
+        Mengalami Gejala?
+    </h5>
+
+    <p>
+        Tubuhmu sedang memberi sinyal, jangan diabaikan.<br>
+        Yuk, kenali gejala pneumonia dan lakukan
+        <span style="color:red;">skrining</span> sejak dini!
+    </p>
+
+    <a href="<?= base_url('skrining') ?>"
+       class="btn btn-teal px-4 py-2 shadow">
+
+        Mulai Skrining →
+
+    </a>
+
+</div>
+
+</section>
+<style>
+
+
+/* CTA SKRINING*/
+.cta-box{
+    border-radius: 20px;
+    border: 2px solid #16c7cf;
+    background: white;
+
+    padding: 40px;
+    text-align: center;
+}
+
+</style>
+
 
 <!-- GRAFIK -->
  
@@ -377,7 +430,7 @@ h5 {
 </head>
 <body>
 
-<div class="container mt-4">
+<div id="grafik" class="container mt-4">
 <h4 class="judul-grafik">Grafik Pneumonia</h4>
   <div class="card-custom">
 
@@ -413,10 +466,15 @@ h5 {
     <div class="chart-container">
       <canvas id="chartKasus"></canvas>
     </div>
-
-  </div>
-
+    
 </div>
+<!-- BUTTON -->
+<div class="btn-wrapper">
+    <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
+        Lihat Selengkapnya →
+    </a>
+</div>
+
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -456,6 +514,7 @@ new Chart(ctx, {
     }
   }
 });
+
 </script>
 
 </body>

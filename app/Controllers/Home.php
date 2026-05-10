@@ -40,6 +40,14 @@ class Home extends BaseController
     {
     return view('gol_d/skrining_diare');
     }
+    
+
+
+    public function grafik()
+    {
+    return view('grafik_pneumonia');
+    }
+
 public function diare_detail()
 {
     return view('gol_d/diare_detail');
