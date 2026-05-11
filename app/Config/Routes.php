@@ -348,10 +348,10 @@ $routes->get('hasil_data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->get('dbd/view_laporan_kader/admin/(:num)', 'Dbd::view_laporan/$1');
 
 // ================= MANEJEMEN USER =================
-$routes->get('/manajemen-user', 'ManajemenUser::index');
-$routes->get('/manajemen-user/tambah', 'ManajemenUser::form');
-$routes->post('/manajemen-user/simpan', 'ManajemenUser::simpan');
-$routes->get('/manajemen-user/edit/(:num)', 'ManajemenUser::form/$1/edit');
-$routes->post('/manajemen-user/update/(:num)', 'ManajemenUser::update/$1');
-$routes->get('/manajemen-user/view/(:num)', 'ManajemenUser::form/$1/view');
-$routes->get('/manajemen-user/hapus/(:num)', 'ManajemenUser::hapus/$1');
+$routes->get('/manajemen_user', 'ManajemenUser::index');
+$routes->get('/manajemen_user/tambah', 'ManajemenUser::form');
+$routes->post('/manajemen_user/simpan', 'ManajemenUser::simpan');
+$routes->get('/manajemen_user/edit/(:num)', 'ManajemenUser::form/$1/edit');
+$routes->post('/manajemen_user/update/(:num)', 'ManajemenUser::update/$1');
+$routes->get('/manajemen_user/view/(:num)', 'ManajemenUser::form/$1/view');
+$routes->get('/manajemen_user/hapus/(:num)', 'ManajemenUser::hapus/$1');
