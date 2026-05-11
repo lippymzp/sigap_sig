@@ -178,6 +178,232 @@
     width: 100% !important;
     height: 100% !important;
 }
+
+/* ================= RESPONSIVE FIX GLOBAL ================= */
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+
+    .welcome-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 25px;
+    }
+
+    .welcome-icon img {
+        width: 220px !important;
+    }
+
+    .stat-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .stat-card {
+        flex: 1 1 calc(50% - 16px);
+        min-width: 250px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .filter-row {
+        gap: 12px;
+    }
+
+    .filter-col {
+        flex: 1 1 calc(50% - 12px);
+        max-width: unset;
+    }
+
+    .berita-card {
+        min-width: 85%;
+    }
+
+    .funfact-card {
+        min-width: 85%;
+        max-width: 85%;
+    }
+
+    .funfact-body img {
+        width: 180px;
+        height: 130px;
+    }
+}
+
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+    .welcome-box {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .welcome-text h3 {
+        font-size: 22px;
+        line-height: 1.4;
+    }
+
+    .welcome-text h5 {
+        font-size: 15px;
+    }
+
+    .welcome-text p {
+        font-size: 14px;
+    }
+
+    .welcome-icon {
+        width: 100%;
+        text-align: center;
+    }
+
+    .welcome-icon img {
+        width: 180px !important;
+    }
+
+    .stat-row {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .slide-toggle-container {
+        max-width: 100%;
+        height: 42px;
+    }
+
+    .btn-toggle {
+        font-size: 13px;
+    }
+
+    .filter-col {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    #chartWrapper {
+        height: 300px !important;
+    }
+
+    .custom-modal-content {
+        width: 95%;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+    }
+
+    .info-box {
+        padding: 18px;
+    }
+
+    .info-table {
+        font-size: 13px;
+    }
+
+    .info-table tr td.label {
+        width: 42%;
+    }
+
+    .section-title h2 {
+        font-size: 28px;
+    }
+
+    .section-title p {
+        font-size: 14px;
+    }
+
+    .berita-card {
+        min-width: 95%;
+        flex-direction: column;
+        text-align: center;
+        gap: 18px;
+    }
+
+    .berita-content {
+        width: 100%;
+    }
+
+    .berita-content h3 {
+        font-size: 22px;
+    }
+
+    .berita-card img {
+        width: 100%;
+        height: 200px;
+    }
+
+    .funfact-card {
+        min-width: 95%;
+        max-width: 95%;
+    }
+
+    .funfact-body {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .funfact-text {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .funfact-body img {
+        width: 100%;
+        height: 200px;
+    }
+
+    .funfact-inner {
+        padding: 35px 20px 20px;
+    }
+}
+
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 480px) {
+
+    .section-title h2 {
+        font-size: 24px;
+    }
+
+    .berita-content h3 {
+        font-size: 18px;
+    }
+
+    .funfact-inner h3 {
+        font-size: 16px;
+    }
+
+    .funfact-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .welcome-text h3 {
+        font-size: 18px;
+    }
+
+    .modal-title {
+        font-size: 16px;
+    }
+
+    .info-table {
+        font-size: 12px;
+    }
+}
+
 </style>
 <?= $this->endSection(); ?>
 

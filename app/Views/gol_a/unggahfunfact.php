@@ -132,9 +132,8 @@ textarea:invalid{
     flex-wrap:nowrap;
     overflow-x:auto;
     overflow-y:hidden;
-    /* HIDE SCROLLBAR */
-    scrollbar-width:none;      /* Firefox */
-    -ms-overflow-style:none;   /* IE & Edge */
+    scrollbar-width:none;
+    -ms-overflow-style:none;
 }
 
 .editor-toolbar::-webkit-scrollbar{
@@ -220,25 +219,30 @@ textarea:invalid{
 }
 
 .editor-content:empty::before{
-    content: attr(placeholder);
+    content:attr(placeholder);
     color:#cfcfcf;
     pointer-events:none;
     display:block;
 }
 
-.editor-content img{
+/* IMAGE EDITOR */
+
+.editor-content img,
+.editor-image{
     max-width:100%;
     min-width:120px;
     width:300px;
-    height:auto;
+    height:auto !important;
     border-radius:12px;
     margin:20px auto;
     display:block;
     cursor:grab;
     user-select:none;
+    position:relative;
 }
 
-.editor-content img.selected-image{
+.editor-content img.selected-image,
+.editor-image.selected-image{
     outline:3px solid #18c4d1;
 }
 
@@ -377,11 +381,12 @@ textarea:invalid{
 /* ACTION BUTTON AREA */
 
 .custom-action{
+    margin-top:34px;
+    padding-top:22px;
     display:flex;
     align-items:center;
-    justify-content:flex-start;
-    gap:14px;
-    margin-top:20px;
+    justify-content:space-between;
+    gap:16px;
     flex-wrap:wrap;
 }
 
@@ -627,13 +632,50 @@ textarea:invalid{
     .toolbar-divider{
         height:20px;
     }
+
+    .editor-content{
+        font-size:15px;
+    }
 }
+
+/* ================= FIX FOOTER FINAL ================= */
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+.content-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* hanya atur upload-side, jangan paksa col-lg-4 */
+.upload-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+
 
 </style>
 
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
+
+<div class="content-wrapper">
 
     <div class="upload-wrapper">
 
@@ -663,7 +705,7 @@ textarea:invalid{
 
 <input type="hidden" name="id_funfact" value="<?= $f['id_funfact'] ?? '' ?>">
 
-            <div class="row mt-5 align-items-center">
+            <div class="row mt-5 align-items-start">
 
                 <div class="col-lg-8 pe-lg-5">
 
@@ -958,55 +1000,62 @@ textarea:invalid{
 
                 </div>
 
-                <!-- RIGHT -->
+ <!-- RIGHT -->
+<div class="col-lg-4">
 
-                <div class="col-lg-4 d-flex align-items-center justify-content-center">
+    <div class="upload-side">
 
-                    <div class="upload-side w-100">
+        <div class="upload-box">
 
-                       <!-- GAMBAR -->
-
-<div class="upload-box">
-
-    <div class="upload-title">
-        UNGGAH GAMBAR
-    </div>
-
-    <div class="upload-area" id="gambarArea">
-
-        <input type="file"
-               id="gambarInput"
-               name="gambar_funfact"
-               accept=".png,.jpg,.jpeg,.webp"
-               hidden>
-
-        <img id="previewImage"
-             class="preview-image"
-             src="<?= !empty($f['gambar_funfact']) ? base_url('uploads/funfact/'.$f['gambar_funfact']) : '' ?>"
-             style="<?= !empty($f['gambar_funfact']) ? 'display:block;' : 'display:none;' ?>">
-
-        <div id="uploadContent"
-             style="<?= !empty($f['gambar_funfact']) ? 'display:none;' : '' ?>">
-
-            <div class="upload-icon">
-                <i class="fa fa-upload"></i>
+            <div class="upload-title">
+                UNGGAH GAMBAR
             </div>
 
-            <div class="upload-click">
-                KLIK UNTUK UNGGAH
+            <div class="upload-area" id="gambarArea">
+
+                <input
+                    type="file"
+                    id="gambarInput"
+                    name="gambar_funfact"
+                    accept=".png,.jpg,.jpeg,.webp"
+                    hidden
+                >
+
+                <img
+                    id="previewImage"
+                    class="preview-image"
+                    src="<?= !empty($f['gambar_funfact']) ? base_url('uploads/funfact/'.$f['gambar_funfact']) : '' ?>"
+                    style="<?= !empty($f['gambar_funfact']) ? 'display:block;' : 'display:none;' ?>"
+                >
+
+                <div
+                    id="uploadContent"
+                    style="<?= !empty($f['gambar_funfact']) ? 'display:none;' : '' ?>"
+                >
+
+                    <div class="upload-icon">
+                        <i class="fa fa-upload"></i>
+                    </div>
+
+                    <div class="upload-click">
+                        KLIK UNTUK UNGGAH
+                    </div>
+
+                    <div class="upload-note">
+                        PNG, JPG, atau WEBP (maks 5mb)
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="upload-note">
-                PNG,JPG, atau WEBP (maks 5mb)
+            <div class="error-upload" id="gambarError">
+                <i class="fa fa-circle-exclamation me-1"></i>
+                Gambar wajib diunggah
             </div>
 
         </div>
 
-    </div>
-
-    <div class="error-upload" id="gambarError">
-        <i class="fa fa-circle-exclamation me-1"></i>
-        Gambar wajib diunggah
     </div>
 
 </div>
@@ -1200,6 +1249,9 @@ if(submitBtn){
 
     // munculkan popup berhasil
     document.getElementById('successModal').style.display = 'flex';
+
+// simpan status modal
+sessionStorage.setItem('showSuccessUploadModal', 'true');
 
 <?php endif; ?>
 
@@ -1450,6 +1502,7 @@ document.getElementById('editorImageInput')
             img.src = e.target.result;
 
             img.classList.add('editor-image');
+            img.setAttribute('data-base64', e.target.result);
 
             img.style.width = '300px';
             img.style.maxWidth = '100%';
@@ -1982,7 +2035,31 @@ if(selesaiBtn)
 
         e.preventDefault();
 
-        document.getElementById('funfactForm').submit();
+        // tutup modal
+        document.getElementById('successModal').style.display = 'none';
+
+        // hapus autosave
+        clearLocalStorage();
+
+        // reset form
+        document.getElementById('funfactForm').reset();
+
+        // kosongkan editor
+        document.getElementById('editor').innerHTML = '';
+
+        // kosongkan textarea hidden
+        document.getElementById('hiddenTextarea').value = '';
+
+        // reset gambar
+        document.getElementById('previewImage').src = '';
+        document.getElementById('previewImage').style.display = 'none';
+
+        document.getElementById('uploadContent').style.display = 'block';
+
+        document.getElementById('gambarInput').value = '';
+
+        // kembali ke halaman funfact / terunggah
+        window.location.href = "<?= site_url('funfact') ?>";
 
     });
 }
@@ -2096,7 +2173,7 @@ const confirmCancelBtn = document.getElementById('confirmCancelBtn');
 
 if(confirmCancelBtn){
     confirmCancelBtn.addEventListener('click', function(){
-
+        sessionStorage.setItem('showSuccessModal', 'true');
         window.history.back();
 
     });
@@ -2135,10 +2212,31 @@ window.addEventListener('load', function(){
 
 });
 
+/* =========================
+SHOW SUCCESS MODAL AFTER BACK
+========================= */
+
+window.addEventListener('pageshow', function(event){
+
+    // cek apakah sebelumnya klik tombol back
+    const showModal =
+    sessionStorage.getItem('showSuccessUploadModal');
+
+    if(showModal === 'true')
+    {
+        document.getElementById('successModal')
+        .style.display = 'flex';
+
+        // hapus agar tidak muncul terus
+        sessionStorage.removeItem('showSuccessUploadModal');
+    }
+
+});
+
+let isUploading = false;
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-
-</div>
 
 <?= $this->endSection() ?>

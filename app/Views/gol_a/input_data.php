@@ -7,7 +7,7 @@
 <style>
 
 /* ===== STEP HEADER ===== */
-/* ===== STEP FIGMA FIX ===== */
+
 /* ===== STEP FINAL FIX ===== */
 .step-progress{
     position:relative;
@@ -76,24 +76,130 @@
     border-radius:15px;
 }
 
-/* ===== POPUP ===== */
+/* =========================
+   POPUP STYLE
+========================= */
 .popup{
     position:fixed;
-    top:0;left:0;
+    top:0;
+    left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.45);
     display:none;
     justify-content:center;
     align-items:center;
+    z-index:9999;
+    animation:fadeIn 0.2s ease;
 }
+
 .popup-box{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    width:320px;
+    width:360px;
+    background:#fff;
+    border-radius:24px;
+    padding:35px 30px;
     text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+    animation:popupScale 0.25s ease;
 }
+
+/* ICON */
+.popup-icon{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 18px auto;
+    font-size:38px;
+    font-weight:bold;
+}
+
+/* BERHASIL */
+.popup-success .popup-icon{
+    background:#e9fff3;
+    color:#00b96b;
+}
+
+/* GAGAL */
+.popup-error .popup-icon{
+    background:#ffeaea;
+    color:#ff4d4f;
+}
+
+/* TITLE */
+.popup-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#1e293b;
+}
+
+/* TEXT */
+.popup-text{
+    color:#64748b;
+    font-size:15px;
+    margin-bottom:22px;
+    line-height:1.5;
+}
+
+/* BUTTON */
+.popup-btn{
+    border:none;
+    background:#00BBC2;
+    color:white;
+    padding:10px 28px;
+    border-radius:14px;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.popup-btn:hover{
+    background:#00a5ab;
+    transform:translateY(-1px);
+}
+
+/* ANIMATION */
+@keyframes popupScale{
+    from{
+        transform:scale(0.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+    }
+}
+
+/* ===== BUTTON UBAH DATA ===== */
+.btn-ubah-data{
+    border:none;
+    background:none;
+    color:#7c8db5;
+    font-weight:600;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:0.2s;
+}
+
+.btn-ubah-data:hover{
+    color:#00BBC2;
+    transform:translateX(-2px);
+}
+
+
 </style>
 
 <div class="section-card">
@@ -410,15 +516,12 @@
                     Lanjut →
                 </button>
 
-                </div> <!-- tutup card-summary -->
-</div> <!-- tutup col-md-8 -->
-        </div>
+    </div> <!-- d-flex -->
+    </div> <!-- card-summary -->
+    </div> <!-- col-md-8 -->
 
-    </div>
-
-</div>
-
-</div>
+    </div> <!-- row -->
+    </div> <!-- step2 -->
 
 <!-- ================= STEP 3 ================= -->
 <!-- ================= STEP 3 ================= -->
@@ -449,13 +552,8 @@
 
         <!-- OPTIONAL CHART -->
         <div class="card-summary text-center mt-3">
-
             <h6 class="fw-bold mb-3">Kelompok Usia</h6>
-
-            <img src="<?= base_url('img/chart.png') ?>" 
-                 class="img-fluid rounded"
-                 style="height:180px; object-fit:cover;">
-
+            <canvas id="usiaChart" height="180"></canvas>
         </div>
 
     </div>
@@ -470,7 +568,13 @@
             <!-- DATA -->
             <div class="summary-box">
 
-    <div class="row mb-2 align-items-start">
+    <div class="row mb-2">
+    <div class="col-4 text-muted">Nama Pasien</div>
+    <div class="col-1 text-center">:</div>
+    <div class="col-7 fw-semibold" id="sumNama">-</div>
+    </div>
+
+            <div class="row mb-2 align-items-start">
         <div class="col-4 text-muted">Alamat</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumAlamat">-</div>
@@ -553,15 +657,23 @@
                 <input type="hidden" name="usia" id="formUsia">
                 <input type="hidden" name="catatan" id="formCatatan">
 
-                <div class="d-flex justify-content-end gap-3 mt-4">
-                    <button type="button" class="btn-next" onclick="prevStep(2)">
-                        ← Kembali
-                    </button>
+                    
+                <div class="d-flex justify-content-end align-items-center gap-3 mt-4">
 
-                    <button type="submit" class="btn-next">
-                        Simpan
-                    </button>
-                </div>
+                <button 
+                    type="button"
+                    class="btn-ubah-data"
+                    onclick="prevStep(1)"
+                >
+                    <i class="fa-regular fa-pen-to-square"></i>
+                    Ubah Data
+                </button>
+
+                <button type="submit" class="btn-next">
+                    Simpan
+                </button>
+
+            </div>
 
             </form>
 
@@ -575,19 +687,87 @@
 
 </div> <!-- END SECTION CARD -->
 
-<!-- POPUP -->
-<div class="popup" id="popupSuccess">
-    <div class="popup-box">
-        <h5>Berhasil</h5>
-        <p>Data berhasil disimpan</p>
-        <button class="btn-next" onclick="closePopup()">OK</button>
-    </div>
-</div>
-
 <script>
 
 function nextStep(step){
 
+    // =========================
+    // VALIDASI STEP 1
+    // =========================
+    if(step === 2){
+
+        let kosong = [];
+
+        if(document.getElementById('rt').value === ''){
+            kosong.push('RT');
+        }
+
+        if(document.getElementById('rw').value === ''){
+            kosong.push('RW');
+        }
+
+        if(document.getElementById('alamat').value === ''){
+            kosong.push('Alamat');
+        }
+
+        if(document.getElementById('lat').value === ''){
+            kosong.push('Latitude');
+        }
+
+        if(document.getElementById('lng').value === ''){
+            kosong.push('Longitude');
+        }
+
+        if(kosong.length > 0){
+
+            showPopupGagal(
+                'Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.'
+            );
+
+            return;
+        }
+    }
+
+    // =========================
+    // VALIDASI STEP 2
+    // =========================
+    if(step === 3){
+
+        let kosong = [];
+
+        if(document.getElementById('nama').value === ''){
+            kosong.push('Nama Pasien');
+        }
+
+        if(document.getElementById('tanggal').value === ''){
+            kosong.push('Tanggal Kunjungan');
+        }
+
+        if(!document.querySelector('input[name="jk"]:checked')){
+            kosong.push('Jenis Kelamin');
+        }
+
+        if(document.getElementById('usia').value === ''){
+            kosong.push('Usia');
+        }
+
+        if(document.getElementById('catatan').value === ''){
+            kosong.push('Catatan Klinis');
+        }
+
+        if(kosong.length > 0){
+
+            showPopupGagal(
+                'Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.'
+            );
+
+            return;
+        }
+    }
+
+    // =========================
+    // PINDAH STEP
+    // =========================
     document.getElementById('step1').style.display='none';
     document.getElementById('step2').style.display='none';
     document.getElementById('step3').style.display='none';
@@ -600,6 +780,9 @@ function nextStep(step){
 
     document.getElementById('stepNav'+step).classList.add('active');
 
+    // =========================
+    // RINGKASAN STEP 3
+    // =========================
     if(step === 3){
 
         let prov = document.getElementById('provinsi').value;
@@ -610,6 +793,7 @@ function nextStep(step){
         let rw = document.getElementById('rw').value;
         let alamat = document.getElementById('alamat').value;
 
+        let nama = document.getElementById('nama').value;
         let tanggal = document.getElementById('tanggal').value;
         let usia = document.getElementById('usia').value;
         let catatan = document.getElementById('catatan').value;
@@ -621,6 +805,7 @@ function nextStep(step){
             prov + ', ' + kab + ', ' + kec + ', ' + desa +
             ' RT ' + rt + ' RW ' + rw + ' - ' + alamat;
 
+        document.getElementById('sumNama').innerText = nama;
         document.getElementById('sumJK').innerText = jk;
         document.getElementById('sumUsia').innerText = usia;
         document.getElementById('sumTanggal').innerText = tanggal;
@@ -647,7 +832,11 @@ function submitData(){
 
     // VALIDASI CHECKBOX
     if(!document.getElementById('confirm').checked){
-        alert('Konfirmasi data terlebih dahulu');
+
+        showPopupGagal(
+            'Silahkan centang konfirmasi data terlebih dahulu'
+        );
+
         return false;
     }
 
@@ -698,6 +887,134 @@ function submitData(){
         jk ? jk.value : '';
 
     return true;
+}
+
+</script>
+
+<!-- chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('usiaChart');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: <?= $labelChart ?>,
+
+        datasets: [{
+
+            label: 'Jumlah Pasien',
+
+            data: <?= $totalChart ?>,
+
+            borderRadius: 10,
+
+            backgroundColor: [
+                '#36A2EB',
+                '#4BC0C0',
+                '#0B4F6C',
+                '#9BC4E2',
+                '#00BCD4'
+            ]
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+</script>
+
+<!-- pesan suskes atau gagal -->
+
+<<div 
+    class="popup popup-success" 
+    id="popupSuccess"
+    style="<?= session()->getFlashdata('success') ? 'display:flex;' : 'display:none;' ?>"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icon">
+            ✓
+        </div>
+
+        <div class="popup-title">
+            Berhasil
+        </div>
+
+        <div class="popup-text">
+            Data pasien berhasil disimpan
+        </div>
+
+        <button class="popup-btn" onclick="closePopupSuccess()">
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+<div 
+    class="popup popup-error" 
+    id="popupGagal"
+    style="<?= session()->getFlashdata('error') ? 'display:flex;' : 'display:none;' ?>"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icon">
+            ✕
+        </div>
+
+        <div class="popup-title">
+            Gagal
+        </div>
+
+        <div class="popup-text" id="popupGagalText">
+            <?= session()->getFlashdata('error') ?? 'Data belum lengkap' ?>
+        </div>
+
+        <button class="popup-btn" onclick="closePopupGagal()">
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function showPopupGagal(pesan){
+    document.getElementById('popupGagalText').innerText = pesan;
+    document.getElementById('popupGagal').style.display = 'flex';
+}
+
+function closePopupGagal(){
+    document.getElementById('popupGagal').style.display = 'none';
+}
+
+function closePopupSuccess(){
+    document.getElementById('popupSuccess').style.display = 'none';
 }
 
 </script>

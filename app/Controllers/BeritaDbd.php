@@ -110,8 +110,8 @@ class BeritaDbd extends Controller
     }
 
     // 🔥 hapus gambar juga (optional tapi bagus)
-    if (!empty($data['gambar_berita']) && file_exists('uploads/berita' . $data['gambar_berita'])) {
-        unlink('uploads/berita' . $data['gambar_berita']);
+    if (!empty($data['gambar_berita']) && file_exists('uploads/berita/' . $data['gambar_berita'])) {
+        unlink('uploads/berita/' . $data['gambar_berita']);
     }
 
     $model->delete($id);
@@ -123,7 +123,7 @@ class BeritaDbd extends Controller
     public function tambah()
     {
         return view('gol_a/berita/tambah', [
-            'title' => 'Tambah Berita'
+            'judul' => 'Kelola Berita'
         ]);
     }
     
@@ -160,7 +160,7 @@ class BeritaDbd extends Controller
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
 
-        $path = FCPATH . 'uploads/';
+        $path = FCPATH . 'uploads/berita/';
 
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
@@ -260,7 +260,7 @@ public function filter(int $type)
         $html .= '
         <div class="card-berita">
             <div class="card-left">
-                <img src="/uploads/berita'.$b['gambar_berita'].'">
+                <img src="/uploads/berita/'.$b['gambar_berita'].'">
 
                 <div class="card-info">
                     <h4>'.$b['judul_berita'].'</h4>
@@ -305,7 +305,7 @@ public function update(int $id)
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
 
-        $path = FCPATH . 'uploads/';
+        $path = FCPATH . 'uploads/berita/';
 
         if (!is_dir($path)) {
             mkdir($path, 0777, true);

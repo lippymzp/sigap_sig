@@ -397,7 +397,7 @@ $keyword = $keyword ?? '';
             <!-- LEFT -->
             <div class="card-left">
 
-                <img src="/uploads/<?= $b['gambar_berita'] ?? 'default.jpg'; ?>" alt="Berita">
+                <img src="/uploads/berita/<?= $b['gambar_berita'] ?? 'default.jpg'; ?>" alt="Berita">
 
                 <div class="card-info">
 
