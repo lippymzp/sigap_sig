@@ -28,9 +28,9 @@ $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 /* ========================= */
 /* SKRINING Pneumonia */
 /* ========================= */
-$routes->get('/skriningpneumonia', 'Home::skriningpneumonia');
-$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Home::skriningpneumonia2');
-$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Home::skriningpneumonia3');
+$routes->get('/skriningpneumonia', 'Pneumonia::skriningpneumonia');
+$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Pneumonia::skriningpneumonia2');
+$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Pneumonia::skriningpneumonia3');
 
 /* ========================= */
 /* SKRINING DBD */

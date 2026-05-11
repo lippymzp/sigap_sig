@@ -281,7 +281,7 @@ class Pneumonia extends BaseController
         return view('gol_c/skrining2', $data);
     }
 
-    public function skriningdbd3()
+    public function skriningpneumonia3()
     {
     $nama = $this->request->getPost('nama');
     $jenis_kelamin = $this->request->getPost('jenis_kelamin');
@@ -289,9 +289,9 @@ class Pneumonia extends BaseController
     $kategori_usia = $this->request->getPost('kategori_usia');
     $nik = $this->request->getPost('nik');
     $telepon = $this->request->getPost('telepon');
-   $provinsi = $this->request->getPost('provinsi_nama');
-$kabupaten = $this->request->getPost('kabupaten_nama');
-$kecamatan = $this->request->getPost('kecamatan_nama');
+   $provinsi = $this->request->getPost('provinsi');
+$kabupaten = $this->request->getPost('kabupaten');
+$kecamatan = $this->request->getPost('kecamatan');
 $kelurahan = $this->request->getPost('kelurahan'); // ini sudah nama
 if (empty($provinsi) || empty($kabupaten) || empty($kecamatan) || empty($kelurahan)) {
     return redirect()->to('/skriningpneumonia')->with('error', 'Data wilayah wajib diisi');
@@ -338,7 +338,7 @@ $modelPasien->save([
 
         $reverse = [14, 15, 16, 17, 18, 19, 20, 21];
 
-        for ($i = 1; $i <= 21; $i++) {
+        for ($i = 1; $i <= 11; $i++) {
             $nilai = $this->request->getPost("p".$i) ?? 0;
 
             if (in_array($i, $reverse)) {
@@ -352,7 +352,7 @@ $modelPasien->save([
             $hasil = "Kategori Lingkungan Buruk";
             $alasan = "Skor Anda: $totalSkor (0 - 6)";
         }
-        elseif ($totalSkor >= 7 && $totalSkor <= 13) {
+        elseif ($totalSkor >= 7 && $totalSkor <= 10) {
             $hasil = "Kategori Lingkungan Cukup";
             $alasan = "Skor Anda: $totalSkor (7 - 13)";
         }
@@ -380,7 +380,7 @@ $modelPasien->save([
     
     $modelSkrining->save([
         'id_pasien_skrining' => $id_pasien_skrining,
-        'id_penyakit' => 1,
+        'id_penyakit' => 3,
         'tanggal' => date('Y-m-d'),
 
         'var1' => $p1,
@@ -453,4 +453,84 @@ return view('gol_c/skrining3', $data);
 
         echo "</table>";
     }
+
+    public function rekap_skrining()
+{
+    $db = \Config\Database::connect();
+
+    $builder = $db->table('skrining as s');
+
+    $builder->select('
+        s.id_skrining,
+        p.nik,
+        p.no_hp,
+        p.tanggal_lahir,
+        p.nama_pasien_skrining,
+        p.jenis_kelamin,
+        p.usia,
+
+        w.provinsi,
+        w.kabupaten,
+        w.kecamatan,
+        w.kelurahan,
+        w.rt,
+        w.rw,
+
+        s.hasil,
+        s.tanggal
+    ');
+
+    $builder->join(
+        'pasien_skrining p',
+        'p.id_pasien_skrining = s.id_pasien_skrining'
+    );
+
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah'
+    );
+
+    $builder->orderBy('s.id_skrining', 'DESC');
+
+    // PAGINATION
+    $perPage = 10;
+    $page = $this->request->getVar('page') ?? 1;
+
+    $data['skrining'] = $builder
+        ->limit($perPage, ($page - 1) * $perPage)
+        ->get()
+        ->getResultArray();
+
+    // total data
+    $total = $db->table('skrining')->countAll();
+
+    // PAGER
+    $pager = \Config\Services::pager();
+
+    $data['pagerLinks'] = $pager->makeLinks(
+        $page,
+        $perPage,
+        $total
+    );
+
+    $data = [
+    'menu' => 'skrining',
+    'judul' => 'Rekap Skrining',   
+    'skrining' => $data['skrining'],
+    'pagerLinks' => $data['pagerLinks']
+    ];
+
+    return view('gol_c/rekap_skrining', $data)
+    ;
+}
+
+public function hapus_skrining(int $id)
+{
+    $model = new \App\Models\SkriningPneumoniaModel();
+
+    $model->delete($id);
+
+    return redirect()->back()
+                     ->with('success', 'Data berhasil dihapus');
+}
 }
