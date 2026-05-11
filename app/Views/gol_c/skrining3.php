@@ -416,7 +416,7 @@ $value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
 
 if ($value == 1):
 ?>
-    <span class="badge bg-success">Ya</span>
+    <span class="badge bg-success">Iya</span>
 <?php else: ?>
     <span class="badge bg-danger">Tidak</span>
 <?php endif; ?>

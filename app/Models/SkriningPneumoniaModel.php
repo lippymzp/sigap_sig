@@ -25,16 +25,6 @@ class SkriningPneumoniaModel extends Model
         'var9',
         'var10',
         'var11',
-        'var12',
-        'var13',
-        'var14',
-        'var15',
-        'var16',
-        'var17',
-        'var18',
-        'var19',
-        'var20',
-        'var21',
 
         'hasil'
     ];

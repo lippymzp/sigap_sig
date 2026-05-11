@@ -776,6 +776,95 @@ $modelPasien->save([
 
     $id_pasien_skrining = $modelPasien->insertID();
 
+    // Biasaya setelah insert ada return (contoh: return redirect()->to(...);)
+    
+}
+
+public function manajemen_pkm()
+{
+    // 1. Tambahkan baris koneksi ini
+    $db = \Config\Database::connect();
+    
+    // 2. Gunakan variabel $db (tanpa 'this->') untuk mengambil data dari tabel instansi
+    $puskesmas = $db->table('instansi')->get()->getResultArray();
+
+    $data = [
+        'title'     => 'Manajemen Puskesmas | SIGAP',
+        'judul'     => 'Manajemen Puskesmas',
+        'menu'      => 'puskesmas',
+        'puskesmas' => $puskesmas
+    ];
+
+    return view('gol_a/manajemen_puskesmas', $data);
+}
+
+    // 3. Proses Simpan Data
+    public function simpan_manajemen_pkm()
+    {
+        $data = [
+            'nama_instansi' => $this->request->getPost('nama_instansi')
+        ];
+
+        $this->db->table('instansi')->insert($data);
+        return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil ditambahkan!');
+    }
+
+    // 4. Menampilkan Detail
+    public function detail_manajemen_pkm($id)
+    {
+        $puskesmas = $this->db->table('instansi')->where('id_instansi', $id)->get()->getRowArray();
+
+        $data = [
+            'title'     => 'Detail Puskesmas | SIGAP',
+            'judul'     => 'Detail Puskesmas',
+            'menu'      => 'puskesmas',
+            'puskesmas' => $puskesmas
+        ];
+
+        return view('detail_puskesmas', $data);
+    }
+
+    // 5. Menampilkan Form Edit
+    public function edit_manajemen_pkm($id)
+    {
+        $puskesmas = $this->db->table('instansi')->where('id_instansi', $id)->get()->getRowArray();
+
+        $data = [
+            'title'     => 'Edit Puskesmas | SIGAP',
+            'judul'     => 'Edit Puskesmas',
+            'menu'      => 'puskesmas',
+            'puskesmas' => $puskesmas
+        ];
+
+        return view('edit_puskesmas', $data);
+    }
+
+    // 6. Proses Update Data
+    public function update_manajemen_pkm($id)
+    {
+        $data = [
+            'nama_instansi' => $this->request->getPost('nama_instansi')
+        ];
+
+        $this->db->table('instansi')->where('id_instansi', $id)->update($data);
+        return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil diperbarui!');
+    }
+
+    // 7. Proses Hapus Data
+    public function hapus_manajemen_pkm($id)
+    {
+        // Cek relasi ke tabel petugas
+        $cekPetugas = $this->db->table('petugas')->where('id_instansi', $id)->countAllResults();
+        
+        if ($cekPetugas > 0) {
+            return redirect()->to(base_url('manajemen_puskesmas'))->with('error', 'Gagal! Puskesmas masih memiliki data petugas.');
+        }
+
+        $this->db->table('instansi')->where('id_instansi', $id)->delete();
+        return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil dihapus!');
+
+
+
     // ======================
     // HITUNG SKOR
     // ======================
