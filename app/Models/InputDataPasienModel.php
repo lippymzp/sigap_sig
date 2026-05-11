@@ -73,8 +73,7 @@ class InputDataPasienModel extends Model
 
             'ctt_klinis'    => $data['catatan'] ?? null,
 
-            // sementara manual
-            'id_petugas'    => 1
+            'id_petugas'    => $data['id_petugas'] ?? null
         ]);
 
         // selesai transaksi
@@ -113,8 +112,11 @@ class InputDataPasienModel extends Model
                 MONTHNAME(p.tgl_kunjungan) as bulan,
                 w.kelurahan,
 
-                SUM(CASE WHEN p.umur <= 19 THEN 1 ELSE 0 END) as anak,
-                SUM(CASE WHEN p.umur > 19 THEN 1 ELSE 0 END) as dewasa,
+                SUM(CASE WHEN p.umur BETWEEN 0 AND 5 THEN 1 ELSE 0 END) as bayi,
+                SUM(CASE WHEN p.umur BETWEEN 6 AND 10 THEN 1 ELSE 0 END) as anak,
+                SUM(CASE WHEN p.umur BETWEEN 11 AND 18 THEN 1 ELSE 0 END) as remaja,
+                SUM(CASE WHEN p.umur BETWEEN 19 AND 59 THEN 1 ELSE 0 END) as dewasa,
+                SUM(CASE WHEN p.umur > 59 THEN 1 ELSE 0 END) as lansia,
 
                 SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
                 SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
@@ -150,10 +152,16 @@ class InputDataPasienModel extends Model
             p.no_rm,
             p.nama_pasien,
             p.tgl_kunjungan,
+            p.ctt_klinis,
             p.jenis_kelamin,
             p.umur,
+
             w.kelurahan,
             w.kecamatan,
+            w.kabupaten,
+            w.provinsi,
+            w.rt,
+            w.rw,
             w.alamat_lengkap
         ');
 
@@ -229,7 +237,10 @@ class InputDataPasienModel extends Model
         // =========================
         // FILTER KELURAHAN
         // =========================
-        if (!empty($kelurahan)) {
+        if (
+            !empty($kelurahan) &&
+            strtolower(trim($kelurahan)) != 'semua'
+        ) {
 
             $builder->where(
                 'LOWER(w.kelurahan)',

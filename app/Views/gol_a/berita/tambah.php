@@ -484,7 +484,7 @@ $newId = session()->getFlashdata('new_id');
                     <div class="bg-white p-3 rounded-3 mb-3 text-center">
                     <img id="previewImg"
                         src="<?= !empty($berita['gambar_berita']) 
-                            ? '/uploads/'.$berita['gambar_berita'] 
+                            ? '/uploads/berita/'.$berita['gambar_berita'] 
                             : 'https://via.placeholder.com/250x140' ?>"
                              class="img-fluid rounded mb-2"
                              style="max-height:150px; object-fit:cover;">
@@ -503,7 +503,7 @@ $newId = session()->getFlashdata('new_id');
                     <input type="hidden" name="gambar_lama" value="<?= $berita['gambar_berita'] ?? '' ?>">
 
                     <?php if (!empty($berita['gambar_berita'])): ?>
-                        <img src="/uploads/<?= $berita['gambar_berita']; ?>" width="150" style="margin-top:10px;">
+                        <img src="/uploads/berita/<?= $berita['gambar_berita']; ?>" width="150" style="margin-top:10px;">
                     <?php endif; ?>
                     </div>
                 </div>

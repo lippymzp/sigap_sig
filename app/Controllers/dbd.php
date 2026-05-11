@@ -22,76 +22,111 @@ class Dbd extends BaseController
 
     public function inputData()
     {
-        return view('gol_a/input_data', [
-            'menu' => 'inputdata',
-            'penyakit' => 'dbd',
-            'judul' => 'Input Data Pasien'
-        ]);
-    }
+            $db = \Config\Database::connect();
 
-    public function hasil_data()
+            $chart = $db->query("
+                SELECT 
+                    CASE
+                        WHEN umur <= 5 THEN 'Balita'
+                        WHEN umur <= 12 THEN 'Anak'
+                        WHEN umur <= 17 THEN 'Remaja'
+                        WHEN umur <= 59 THEN 'Dewasa'
+                        ELSE 'Lansia'
+                    END AS kelompok,
+                    COUNT(*) as total
+                FROM pasien
+                GROUP BY kelompok
+            ")->getResultArray();
+
+            $label = [];
+            $total = [];
+
+            foreach($chart as $c){
+
+                $label[] = $c['kelompok'];
+                $total[] = $c['total'];
+            }
+
+            return view('gol_a/input_data', [
+
+                'menu' => 'inputdata',
+
+                'penyakit' => 'dbd',
+
+                'judul' => 'Input Data Pasien',
+
+                'labelChart' => json_encode($label),
+
+                'totalChart' => json_encode($total)
+            ]);
+        }
+
+        public function hasil_data()
+        {
+            $pasien = session()->get('pasien') ?? [];
+
+            return view('gol_a/hasil_data_pasien/hasil_data_a', [
+                'menu' => 'hasil',
+                'penyakit' => 'dbd',
+                'judul' => 'Hasil Data Pasien',
+                'pasien' => $pasien
+            ]);
+        }
+
+    public function simpandatapasien()
     {
-        $pasien = session()->get('pasien') ?? [];
+        $model = new InputDataPasienModel();
 
-        return view('gol_a/hasil_data_pasien/hasil_data_a', [
-            'menu' => 'hasil',
-            'penyakit' => 'dbd',
-            'judul' => 'Hasil Data Pasien',
-            'pasien' => $pasien
-        ]);
+        $data = [
+
+            // ID PETUGAS LOGIN
+            'id_petugas' => session()->get('id_petugas'),
+
+            // ======================
+            // DATA WILAYAH
+            // ======================
+            'provinsi' => $this->request->getPost('provinsi'),
+            'kabupaten' => $this->request->getPost('kabupaten'),
+            'kecamatan' => $this->request->getPost('kecamatan'),
+            'desa' => $this->request->getPost('desa'),
+
+            'rt' => $this->request->getPost('rt'),
+            'rw' => $this->request->getPost('rw'),
+
+            'alamat' => $this->request->getPost('alamat'),
+
+            'lat' => $this->request->getPost('lat'),
+            'lng' => $this->request->getPost('lng'),
+
+            // ======================
+            // DATA PASIEN
+            // ======================
+            'nama' => $this->request->getPost('nama'),
+
+            'tanggal' => $this->request->getPost('tanggal'),
+
+            'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+
+            'usia' => $this->request->getPost('usia'),
+
+            'catatan' => $this->request->getPost('catatan'),
+        ];
+
+        $simpan = $model->simpanSemua($data);
+
+        if ($simpan) {
+
+            return redirect()
+                ->back()
+                ->with('success', 'Data pasien berhasil disimpan');
+
+        } else {
+
+            return redirect()
+                ->back()
+                ->with('error', 'Data gagal disimpan');
+        }
     }
-
-   public function simpandatapasien()
-{
-    $model = new InputDataPasienModel();
-
-    $data = [
-
-        // ======================
-        // DATA WILAYAH
-        // ======================
-        'provinsi' => $this->request->getPost('provinsi'),
-        'kabupaten' => $this->request->getPost('kabupaten'),
-        'kecamatan' => $this->request->getPost('kecamatan'),
-        'desa' => $this->request->getPost('desa'),
-
-        'rt' => $this->request->getPost('rt'),
-        'rw' => $this->request->getPost('rw'),
-
-        'alamat' => $this->request->getPost('alamat'),
-
-        'lat' => $this->request->getPost('lat'),
-        'lng' => $this->request->getPost('lng'),
-
-        // ======================
-        // DATA PASIEN
-        // ======================
-        'nama' => $this->request->getPost('nama'),
-
-        'tanggal' => $this->request->getPost('tanggal'),
-
-        'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
-
-        'usia' => $this->request->getPost('usia'),
-
-        'catatan' => $this->request->getPost('catatan'),
-    ];
-
-    $simpan = $model->simpanSemua($data);
-
-    if ($simpan) {
-
-        return redirect()
-            ->back()
-            ->with('success', 'Data pasien berhasil disimpan');
-
-    } else {
-
-        return redirect()
-            ->back()
-            ->with('error', 'Data gagal disimpan');
-    }
-}
 
     public function export()
     {
@@ -1006,6 +1041,7 @@ public function hapus_skrining(int $id)
     return redirect()->back()
                      ->with('success', 'Data berhasil dihapus');
 }
+
 // ==================================
     // HASIL DATA PASIEN EXPOR PDF EXCEL
     // ==================================
@@ -1023,8 +1059,11 @@ public function hapus_skrining(int $id)
             MONTH(p.tgl_kunjungan) as bulan_angka,
             w.kelurahan,
 
-            SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
-            SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
+            SUM(CASE WHEN p.umur BETWEEN 0 AND 5 THEN 1 ELSE 0 END) as bayi,
+            SUM(CASE WHEN p.umur BETWEEN 6 AND 10 THEN 1 ELSE 0 END) as anak,
+            SUM(CASE WHEN p.umur BETWEEN 11 AND 18 THEN 1 ELSE 0 END) as remaja,
+            SUM(CASE WHEN p.umur BETWEEN 19 AND 59 THEN 1 ELSE 0 END) as dewasa,
+            SUM(CASE WHEN p.umur > 59 THEN 1 ELSE 0 END) as lansia,
 
             SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
             SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
@@ -1110,72 +1149,136 @@ public function hapus_skrining(int $id)
 
     // EXPORT EXCEL
         if ($type == 'excel') {
-
-        header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=data_pasien.xls");
-
-        echo "<html>";
-        echo "<head>
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=data_pasien.xls");
+            echo "
+            <html>
+            <head>
                 <meta charset='UTF-8'>
                 <style>
-                    body { font-family: Arial; font-size: 12px; }
-                    h2 { text-align: center; }
-                    .sub { text-align: center; font-size: 11px; margin-bottom: 10px; }
-                    table { border-collapse: collapse; width: 100%; }
-                    th { background: #2c3e50; color: #fff; padding: 6px; }
-                    td { border: 1px solid #ddd; padding: 5px; }
-                    .center { text-align: center; }
+                    body{
+                        font-family: Arial;
+                        font-size: 12px;
+                        color:#333;
+                    }
+                    h2{
+                        text-align:center;
+                        margin-bottom:5px;
+                    }
+                    .sub{
+                        text-align:center;
+                        font-size:11px;
+                        margin-bottom:15px;
+                    }
+                    table{
+                        border-collapse:collapse;
+                        width:100%;
+                    }
+                    th{
+                        background:#2c3e50;
+                        color:white;
+                        padding:8px;
+                        text-align:center;
+                        border:1px solid #000;
+                    }
+                    td{
+                        border:1px solid #999;
+                        padding:6px;
+                        vertical-align:top;
+                    }
+                    .center{
+                        text-align:center;
+                    }
+                    .alamat{
+                        width:350px;
+                    }
+                    .catatan{
+                        width:220px;
+                    }
                 </style>
-            </head>";
+            </head>
+            <body>
+            ";
+                //judul
+            echo "<h2>DATA PASIEN DBD</h2>";
 
-        echo "<body>";
+            echo "
+            <div class='sub'>
+                    Hasil Export Data Pasien DBD <br>
+                Dicetak pada : " . date('d-m-Y H:i:s') . "
+            </div>
+            ";
+                //tabel
+            echo "
+            <table>
 
-        // Judul
-        echo "<h2>DATA PASIEN DBD</h2>";
-        echo "<div class='sub'>Hasil Export Berdasarkan Filter</div>";
-
-        // Tabel
-        echo "<table border='1'>";
-        echo "<tr>
-                <th>No</th>
-                <th>No RM</th>
-                <th>Nama</th>
-                <th>Tanggal</th>
-                <th>JK</th>
-                <th>Usia</th>
-                <th>Kelurahan</th>
-                <th>Kecamatan</th>
-                <th>Alamat</th>
-            </tr>";
-
-        $no = 1;
-
-        if (!empty($data)) {
-            foreach ($data as $d) {
-                echo "<tr>
-                        <td class='center'>{$no}</td>
-                        <td>{$d['no_rm']}</td>
-                        <td>{$d['nama_pasien']}</td>
-                        <td class='center'>{$d['tgl_kunjungan']}</td>
-                        <td class='center'>{$d['jenis_kelamin']}</td>
-                        <td class='center'>{$d['umur']}</td>
-                        <td>{$d['kelurahan']}</td>
-                        <td>{$d['kecamatan']}</td>
-                        <td>{$d['alamat_lengkap']}</td>
-                    </tr>";
-                $no++;
+                <tr>
+                    <th>No</th>
+                    <th>Nama Pasien</th>
+                    <th>Tgl Kunjungan</th>
+                    <th>JK</th>
+                    <th>Usia</th>
+                    <th>Catatan Klinis</th>
+                    <th>Alamat Lengkap</th>
+                </tr>
+            ";
+            $no = 1;
+            //jika data ada:
+            if (!empty($data)) {
+                foreach ($data as $d) {
+                    $alamat =
+                        ($d['alamat_lengkap'] ?? '-') .
+                        ", RT " . ($d['rt'] ?? '-') .
+                        "/RW " . ($d['rw'] ?? '-') .
+                        ", Kel. " . ($d['kelurahan'] ?? '-') .
+                        ", Kec. " . ($d['kecamatan'] ?? '-') .
+                        ", " . ($d['kabupaten'] ?? '-') .
+                        ", " . ($d['provinsi'] ?? '-');
+                    echo "
+                    <tr>
+                        <td class='center'>
+                            {$no}
+                        </td>
+                        <td>
+                            {$d['nama_pasien']}
+                        </td>
+                        <td class='center'>
+                            {$d['tgl_kunjungan']}
+                        </td>
+                        <td class='center'>
+                            {$d['jenis_kelamin']}
+                        </td>
+                        <td class='center'>
+                            {$d['umur']}
+                        </td>
+                        <td class='catatan'>
+                            {$d['ctt_klinis']}
+                        </td>
+                        <td class='alamat'>
+                            {$alamat}
+                        </td>
+                    </tr>
+                    ";
+                    $no++;
+                }
             }
-        } else {
-            echo "<tr>
-                    <td colspan='9' class='center'>Data tidak tersedia</td>
-                </tr>";
+            // DATA KOSONG
+            else {
+                echo "
+                <tr>
+                    <td colspan='8' class='center'>
+                        Data tidak tersedia
+                    </td>
+                </tr>
+                ";
+            }
+            echo "
+            </table>
+            </body>
+            </html>
+            ";
+            exit;
         }
-
-        echo "</table>";
-        echo "</body></html>";
-
-        exit;
-    }
 
     // EXPORT PDF
     if ($type == 'pdf') {
@@ -1189,6 +1292,8 @@ public function hapus_skrining(int $id)
         exit;
     }
 }
+
+
 // ======================================================
     // ===================== FUNFACT ========================
     // ======================================================
@@ -1233,7 +1338,7 @@ public function hapus_skrining(int $id)
 
         $data = [
 
-            'title'        => 'Kelola Funfact',
+            'judul'        => 'Kelola Funfact',
 
             'menu'         => 'funfact',
 
@@ -1275,7 +1380,7 @@ public function hapus_skrining(int $id)
 
         $data = [
 
-            'title'    => ($id) ? 'Edit Funfact' : 'Unggah Funfact',
+            'judul'    => 'Kelola Funfact',
 
             'menu'     => 'funfact',
 
@@ -1390,7 +1495,7 @@ public function hapus_skrining(int $id)
 
         return view('gol_a/unggahfunfact', [
 
-            'title'    => 'Edit Funfact',
+            'judul'    => 'Kelola Funfact',
 
             'menu'     => 'funfact',
 
@@ -1552,7 +1657,7 @@ return redirect()->to(base_url('funfact?status=upload'))
 
     return view('gol_a/view_funfact', [
 
-        'title'    => 'FunFact',
+        'judul'    => 'FunFact',
 
         'menu'     => 'funfact',
 

@@ -38,7 +38,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => $publish,
             'draft'     => $draft,
-            'title'     => 'Video'
+            'judul'     => 'Kelola Video'
 
         ]);
     }
@@ -61,7 +61,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => count($video),
             'draft'     => 0,
-            'title'     => 'Rekap Skrining'
+            'judul'     => 'Kelola Video'
 
         ]);
     }
@@ -84,7 +84,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => 0,
             'draft'     => count($video),
-            'title'     => 'Rekap Skrining'
+            'judul'     => 'Kelola Video'
 
         ]);
     }
@@ -109,7 +109,7 @@ class VideoDbd extends Controller
         return view('gol_a/video/detail', [
 
             'video' => $video,
-            'title' => 'Rekap Skrining'
+            'judul' => 'Kelola Video'
 
         ]);
     }
@@ -122,7 +122,7 @@ class VideoDbd extends Controller
     {
         return view('gol_a/video/tambah1', [
 
-            'title' => 'Rekap Skrining'
+            'judul' => 'Kelola Video'
 
         ]);
     }
@@ -187,7 +187,7 @@ class VideoDbd extends Controller
             'video'   => $video,
             'file'    => $video['file_video'],
             'is_edit' => true,
-            'title'   => 'Edit Video'
+            'judul'   => 'Edit Video'
 
         ]);
     }

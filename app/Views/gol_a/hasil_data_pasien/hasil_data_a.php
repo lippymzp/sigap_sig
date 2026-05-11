@@ -206,19 +206,28 @@
     </div>
 
     <!-- TABLE -->
+    <div class="table-responsive">
     <table class="table text-center align-middle custom-table">
         <thead>
             <tr>
                 <th rowspan="2">No</th>
                 <th rowspan="2">Bulan</th>
                 <th rowspan="2">Kelurahan</th>
-                <th colspan="2">Rentang Usia Tertinggi</th>
-                <th colspan="2">Jenis Kelamin Tertinggi</th>
+
+                <th colspan="5">Rentang Usia</th>
+
+                <th colspan="2">Jenis Kelamin</th>
+
                 <th rowspan="2">Jumlah Kasus</th>
             </tr>
+
             <tr>
+                <th>Bayi & Balita</th>
                 <th>Anak-anak</th>
+                <th>Remaja</th>
                 <th>Dewasa</th>
+                <th>Lansia</th>
+
                 <th>Laki-laki</th>
                 <th>Perempuan</th>
             </tr>
@@ -231,20 +240,27 @@
                 <td><?= $no++ ?></td>
                 <td><?= $d['bulan'] ?></td>
                 <td><?= $d['kelurahan'] ?></td>
+
+                <td><?= $d['bayi'] ?? 0 ?></td>
                 <td><?= $d['anak'] ?? 0 ?></td>
+                <td><?= $d['remaja'] ?? 0 ?></td>
                 <td><?= $d['dewasa'] ?? 0 ?></td>
+                <td><?= $d['lansia'] ?? 0 ?></td>
+
                 <td><?= $d['laki'] ?? 0 ?></td>
                 <td><?= $d['perempuan'] ?? 0 ?></td>
+
                 <td><?= $d['jumlah'] ?></td>
             </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="8">Belum ada data</td>
+                <td colspan="11">Belum ada data</td>
             </tr>
         <?php endif; ?>
         </tbody>
     </table>
+    </div>
 
     <!-- EXPORT BUTTON (DALAM CARD KANAN BAWAH) -->
     <div class="d-flex justify-content-end mt-3">
@@ -398,8 +414,11 @@ function loadData(){
                     <td>${no++}</td>
                     <td>${d.bulan}</td>
                     <td>${d.kelurahan}</td>
+                    <td>${d.bayi ?? 0}</td>
                     <td>${d.anak ?? 0}</td>
+                    <td>${d.remaja ?? 0}</td>
                     <td>${d.dewasa ?? 0}</td>
+                    <td>${d.lansia ?? 0}</td>
                     <td>${d.laki ?? 0}</td>
                     <td>${d.perempuan ?? 0}</td>
                     <td>${d.jumlah}</td>

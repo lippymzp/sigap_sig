@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+helper('text');
+
 class DashboardadminDbd extends BaseController
 {
     public function index()
@@ -209,7 +211,19 @@ $builder->groupBy('w.kelurahan');
 
             $desaTertinggi = $dbd[0]['desa'];
         }
+    // BERITA
+    // ======================
+    $berita = $db->table('berita')
+        ->whereIn('status_berita', ['publish', 'upload'])
+        ->get()
+        ->getResultArray();
 
+    // ======================
+    // FUNFACT
+    $funfact = $db->table('funfact')
+        ->orderBy('id_funfact', 'DESC')
+        ->get()
+        ->getResultArray();
         // =========================
         // RETURN VIEW
         // =========================
@@ -223,7 +237,11 @@ $builder->groupBy('w.kelurahan');
 
             'detailDesa' => $detailDesa,
 
-            'desaTertinggi' => $desaTertinggi
+            'desaTertinggi' => $desaTertinggi,
+
+            'berita'  => $berita,
+            
+            'funfact' => $funfact
         ]);
     }
 }

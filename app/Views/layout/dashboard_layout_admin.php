@@ -160,6 +160,16 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <div class="menu-label">MENU UTAMA</div>
 
+<a href="<?= base_url('dbd/dashboard/admin') ?>#map" id="nav-map"
+            class="<?= ($menu == 'peta') ? 'active' : '' ?>">
+            <i class="fa-solid fa-map-location-dot me-2"></i>Peta Sebaran
+        </a>
+
+<a href="<?= base_url('dbd/dashboard/admin#grafik') ?>" id="nav-grafik" class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
+            <i class="fa-solid fa-chart-column me-2"></i> Grafik
+        </a>
+        </a>
+
 <a href="<?= base_url('dbd/input_data') ?>" class="<?= ($menu == 'inputdata') ? 'active' : '' ?>">
     <i class="fa-regular fa-clipboard me-2"></i>Input Data Pasien
 </a>
@@ -175,11 +185,6 @@ $fotoNavbar = (!empty($profil['foto_profil']))
         <a href="<?= base_url('dbd/pelaporan-kader/admin') ?>"
             class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
             <i class="fa-regular fa-folder-open me-2"></i> Pelaporan Kader
-        </a>
-
-        <a href="<?= base_url('dbd/dashboard/admin') ?>#map" id="nav-map"
-            class="<?= ($menu == 'peta') ? 'active' : '' ?>">
-            <i class="fa-solid fa-map-location-dot me-2"></i>Peta Sebaran
         </a>
 
         <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>"
