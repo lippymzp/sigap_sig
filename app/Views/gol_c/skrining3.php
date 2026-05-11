@@ -447,87 +447,60 @@ if ($value == 1):
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
 
-<!-- TIPS / REKOMENDASI BERDASARKAN HASIL -->
-<?php if (strpos($hasil, 'Buruk') !== false): ?>
+<?php if (strpos($hasil, 'Berisiko') !== false): ?>
 
+    <!-- HASIL BERISIKO -->
     <div class="tips-card">
-    <div class="tips-header-modern bg-danger-modern">
-        🚨🦟 Risiko Tinggi Nyamuk Aedes aegypti
+
+        <div class="tips-header-modern bg-danger-modern">
+            📘 Rekomendasi
+        </div>
+
+        <div class="tips-content-modern">
+
+            <ul>
+                <li>Segera periksa ke fasilitas kesehatan terdekat.</li>
+                <li>Gunakan masker dan pantau gejala.</li>
+                <li>Hubungi <b>CHATBOT</b> untuk informasi lebih lanjut.</li>
+            </ul>
+
+        </div>
+
     </div>
-
-    <div class="tips-content-modern">
-        <p>Lingkungan sangat berisiko terhadap perkembangan nyamuk penyebab DBD.</p>
-
-        <ul>
-            <li>🧼 Lakukan 3M Plus secara menyeluruh</li>
-            <li>🪣 Bersihkan tempat air minimal 1x seminggu</li>
-            <li>💊 Gunakan larvasida (abate)</li>
-            <li>👕 Hindari menggantung pakaian</li>
-            <li>🔍 Rutin cek jentik di rumah</li>
-            <li>🏥 Segera ke fasilitas kesehatan jika ada gejala</li>
-        </ul>
-    </div>
-</div>
-
-<?php elseif (strpos($hasil, 'Cukup') !== false): ?>
-
-    <div class="tips-box">
-        <div class="tips-card">
-    <div class="tips-header-modern bg-warning-modern">
-        ⚡🦟 Lingkungan Perlu Ditingkatkan
-    </div>
-
-    <div class="tips-content-modern">
-        <p>Pencegahan sudah dilakukan, tetapi belum konsisten.</p>
-
-        <ul>
-            <li>🧽 Tingkatkan rutinitas 3M Plus</li>
-            <li>👨‍👩‍👧 Libatkan seluruh keluarga</li>
-            <li>🔍 Cek jentik setiap minggu</li>
-            <li>💡 Perbaiki ventilasi & cahaya rumah</li>
-            <li>🌿 Gunakan pengusir nyamuk alami</li>
-        </ul>
-    </div>
-</div>
 
 <?php else: ?>
 
+    <!-- HASIL TIDAK BERISIKO -->
     <div class="tips-card">
-    <div class="tips-header-modern bg-success-modern">
-        🎉✨ Lingkungan Sehat & Terjaga
-    </div>
 
-    <div class="tips-content-modern">
-        <p>Kondisi lingkungan sudah baik dan aman dari risiko tinggi DBD.</p>
+        <div class="tips-header-modern bg-success-modern">
+            📘 Rekomendasi
+        </div>
 
-        <ul>
-            <li>🌟 Pertahankan 3M Plus</li>
-            <li>🔍 Tetap rutin cek jentik</li>
-            <li>🏘️ Ajak lingkungan sekitar ikut menjaga</li>
-            <li>💚 Jaga PHBS keluarga</li>
-            <li>🌧️ Tetap waspada musim hujan</li>
-        </ul>
+        <div class="tips-content-modern">
+
+            <ul>
+                <li>Jaga daya tahan tubuh dengan makan bergizi, istirahat cukup, dan minum air yang cukup.</li>
+                <li>Hindari asap rokok dan paparan polusi udara.</li>
+                <li>Waspadai bila muncul demam tinggi, sesak napas, atau batuk memburuk.</li>
+            </ul>
+
+        </div>
+
     </div>
-</div>
 
 <?php endif; ?>
-<!-- BUTTON -->
 
-<!-- CETAK (SENDIRI DI ATAS) -->
-<div class="cetak-wrapper">
-    <button onclick="window.print()" class="btn-cetak-full">
-        🖨️ Cetak Hasil
-    </button>
-</div>
+<!-- BUTTON -->
 
 <!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-    <a href="/skriningdbd" class="btn btn-kembali">
-        Kembali
+    <a onclick="window.print()" class="btn btn-kembali">
+        Cetak Hasil
     </a>
 
-   <a href="<?= base_url('/') ?>" class="btn btn-selesai">
+   <a href="/pneumonia" class="btn btn-selesai">
     Selesai
     </a>
 
