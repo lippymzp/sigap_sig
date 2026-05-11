@@ -315,8 +315,13 @@ $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
 
 // ================= Manajemen Banner DBD =================
-$routes->get('/manajemen_banner', 'ManajemenBanner::index');
-$routes->get('/unggah_banner', 'ManajemenBanner::unggah');
+$routes->get('/bannerDbd', 'ManajemenBanner::index');
+$routes->get('/bannerDbd/manajemen_banner', 'ManajemenBanner::index');
+$routes->get('/bannerDbd/unggah_banner', 'ManajemenBanner::unggah');
+$routes->post('/bannerDbd/simpan', 'ManajemenBanner::simpan');
+$routes->get('bannerDbd/edit/(:num)','ManajemenBanner::edit/$1');
+$routes->post('bannerDbd/update/(:num)','ManajemenBanner::update/$1');
+$routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
 
 
 // ================= MANEJEMEN USER =================

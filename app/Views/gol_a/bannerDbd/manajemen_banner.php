@@ -295,14 +295,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
             <button 
                 class="tab-btn tab-inactive filter-btn"
-                data-filter="tidak aktif"
+                data-filter="draft"
             >
                 Draft
             </button>
 
             <button 
                 class="tab-btn tab-inactive filter-btn"
-                data-filter="aktif"
+                data-filter="publish"
             >
                 Terunggah
             </button>
@@ -391,7 +391,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
                             $status = strtolower((string)($b['status_banner'] ?? 'draft'));
                             ?>
 
-                            <?php if($status == 'aktif') : ?>
+                            <?php if($status == 'publish') : ?>
 
                                 <span class="status-badge publish">
                                     Aktif
