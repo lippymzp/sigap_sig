@@ -31,7 +31,8 @@ $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 $routes->get('/skriningpneumonia', 'Pneumonia::skriningpneumonia');
 $routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Pneumonia::skriningpneumonia2');
 $routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Pneumonia::skriningpneumonia3');
-
+$routes->get('/chat-pneumonia', 'ChatPneumonia::index');
+$routes->post('/chat-pneumonia/send', 'ChatPneumonia::send');
 /* ========================= */
 /* SKRINING DBD */
 /* ========================= */
