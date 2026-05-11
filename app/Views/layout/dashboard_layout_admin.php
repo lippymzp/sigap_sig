@@ -211,7 +211,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-solid fa-users me-2"></i> Manajemen User
 </a>
 
-<a href="<?= base_url('manajemen_puskesmas') ?>" class="<?= ($menu == 'puskesmas') ? 'active' : '' ?>">
+<a href="<?= base_url('dbd/admin/manajemen_puskesmas') ?>" class="<?= ($menu == 'puskesmas') ? 'active' : '' ?>">
   <i class="fa-solid fa-hospital me-2"></i> Manajemen Puskesmas
 </a>
 
