@@ -269,116 +269,303 @@ class Pneumonia extends BaseController
         }
     }
 
-    public function skriningpneumonia()
-    {
-        return view('gol_c/skrining1');
-    }
 
-    public function skriningpneumonia2()
-    {
-        $data = $this->request->getPost();
+public function skriningpneumonia()
+{
+    return view('gol_c/skrining1');
+}
 
-        return view('gol_c/skrining2', $data);
-    }
+public function skriningpneumonia2()
+{
+    $data = $this->request->getPost();
 
-    public function skriningpneumonia3()
-    {
+    return view('gol_c/skrining2', $data);
+}
+
+
+public function skriningpneumonia3()
+{
     $nama = $this->request->getPost('nama');
     $jenis_kelamin = $this->request->getPost('jenis_kelamin');
     $tanggal_lahir = $this->request->getPost('tanggal_lahir');
     $kategori_usia = $this->request->getPost('kategori_usia');
     $nik = $this->request->getPost('nik');
     $telepon = $this->request->getPost('telepon');
-   $provinsi = $this->request->getPost('provinsi');
-$kabupaten = $this->request->getPost('kabupaten');
-$kecamatan = $this->request->getPost('kecamatan');
-$kelurahan = $this->request->getPost('kelurahan'); // ini sudah nama
-if (empty($provinsi) || empty($kabupaten) || empty($kecamatan) || empty($kelurahan)) {
-    return redirect()->to('/skriningpneumonia')->with('error', 'Data wilayah wajib diisi');
-}
 
     // ======================
-    // SIMPAN pasien_skrining
+    // WILAYAH
     // ======================
-$modelWilayah = new \App\Models\wilayahskriningpneumonia();
 
-$modelWilayah->save([
-     'provinsi' => $provinsi ?? '-',
-    'kabupaten' => $kabupaten ?? '-',
-    'kecamatan' => $kecamatan ?? '-',
-    'kelurahan' => $kelurahan ?? '-',
-    'rt' => 0,
-    'rw' => 0,
-    'alamat_lengkap' => $kelurahan . ', ' . $kecamatan . ', ' . $kabupaten
-    
-]);
+    $provinsi  = $this->request->getPost('provinsi_nama');
+    $kabupaten = $this->request->getPost('kabupaten_nama');
+    $kecamatan = $this->request->getPost('kecamatan_nama');
+    $kelurahan = $this->request->getPost('kelurahan_nama');
 
-$id_wilayah = $modelWilayah->insertID();
+    if (
+        empty($provinsi) ||
+        empty($kabupaten) ||
+        empty($kecamatan) ||
+        empty($kelurahan)
+    ) {
+        return redirect()->to('/skriningpneumonia')
+            ->with('error', 'Data wilayah wajib diisi');
+    }
 
- $modelPasien = new \App\Models\PasienPneumoniaModel();
+    // ======================
+    // SIMPAN WILAYAH
+    // ======================
 
-$modelPasien->save([
-    'nik' => $nik,
-    'nama_pasien_skrining' => $nama,
-    'jenis_kelamin' => $jenis_kelamin,
-    'tanggal_lahir' => $tanggal_lahir,
-    'usia' => $kategori_usia,
-    'no_hp' => $telepon,
-    'created_at' => date('Y-m-d H:i:s'),
-    'id_wilayah' => $id_wilayah
-]);
+    $modelWilayah = new \App\Models\wilayahskriningpneumonia();
+
+    $modelWilayah->save([
+        'provinsi' => $provinsi,
+        'kabupaten' => $kabupaten,
+        'kecamatan' => $kecamatan,
+        'kelurahan' => $kelurahan,
+        'rt' => 0,
+        'rw' => 0,
+        'alamat_lengkap' =>
+            $kelurahan . ', ' .
+            $kecamatan . ', ' .
+            $kabupaten . ', ' .
+            $provinsi
+    ]);
+
+    $id_wilayah = $modelWilayah->insertID();
+
+    // ======================
+    // SIMPAN PASIEN
+    // ======================
+
+    $modelPasien = new \App\Models\PasienPneumoniaModel();
+
+    $modelPasien->save([
+        'nik' => $nik,
+        'nama_pasien_skrining' => $nama,
+        'jenis_kelamin' => $jenis_kelamin,
+        'tanggal_lahir' => $tanggal_lahir,
+        'usia' => $kategori_usia,
+        'no_hp' => $telepon,
+        'created_at' => date('Y-m-d H:i:s'),
+        'id_wilayah' => $id_wilayah
+    ]);
 
     $id_pasien_skrining = $modelPasien->insertID();
 
     // ======================
-    // HITUNG SKOR
+    // LOAD DATASET CSV
     // ======================
 
-            $totalSkor = 0;
+    $datasetPath = FCPATH . 'dataset/pneumonia.csv';
 
-        $reverse = [14, 15, 16, 17, 18, 19, 20, 21];
+    $dataTraining = [];
 
-        for ($i = 1; $i <= 11; $i++) {
-            $nilai = $this->request->getPost("p".$i) ?? 0;
+    if (($handle = fopen($datasetPath, "r")) !== FALSE) {
 
-            if (in_array($i, $reverse)) {
-                $nilai = ($nilai == 1) ? 0 : 1;
+        $header = fgetcsv($handle, 1000, ";");
+
+        while (($row = fgetcsv($handle, 1000, ";")) !== FALSE) {
+
+            $dataTraining[] = [
+                'p1'  => trim($row[0]),
+                'p2'  => trim($row[1]),
+                'p3'  => trim($row[2]),
+                'p4'  => trim($row[3]),
+                'p5'  => trim($row[4]),
+                'p6'  => trim($row[5]),
+                'p7'  => trim($row[6]),
+                'p8'  => trim($row[7]),
+                'p9'  => trim($row[8]),
+                'p10' => trim($row[9]),
+                'p11' => trim($row[10]),
+                'hasil' => trim($row[11])
+            ];
+        }
+
+        fclose($handle);
+    }
+
+    // ======================
+    // INPUT USER
+    // ======================
+
+    $input = [
+        'p1'  => ($this->request->getPost('p1') == 1) ? 'Iya' : 'Tidak',
+        'p2'  => ($this->request->getPost('p2') == 1) ? 'Iya' : 'Tidak',
+        'p3'  => ($this->request->getPost('p3') == 1) ? 'Iya' : 'Tidak',
+        'p4'  => ($this->request->getPost('p4') == 1) ? 'Iya' : 'Tidak',
+        'p5'  => ($this->request->getPost('p5') == 1) ? 'Iya' : 'Tidak',
+        'p6'  => ($this->request->getPost('p6') == 1) ? 'Iya' : 'Tidak',
+        'p7'  => ($this->request->getPost('p7') == 1) ? 'Iya' : 'Tidak',
+        'p8'  => ($this->request->getPost('p8') == 1) ? 'Iya' : 'Tidak',
+        'p9'  => ($this->request->getPost('p9') == 1) ? 'Iya' : 'Tidak',
+        'p10' => ($this->request->getPost('p10') == 1) ? 'Iya' : 'Tidak',
+        'p11' => ($this->request->getPost('p11') == 1) ? 'Iya' : 'Tidak',
+    ];
+
+    // ======================
+    // FUNCTION ENTROPY
+    // ======================
+
+    function entropy($data)
+    {
+        $total = count($data);
+
+        if ($total == 0) {
+            return 0;
+        }
+
+        $berisiko = 0;
+        $tidak = 0;
+
+        foreach ($data as $d) {
+
+            if ($d['hasil'] == 'Berisiko') {
+                $berisiko++;
+            } else {
+                $tidak++;
             }
-
-            $totalSkor += $nilai;
         }
 
-        if ($totalSkor >= 0 && $totalSkor <= 6) {
-            $hasil = "Kategori Lingkungan Buruk";
-            $alasan = "Skor Anda: $totalSkor (0 - 6)";
+        $p1 = $berisiko / $total;
+        $p2 = $tidak / $total;
+
+        $entropy = 0;
+
+        if ($p1 > 0) {
+            $entropy -= $p1 * log($p1, 2);
         }
-        elseif ($totalSkor >= 7 && $totalSkor <= 10) {
-            $hasil = "Kategori Lingkungan Cukup";
-            $alasan = "Skor Anda: $totalSkor (7 - 13)";
+
+        if ($p2 > 0) {
+            $entropy -= $p2 * log($p2, 2);
         }
-        else {
-            $hasil = "Kategori Lingkungan Baik";
-            $alasan = "Skor Anda: $totalSkor (14 - 21)";
-        }
+
+        return $entropy;
+    }
 
     // ======================
-    // SIMPAN tabel skrining
+    // HITUNG ENTROPY TOTAL
+    // ======================
+
+    $entropyTotal = entropy($dataTraining);
+
+    // ======================
+    // HITUNG GAIN
+    // ======================
+
+    $gainList = [];
+
+    for ($i = 1; $i <= 11; $i++) {
+
+        $atribut = 'p' . $i;
+
+        $iya = [];
+        $tidak = [];
+
+        foreach ($dataTraining as $row) {
+
+            if ($row[$atribut] == 'Iya') {
+                $iya[] = $row;
+            } else {
+                $tidak[] = $row;
+            }
+        }
+
+        $totalData = count($dataTraining);
+
+        $entropyIya = entropy($iya);
+        $entropyTidak = entropy($tidak);
+
+        $gain =
+            $entropyTotal -
+            ((count($iya) / $totalData) * $entropyIya) -
+            ((count($tidak) / $totalData) * $entropyTidak);
+
+        $gainList[$atribut] = $gain;
+    }
+
+    // ======================
+    // ATRIBUT TERBAIK
+    // ======================
+
+    arsort($gainList);
+
+    $atributTerbaik = array_key_first($gainList);
+
+    // ======================
+    // FILTER DATA SESUAI INPUT
+    // ======================
+
+    $matching = [];
+
+    foreach ($dataTraining as $row) {
+
+        if ($row[$atributTerbaik] == $input[$atributTerbaik]) {
+            $matching[] = $row;
+        }
+    }
+
+    // ======================
+    // VOTING HASIL
+    // ======================
+
+    $jumlahBerisiko = 0;
+    $jumlahTidak = 0;
+
+    foreach ($matching as $m) {
+
+        if ($m['hasil'] == 'Berisiko') {
+            $jumlahBerisiko++;
+        } else {
+            $jumlahTidak++;
+        }
+    }
+
+    if ($jumlahBerisiko >= $jumlahTidak) {
+
+        $hasil = 'Berisiko Pneumonia';
+        $hasilDatabase = 'Berisiko';
+
+    } else {
+
+        $hasil = 'Tidak Berisiko Pneumonia';
+        $hasilDatabase = 'Tidak Berisiko';
+    }
+
+    // ======================
+    // DETAIL
+    // ======================
+
+    $alasan =
+        "Atribut terbaik: " . $atributTerbaik .
+        " | Gain: " . round($gainList[$atributTerbaik], 4) .
+        " | Berisiko: " . $jumlahBerisiko .
+        " | Tidak Berisiko: " . $jumlahTidak;
+
+    // ======================
+    // VARIABEL SAVE
+    // ======================
+
+    $p1  = $input['p1'];
+    $p2  = $input['p2'];
+    $p3  = $input['p3'];
+    $p4  = $input['p4'];
+    $p5  = $input['p5'];
+    $p6  = $input['p6'];
+    $p7  = $input['p7'];
+    $p8  = $input['p8'];
+    $p9  = $input['p9'];
+    $p10 = $input['p10'];
+    $p11 = $input['p11'];
+
+    // ======================
+    // SIMPAN HASIL SKRINING
     // ======================
 
     $modelSkrining = new \App\Models\SkriningPneumoniaModel();
-    $p1 = ($this->request->getPost('p1') == 1) ? 'Iya' : 'Tidak';
-    $p2 = ($this->request->getPost('p2') == 1) ? 'Iya' : 'Tidak';
-    $p3 = ($this->request->getPost('p3') == 1) ? 'Iya' : 'Tidak';
-    $p4 = ($this->request->getPost('p4') == 1) ? 'Iya' : 'Tidak';
-    $p5 = ($this->request->getPost('p5') == 1) ? 'Iya' : 'Tidak';
-    $p6 = ($this->request->getPost('p6') == 1) ? 'Iya' : 'Tidak';
-    $p7 = ($this->request->getPost('p7') == 1) ? 'Iya' : 'Tidak';
-    $p8 = ($this->request->getPost('p8') == 1) ? 'Iya' : 'Tidak';
-    $p9 = ($this->request->getPost('p9') == 1) ? 'Iya' : 'Tidak';
-    $p10 = ($this->request->getPost('p10') == 1) ? 'Iya' : 'Tidak';
-    $p11 = ($this->request->getPost('p11') == 1) ? 'Iya' : 'Tidak';
-    
+
     $modelSkrining->save([
+
         'id_pasien_skrining' => $id_pasien_skrining,
         'id_penyakit' => 3,
         'tanggal' => date('Y-m-d'),
@@ -394,21 +581,29 @@ $modelPasien->save([
         'var9' => $p9,
         'var10' => $p10,
         'var11' => $p11,
-        
 
-        'hasil' => $hasil
+        'hasil' => $hasilDatabase
     ]);
 
-   $data = $this->request->getPost();
-$data['provinsi']  = $provinsi;   // sudah berisi nama
-$data['kabupaten'] = $kabupaten;
-$data['kecamatan'] = $kecamatan;
-$data['hasil']     = $hasil;
-$data['alasan']    = $alasan;
-$data['totalSkor'] = $totalSkor;
-return view('gol_c/skrining3', $data);
+    // ======================
+    // KIRIM KE VIEW
+    // ======================
+
+    $data = $this->request->getPost();
+
+    $data['provinsi'] = $provinsi;
+    $data['kabupaten'] = $kabupaten;
+    $data['kecamatan'] = $kecamatan;
+    $data['kelurahan'] = $kelurahan;
+
+    $data['hasil'] = $hasil;
+    $data['alasan'] = $alasan;
+
+    $data['gainList'] = $gainList;
+    $data['atributTerbaik'] = $atributTerbaik;
+
+    return view('gol_c/skrining3', $data);
 }
-    
 
    
     public function export()

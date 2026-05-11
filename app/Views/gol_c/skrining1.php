@@ -288,6 +288,11 @@ body {
 <select name="kelurahan" id="kelurahan" class="form-select"></select>
 </div>
 
+<input type="hidden" name="provinsi_nama" id="provinsi_nama">
+<input type="hidden" name="kabupaten_nama" id="kabupaten_nama">
+<input type="hidden" name="kecamatan_nama" id="kecamatan_nama">
+<input type="hidden" name="kelurahan_nama" id="kelurahan_nama">
+
 <div class="mb-3">
 <label>RT/RW</label>
 <input type="text" name="rt_rw" id="rt_rw" class="form-control">
@@ -364,6 +369,42 @@ document.getElementById('kecamatan').addEventListener('change', function(){
             kel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
         });
     });
+});
+
+document.getElementById('provinsi').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('provinsi_nama').value =
+        nama;
+});
+
+document.getElementById('kabupaten').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kabupaten_nama').value =
+        nama;
+});
+
+document.getElementById('kecamatan').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kecamatan_nama').value =
+        nama;
+});
+
+document.getElementById('kelurahan').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kelurahan_nama').value =
+        nama;
 });
 
 // AUTO KODE POS (dummy)
