@@ -28,10 +28,11 @@ $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 /* ========================= */
 /* SKRINING Pneumonia */
 /* ========================= */
-$routes->get('/skriningpneumonia', 'Home::skriningpneumonia');
-$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Home::skriningpneumonia2');
-$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Home::skriningpneumonia3');
-
+$routes->get('/skriningpneumonia', 'Pneumonia::skriningpneumonia');
+$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Pneumonia::skriningpneumonia2');
+$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Pneumonia::skriningpneumonia3');
+$routes->get('/chat-pneumonia', 'ChatPneumonia::index');
+$routes->post('/chat-pneumonia/send', 'ChatPneumonia::send');
 /* ========================= */
 /* SKRINING DBD */
 /* ========================= */
@@ -170,6 +171,16 @@ $routes->post('kepala/update_user/(:num)', 'Kepala::update_user/$1');
 $routes->get('kepala/hapus_user/(:num)', 'Kepala::hapus_user/$1');
 $routes->get('kepala/view_user/(:num)', 'Kepala::view_user/$1');
 
+// ROUTES MANAJEMEN PUSKESMAS
+// ==========================================
+$routes->get('dbd/admin/manajemen_puskesmas', 'Dbd::manajemen_pkm');
+$routes->get('dbd/admin/manajemen_puskesmas/tambah', 'Dbd::tambah_manajemen_pkm');
+$routes->post('dbd/admin/manajemen_puskesmas/simpan', 'Dbd::simpan_manajemen_pkm');
+$routes->get('dbd/admin/manajemen_puskesmas/detail/(:num)', 'Dbd::detail_manajemen_pkm/$1');
+$routes->get('dbd/admin/manajemen_puskesmas/edit/(:num)', 'Dbd::edit_manajemen_pkm/$1');
+$routes->post('dbd/admin/manajemen_puskesmas/update/(:num)', 'Dbd::update_manajemen_pkm/$1');
+$routes->get('dbd/admin/manajemen_puskesmas/hapus/(:num)', 'Dbd::hapus_manajemen_pkm/$1');
+
 // ===============================================
 // ROUTE REKAP SKRINING KEPALA
 // ===============================================
@@ -305,8 +316,13 @@ $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
 
 // ================= Manajemen Banner DBD =================
-$routes->get('/manajemen_banner', 'ManajemenBanner::index');
-$routes->get('/unggah_banner', 'ManajemenBanner::unggah');
+$routes->get('/bannerDbd', 'ManajemenBanner::index');
+$routes->get('/bannerDbd/manajemen_banner', 'ManajemenBanner::index');
+$routes->get('/bannerDbd/unggah_banner', 'ManajemenBanner::unggah');
+$routes->post('/bannerDbd/simpan', 'ManajemenBanner::simpan');
+$routes->get('bannerDbd/edit/(:num)','ManajemenBanner::edit/$1');
+$routes->post('bannerDbd/update/(:num)','ManajemenBanner::update/$1');
+$routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
 
 
 // ================= MANEJEMEN USER =================

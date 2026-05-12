@@ -200,6 +200,8 @@ $tahunSekarang = date('Y');
 .kategori-sedang { color: #d39e00; font-weight: 600; }
 .kategori-rendah { color: #28a745; font-weight: 600; }
 
+
+
 </style>
 
 <!-- WELCOME -->
@@ -242,7 +244,7 @@ $tahunSekarang = date('Y');
         <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
         <div class="stat-info">
             <h3 class="red"><?= $totalKasus; ?></h3>
-            <p>Total Kasus Aktif Hari Ini</p>
+            <p>Total Kasus</p>
         </div>
     </div>
 
@@ -390,7 +392,7 @@ $tahunSekarang = date('Y');
 
             <script>
                
-            /* 🔥 FIX NAMA */
+            //FIX NAMA 
             function fixNama(nama){
                 return (nama || "")
                     .toLowerCase()
@@ -398,27 +400,27 @@ $tahunSekarang = date('Y');
                     .replace(/[^a-z0-9]/g, "");
             }
 
-            /* 🔥 ALIAS */
+            /*ALIAS */
             var aliasDesa = {
-    "kemuningsarilor": "kemuning sari lor",
-    "tegalgede": "tegalgede",
-    "tegalgedei": "tegalgede"
+            "kemuningsarilor": "kemuning sari lor",
+            "tegalgede": "tegalgede",
+            "tegalgedei": "tegalgede"
 };
         
            var dataDBD = <?= json_encode(isset($dbd) ? $dbd : []) ?>;
 
-var detailDesa = <?= json_encode(
-    isset($detailDesa) ? $detailDesa : []
-) ?>;
+            var detailDesa = <?= json_encode(
+                isset($detailDesa) ? $detailDesa : []
+            ) ?>;
 
-var desaTertinggi = <?= json_encode(
-    isset($desaTertinggi) ? $desaTertinggi : '-'
-) ?>;
+            var desaTertinggi = <?= json_encode(
+                isset($desaTertinggi) ? $desaTertinggi : '-'
+            ) ?>;
             var tahunSekarang = <?= json_encode($tahunSekarang) ?>;
 
             var dataFinal = {};
 
-            /* 🔥 OLAH DATA UNTUK WARNA PETA */
+            /* OLAH DATA UNTUK WARNA PETA */
             dataDBD.forEach(item => {
                 var desa = fixNama(item.desa);
                 if(aliasDesa[desa]) desa = aliasDesa[desa];
@@ -430,7 +432,7 @@ var desaTertinggi = <?= json_encode(
                 dataFinal[desa].jumlah++;
             });
 
-            /* 🔥 KATEGORI */
+            /* KATEGORI */
             for(var key in dataFinal){
                 var rata = dataFinal[key].total / dataFinal[key].jumlah;
                 if(rata >= 20) dataFinal[key].kategori = "tinggi";
@@ -602,7 +604,7 @@ d = d || {};
         </div>
     </div>
 
-    <!-- 🔥 STYLE LABEL -->
+    <!--STYLE LABEL -->
     <style>
     .label-desa{
         background: rgba(0,0,0,0.6);
@@ -770,42 +772,586 @@ d = d || {};
         </form>
     </div>
 </section>
-<!-- ARTIKEL -->
-<section id="artikel" class="artikel-section my-5">
-    <div class="artikel-header">
+
+<!-- ================= BERITA ================= -->
+ <style>
+
+.berita-section,
+.funfact-section{
+    margin-top: 50px;
+}
+
+.section-title h2{
+    font-size: 42px;
+    font-weight: 800;
+    color: #111;
+}
+
+.section-title p{
+    color: #666;
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.berita-scroll{
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+}
+
+.berita-scroll::-webkit-scrollbar{
+    display: none;
+}
+
+.berita-card{
+    min-width: 620px;
+    background: linear-gradient(135deg,#00B8C8,#69D5D7);
+    border-radius: 24px;
+    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.berita-content{
+    width: 65%;
+}
+
+.berita-content h3{
+    color: white;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.berita-meta{
+    margin-top: 30px;
+    color: white;
+    font-size: 13px;
+    display: flex;
+    gap: 20px;
+}
+
+.berita-card img{
+    width: 210px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* ================= RESPONSIVE FIX GLOBAL ================= */
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+
+    .welcome-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 25px;
+    }
+
+    .welcome-icon img {
+        width: 220px !important;
+    }
+
+    .stat-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .stat-card {
+        flex: 1 1 calc(50% - 16px);
+        min-width: 250px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .filter-row {
+        gap: 12px;
+    }
+
+    .filter-col {
+        flex: 1 1 calc(50% - 12px);
+        max-width: unset;
+    }
+
+    .berita-card {
+        min-width: 85%;
+    }
+
+    .funfact-card {
+        min-width: 85%;
+        max-width: 85%;
+    }
+
+    .funfact-body img {
+        width: 180px;
+        height: 130px;
+    }
+}
+
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+    .welcome-box {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .welcome-text h3 {
+        font-size: 22px;
+        line-height: 1.4;
+    }
+
+    .welcome-text h5 {
+        font-size: 15px;
+    }
+
+    .welcome-text p {
+        font-size: 14px;
+    }
+
+    .welcome-icon {
+        width: 100%;
+        text-align: center;
+    }
+
+    .welcome-icon img {
+        width: 180px !important;
+    }
+
+    .stat-row {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .slide-toggle-container {
+        max-width: 100%;
+        height: 42px;
+    }
+
+    .btn-toggle {
+        font-size: 13px;
+    }
+
+    .filter-col {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    #chartWrapper {
+        height: 300px !important;
+    }
+
+    .custom-modal-content {
+        width: 95%;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+    }
+
+    .info-box {
+        padding: 18px;
+    }
+
+    .info-table {
+        font-size: 13px;
+    }
+
+    .info-table tr td.label {
+        width: 42%;
+    }
+
+    .section-title h2 {
+        font-size: 28px;
+    }
+
+    .section-title p {
+        font-size: 14px;
+    }
+
+    .berita-card {
+        min-width: 95%;
+        flex-direction: column;
+        text-align: center;
+        gap: 18px;
+    }
+
+    .berita-content {
+        width: 100%;
+    }
+
+    .berita-content h3 {
+        font-size: 22px;
+    }
+
+    .berita-card img {
+        width: 100%;
+        height: 200px;
+    }
+
+    .funfact-card {
+        min-width: 95%;
+        max-width: 95%;
+    }
+
+    .funfact-body {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .funfact-text {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .funfact-body img {
+        width: 100%;
+        height: 200px;
+    }
+
+    .funfact-inner {
+        padding: 35px 20px 20px;
+    }
+}
+
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 480px) {
+
+    .section-title h2 {
+        font-size: 24px;
+    }
+
+    .berita-content h3 {
+        font-size: 18px;
+    }
+
+    .funfact-inner h3 {
+        font-size: 16px;
+    }
+
+    .funfact-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .welcome-text h3 {
+        font-size: 18px;
+    }
+
+    .modal-title {
+        font-size: 16px;
+    }
+
+    .info-table {
+        font-size: 12px;
+    }
+}
+
+</style>
+<section class="berita-section">
+
+    <div class="section-title">
+        <h2>Berita</h2>
+        <p>Informasi dan Edukasi tentang Pencegahan serta Penanganan DBD</p>
     </div>
 
-    <div id="artikel-scroll" class="artikel-scroll">
-        <?php if (!empty($artikels)): ?>
-            <?php foreach ($artikels as $artikel): ?>
-                <div class="card-artikel">
-                    <img src="<?= base_url('img/artikel/' . (string)$artikel['gambar']) ?>" class="artikel-img" alt="<?= esc((string)$artikel['judul']) ?>" />
+    <div class="berita-scroll">
 
-                    <div class="artikel-action">
-                        <a href="<?= base_url('admin/artikel/edit/' . $artikel['id']) ?>">
-                            <img src="<?= base_url('img/edit.png') ?>">
-                        </a>
-                        <form action="<?= base_url('admin/artikel/delete/' . $artikel['id']) ?>" method="post">
-                            <button type="submit">
-                                <img src="<?= base_url('img/hapus.png') ?>">
-                            </button>
-                        </form>
-                    </div>
+        <?php if(!empty($berita)): ?>
+    <?php foreach($berita as $b): ?>
 
-                    <div class="artikel-content">
-                        <small><?= date('l, d M Y', strtotime($artikel['tanggal_terbit'])) ?></small>
-                        <h5><?= esc((string)$artikel['judul']) ?></h5>
-                        <?php $preview = character_limiter(strip_tags($artikel['isi']), 150, '...'); ?>
-                        <p><?= $preview ?></p>
-                        <a href="<?= base_url('admin/artikel/' . $artikel['slug']) ?>" class="custom-link">
-                            Baca Selengkapnya →
-                        </a>
-                    </div>
+        <div class="berita-card">
+
+            <div class="berita-content">
+                <h3><?= esc((string)($b['judul_berita'] ?? '')) ?></h3>
+
+                <div class="berita-meta">
+                    <span><?= $b['penulis'] ?? 'Admin' ?></span>
+                    <span><?= date('d M Y', strtotime($b['tanggal_berita'])) ?></span>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-        <?php endif; ?>
+            </div>
+
+            <img src="<?= base_url('uploads/berita/' . ($b['gambar_berita'] ?? 'default.png')) ?>">
+
+        </div>
+
+    <?php endforeach; ?>
+<?php else: ?>
+
+    <p>Tidak ada berita tersedia.</p>
+
+<?php endif; ?>
+
     </div>
+</section>
+
+
+<!-- ================= FUNFACT ================= -->
+<style>
+
+.funfact-section{
+    margin-top: 50px;
+    padding: 0 30px; 
+}
+
+.funfact-scroll{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 28px; 
+    scroll-behavior: smooth;
+    padding: 10px 0 20px 10px;
+    scroll-snap-type: x mandatory;
+}
+
+.funfact-scroll::-webkit-scrollbar{
+    display: none;
+}
+
+.funfact-card{
+    min-width: 68%;
+    max-width: 68%;
+    flex-shrink: 0;
+    margin-top: 20px;
+    position: relative;
+    scroll-snap-align: start;
+}
+
+
+.funfact-icon{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #00BBC2;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    margin: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.funfact-inner{
+    margin-top: -25px;
+    background: linear-gradient(135deg,#0097A7,#00B8C8);
+    border-radius: 20px;
+    padding: 45px 30px 25px;
+}
+
+.funfact-inner h3{
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.funfact-body{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.funfact-text{
+    width: 60%;
+    color: white;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.funfact-body img{
+    width: 220px;
+    height: 150px;
+    border-radius: 16px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px){
+
+    .berita-card{
+        min-width: 85%;
+        padding: 20px;
+    }
+
+    .berita-content h3{
+        font-size: 26px;
+    }
+
+    .berita-card img{
+        width: 180px;
+        height: 130px;
+    }
+
+    .funfact-card{
+        min-width: 85%;
+        max-width: 85%;
+        margin-right: -80px;
+    }
+
+    .funfact-body img{
+        width: 180px;
+        height: 130px;
+    }
+
+    .funfact-text{
+        font-size: 12px;
+    }
+}
+
+
+@media (max-width: 768px){
+
+    .section-title h2{
+        font-size: 30px;
+    }
+
+    .section-title p{
+        font-size: 15px;
+    }
+
+    .berita-card{
+        min-width: 95%;
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .berita-content{
+        width: 100%;
+    }
+
+    .berita-content h3{
+        font-size: 22px;
+    }
+
+    .berita-card img{
+        width: 100%;
+        height: 200px;
+    }
+
+    .funfact-card{
+        min-width: 92%;
+        max-width: 92%;
+        margin-right: -50px;
+    }
+
+    .funfact-body{
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .funfact-text{
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .funfact-body img{
+        width: 100%;
+        height: 200px;
+    }
+
+    .funfact-inner{
+        padding: 40px 20px 20px;
+    }
+}
+
+
+@media (max-width: 480px){
+
+    .funfact-section,
+    .berita-section{
+        padding: 0 10px;
+    }
+
+    .section-title h2{
+        font-size: 24px;
+    }
+
+    .berita-content h3{
+        font-size: 18px;
+    }
+
+    .funfact-inner h3{
+        font-size: 16px;
+    }
+
+    .funfact-icon{
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .funfact-card{
+        margin-right: -30px;
+    }
+}
+
+</STyle>
+<?php $funfact = $funfact ?? []; ?>
+</div>
+<section class="funfact-section">
+
+    <div class="section-title">
+        <h2>Funfact</h2>
+        <p>Informasi dan Edukasi berdasarkan sumber terpercaya</p>
+    </div>
+
+    <div class="funfact-scroll">
+
+    <?php foreach($funfact as $f): ?>
+
+    <div class="funfact-card">
+
+        <div class="funfact-icon">
+            <i class="fa-solid fa-lightbulb"></i>
+        </div>
+
+        <div class="funfact-inner">
+
+            <h3><?= esc((string)$f['judul_funfact']) ?></h3>
+
+            <div class="funfact-body">
+
+                <div class="funfact-text">
+                    <?= character_limiter(strip_tags((string)$f['isi_funfact']), 180) ?>
+                </div>
+
+                <img src="<?= base_url('uploads/funfact/' . $f['gambar_funfact']) ?>">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <?php endforeach; ?>
+
 </section>
 
 <?php

@@ -175,7 +175,7 @@ body {
     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background:#00BBC2;"></div>
 </div>
 
-<form method="post" action="<?= base_url('skriningpneumonia/skriningpneumonia3') ?>">
+<form method="post" action="/skriningpneumonia/skriningpneumonia3">
 
 <!-- DATA HIDDEN -->
 <input type="hidden" name="nik" value="<?= $nik ?? '' ?>">
@@ -188,6 +188,10 @@ body {
 <input type="hidden" name="kabupaten" value="<?= $kabupaten ?? '' ?>">
 <input type="hidden" name="kecamatan" value="<?= $kecamatan ?? '' ?>">
 <input type="hidden" name="kelurahan" value="<?= $kelurahan ?? '' ?>">
+<input type="hidden" name="provinsi_nama" value="<?= $provinsi_nama ?? '' ?>">
+<input type="hidden" name="kabupaten_nama" value="<?= $kabupaten_nama ?? '' ?>">
+<input type="hidden" name="kecamatan_nama" value="<?= $kecamatan_nama ?? '' ?>">
+<input type="hidden" name="kelurahan_nama" value="<?= $kelurahan_nama ?? '' ?>">
 <input type="hidden" name="rt_rw" value="<?= $rt_rw ?? '' ?>">
 
 <div class="container mt-4">

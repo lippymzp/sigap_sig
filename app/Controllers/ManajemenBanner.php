@@ -20,13 +20,13 @@ class ManajemenBanner extends BaseController
         // STATUS AKTIF
         $data['publish'] =
         $bannerModel
-        ->where('status_banner', 'aktif')
+        ->where('status_banner', 'publish')
         ->countAllResults();
 
         // STATUS TIDAK AKTIF
         $data['draft'] =
         $bannerModel
-        ->where('status_banner', 'tidak aktif')
+        ->where('status_banner', 'draft')
         ->countAllResults();
 
         return view(
@@ -86,21 +86,20 @@ class ManajemenBanner extends BaseController
         }
 
         // SIMPAN DATABASE
-        $bannerModel->save([
+       $bannerModel->save([
 
-            'judul_banner' =>
-            $this->request->getPost('judul_banner'),
+    'judul_banner' => $this->request->getPost('judul_banner'),
 
-            'gambar' => $namaFile,
+    'gambar' => $namaFile,
 
-            'deskripsi' => $this->request->getPost('deskripsi'),
+    'deskripsi' => $this->request->getPost('deskripsi'),
 
-            'urutan' => $urutan,
+    'urutan' => $urutan,
 
-            // STATUS
-            'status_banner' =>$this->request->getPost('status_banner')
+    // default otomatis jika kosong
+    'status_banner' => $this->request->getPost('status_banner')
 
-        ]);
+    ]);
 
         return redirect()
             ->to('/bannerDbd')

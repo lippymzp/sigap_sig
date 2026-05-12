@@ -5,6 +5,7 @@ $title = 'FunFact';
 ?>
 
 <?= $this->section('style'); ?>
+
 <style>
 
 body{
@@ -141,25 +142,51 @@ body{
     margin:25px 0;
 }
 
-/* ISI */
+/* ISI FUNFACT */
 .funfact-content{
     font-size:18px;
     line-height:2;
     text-align:justify;
     color:#222;
+    display:block;
+    width:100%;
+    overflow:hidden;
+}
+
+/* GAMBAR DI DALAM ISI */
+.funfact-content img{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:25px auto;
+    border-radius:12px;
 }
 
 /* SUMBER */
 .funfact-sumber{
-    margin-top:40px;
-    font-size:14px;
+    margin-top:30px;
+    padding-top:20px;
+    border-top:2px solid #009ea3;
+    font-size:15px;
     line-height:1.8;
     word-break:break-word;
+    display:block;
+    width:100%;
+    clear:both;
+}
+
+.funfact-sumber b{
+    display:block;
+    margin-bottom:8px;
+    font-size:16px;
+    color:#111;
 }
 
 .funfact-sumber a{
+    display:block;
     color:#007bff;
     text-decoration:none;
+    word-break:break-word;
 }
 
 .funfact-sumber a:hover{
@@ -218,9 +245,14 @@ body{
         flex-direction:column;
         gap:8px;
     }
+
+    .funfact-sumber{
+        font-size:14px;
+    }
 }
 
 </style>
+
 <?= $this->endSection(); ?>
 
 

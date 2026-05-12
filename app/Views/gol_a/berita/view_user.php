@@ -262,7 +262,7 @@ body{
 
                 <div class="berita-img-wrapper">
 
-                    <img src="<?= base_url('uploads/'.$berita['gambar_berita']) ?>"
+                    <img src="<?= base_url('uploads/berita/'.$berita['gambar_berita']) ?>"
                          class="berita-img">
 
                 </div>

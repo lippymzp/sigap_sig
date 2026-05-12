@@ -282,7 +282,6 @@ textarea.form-control{
             method="post"
             enctype="multipart/form-data"
         >
-
             <!-- STEP -->
             <div class="step-wrapper">
 
@@ -469,22 +468,20 @@ textarea.form-control{
                             Kembali
                         </button>
 
-                        <button
+                       <button
                             type="submit"
+                            name="status_banner"
+                            value="draft"
                             class="btn-custom btn-draft"
-                            onclick="
-                            document.querySelector('[name=status_banner]').value='tidak aktif'
-                            "
                         >
                             Draft
                         </button>
 
                         <button
                             type="submit"
+                            name="status_banner"
+                            value="publish"
                             class="btn-custom btn-upload"
-                            onclick="
-                            document.querySelector('[name=status_banner]').value='aktif'
-                            "
                         >
                             <?= $isEdit ? 'Update Banner' : 'Unggah'; ?>
                         </button>
