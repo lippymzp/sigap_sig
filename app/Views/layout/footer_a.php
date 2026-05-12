@@ -1,140 +1,290 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<footer class="footer-sigap mt-5">
 
-<style>
+<div class="container">
 
-.footer{
-    background:#22c1c9;
-    color:#fff;
-    padding:55px 0 20px;
-    font-family:'Poppins', sans-serif;
-}
+    <div class="row gy-5">
 
-.footer-container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-}
+        <!-- LOGO & DESKRIPSI -->
+        <div class="col-lg-6" data-aos="fade-up">
 
-.footer-content{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:40px;
-    flex-wrap:wrap;
-}
+            <div class="footer-brand">
 
-.footer-box{
-    flex:1;
-    min-width:250px;
-}
+                <!-- GANTI medixa.png sesuai nama file logo -->
+                <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
 
-/* logo */
-.footer-brand{
-    text-align:center;
-}
+                <h3 class="footer-title">SIGAP</h3>
 
-.footer-logo{
-    width:90px;
-    margin-bottom:10px;
-}
+                <p class="footer-desc">
+                    Sistem Informasi, Geografis Analisis & Pemantauan
+                </p>
 
-.footer-brand p{
-    font-size:14px;
-    line-height:1.7;
-    margin:0;
-}
+            </div>
 
-/* judul */
-.footer-title{
-    font-weight:700;
-    margin-bottom:8px;
-}
+            <div class="footer-links mt-5">
+                <a href="#">Bantuan</a>
+                <a href="<?= base_url('tentangkamiDBD') ?>">Tentang Kami</a>
+            </div>
 
-/* teks kecil */
-.footer-box p{
-    font-size:14px;
-}
+        </div>
 
-/* icon jarak */
-.footer-box i{
-    margin-right:8px;
-}
+        <!-- SOSIAL -->
+        <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="100">
 
-/* copyright */
-.footer-bottom{
-    text-align:center;
-    margin-top:40px;
-    font-size:14px;
-    opacity:.9;
-}
+            <h5 class="footer-heading">Media Sosial</h5>
 
-/* responsive */
-@media(max-width:768px){
-    .footer-content{
-        flex-direction:column;
-        text-align:center;
-    }
-}
+            <div class="social-item">
+                <i class="bi bi-instagram"></i>
+                <span>sigap.co.id</span>
+            </div>
 
-</style>
+        </div>
 
-<footer class="footer">
+        <!-- KONTAK -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
 
-<div class="footer-container">
+            <h5 class="footer-heading">Informasi Kontak</h5>
 
-<div class="footer-content">
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </div>
 
-    <!-- BRAND -->
-    <div class="footer-box footer-brand">
-        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
-        <p>
-            Dengue Geographic <br> Information System
-        </p>
+                <div>
+                    <h6>Email</h6>
+                    <p>medixatechnology@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="contact-item mt-4">
+                <div class="contact-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+
+                <div>
+                    <h6>Lokasi</h6>
+                    <p>
+                        Jl. Mastrip, Krajan Timur, Sumbersari,
+                        Kec. Sumbersari, Kabupaten Jember,
+                        Jawa Timur 68121
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- SOSIAL -->
-    <div class="footer-box">
-        <h6 class="footer-title">Media Sosial</h6>
+    <!-- GARIS -->
+    <div class="footer-line"></div>
 
-        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
+    <!-- COPYRIGHT -->
+    <div class="footer-bottom">
+        <p>Hak Cipta © 2026 SIGAP</p>
     </div>
-
-    <!-- KONTAK -->
-    <div class="footer-box">
-        <h6 class="footer-title">Informasi Kontak</h6>
-
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
-    </div>
-
-</div>
-
-<div class="footer-bottom">
-    © 2026 SIGAP
-</div>
 
 </div>
 
 </footer>
+
+<style>
+
+/* =========================================
+   FOOTER SIGAP
+========================================= */
+
+.footer-sigap{
+    background:#014F4F;
+    padding:80px 0 30px;
+    position:relative;
+    overflow:hidden;
+}
+
+/* CONTAINER */
+.footer-sigap .container{
+    position:relative;
+    z-index:2;
+}
+
+/* LOGO */
+.footer-logo{
+    width:150px;
+    margin-bottom:25px;
+    filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
+}
+
+/* TITLE */
+.footer-title{
+    color:#fff;
+    font-weight:700;
+    font-size:2rem;
+    margin-bottom:12px;
+}
+
+/* DESC */
+.footer-desc{
+    color:#E8FFFF;
+    font-size:1.1rem;
+    line-height:1.8;
+    max-width:500px;
+}
+
+/* HEADING */
+.footer-heading{
+    color:#fff;
+    font-size:1.4rem;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+/* LINKS */
+.footer-links{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.footer-links a{
+    color:#fff;
+    text-decoration:underline;
+    font-size:1.2rem;
+    font-weight:600;
+    transition:0.3s;
+    width:fit-content;
+}
+
+.footer-links a:hover{
+    color:#40EDD0;
+    transform:translateX(5px);
+}
+
+/* SOCIAL */
+.social-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#fff;
+    font-size:1.1rem;
+}
+
+.social-item i{
+    font-size:1.3rem;
+}
+
+/* CONTACT */
+.contact-item{
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+}
+
+/* ICON */
+.contact-icon{
+    width:55px;
+    height:55px;
+    background:#E8FFFF;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.contact-icon i{
+    color:#014F4F;
+    font-size:1.3rem;
+}
+
+/* CONTACT TEXT */
+.contact-item h6{
+    color:#fff;
+    font-weight:700;
+    margin-bottom:6px;
+    font-size:1.1rem;
+}
+
+.contact-item p{
+    color:#E8FFFF;
+    line-height:1.7;
+    margin:0;
+    font-size:1rem;
+}
+
+/* LINE */
+.footer-line{
+    width:100%;
+    height:2px;
+    background:rgba(255,255,255,0.4);
+    margin:70px 0 25px;
+}
+
+/* COPYRIGHT */
+.footer-bottom{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.footer-bottom p{
+    color:#fff;
+    margin:0;
+    font-size:1rem;
+}
+
+/* RESPONSIVE */
+@media(max-width:991px){
+
+    .footer-bottom{
+        justify-content:center;
+        text-align:center;
+    }
+
+    .footer-logo{
+        width:120px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .footer-sigap{
+        padding:60px 0 25px;
+    }
+
+    .footer-title{
+        font-size:1.7rem;
+    }
+
+    .footer-desc{
+        font-size:1rem;
+    }
+
+    .footer-heading{
+        margin-top:10px;
+    }
+
+}
+
+</style>
+
+<!-- BOOTSTRAP -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- BOOTSTRAP ICON -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+<!-- LEAFLET -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<!-- AOS -->
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-    // Inisialisasi AOS
+
     AOS.init({
-        duration: 1000,
-        once: true
+        duration:1000,
+        once:true
     });
+
 });
 </script>
 

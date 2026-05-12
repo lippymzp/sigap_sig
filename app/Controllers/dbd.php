@@ -12,12 +12,13 @@ class Dbd extends BaseController
 {
     protected FunfactModel $funfact;
     protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
-
+    protected $db; 
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
     public function __construct()
     {
         $this->pelaporanModel = new PelaporanModel();
         $this->funfact = new FunfactModel();
+        $this->db = \Config\Database::connect();
     }
 
     public function inputData()
@@ -797,16 +798,93 @@ public function manajemen_pkm()
 
     return view('gol_a/manajemen_puskesmas', $data);
 }
-
-    // 3. Proses Simpan Data
-    public function simpan_manajemen_pkm()
+public function simpan_manajemen_pkm()
     {
-        $data = [
-            'nama_instansi' => $this->request->getPost('nama_instansi')
-        ];
+        $db = \Config\Database::connect();
+        
+        $nama_instansi = $this->request->getPost('nama_instansi');
+        $telepon       = $this->request->getPost('telepon');
+        $kode_pos      = $this->request->getPost('kode_pos');
+        
+        // Kita gabungkan input kecamatan ke dalam alamat, karena di database Anda 
+        // id_kecamatan berupa angka (INT), bukan teks.
+        $kecamatan     = $this->request->getPost('kecamatan');
+        $alamat        = "Kec. " . $kecamatan . ", " . $this->request->getPost('alamat');
+        
+        $daftar_kelurahan = $this->request->getPost('kelurahan');
 
-        $this->db->table('instansi')->insert($data);
-        return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil ditambahkan!');
+        if (empty($nama_instansi)) {
+            die("<h1>DATA KOSONG!</h1><p>Pastikan form terisi dengan benar.</p>");
+        }
+
+        $db->transBegin();
+
+        try {
+            // 1. Simpan HANYA nama ke tabel 'instansi' (Sesuai database asli Anda)
+            $dataInstansi = [
+                'nama_instansi' => $nama_instansi
+            ];
+            
+            if (!$db->table('instansi')->insert($dataInstansi)) {
+                $err = $db->error();
+                die("<h1>ERROR TABEL INSTANSI</h1><p>Pesan: " . $err['message'] . "</p>");
+            }
+            $id_instansi = $db->insertID(); // Ambil ID puskesmas
+
+            // 2. Simpan detail alamat & posyandu ke tabel 'manajemen_puskesmas'
+            if (!empty($daftar_kelurahan)) {
+                // Buat 1 baris data untuk setiap kelurahan yang diinput
+                foreach ($daftar_kelurahan as $kel) {
+                    $nama_kel = $kel['nama'];
+                    // Gabungkan daftar posyandu dengan koma (Contoh: Catleya 01, Catleya 02)
+                    $pos_str = isset($kel['posyandu']) ? implode(", ", $kel['posyandu']) : "";
+                    
+                    $dataManajemen = [
+                        'id_puskesmas'        => $id_instansi,
+                        'nama_puskesmas'      => $nama_instansi,
+                        'alamat'              => $alamat,
+                        'no_telpon_puskesmas' => $telepon,
+                        'kode_pos'            => empty($kode_pos) ? null : (int)$kode_pos,
+                        // Simpan kelurahan & posyandu ke dalam kolom varchar 'posyandu'
+                        'posyandu'            => "Kel. " . $nama_kel . " (" . $pos_str . ")",
+                        'created_at'          => date('Y-m-d H:i:s')
+                    ];
+                    
+                    if (!$db->table('manajemen_puskesmas')->insert($dataManajemen)) {
+                        $err = $db->error();
+                        die("<h1>ERROR TABEL MANAJEMEN</h1><p>Pesan: " . $err['message'] . "</p>");
+                    }
+                }
+            } else {
+                // Jika user tidak menambahkan kelurahan sama sekali
+                $dataManajemen = [
+                    'id_puskesmas'        => $id_instansi,
+                    'nama_puskesmas'      => $nama_instansi,
+                    'alamat'              => $alamat,
+                    'no_telpon_puskesmas' => $telepon,
+                    'kode_pos'            => empty($kode_pos) ? null : (int)$kode_pos,
+                    'created_at'          => date('Y-m-d H:i:s')
+                ];
+                if (!$db->table('manajemen_puskesmas')->insert($dataManajemen)) {
+                    $err = $db->error();
+                    die("<h1>ERROR TABEL MANAJEMEN</h1><p>Pesan: " . $err['message'] . "</p>");
+                }
+            }
+
+            // 3. Finalisasi Penyimpanan
+            if ($db->transStatus() === FALSE) {
+                $db->transRollback();
+                die("<h1>TRANSAKSI GAGAL</h1><p>Sistem membatalkan penyimpanan.</p>");
+            } else {
+                $db->transCommit();
+                // Jika sukses, kembali ke halaman daftar puskesmas
+                return redirect()->to(base_url('gol_a/manajemen_puskesmas'))->with('success', 'Data Puskesmas berhasil ditambahkan!');
+            }
+
+        } catch (\Exception $e) {
+            $db->transRollback();
+            die("<h1>ERROR FATAL</h1><p>" . $e->getMessage() . "</p>");
+        }
     }
 
     // 4. Menampilkan Detail
@@ -1729,85 +1807,84 @@ public function simpanDraft(int $id)
     }
 
     public function daftar_laporan()
-{
-    $model = new \App\Models\PelaporanModel();
+    {
+        $model = new \App\Models\PelaporanModel();
 
-    // 1. Tangkap semua input filter dari URL (GET)
-    $bulanNama = $this->request->getGet('bulan') ?: 'Mei'; // Default Mei jika kosong
-    $tahun     = $this->request->getGet('tahun') ?: date('Y');
-    $filterKelurahan = $this->request->getGet('kelurahan');
-    $filterPosyandu  = $this->request->getGet('posyandu');
+        // 1. Tangkap semua input filter dari URL (GET)
+        $bulanNama = $this->request->getGet('bulan') ?: 'Mei'; // Default Mei jika kosong
+        $tahun     = $this->request->getGet('tahun') ?: date('Y');
+        $filterKelurahan = $this->request->getGet('kelurahan');
+        $filterPosyandu  = $this->request->getGet('posyandu');
 
-    // 2. Logika Penentuan Daftar Catleya (Sesuai Filter)
-    $listCatleya = [];
+        // 2. Logika Penentuan Daftar Catleya (Sesuai Filter)
+        $listCatleya = [];
 
-    // Data mapping Kelurahan ke Posyandu (Sama dengan yang ada di JS View)
-    $dataMapping = [
-        'Sumbersari' => ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
-        'Wirolegi'   => ['36','36A','37','38','39','40','41','42','43','44','44A','45','46','47','48','49','50','51','52','53','54'],
-        'Karangrejo' => ['75','76','77','78','78A','79','80','81','82','83','84','85','86','87','88','88A','89','90','91','92','92A','93','94','95','95A','95B'],
-        'Tegalgede'  => ['68','69','70','71','72','73','74','74A','74B'],
-        'Antirogo'   => ['55','56','57','58','58A','59','60','61','62','63','64','65','65A','66','67']
-    ];
+        // Data mapping Kelurahan ke Posyandu (Sama dengan yang ada di JS View)
+        $dataMapping = [
+            'Sumbersari' => ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35'],
+            'Wirolegi'   => ['36', '36A', '37', '38', '39', '40', '41', '42', '43', '44', '44A', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54'],
+            'Karangrejo' => ['75', '76', '77', '78', '78A', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '88A', '89', '90', '91', '92', '92A', '93', '94', '95', '95A', '95B'],
+            'Tegalgede'  => ['68', '69', '70', '71', '72', '73', '74', '74A', '74B'],
+            'Antirogo'   => ['55', '56', '57', '58', '58A', '59', '60', '61', '62', '63', '64', '65', '65A', '66', '67']
+        ];
 
-    if (!empty($filterPosyandu)) {
-        // A. JIKA POSYANDU DIPILIH: Hanya tampilkan 1 kolom posyandu tersebut
-        // Kita bersihkan string "Catleya " jika ada, agar sesuai dengan ID di DB
-        $cleanId = str_replace('Catleya ', '', $filterPosyandu);
-        $listCatleya = [$cleanId];
-    } 
-    elseif (!empty($filterKelurahan) && isset($dataMapping[$filterKelurahan])) {
-        // B. JIKA HANYA KELURAHAN DIPILIH: Tampilkan semua posyandu di kelurahan itu
-        $listCatleya = $dataMapping[$filterKelurahan];
-    } 
-    else {
-        // C. JIKA TIDAK ADA FILTER: Tampilkan semua (105 Catleya)
-        for ($i = 1; $i <= 95; $i++) { $listCatleya[] = (string)$i; }
-        $bayangan = ['36A', '44A', '58A', '65A', '74A', '74B', '78A', '88A', '92A', '95A', '95B'];
-        $listCatleya = array_unique(array_merge($listCatleya, $bayangan));
-        sort($listCatleya, SORT_NATURAL); // Urutkan biar rapi
-    }
-
-    // 3. Logika Mencari Hari Jumat (Tetap seperti sebelumnya)
-    $bulanAngka = ['Januari'=>1,'Februari'=>2,'Maret'=>3,'April'=>4,'Mei'=>5,'Juni'=>6,'Juli'=>7,'Agustus'=>8,'September'=>9,'Oktober'=>10,'November'=>11,'Desember'=>12];
-    $m = $bulanAngka[$bulanNama] ?? date('n');
-    $jmlHari = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
-    
-    $listMinggu = [];
-    $mingguKe = 1;
-    for ($d = 1; $d <= $jmlHari; $d++) {
-        $dateStr = sprintf('%04d-%02d-%02d', $tahun, $m, $d);
-        if (date('N', strtotime($dateStr)) == 5) {
-            $listMinggu[] = "Minggu ke-" . $mingguKe;
-            $mingguKe++;
+        if (!empty($filterPosyandu)) {
+            // A. JIKA POSYANDU DIPILIH: Hanya tampilkan 1 kolom posyandu tersebut
+            // Kita bersihkan string "Catleya " jika ada, agar sesuai dengan ID di DB
+            $cleanId = str_replace('Catleya ', '', $filterPosyandu);
+            $listCatleya = [$cleanId];
+        } elseif (!empty($filterKelurahan) && isset($dataMapping[$filterKelurahan])) {
+            // B. JIKA HANYA KELURAHAN DIPILIH: Tampilkan semua posyandu di kelurahan itu
+            $listCatleya = $dataMapping[$filterKelurahan];
+        } else {
+            // C. JIKA TIDAK ADA FILTER: Tampilkan semua (105 Catleya)
+            for ($i = 1; $i <= 95; $i++) {
+                $listCatleya[] = (string)$i;
+            }
+            $bayangan = ['36A', '44A', '58A', '65A', '74A', '74B', '78A', '88A', '92A', '95A', '95B'];
+            $listCatleya = array_unique(array_merge($listCatleya, $bayangan));
+            sort($listCatleya, SORT_NATURAL); // Urutkan biar rapi
         }
+
+        // 3. Logika Mencari Hari Jumat (Tetap seperti sebelumnya)
+        $bulanAngka = ['Januari' => 1, 'Februari' => 2, 'Maret' => 3, 'April' => 4, 'Mei' => 5, 'Juni' => 6, 'Juli' => 7, 'Agustus' => 8, 'September' => 9, 'Oktober' => 10, 'November' => 11, 'Desember' => 12];
+        $m = $bulanAngka[$bulanNama] ?? date('n');
+        $jmlHari = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
+
+        $listMinggu = [];
+        $mingguKe = 1;
+        for ($d = 1; $d <= $jmlHari; $d++) {
+            $dateStr = sprintf('%04d-%02d-%02d', $tahun, $m, $d);
+            if (date('N', strtotime($dateStr)) == 5) {
+                $listMinggu[] = "Minggu ke-" . $mingguKe;
+                $mingguKe++;
+            }
+        }
+
+
+        // 4. Ambil Data Laporan dari DB (Menggunakan YEAR(created_at))
+        $laporanDb = $model->where('bulan', $bulanNama)
+            ->where('YEAR(created_at)', $tahun)
+            ->findAll();
+        $dataLaporan = [];
+        foreach ($laporanDb as $row) {
+            $dataLaporan[$row['minggu']][$row['id_posyandu']] = $row['id_laporan'];
+        }
+
+        // 5. Kirim ke View
+        $data = [
+            'title'       => 'Pelaporan Kader',
+            'judul'       => 'Pelaporan Kader', 
+            'menu'        => 'pelaporan_kader',
+            'bulanAktif'  => $bulanNama,
+            'tahunAktif'  => $tahun,
+            'listMinggu'  => $listMinggu,
+            'listCatleya' => $listCatleya,
+            'dataLaporan' => $dataLaporan
+        ];
+
+        return view('gol_a/daftar_laporan_kader_admin/daftar_laporan', $data);
     }
-
-    
-    // 4. Ambil Data Laporan dari DB (Menggunakan YEAR(created_at))
-    $laporanDb = $model->where('bulan', $bulanNama)
-                       ->where('YEAR(created_at)', $tahun)
-                       ->findAll();
-    $dataLaporan = [];
-    foreach ($laporanDb as $row) {
-        $dataLaporan[$row['minggu']][$row['id_posyandu']] = $row['id_laporan'];
-    }
-
-    // 5. Kirim ke View
-    $data = [
-        'title'       => 'Daftar Laporan Kader',
-        'bulanAktif'  => $bulanNama,
-        'tahunAktif'  => $tahun,
-        'listMinggu'  => $listMinggu,
-        'listCatleya' => $listCatleya,
-        'dataLaporan' => $dataLaporan,
-
-        'menu' => 'pelaporan_kader',
-        'judul' => 'Daftar Pelaporan Kader'
-    ];
-
-    return view('gol_a/daftar_laporan_kader_admin/daftar_laporan', $data);
-}
 
 public function pelaporan_kader()
 {

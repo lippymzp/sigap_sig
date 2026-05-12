@@ -23,12 +23,15 @@
 <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
 
 <style>
+/* HEADER */
 .navbar-custom{
-    background: white;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-    padding: 12px 0;
+    background: #ffffff;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+    padding: 10px 0;
+    border-bottom: 1px solid #f2f2f2;
 }
 
+/* BRAND */
 .brand-wrapper{
     display: flex;
     align-items: center;
@@ -36,44 +39,86 @@
     text-decoration: none;
 }
 
+/* LOGO */
 .brand-logo{
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
+/* TEXT GROUP */
 .brand-text{
-    line-height: 1.25;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.05;
 }
 
-.brand-title{
-    font-size: 14px;
-    font-weight: 700;
-    color: #00B7C2;
+/* SIGAP TITLE */
+.brand-name{
+    font-size: 34px;
+    font-weight: 900;
     margin: 0;
+    letter-spacing: 1px;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+
+    background: linear-gradient(
+        to bottom,
+        #1b747b 0%,
+        #1d929c 18%,
+        #12bccf 38%,
+        #12a4bb 58%,
+        #085b6a 78%,
+        #043c47 100%
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    text-shadow:
+        0 1px 0 rgba(255,255,255,0.55),
+        0 2px 4px rgba(0,150,180,0.12);
+
+    filter: saturate(1.08);
 }
 
+/* SUBTITLE */
+.brand-subtitle{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    line-height: 1.25;
+    margin-top: 2px;
+}
+
+/* NAV */
 .nav-link{
     font-weight: 500;
     color: #222 !important;
-    margin-left: 10px;
+    margin-left: 16px;
     transition: 0.3s;
+    font-size: 15px;
 }
 
 .nav-link:hover{
-    color: #00CED1 !important;
+    color: #00C7D3 !important;
 }
 
 .active-menu{
-    color: #00CED1 !important;
+    color: #00C7D3 !important;
     font-weight: 700;
 }
 
+/* LOGIN */
 .btn-login{
     background: linear-gradient(135deg,#00CED1,#40EDD0);
     color: white !important;
     border-radius: 30px;
-    padding: 10px 22px;
+    padding: 10px 24px;
     border: none;
     font-weight: 600;
     text-decoration: none;
@@ -85,25 +130,51 @@
     box-shadow: 0 8px 20px rgba(0,206,209,0.3);
 }
 
+/* DROPDOWN */
+.dropdown-menu{
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.dropdown-item{
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.dropdown-item:hover{
+    background: #EFFFFF;
+    color: #00BFCF;
+}
+
+/* MOBILE */
 @media(max-width:991px){
 
     .brand-logo{
-        width: 48px;
-        height: 48px;
+        width: 52px;
+        height: 52px;
     }
 
-    .brand-title{
-        font-size: 12px;
+    .brand-name{
+        font-size: 26px;
+    }
+
+    .brand-subtitle{
+        font-size: 11px;
     }
 
     .navbar-nav{
-        margin-top: 20px;
+        margin-top: 18px;
+        align-items: flex-start !important;
     }
 
     .nav-link{
         margin-left: 0;
+        padding: 10px 0;
     }
 
+    .btn-login{
+        margin-top: 10px;
+    }
 }
 </style>
 
@@ -113,7 +184,6 @@
 
 <?php 
 $uri = service('uri')->getSegment(1);
-
 $showLoginPages = ['dbd','tbc','pneumonia','diare'];
 ?>
 
@@ -130,22 +200,21 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
              class="brand-logo">
 
         <div class="brand-text">
-            <p class="brand-title">
-                Sistem Informasi, Geografis<br>
-                Analisis & Pemantauan
+            <h1 class="brand-name">SIGAP</h1>
+            <p class="brand-subtitle">
+                Sistem Informasi, Geografis Analisis & Pemantauan
             </p>
         </div>
 
     </a>
 
     <!-- TOGGLER -->
-    <button class="navbar-toggler" 
+    <button class="navbar-toggler"
             type="button"
-            data-bs-toggle="collapse" 
+            data-bs-toggle="collapse"
             data-bs-target="#navMenu">
 
         <span class="navbar-toggler-icon"></span>
-
     </button>
 
     <!-- MENU -->
@@ -153,30 +222,23 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
 
         <ul class="navbar-nav ms-auto align-items-center">
 
-            <!-- BERANDA -->
             <li class="nav-item">
-                <a class="nav-link <?= ($uri == '' ? 'active-menu' : '') ?>" 
-                   href="<?= base_url('/') ?>">
+                <a class="nav-link <?= ($uri == '' ? 'active-menu' : '') ?>" href="<?= base_url('/') ?>">
                     Beranda
                 </a>
             </li>
 
-            <!-- TENTANG -->
             <li class="nav-item">
-                <a class="nav-link <?= ($uri == 'tentang-kami' ? 'active-menu' : '') ?>" 
-                   href="<?= base_url('tentang-kami') ?>">
+                <a class="nav-link <?= ($uri == 'tentang-kami' ? 'active-menu' : '') ?>" href="<?= base_url('tentang-kami') ?>">
                     Tentang Kami
                 </a>
             </li>
 
-            <!-- PENYAKIT -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle <?= in_array($uri, $showLoginPages) ? 'active-menu' : '' ?>"
                    href="#"
                    data-bs-toggle="dropdown">
-
                     Penyakit
-
                 </a>
 
                 <ul class="dropdown-menu shadow border-0">
@@ -187,19 +249,15 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
                 </ul>
             </li>
 
-            <!-- KONTAK -->
             <li class="nav-item">
-                <a class="nav-link <?= ($uri == 'kontak' ? 'active-menu' : '') ?>" 
-                   href="<?= base_url('kontak') ?>">
+                <a class="nav-link <?= ($uri == 'kontak' ? 'active-menu' : '') ?>" href="<?= base_url('kontak') ?>">
                     Kontak
                 </a>
             </li>
 
-            <!-- LOGIN -->
             <?php if (in_array($uri, $showLoginPages)): ?>
             <li class="nav-item ms-3">
-                <a href="<?= base_url('/login?penyakit=' . ($penyakit ?? '')) ?>" 
-                   class="btn-login">
+                <a href="<?= base_url('/login?penyakit=' . ($penyakit ?? '')) ?>" class="btn-login">
                     Login
                 </a>
             </li>
@@ -214,4 +272,4 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
 </nav>
 
 <!-- SPACING -->
-<div style="margin-top:110px;"></div>
+<div style="margin-top:100px;"></div>

@@ -247,18 +247,44 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         <!-- SEARCH -->
         <div class="top-filter">
 
-            <input
-                type="text"
-                id="searchBanner"
-                class="search-input"
-                placeholder="Cari banner disini"
-            >
+                <form method="get" action="<?= base_url('bannerDbd/manajemen_banner') ?>" style="display: flex; gap: 10px; width: 100%;">
 
-            <select class="sort-select">
-                <option>Urutkan</option>
-            </select>
+                    <input
+                        type="text"
+                        name="search"
+                        id="searchBanner"
+                        class="search-input"
+                        placeholder="Cari banner disini"
+                        value="<?= $_GET['search'] ?? '' ?>"
+                    >
 
-        </div>
+                    <select
+                        name="sort"
+                        class="sort-select"
+                        onchange="this.form.submit()"
+                    >
+                        <option value="">Urutkan</option>
+
+                        <option value="terbaru" <?= ($_GET['sort'] ?? '') == 'terbaru' ? 'selected' : '' ?>>
+                            Terbaru
+                        </option>
+
+                        <option value="terlama" <?= ($_GET['sort'] ?? '') == 'terlama' ? 'selected' : '' ?>>
+                            Terlama
+                        </option>
+
+                        <option value="aktif" <?= ($_GET['sort'] ?? '') == 'aktif' ? 'selected' : '' ?>>
+                            Status Aktif
+                        </option>
+
+                        <option value="draft" <?= ($_GET['sort'] ?? '') == 'draft' ? 'selected' : '' ?>>
+                            Status Draft
+                        </option>
+                    </select>
+
+                </form>
+
+            </div>
 
         <!-- SUMMARY -->
         <div class="summary-box">
