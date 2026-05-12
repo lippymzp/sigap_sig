@@ -47,7 +47,7 @@
 
         <a href="<?= base_url('index.php/' . $penyakit . '/skrining_1') ?>"
             class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
-            <i class="fa-solid fa-file-lines me-2"></i> Skrining
+            <i class="fa-solid fa-file-lines me-2"></i> Rekap Skrining
         </a>
 
         <a href="#map"
