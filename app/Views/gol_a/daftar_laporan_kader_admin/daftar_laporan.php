@@ -3,206 +3,83 @@
 <?= $this->section('style'); ?>
 <style>
 /* ===============================
-   HALAMAN PELAPORAN KADER (DAFTAR)
+    HALAMAN PELAPORAN KADER (DAFTAR - VERTIKAL)
 ================================= */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-body {
-    font-family: 'Poppins', sans-serif;
-}
+body { font-family: 'Poppins', sans-serif; }
+.content-body { background: #e6f6f5; padding: 30px; min-height: 100vh; }
+.page-box { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
-.content-body {
-    background: #e6f6f5;
-    padding: 30px;
-    min-height: 100vh;
-}
+/* HEADER INFO */
+.info-banner { background: #4cc7c3; border-radius: 16px; padding: 20px 24px; color: #fff; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.info-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.25); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.info-banner h4 { margin: 0; font-weight: 700; font-size: 20px; }
+.info-banner p { margin: 0; opacity: 0.9; font-size: 14px; margin-top: 4px; }
 
-.page-box {
-    background: #fff;
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-}
+/* TOOLBAR */
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+.search-group { display: flex; gap: 12px; align-items: center; }
 
-/* BANNER HEADER (DI LUAR CARD) */
-.info-banner {
-    background: #4cc7c3;
-    border-radius: 16px;
-    padding: 20px 24px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 24px;
-}
-.info-icon {
-    width: 50px;
-    height: 50px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-.info-text h4 {
-    margin: 0 0 5px 0;
-    font-size: 20px;
-    font-weight: 700;
-}
-.info-text p {
-    margin: 0;
-    font-size: 14px;
-    opacity: 0.9;
-}
+.search-box { display: flex; align-items: center; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fff; height: 42px;}
+.search-box button.search-icon { background: #00b8c0; color: #fff; border: none; padding: 0 16px; font-size: 16px; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.search-box input { border: none; outline: none; width: 200px; padding: 0 16px; font-size: 14px; height: 100%; }
 
-/* ===============================
-   KONTROL ATAS
-================================= */
-.controls-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Sejajar semua */
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+.filter-btn { background: #fff; border: 1px solid #00b8c0; color: #00b8c0; border-radius: 8px; padding: 0 14px; height: 42px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+.filter-btn:hover { background: #f0fcfc; }
 
-/* KIRI: Search, Filter, Export */
-.controls-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+.export-btn { background: #00b8c0; border: 1px solid #00b8c0; color: #fff; border-radius: 8px; padding: 0 16px; height: 42px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
+.export-btn:hover { background: #009ea6; }
 
-.search-box {
-    position: relative;
-    width: 220px;
-}
-.search-box i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-}
-.search-box input {
-    width: 100%;
-    padding: 10px 15px 10px 40px;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    font-size: 14px;
-    background: #f8f9fa;
-    height: 42px;
-}
+.right-toolbar { display: flex; align-items: center; gap: 15px; flex-wrap: nowrap; }
 
-.btn-filter-outline {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    padding: 0 16px;
-    border-radius: 10px;
-    color: #555;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 42px;
-    transition: all 0.3s;
-}
-.btn-filter-outline:hover {
-    background: #f1f1f1;
-}
+.rekap-select { border: 1px solid #d1e3e8; background-color: #f7f9fb; color: #4a7d8c; border-radius: 8px; padding: 8px 36px 8px 16px; font-weight: 500; font-size: 14px; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a7d8c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; outline: none; height: 42px; }
 
-.btn-export {
-    background-color: #00b8c0;
-    color: white;
-    border-radius: 10px;
-    padding: 0 18px;
-    border: none;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 42px;
-}
+.periode-control { display: flex; align-items: center; gap: 10px; font-size: 15px; white-space: nowrap; height: 42px;}
+.periode-control span { font-weight: 500; color: #004d61; }
+.periode-control a { color: #00b8c0; font-size: 14px; text-decoration: none; padding: 0 5px; display: flex; align-items: center; }
+.periode-control b { font-weight: 700; color: #000; }
 
-/* KANAN: Dropdown View & Periode */
-.controls-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+/* TABLE LOGIC */
+.table-wrap { overflow-x: auto; width: 100%; border-radius: 8px; border: 1px solid #eee; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: center; }
 
-.dropdown-view {
-    min-width: 160px;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    padding: 0 12px;
-    font-size: 14px;
-    background-color: #fff;
-    height: 42px;
-}
+th, td { padding: 14px; font-size: 14px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; }
+thead th { background: #e8f9f9; font-weight: 600; color: #333; border-top: 1px solid #eee; }
+tbody td { background: #fff; color: #555; vertical-align: middle; }
 
-.period-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #fff;
-    padding: 0 15px;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    font-size: 14px;
-    height: 42px;
-}
-.period-btn {
-    border: none;
-    background: none;
-    color: #00b8c0;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 0 5px;
-}
+th:last-child, td:last-child { border-right: none; }
 
-/* ===============================
-   TABEL
-================================= */
-.table-responsive {
-    border-radius: 12px;
-    border: 1px solid #eee;
-    overflow-x: auto;
-    background: #fff;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 14px;
-    text-align: center;
-    border: 1px solid #eee;
-    font-size: 14px;
-}
-th {
-    background: #f8f9fa;
-    font-weight: 600;
-    color: #333;
-}
 .status-check { color: #20c997; font-size: 18px; }
 .status-cross { color: #ff6b6b; font-size: 18px; }
+
+/* PAGINATION SECTION */
+.bottom-section { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+#pageInfo { font-size: 14px; color: #666; font-weight: 500; }
+.pagination-box { display: flex; gap: 8px; }
+.pagination-box button { border: 1px solid #00b8c0; background: #fff; color: #00b8c0; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.pagination-box button:hover:not(:disabled) { background: #00b8c0; color: #fff; }
+.pagination-box button:disabled { border-color: #ddd; color: #aaa; cursor: not-allowed; background: #fafafa; }
 </style>
 <?= $this->endSection(); ?>
 
 
 <?= $this->section('content'); ?>
+<?php 
+// Menangkap parameter GET untuk mempertahankan pilihan user
+$tahunAktif = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y'); 
+$searchParam = isset($_GET['search']) ? $_GET['search'] : '';
+$puskesmasParam = isset($_GET['puskesmas']) ? $_GET['puskesmas'] : '';
+$kelurahanParam = isset($_GET['kelurahan']) ? $_GET['kelurahan'] : '';
+$posyanduParam = isset($_GET['posyandu']) ? $_GET['posyandu'] : '';
+$bulanParam = isset($_GET['bulan']) ? $_GET['bulan'] : '';
+?>
+
 <div class="content-body">
     
     <div class="info-banner">
-        <div class="info-icon">
-            <i class="fa-solid fa-file-lines"></i>
-        </div>
-        <div class="info-text">
+        <div class="info-icon"><i class="fa-solid fa-file-lines"></i></div>
+        <div>
             <h4>Pelaporan Kader</h4>
             <p>Menampilkan Riwayat Pelaporan Jentik Nyamuk</p>
         </div>
@@ -210,69 +87,68 @@ th {
 
     <div class="page-box">
         
-        <div class="controls-wrapper">
-            
-            <div class="controls-left">
+        <div class="toolbar">
+            <div class="search-group">
                 <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Cari data...">
+                    <button class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <input type="text" id="searchInput" placeholder="Cari posyandu..." value="<?= esc($searchParam) ?>">
                 </div>
-
-                <button class="btn-filter-outline" data-bs-toggle="modal" data-bs-target="#filterModal">
-                    <i class="fa-solid fa-filter"></i> Filter
+                
+                <button class="filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal" title="Filter Data">
+                    <i class="fa-solid fa-filter"></i>
                 </button>
 
-                <button class="btn-export" onclick="exportToExcel('tabelDaftar')">
-                    <i class="fa-solid fa-file-excel"></i> Export Laporan
+                <button class="export-btn" onclick="exportToExcel('tabelDaftar')">
+                    <i class="fa-solid fa-file-excel"></i> Export
                 </button>
             </div>
 
-            <div class="controls-right">
-                <select class="form-select dropdown-view" onchange="window.location.href=this.value;">
-                    <option value="<?= base_url('dbd/pelaporan-kader/admin') ?>">Rekap Laporan</option>
-                    <option value="<?= base_url('dbd/pelaporan-kader/daftar/admin') ?>" selected>Daftar Laporan</option>
+            <div class="right-toolbar">
+                <select class="form-select rekap-select" onchange="window.location.href=this.value;">
+                    <option value="<?= base_url('pelaporan-kader') ?>">Rekap Laporan</option>
+                    <option value="<?= base_url('pelaporan-kader/daftar') ?>" selected>Daftar Laporan</option>
                 </select>
-
-                <div class="period-control">
-                    <span class="fw-medium">Periode:</span>
-                    <button class="period-btn" onclick="gantiTahun(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                    <span id="yearText" class="fw-bold"><?= isset($tahunAktif) ? $tahunAktif : date('Y') ?></span>
-                    <button class="period-btn" onclick="gantiTahun(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                
+                <div class="periode-control">
+                    <span>Periode :</span>
+                    <a href="javascript:void(0)" onclick="gantiTahun(-1)"><i class="fa-solid fa-chevron-left"></i></a>
+                    <b id="yearText"><?= esc($tahunAktif) ?></b>
+                    <a href="javascript:void(0)" onclick="gantiTahun(1)"><i class="fa-solid fa-chevron-right"></i></a>
                 </div>
             </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-wrap">
             <table id="tabelDaftar">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Bulan</th>
-                        <th>Minggu Ke-</th>
-                        <?php if(!empty($listCatleya)): ?>
-                            <?php foreach($listCatleya as $posyandu): ?>
-                                <th>Catleya <?= $posyandu ?></th>
+                        <th width="5%">No</th>
+                        <th width="15%">Bulan</th>
+                        <th width="20%">Pos Posyandu</th>
+                        <?php if(!empty($listMinggu)): ?>
+                            <?php foreach($listMinggu as $minggu): ?>
+                                <th><?= $minggu ?></th>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <th>Posyandu</th>
+                            <th>Status Minggu</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php if(!empty($listMinggu)): ?>
-                        <?php $no = 1; foreach($listMinggu as $minggu): ?>
-                        <tr>
+                <tbody id="tableBody">
+                    <?php if(!empty($listCatleya)): ?>
+                        <?php $no = 1; foreach($listCatleya as $posyandu): ?>
+                        <tr class="data-row">
                             <td><?= $no++ ?></td>
                             <td><?= $bulanAktif ?? '-' ?></td>
-                            <td><?= $minggu ?></td>
-                            <?php if(!empty($listCatleya)): ?>
-                                <?php foreach($listCatleya as $posyandu): ?>
+                            <td class="fw-medium text-start">Catleya <?= $posyandu ?></td>
+                            
+                            <?php if(!empty($listMinggu)): ?>
+                                <?php foreach($listMinggu as $minggu): ?>
                                     <td>
                                         <?php 
-                                            // LOGIKA BARU: Normalisasi key posyandu agar aman dicari (tanpa dan dengan 0 di depan)
+                                            // Normalisasi key posyandu
                                             $posWithoutZero = ltrim($posyandu, '0');
                                             $posWithZero = str_pad($posWithoutZero, 2, "0", STR_PAD_LEFT);
-
                                             $idLaporan = null;
                                             
                                             if (isset($dataLaporan[$minggu][$posyandu])) {
@@ -285,7 +161,7 @@ th {
                                         ?>
 
                                         <?php if ($idLaporan): ?>
-                                            <a href="<?= base_url('dbd/view_laporan_kader/admin/' . $idLaporan) ?>">
+                                            <a href="<?= base_url('pelaporan-kader/view/' . $idLaporan) ?>">
                                                 <i class="fa-solid fa-circle-check status-check"></i>
                                             </a>
                                         <?php else: ?>
@@ -295,62 +171,87 @@ th {
                                         <?php endif; ?>
                                     </td>
                                 <?php endforeach; ?>
+                            <?php else: ?>
+                                <td>-</td>
                             <?php endif; ?>
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="100%">Tidak ada data minggu di bulan ini.</td>
+                        <tr class="empty-row">
+                            <td colspan="100%" class="text-center py-4 text-muted">
+                                Data pelaporan tidak ditemukan atau silakan pilih Kelurahan.
+                            </td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
+        
+        <div class="bottom-section">
+            <div id="pageInfo">Menampilkan 0 data</div>
+            <div class="pagination-box">
+                <button id="btnPrev" onclick="prevPage()" disabled>Previous</button>
+                <button id="btnNext" onclick="nextPage()" disabled>Next</button>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 16px; padding: 10px; border: none;">
-            <div class="modal-header" style="border-bottom: none;">
-                <h5 class="modal-title fw-bold">Filter Data</h5>
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <h4 class="modal-title">Filter Data</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="<?= base_url('dbd/pelaporan-kader/daftar/admin') ?>" method="get">
+            <form action="<?= base_url('pelaporan-kader/daftar') ?>" method="get">
+                <input type="hidden" name="tahun" value="<?= esc($tahunAktif) ?>">
+                <?php if($searchParam) echo "<input type='hidden' name='search' value='".esc($searchParam)."'>"; ?>
+                
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Kelurahan</label>
-                        <select name="kelurahan" id="kelurahanSelect" class="form-select" style="background-color: #f8f9fa;">
-                            <option value="">Semua Kelurahan</option>
-                            <option value="Sumbersari">Sumbersari</option>
-                            <option value="Wirolegi">Wirolegi</option>
-                            <option value="Karangrejo">Karangrejo</option>
-                            <option value="Tegalgede">Tegalgede</option>
-                            <option value="Antirogo">Antirogo</option>
+                        <label class="mb-2 fw-semibold">Puskesmas</label>
+                        <select class="form-select" name="puskesmas">
+                            <option value="">Pilih puskesmas</option>
+                            <option value="Sumbersari" <?= ($puskesmasParam == 'Sumbersari') ? 'selected' : '' ?>>Sumbersari</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Posyandu</label>
-                        <select name="posyandu" id="posyanduSelect" class="form-select" style="background-color: #f8f9fa;">
-                            <option value="">Semua Posyandu</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Bulan</label>
-                        <select name="bulan" class="form-select" style="background-color: #f8f9fa;">
-                            <option value="">Semua Bulan</option>
+                        <label class="mb-2 fw-semibold">Kelurahan</label>
+                        <select name="kelurahan" id="kelurahanSelect" class="form-select">
+                            <option value="">Pilih kelurahan</option>
                             <?php 
-                            $bAktif = isset($bulanAktif) ? $bulanAktif : '';
+                            $listKelurahan = ['Antirogo', 'Karangrejo', 'Sumbersari', 'Tegalgede', 'Wirolegi'];
+                            foreach($listKelurahan as $kel): ?>
+                                <option value="<?= $kel ?>" <?= ($kelurahanParam == $kel) ? 'selected' : '' ?>><?= $kel ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2 fw-semibold">Pos Posyandu</label>
+                        <select name="posyandu" id="posyanduSelect" class="form-select">
+                            <option value="">Pilih pos posyandu</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="mb-2 fw-semibold">Bulan</label>
+                        <select name="bulan" class="form-select">
+                            <option value="">Pilih bulan</option>
+                            <?php 
                             foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $b): 
                             ?>
-                                <option value="<?= $b ?>" <?= ($bAktif == $b) ? 'selected' : '' ?>><option value="<?= $b ?>" <?= ($bAktif == $b) ? 'selected' : '' ?>><?= $b ?></option>
+                                <option value="<?= $b ?>" <?= ($bulanParam == $b) ? 'selected' : '' ?>><?= $b ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: none;">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
-                    <button type="submit" class="btn" style="background-color: #00b8c0; color: white; border-radius: 8px;">Terapkan</button>
+                <div class="modal-footer d-flex justify-content-between mt-2">
+                    <a href="<?= base_url('pelaporan-kader/daftar') ?>" class="btn btn-outline-danger">Reset</a>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-info text-white">Terapkan</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -358,30 +259,7 @@ th {
 </div>
 
 <script>
-    // 1. DATA POSYANDU & LOGIKA DROPDOWN KELURAHAN
-    const dataPosyandu = {
-        'Sumbersari': ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
-        'Wirolegi': ['36','36A','37','38','39','40','41','42','43','44','44A','45','46','47','48','49','50','51','52','53','54'],
-        'Karangrejo': ['75','76','77','78','78A','79','80','81','82','83','84','85','86','87','88','88A','89','90','91','92','92A','93','94','95','95A','95B'],
-        'Tegalgede': ['68','69','70','71','72','73','74','74A','74B'],
-        'Antirogo': ['55','56','57','58','58A','59','60','61','62','63','64','65','65A','66','67']
-    };
-
-    document.getElementById('kelurahanSelect').addEventListener('change', function() {
-        const posyanduSelect = document.getElementById('posyanduSelect');
-        const kelurahanTerpilih = this.value;
-        posyanduSelect.innerHTML = '<option value="">Semua Posyandu</option>';
-        if(kelurahanTerpilih !== "" && dataPosyandu[kelurahanTerpilih]) {
-            dataPosyandu[kelurahanTerpilih].forEach(function(item) {
-                let option = document.createElement('option');
-                option.value = item;
-                option.text = 'Catleya ' + item;
-                posyanduSelect.appendChild(option);
-            });
-        }
-    });
-
-    // 2. FUNGSI GANTI TAHUN
+    // 1. FUNGSI GANTI TAHUN
     function gantiTahun(offset) {
         const urlParams = new URLSearchParams(window.location.search);
         let currentYear = parseInt(document.getElementById('yearText').innerText);
@@ -389,21 +267,135 @@ th {
         window.location.search = urlParams.toString();
     }
 
-    // 3. FUNGSI PENCARIAN REAL-TIME
+    // 2. LOGIKA DROPDOWN POSYANDU BERDASARKAN KELURAHAN
+    const dataPosyandu = {
+        'Sumbersari': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
+        'Wirolegi': ['36','36 A','37','38','39','40','41','42','43','44','44A','45','46','47','48','49','50','51','52','53','54'],
+        'Karangrejo': ['75','76','77','78','78A','79','80','81','82','83','84','85','86','87','88','88A','89','90','91','92','92A','93','94','95','95A','95B'],
+        'Tegalgede': ['68','69','70','71','72','73','74','74A','74B'],
+        'Antirogo': ['55','56','57','58','58A','59','60','61','62','63','64','65','65A','66','67']
+    };
+
+    const kelurahanSelect = document.getElementById('kelurahanSelect');
+    const posyanduSelect = document.getElementById('posyanduSelect');
+    const selectedPosyanduParam = "<?= esc($posyanduParam) ?>"; 
+
+    function populatePosyandu() {
+        const kelurahanTerpilih = kelurahanSelect.value;
+        posyanduSelect.innerHTML = '<option value="">Pilih pos posyandu</option>';
+        if(kelurahanTerpilih !== "" && dataPosyandu[kelurahanTerpilih]) {
+            dataPosyandu[kelurahanTerpilih].forEach(function(item) {
+                let namaPosyandu = 'Catleya ' + item;
+                let option = document.createElement('option');
+                option.value = namaPosyandu;
+                option.text = namaPosyandu;
+                if(namaPosyandu === selectedPosyanduParam) {
+                    option.selected = true;
+                }
+                posyanduSelect.appendChild(option);
+            });
+        }
+    }
+    kelurahanSelect.addEventListener('change', populatePosyandu);
+    window.addEventListener('load', populatePosyandu);
+
+
+    // 3. FUNGSI PAGINATION & SEARCH REAL-TIME
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    let allRows = [];
+    let filteredRows = [];
+
+    function initPagination() {
+        allRows = Array.from(document.querySelectorAll('.data-row'));
+        if(allRows.length === 0) return; // Jika tabel kosong
+        filteredRows = [...allRows];
+        renderTable();
+    }
+
+    function renderTable() {
+        // Sembunyikan semua baris
+        allRows.forEach(row => row.style.display = 'none');
+        
+        // Hitung index awal & akhir
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        
+        // Tampilkan hanya baris di halaman aktif
+        filteredRows.slice(start, end).forEach(row => row.style.display = '');
+        
+        // Update Teks Informasi Bawah
+        const infoText = document.getElementById('pageInfo');
+        if(filteredRows.length === 0) {
+            infoText.innerText = 'Menampilkan 0 data';
+        } else {
+            infoText.innerText = `Menampilkan ${start + 1}-${Math.min(end, filteredRows.length)} dari ${filteredRows.length} data`;
+        }
+        
+        // Update Tombol Prev/Next
+        document.getElementById('btnPrev').disabled = currentPage === 1;
+        document.getElementById('btnNext').disabled = end >= filteredRows.length;
+    }
+
+    function prevPage() { if(currentPage > 1) { currentPage--; renderTable(); } }
+    function nextPage() { if((currentPage * rowsPerPage) < filteredRows.length) { currentPage++; renderTable(); } }
+
     document.getElementById('searchInput').addEventListener('keyup', function() {
         let keyword = this.value.toLowerCase();
-        document.querySelectorAll('tbody tr').forEach(function(row) {
-            row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
-        });
+        filteredRows = allRows.filter(row => row.innerText.toLowerCase().includes(keyword));
+        currentPage = 1; // Reset ke halaman pertama setiap kali mencari
+        renderTable();
     });
+
+    // Jalankan Pagination saat halaman dimuat
+    window.onload = initPagination;
+
 
     // 4. FUNGSI EXPORT EXCEL
     function exportToExcel(tableID, filename = 'Data_Laporan_Kader.xls') {
         let table = document.getElementById(tableID).cloneNode(true);
-        table.querySelectorAll('.fa-circle-check').forEach(el => el.parentNode.innerText = 'Selesai');
-        table.querySelectorAll('.fa-circle-xmark').forEach(el => el.parentNode.innerText = 'Belum');
-        let html = table.outerHTML;
-        let blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel' });
+
+        // Penting: Kembalikan display semua baris yang disembunyikan oleh pagination agar ikut ter-export
+        table.querySelectorAll('tr').forEach(tr => tr.style.display = '');
+
+        table.querySelectorAll('tbody td').forEach(td => {
+            if (td.querySelector('.fa-circle-check')) {
+                td.innerHTML = '<span style="color: #008000; font-weight: bold;">Selesai</span>';
+            } else if (td.querySelector('.fa-circle-xmark')) {
+                td.innerHTML = '<span style="color: #ff0000;">Belum</span>';
+            }
+        });
+
+        table.style.borderCollapse = 'collapse';
+        table.style.fontFamily = 'Arial, sans-serif';
+        table.style.fontSize = '11pt';
+        table.style.width = '100%';
+
+        table.querySelectorAll('th, td').forEach((cell, index) => {
+            cell.style.border = '1px solid #000000';
+            cell.style.padding = '8px';
+            cell.style.verticalAlign = 'middle';
+
+            if (cell.tagName.toLowerCase() === 'th') {
+                cell.style.backgroundColor = '#4cc7c3';
+                cell.style.color = '#ffffff';
+                cell.style.fontWeight = 'bold';
+                cell.style.textAlign = 'center';
+            } else {
+                cell.style.textAlign = (index === 2) ? 'left' : 'center';
+            }
+        });
+
+        let html = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                  xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                  xmlns="http://www.w3.org/TR/REC-html40">
+            <head><meta charset="UTF-8"></head>
+            <body>${table.outerHTML}</body>
+            </html>
+        `;
+
+        let blob = new Blob([html], { type: 'application/vnd.ms-excel' });
         let url = URL.createObjectURL(blob);
         let a = document.createElement('a');
         a.href = url;
@@ -413,4 +405,5 @@ th {
         document.body.removeChild(a);
     }
 </script>
+
 <?= $this->endSection(); ?>

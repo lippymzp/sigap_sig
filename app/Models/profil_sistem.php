@@ -11,9 +11,8 @@ class profil_sistem extends Model
 
     protected $allowedFields = [
         'nama_sistem',
-        'alamat',
-        'email',
-        'instagram',
-        'logo'
+        'definisi',
+        'isi_misi',
+        'isi_visi',
     ];
 }

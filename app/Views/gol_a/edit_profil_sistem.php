@@ -1,154 +1,42 @@
 <?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
 
-<style>
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm" style="border-radius:15px; border:none;">
+        <div class="card-body p-4">
+            <h4 class="card-title fw-bold mb-4 text-center">Edit Profil Sistem</h4>
+            
+            <form action="<?= base_url('profil_sistem/update') ?>" method="post">
+                <?= csrf_field() ?>
+                
+                <div class="mb-3">
+                    <label class="fw-bold">Nama Sistem</label>
+                    <input type="text" name="nama_sistem" class="form-control" value="<?= $profil_sistem['nama_sistem'] ?? '' ?>" required>
+                </div>
 
-.card-edit{
-    border-radius:15px;
-    padding:35px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-    background:white;
-}
+                <div class="mb-3">
+                    <label class="fw-bold">Definisi</label>
+                    <textarea name="definisi" class="form-control" rows="4" required><?= $profil_sistem['definisi'] ?? '' ?></textarea>
+                </div>
 
-.preview-logo{
-    width:140px;
-    border-radius:10px;
-    margin-bottom:10px;
-}
+                <div class="mb-3">
+                    <label class="fw-bold">Visi</label>
+                    <textarea name="isi_visi" class="form-control" rows="4" required><?= $profil_sistem['isi_visi'] ?? '' ?></textarea>
+                </div>
 
-</style>
+                <div class="mb-4">
+                    <label class="fw-bold">Misi</label>
+                    <textarea name="isi_misi" class="form-control" rows="5" required><?= $profil_sistem['isi_misi'] ?? '' ?></textarea>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success px-4 me-2"><i class="fa fa-save"></i> Simpan Perubahan</button>
+                    <a href="<?= base_url('profil_sistem') ?>" class="btn btn-secondary px-4">Batal</a>
+                </div>
+            </form>
 
-
-<div class="container-fluid">
-
-<div class="card-edit">
-
-<h4 class="mb-4 fw-bold">Edit Profil Sistem</h4>
-
-<form action="<?= base_url('profil_sistem/update') ?>"
-method="post"
-enctype="multipart/form-data">
-
-<?= csrf_field() ?>
-
-<input type="hidden"
-name="id"
-value="<?= $profil['id_profil_sistem'] ?? '' ?>">
-
-<div class="row">
-
-<!-- ================= KIRI ================= -->
-<div class="col-md-8">
-
-<!-- NAMA SISTEM -->
-<div class="mb-3">
-<label class="form-label">Nama Sistem</label>
-<input type="text"
-name="nama_sistem"
-class="form-control"
-required
-value="<?= $profil['nama_sistem'] ?? '' ?>">
+        </div>
+    </div>
 </div>
-
-<!-- ALAMAT -->
-<div class="mb-3">
-<label class="form-label">Alamat</label>
-<textarea name="alamat"
-class="form-control"
-rows="4"
-required><?= $profil['alamat'] ?? '' ?></textarea>
-</div>
-
-<!-- EMAIL -->
-<div class="mb-3">
-<label class="form-label">Email</label>
-<input type="email"
-name="email"
-class="form-control"
-value="<?= $profil['email'] ?? '' ?>">
-</div>
-
-<!-- INSTAGRAM -->
-<div class="mb-3">
-<label class="form-label">Instagram</label>
-<input type="text"
-name="instagram"
-class="form-control"
-placeholder="@username"
-value="<?= $profil['instagram'] ?? '' ?>">
-</div>
-
-</div>
-
-
-<!-- ================= KANAN ================= -->
-<div class="col-md-4 text-center">
-
-<label class="form-label fw-bold">
-Logo Sistem
-</label>
-
-<br>
-
-<?php if(!empty($profil['logo'])) : ?>
-
-<img src="<?= base_url('uploads/logo/'.$profil['logo']) ?>"
-class="preview-logo"
-id="previewLogo">
-
-<?php else : ?>
-
-<img src="<?= base_url('img/logo_default.png') ?>"
-class="preview-logo"
-id="previewLogo">
-
-<?php endif; ?>
-
-
-<input type="file"
-name="logo"
-class="form-control mt-2"
-accept="image/*"
-onchange="previewImage(event)">
-
-<small class="text-muted">
-Format: JPG / PNG
-</small>
-
-</div>
-
-</div>
-
-<hr>
-
-<div class="d-flex gap-2">
-
-<button class="btn btn-success px-4">
-<i class="fa fa-save"></i> Simpan Perubahan
-</button>
-
-<a href="<?= base_url('profil_sistem') ?>"
-class="btn btn-secondary">
-Kembali
-</a>
-
-</div>
-
-</form>
-
-</div>
-</div>
-
-
-<!-- ================= PREVIEW IMAGE ================= -->
-<script>
-function previewImage(event){
-    const reader = new FileReader();
-    reader.onload = function(){
-        document.getElementById('previewLogo').src = reader.result;
-    }
-    reader.readAsDataURL(event.target.files[0]);
-}
-</script>
 
 <?= $this->endSection() ?>

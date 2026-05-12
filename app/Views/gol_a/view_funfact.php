@@ -154,12 +154,21 @@ body{
 }
 
 /* GAMBAR DI DALAM ISI */
-.funfact-content img{
-    display:block;
-    max-width:100%;
-    height:auto;
-    margin:25px auto;
-    border-radius:12px;
+.funfact-content img {
+    width: 300px !important;
+    max-width: 100%;
+    min-width: 120px;
+    height: auto !important;
+    display: block;
+    margin: 20px auto;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.funfact-content p img {
+    width: 300px !important;
+    max-width: 100%;
+    height: auto !important;
 }
 
 /* SUMBER */
@@ -358,7 +367,7 @@ $bulan = [
         <div class="funfact-content">
 
             <?= !empty($funfact['isi_funfact']) 
-                ? $funfact['isi_funfact'] 
+                ? html_entity_decode($funfact['isi_funfact']) 
                 : '-' ?>
 
         </div>

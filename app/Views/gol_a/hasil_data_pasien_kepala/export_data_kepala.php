@@ -7,30 +7,48 @@
 .tab-filter {
     display: flex;
     gap: 10px;
-    border: 1px solid #00BBC2; /* Warna khas Kepala */
+    border: 1px solid #20B8BE;
     border-radius: 12px;
     overflow: hidden;
     width: fit-content;
+    flex-wrap: wrap;
 }
+
 .tab-filter button {
     padding: 10px 25px;
     border: none;
     background: transparent;
-    color: #00BBC2;
+    color: #20B8BE;
     cursor: pointer;
-    font-weight: 600;
+    transition: 0.2s;
 }
+
 .tab-filter button.active {
-    background: #00BBC2;
+    background: #20B8BE;
     color: white;
 }
 
 .export-card {
-    background: #F4F8FA;
+    background: #ECF8F8;
     border-radius: 20px;
     padding: 30px;
     margin-top: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    display: block;
+}
+
+.form-select {
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid #d6e4e5;
 }
 
 .btn-export {
@@ -44,135 +62,301 @@
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
 
-/* WARNA BUTTON EXCEL & PDF */
-.btn-export-excel {
-    background: #00BBC2;
+    background: #20B8BE;
     color: white;
 }
-.btn-export-excel:hover {
-    background: #009fa5;
+
+.btn-export:hover {
+    background: #169fa5;
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
-.btn-export-pdf {
-    background: #e74c3c;
-    color: white;
-}
-.btn-export-pdf:hover {
-    background: #c0392b;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+@media(max-width:768px){
+
+    .tab-filter{
+        width:100%;
+    }
+
+    .tab-filter button{
+        flex:1;
+        font-size:13px;
+        padding:10px;
+    }
+
+    .export-card{
+        padding:20px;
+    }
+
+    .d-flex.justify-content-end{
+        flex-direction:column;
+    }
+
+    .btn-export{
+        width:100%;
+        justify-content:center;
+    }
 }
 </style>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0" style="color: #2b2b2b; font-weight: 600;">Eksport Data Pasien</h4>
-</div>
-
+<!-- TAB -->
 <div class="tab-filter mb-3">
-    <button onclick="setMode('bulanan')" id="bulanan" class="active">BULANAN</button>
-    <button onclick="setMode('triwulan')" id="triwulan">TRIWULAN</button>
-    <button onclick="setMode('semester')" id="semester">SEMESTER</button>
-    <button onclick="setMode('tahunan')" id="tahunan">TAHUNAN</button>
+    <button onclick="setMode('bulanan')" id="bulanan" class="active">
+        BULANAN
+    </button>
+
+    <button onclick="setMode('triwulan')" id="triwulan">
+        TRIWULAN
+    </button>
+
+    <button onclick="setMode('semester')" id="semester">
+        SEMESTER
+    </button>
+
+    <button onclick="setMode('tahunan')" id="tahunan">
+        TAHUNAN
+    </button>
 </div>
 
 <div class="export-card">
 
-    <div class="form-group mb-3">
-        <label class="fw-bold mb-2">Jangka Waktu</label>
+    <!-- JANGKA WAKTU -->
+    <div class="form-group" id="groupWaktu">
+        <label>Jangka Waktu</label>
+
         <select id="waktu" class="form-select"></select>
     </div>
 
-    <div class="form-group mb-3">
-        <label class="fw-bold mb-2">Tahun</label>
+    <!-- TAHUN -->
+    <div class="form-group">
+        <label>Tahun</label>
+
         <select id="tahun" class="form-select"></select>
     </div>
 
-    <div class="form-group mb-4">
-        <label class="fw-bold mb-2">Kecamatan</label>
-        <select id="kecamatan" class="form-select">
-            <option value="">Semua Kecamatan</option>
-            <option value="Sumbersari">Sumbersari</option>
-            <option value="Patrang">Patrang</option>
-            <option value="Kaliwates">Kaliwates</option>
+    <!-- KELURAHAN -->
+    <div class="form-group">
+        <label>Kelurahan</label>
+        <select id="kelurahan" class="form-select">
+            <option value="semua">
+                Semua Kelurahan
+            </option>
+            <option value="Sumbersari">
+                Sumbersari
+            </option>
+            <option value="Antirogo">
+                Antirogo
+            </option>
+            <option value="Tegalgede">
+                Tegalgede
+            </option>
+            <option value="Karangrejo">
+                Karangrejo
+            </option>
+            <option value="Wirolegi">
+                Wirolegi
+            </option>
         </select>
     </div>
 
+    <!-- BUTTON -->
     <div class="d-flex justify-content-end mt-4 gap-3">
-        <button onclick="exportData('excel')" class="btn-export btn-export-excel">
-            <i class="fas fa-file-excel"></i> Export Excel
+
+        <button onclick="exportData('excel')" class="btn-export">
+            <i class="fas fa-file-excel"></i>
+            Export Excel
         </button>
 
-        <button onclick="exportData('pdf')" class="btn-export btn-export-pdf">
-            <i class="fas fa-file-pdf"></i> Export PDF
+        <button onclick="exportData('pdf')" class="btn-export">
+            <i class="fas fa-file-pdf"></i>
+            Export PDF
         </button>
+
     </div>
 
 </div>
 
 <script>
+
 let mode = 'bulanan';
 
+// ======================
+// SET MODE
+// ======================
 function setMode(m) {
+
     mode = m;
 
-    document.querySelectorAll('.tab-filter button').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(m).classList.add('active');
+    // REMOVE ACTIVE
+    document.querySelectorAll('.tab-filter button')
+    .forEach(btn => btn.classList.remove('active'));
+
+    // ACTIVE BUTTON
+    document.getElementById(m)
+    .classList.add('active');
+
+    // ======================
+    // SHOW / HIDE WAKTU
+    // ======================
+
+    if (mode === 'tahunan') {
+
+        document.getElementById('groupWaktu')
+        .style.display = 'none';
+
+    } else {
+
+        document.getElementById('groupWaktu')
+        .style.display = 'block';
+    }
 
     loadWaktu();
 }
 
+// ======================
+// LOAD WAKTU
+// ======================
 function loadWaktu() {
+
     let select = document.getElementById('waktu');
+
     select.innerHTML = '';
 
+    // DEFAULT
+    select.innerHTML = `
+        <option value="">
+            -pilih waktu-
+        </option>
+    `;
+
+    // ======================
+    // BULANAN
+    // ======================
     if (mode === 'bulanan') {
-        let bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+        let bulan = [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
+        ];
+
         bulan.forEach((b,i)=>{
-            select.innerHTML += `<option value="${i+1}">${b}</option>`;
+
+            select.innerHTML += `
+                <option value="${i+1}">
+                    ${b}
+                </option>
+            `;
         });
     }
+
+    // ======================
+    // TRIWULAN
+    // ======================
     else if (mode === 'triwulan') {
-        ['Q1','Q2','Q3','Q4'].forEach((q,i)=>{
-            select.innerHTML += `<option value="${i+1}">${q}</option>`;
-        });
-    }
-    else if (mode === 'semester') {
-        select.innerHTML = `
-            <option value="1">Semester 1</option>
-            <option value="2">Semester 2</option>
+
+        select.innerHTML += `
+            <option value="1">
+                Q1 (Januari - Maret)
+            </option>
+
+            <option value="2">
+                Q2 (April - Juni)
+            </option>
+
+            <option value="3">
+                Q3 (Juli - September)
+            </option>
+
+            <option value="4">
+                Q4 (Oktober - Desember)
+            </option>
         `;
     }
+
+    // ======================
+    // SEMESTER
+    // ======================
+    else if (mode === 'semester') {
+
+        select.innerHTML += `
+            <option value="1">
+                Semester 1 (Januari - Juni)
+            </option>
+
+            <option value="2">
+                Semester 2 (Juli - Desember)
+            </option>
+        `;
+    }
+
+    // ======================
+    // TAHUNAN
+    // ======================
     else {
-        select.innerHTML = `<option value="">Semua Tahun</option>`;
+
+        select.innerHTML = '';
     }
 }
 
+// ======================
 // LOAD TAHUN
+// ======================
 fetch("<?= base_url('dbd/get-tahun-list') ?>")
-.then(res=>res.json())
-.then(data=>{
+
+.then(res => res.json())
+
+.then(data => {
+
     let t = document.getElementById('tahun');
-    data.forEach(d=>{
-        t.innerHTML += `<option value="${d.tahun}">${d.tahun}</option>`;
+
+    t.innerHTML = `
+        <option value="">
+            -pilih tahun-
+        </option>
+    `;
+
+    data.forEach(d => {
+
+        t.innerHTML += `
+            <option value="${d.tahun}">
+                ${d.tahun}
+            </option>
+        `;
     });
+
 });
 
+// ======================
+// EXPORT
+// ======================
 function exportData(type) {
+
     let tahun = document.getElementById('tahun').value;
     let waktu = document.getElementById('waktu').value;
-    let kec = document.getElementById('kecamatan').value;
+    let kel = document.getElementById('kelurahan').value;
 
-    // Pastikan URL controller mengarah ke fungsi export khusus kepala
-    let url = `<?= base_url('dbd/export-hasil-data-kepala') ?>?type=${type}&mode=${mode}&tahun=${tahun}&waktu=${waktu}&kecamatan=${kec}`;
+    let url =
+    `<?= base_url('dbd/export-hasil-data-pasien') ?>?type=${type}&mode=${mode}&tahun=${tahun}&waktu=${waktu}&kelurahan=${kel}`;
+
     window.location.href = url;
 }
 
-// init
+// ======================
+// INIT
+// ======================
 loadWaktu();
+
 </script>
 
 <?= $this->endSection() ?>

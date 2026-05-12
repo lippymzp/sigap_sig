@@ -381,22 +381,22 @@ textarea:invalid{
 /* ACTION BUTTON AREA */
 
 .custom-action{
-    margin-top:34px;
-    padding-top:22px;
+    margin-top:40px;
+    padding-top:25px;
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:16px;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+    width:100%;
 }
-
-/* WRAPPER BUTTON */
 
 .button-wrapper{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:12px;
     margin-left:auto;
+    flex-wrap:nowrap;
 }
 
 /* BUTTON DASAR */
@@ -593,16 +593,6 @@ textarea:invalid{
         gap:10px;
     }
 
-    .cancel-btn,
-    .draft-btn,
-    .upload-btn{
-        width:auto;
-        min-width:auto;
-        padding:0 22px;
-        height:44px !important;
-        font-size:14px !important;
-    }
-
     .editor-toolbar{
         gap:4px;
         padding:8px 10px;
@@ -657,14 +647,22 @@ body {
 }
 
 /* hanya atur upload-side, jangan paksa col-lg-4 */
+.col-lg-4{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 .upload-side {
+    width: 100%;
+    max-width: 320px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     gap: 30px;
-    width: 100%;
-    height: auto;
+    height: 100%;
+    margin: 0 auto;
     position: relative;
 }
 
