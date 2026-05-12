@@ -17,7 +17,7 @@ $routes->get('/pneumonia', 'Home::pneumonia');
 $routes->get('/tbc', 'Home::tbc');
 $routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
-$routes->get('/grafik_pneumonia', 'Home::grafik');
+$routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');
 
 // ===============================================
 // ROUTE Landingpage DBD dan Dasboard

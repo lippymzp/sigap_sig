@@ -349,13 +349,12 @@ fitur.forEach(btn => {
         <span style="color:red;">skrining</span> sejak dini!
     </p>
 
-    <a href="<?= base_url('skrining') ?>"
+    <a href="<?= base_url('skriningpneumonia') ?>"
        class="btn btn-teal px-4 py-2 shadow">
 
         Mulai Skrining →
 
     </a>
-
 </div>
 
 </section>
@@ -373,7 +372,6 @@ fitur.forEach(btn => {
 }
 
 </style>
-
 
 <!-- GRAFIK -->
  
