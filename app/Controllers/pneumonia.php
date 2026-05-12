@@ -282,6 +282,119 @@ public function skriningpneumonia2()
     return view('gol_c/skrining2', $data);
 }
 
+public function rekap_skrining()
+{
+    $db = \Config\Database::connect();
+
+    $builder = $db->table('skrining s');
+
+    $builder->select('
+        s.id_skrining,
+        s.hasil,
+        s.tanggal,
+
+        p.nik,
+        p.no_hp,
+        p.tanggal_lahir,
+        p.nama_pasien_skrining,
+        p.jenis_kelamin,
+        p.usia,
+
+        w.provinsi,
+        w.kabupaten,
+        w.kecamatan,
+        w.kelurahan,
+        w.rt,
+        w.rw
+    ');
+
+    $builder->join(
+        'pasien_skrining p',
+        'p.id_pasien_skrining = s.id_pasien_skrining'
+    );
+
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah'
+    );
+
+    $builder->orderBy('s.id_skrining', 'DESC');
+
+    // =========================
+    // PAGINATION
+    // =========================
+
+    $perPage = 10;
+    $page = (int) ($this->request->getVar('page') ?? 1);
+
+    // total data
+    $totalBuilder = clone $builder;
+    $total = $totalBuilder->countAllResults(false);
+
+    // data tabel
+    $skrining = $builder
+        ->limit($perPage, ($page - 1) * $perPage)
+        ->get()
+        ->getResultArray();
+
+    // =========================
+    // OVERVIEW
+    // =========================
+
+    // skrining hari ini
+    $skriningHariIni = $db->table('skrining')
+        ->where('DATE(tanggal)', date('Y-m-d'))
+        ->countAllResults();
+
+    // total seluruh skrining
+    $totalSkrining = $db->table('skrining')
+        ->countAll();
+
+    // risiko tinggi
+    $risikoTinggi = $db->table('skrining')
+        ->where('hasil', 'Risiko Tinggi')
+        ->countAllResults();
+
+    // risiko rendah
+    $risikoRendah = $db->table('skrining')
+        ->where('hasil', 'Risiko Rendah')
+        ->countAllResults();
+
+    // =========================
+    // PAGER
+    // =========================
+
+    $pager = \Config\Services::pager();
+
+    $pagerLinks = $pager->makeLinks(
+        $page,
+        $perPage,
+        $total
+    );
+
+    // =========================
+    // DATA VIEW
+    // =========================
+
+    $data = [
+        'menu' => 'skrining',
+        'judul' => 'Rekap Skrining',
+
+        // tabel
+        'skrining' => $skrining,
+
+        // pagination
+        'pagerLinks' => $pagerLinks,
+
+        // overview
+        'skriningHariIni' => $skriningHariIni,
+        'totalSkrining' => $totalSkrining,
+        'risikoTinggi' => $risikoTinggi,
+        'risikoRendah' => $risikoRendah
+    ];
+
+    return view('gol_a/rekap_skrining', $data);
+}
 
 public function skriningpneumonia3()
 {
@@ -649,75 +762,7 @@ public function skriningpneumonia3()
         echo "</table>";
     }
 
-    public function rekap_skrining()
-{
-    $db = \Config\Database::connect();
-
-    $builder = $db->table('skrining as s');
-
-    $builder->select('
-        s.id_skrining,
-        p.nik,
-        p.no_hp,
-        p.tanggal_lahir,
-        p.nama_pasien_skrining,
-        p.jenis_kelamin,
-        p.usia,
-
-        w.provinsi,
-        w.kabupaten,
-        w.kecamatan,
-        w.kelurahan,
-        w.rt,
-        w.rw,
-
-        s.hasil,
-        s.tanggal
-    ');
-
-    $builder->join(
-        'pasien_skrining p',
-        'p.id_pasien_skrining = s.id_pasien_skrining'
-    );
-
-    $builder->join(
-        'wilayah w',
-        'w.id_wilayah = p.id_wilayah'
-    );
-
-    $builder->orderBy('s.id_skrining', 'DESC');
-
-    // PAGINATION
-    $perPage = 10;
-    $page = $this->request->getVar('page') ?? 1;
-
-    $data['skrining'] = $builder
-        ->limit($perPage, ($page - 1) * $perPage)
-        ->get()
-        ->getResultArray();
-
-    // total data
-    $total = $db->table('skrining')->countAll();
-
-    // PAGER
-    $pager = \Config\Services::pager();
-
-    $data['pagerLinks'] = $pager->makeLinks(
-        $page,
-        $perPage,
-        $total
-    );
-
-    $data = [
-    'menu' => 'skrining',
-    'judul' => 'Rekap Skrining',   
-    'skrining' => $data['skrining'],
-    'pagerLinks' => $data['pagerLinks']
-    ];
-
-    return view('gol_c/rekap_skrining', $data)
-    ;
-}
+    
 
 public function hapus_skrining(int $id)
 {

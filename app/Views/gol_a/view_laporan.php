@@ -70,8 +70,9 @@
     <div class="main-card">
         
         <?php 
+            /** @var array $laporan */
             // LOGIKA KETERLAMBATAN
-            $mingguNama = $laporan['minggu'] ?? ''; 
+            $mingguNama = $laporan['minggu'] ?? '';
             $bulanNama  = $laporan['bulan'] ?? '';
             $createdAt  = $laporan['created_at'] ?? date('Y-m-d H:i:s'); 
             $tahun      = date('Y', strtotime($createdAt));
