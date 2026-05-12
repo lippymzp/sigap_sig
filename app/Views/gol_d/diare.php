@@ -97,76 +97,121 @@ body{
    AI BUTTON
 ================================== */
 
+/* ======================================
+   AI FLOATING MASCOT
+====================================== */
+
+/* ======================================
+   DOXY FLOATING AI
+====================================== */
+
+/* ======================================
+   DOXY FLOATING ASSISTANT
+====================================== */
 .ai-button{
-
     position: fixed;
-
-    bottom: 30px;
-
-    right: 30px;
-
-    width: 70px;
-
-    height: 70px;
-
-    background: #00CED1;
-
-    border-radius: 50%;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    font-size: 32px;
-
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
     cursor: pointer;
 
-    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    background: transparent;
+    border: none;
+    box-shadow: none;
 
+    animation: floatDoxy 3s ease-in-out infinite;
+    transition: 0.3s ease;
 }
+
+/* WRAPPER */
+.ai-wrap{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MASKOT */
+.ai-mascot{
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(143, 76, 255, 0.25));
+    transition: 0.3s ease;
+}
+
+/* LABEL MENYATU */
+.ai-label{
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: linear-gradient(135deg, #ff6fd8, #c44dff);
+    color: white;
+
+    padding: 6px 16px;
+    border-radius: 999px;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: nowrap;
+
+    box-shadow:
+        0 8px 20px rgba(196,77,255,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+
+    border: 2px solid rgba(255,255,255,0.35);
+}
+
+/* HOVER */
+.ai-button:hover .ai-mascot{
+    transform: scale(1.08) rotate(3deg);
+}
+
+.ai-button:hover .ai-label{
+    transform: translateX(-50%) scale(1.05);
+}
+
+/* FLOAT */
+@keyframes floatDoxy{
+    0%,100%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-10px);
+    }
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .ai-mascot{
+        width: 100px;
+        height: 100px;
+    }
+
+    .ai-label{
+        font-size: 12px;
+        padding: 5px 13px;
+        top: -6px;
+    }
+
+    .ai-button{
+        bottom: 15px;
+        right: 10px;
+    }
+}
+
 /* ======================================
    AI FLOATING BUTTON
 ====================================== */
 
-.ai-button{
-
-    position: fixed;
-
-    bottom: 30px;
-
-    right: 30px;
-
-    width: 75px;
-
-    height: 75px;
-
-    border-radius: 50%;
-
-    background: linear-gradient(135deg,#00CED1,#40EDD0);
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    font-size: 34px;
-
-    cursor: pointer;
-
-    z-index: 9999;
-
-    box-shadow: 0 15px 35px rgba(0,206,209,0.4);
-
-    animation: pulseAI 2s infinite;
-
-    transition: 0.3s;
-
-}
 
 .ai-button:hover{
 
@@ -195,33 +240,32 @@ body{
 ====================================== */
 
 .ai-chat-box{
-
     position: fixed;
-
-    bottom: 120px;
-
+    bottom: 130px;
     right: 30px;
+    width: 380px;
+    height: 570px;
 
-    width: 370px;
+    background: linear-gradient(
+        180deg,
+        #fff7ff 0%,
+        #f8f2ff 35%,
+        #f3f6ff 100%
+    );
 
-    height: 560px;
-
-    background: white;
-
-    border-radius: 25px;
-
+    border-radius: 28px;
     overflow: hidden;
-
     z-index: 9999;
-
     display: none;
-
     flex-direction: column;
 
-    box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+    border: 2px solid rgba(255,255,255,0.7);
+
+    box-shadow:
+        0 25px 60px rgba(155, 81, 224, 0.25),
+        0 10px 25px rgba(255, 105, 180, 0.18);
 
     animation: showChat 0.3s ease;
-
 }
 
 @keyframes showChat{
@@ -241,19 +285,22 @@ body{
 /* HEADER */
 
 .ai-header{
-
-    background: linear-gradient(135deg,#00CED1,#40EDD0);
+    background: linear-gradient(
+        135deg,
+        #ff6fd8 0%,
+        #d946ef 35%,
+        #8b5cf6 70%,
+        #6366f1 100%
+    );
 
     color: white;
-
-    padding: 18px;
+    padding: 18px 20px;
 
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 
+    box-shadow: 0 6px 20px rgba(168,85,247,0.25);
 }
 
 .ai-header b{
@@ -269,39 +316,41 @@ body{
 }
 
 .ai-header button{
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(8px);
 
-    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.25);
 
-    border: none;
-
-    width: 35px;
-
-    height: 35px;
-
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
 
     color: white;
-
     font-size: 16px;
+    transition: 0.3s ease;
+}
 
+.ai-header button:hover{
+    transform: rotate(90deg);
+    background: rgba(255,255,255,0.35);
 }
 
 /* BODY */
 
 .ai-body{
-
     flex: 1;
-
     padding: 20px;
-
     overflow-y: auto;
 
-    background: #F4FEFD;
+    background: linear-gradient(
+        180deg,
+        #fff8ff 0%,
+        #f9f3ff 50%,
+        #f3f8ff 100%
+    );
 
     display: flex;
-
     flex-direction: column;
-
 }
 
 /* MESSAGE */
@@ -342,109 +391,126 @@ body{
 /* BOT */
 
 .bot-message{
+    background: linear-gradient(
+        135deg,
+        #ffe8ff 0%,
+        #f4d8ff 45%,
+        #e4e7ff 100%
+    );
 
-    background: #E0F7F6;
+    color: #4b2d73;
 
-    color: #1F3A3A;
+    padding: 15px 18px;
+    border-radius: 22px;
+    margin-bottom: 15px;
+    max-width: 82%;
+    line-height: 1.7;
+    font-size: 14px;
+
+    box-shadow:
+        0 8px 20px rgba(196,77,255,0.08);
 
     align-self: flex-start;
-
 }
 
 /* USER */
 
 .user-message{
-
-    background: linear-gradient(135deg,#00CED1,#40EDD0);
+    background: linear-gradient(
+        135deg,
+        #ff6fd8 0%,
+        #c44dff 45%,
+        #6366f1 100%
+    );
 
     color: white;
 
-    align-self: flex-end;
+    padding: 14px 18px;
+    border-radius: 22px;
+    margin-bottom: 15px;
+    max-width: 82%;
+    line-height: 1.7;
+    font-size: 14px;
 
+    box-shadow:
+        0 10px 20px rgba(168,85,247,0.2);
+
+    align-self: flex-end;
 }
 
 /* INPUT */
 
 .ai-input{
-
     display: flex;
-
     padding: 15px;
-
     gap: 10px;
 
-    border-top: 1px solid #eee;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
 
-    background: white;
-
+    border-top: 1px solid rgba(220,200,255,0.6);
 }
 
 .ai-input input{
-
     flex: 1;
-
     border: none;
 
-    background: #F1F5F9;
+    background: linear-gradient(
+        135deg,
+        #f7f1ff,
+        #eef3ff
+    );
 
-    border-radius: 15px;
-
-    padding: 14px;
-
+    border-radius: 18px;
+    padding: 14px 16px;
     outline: none;
-
     font-size: 14px;
 
+    color: #4b2d73;
 }
 
 .ai-input button{
-
     border: none;
 
-    background: linear-gradient(135deg,#00CED1,#40EDD0);
+    background: linear-gradient(
+        135deg,
+        #ff6fd8,
+        #c44dff,
+        #6366f1
+    );
 
     color: white;
+    border-radius: 18px;
+    padding: 0 22px;
+    font-weight: 700;
 
-    border-radius: 15px;
-
-    padding: 0 20px;
-
-    font-weight: 600;
-
+    box-shadow: 0 10px 20px rgba(168,85,247,0.2);
 }
 
 /* TYPING */
 
 .typing{
-
     display: flex;
+    gap: 6px;
+    padding: 12px 16px;
 
-    gap: 5px;
+    background: linear-gradient(
+        135deg,
+        #ffe8ff,
+        #eef2ff
+    );
 
-    padding: 12px 15px;
-
-    background: #E0F7F6;
-
-    border-radius: 15px;
-
+    border-radius: 18px;
     width: fit-content;
-
     margin-bottom: 15px;
-
 }
 
 .typing span{
-
     width: 8px;
-
     height: 8px;
-
-    background: #00CED1;
-
+    background: #c44dff;
     border-radius: 50%;
-
     animation: bounce 1.4s infinite;
-
 }
 
 .typing span:nth-child(2){
@@ -484,7 +550,12 @@ body{
         height: 80vh;
 
     }
-
+.ai-button{
+    width: 80px;
+    height: 80px;
+    bottom: 20px;
+    right: 20px;
+}
 }
 </style>
 
@@ -919,9 +990,12 @@ slider.addEventListener("touchend", e=>{
 </div>
 </section>
 <!-- TOMBOL AI -->
-<div class="ai-button">
-
-🤖
+<!-- TOMBOL AI -->
+<div class="ai-button" onclick="toggleChat()">
+    <div class="ai-wrap">
+        <div class="ai-label">DOXY AI</div>
+        <img src="<?= base_url('img/maskotdsing.png') ?>" alt="DOXY AI" class="ai-mascot">
+    </div>
 </div>
 <!-- CHAT BOX -->
 <div class="ai-chat-box" id="aiChatBox">
