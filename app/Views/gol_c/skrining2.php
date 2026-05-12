@@ -261,7 +261,7 @@ document.querySelectorAll('.opsi-group').forEach(group => {
 <!-- SCRIPT STEP -->
 <script>
 let currentGroup = 1;
-const questionPerPage = 3;
+const questionPerPage = 2;
 
 const steps = document.querySelectorAll('.step-form');
 const totalGroup = Math.ceil(steps.length / questionPerPage);

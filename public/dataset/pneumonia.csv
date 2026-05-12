@@ -1,40 +1,373 @@
 batuk;dahak;sesak;nyeri_dada;mual;lemas;nafsu_makan;demam;napas_cepat;dahak_dada;mengi;hasil
-Iya;Iya;Iya;Iya;Tidak;Iya;Iya;Iya;Iya;Iya;Tidak;Berisiko
-Iya;Iya;Tidak;Tidak;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Iya;Iya;Iya;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Iya;Iya;Iya;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Iya;Iya;Iya;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Iya;Iya;Iya;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Iya;Iya;Iya;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
-Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
-Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Iya;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Berisiko
+Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Iya;Berisiko
+Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Iya;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Berisiko
+Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Iya;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak;Iya;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Iya;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Tidak;Iya;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Iya;Iya;Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Iya;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Berisiko
+Tidak;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Iya;Tidak;Iya;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Tidak;Iya;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Iya;Tidak;Iya;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Iya;Tidak;Iya;Iya;Iya;Tidak;Tidak;Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Iya;Tidak;Berisiko
+Iya;Tidak;Tidak;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak;Tidak Berisiko
+Iya;Iya;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
+Iya;Tidak;Iya;Tidak;Tidak;Tidak;Tidak;Tidak;Iya;Tidak;Tidak;Tidak Berisiko
