@@ -394,3 +394,5 @@ $routes->post('/manajemen_user/update/(:num)', 'ManajemenUser::update/$1');
 $routes->get('/manajemen_user/view/(:num)', 'ManajemenUser::form/$1/view');
 $routes->get('/manajemen_user/hapus/(:num)', 'ManajemenUser::hapus/$1');
 $routes->post('ai/chat', 'AI::chat');
+
+$routes->get('tentangkamiDBD', 'Dashboard::tentangkamiDBD');

@@ -7,34 +7,51 @@ use App\Models\BannerDbdModel;
 
 class ManajemenBanner extends BaseController
 {
-
     public function index()
-    {
-        $bannerModel = new BannerDbdModel();
+{
+    $bannerModel = new BannerDbdModel();
 
-        $data['banner'] =
-        $bannerModel
-        ->orderBy('urutan', 'ASC')
-        ->findAll();
+    $search = $this->request->getGet('search');
+    $sort   = $this->request->getGet('sort');
 
-        // STATUS AKTIF
-        $data['publish'] =
-        $bannerModel
+    $builder = $bannerModel;
+
+    // SEARCH
+    if (!empty($search)) {
+        $builder = $builder->like('judul_banner', $search);
+    }
+
+    // SORTING
+    if ($sort == 'terbaru') {
+        $builder = $builder->orderBy('id_manajemen_banner', 'DESC');
+    } elseif ($sort == 'terlama') {
+        $builder = $builder->orderBy('id_manajemen_banner', 'ASC');
+    } elseif ($sort == 'aktif') {
+        $builder = $builder->where('status_banner', 'publish');
+    } elseif ($sort == 'draft') {
+        $builder = $builder->where('status_banner', 'draft');
+    } else {
+        $builder = $builder->orderBy('urutan', 'ASC');
+    }
+
+    $data['banner'] = $builder->findAll();
+
+    // STATUS AKTIF
+    $data['publish'] = $bannerModel
         ->where('status_banner', 'publish')
         ->countAllResults();
 
-        // STATUS TIDAK AKTIF
-        $data['draft'] =
-        $bannerModel
+    // STATUS DRAFT
+    $data['draft'] = $bannerModel
         ->where('status_banner', 'draft')
         ->countAllResults();
 
-        return view(
-            'gol_a/bannerDbd/manajemen_banner',
-            $data
-        );
-    }
+    return view(
+        'gol_a/bannerDbd/manajemen_banner',
+        $data
+    );
 
+}
     // HALAMAN UPLOAD
     public function unggah()
     {

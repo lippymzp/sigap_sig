@@ -67,12 +67,12 @@ th:last-child, td:last-child { border-right: none; }
 <?= $this->section('content'); ?>
 <?php 
 // Menangkap parameter GET untuk mempertahankan pilihan user
-$tahunAktif = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y'); 
-$searchParam = isset($_GET['search']) ? $_GET['search'] : '';
-$puskesmasParam = isset($_GET['puskesmas']) ? $_GET['puskesmas'] : '';
-$kelurahanParam = isset($_GET['kelurahan']) ? $_GET['kelurahan'] : '';
-$posyanduParam = isset($_GET['posyandu']) ? $_GET['posyandu'] : '';
-$bulanParam = isset($_GET['bulan']) ? $_GET['bulan'] : '';
+$tahunAktif = isset($_GET['tahun']) ? (string)$_GET['tahun'] : date('Y'); 
+$searchParam = isset($_GET['search']) ? (string)$_GET['search'] : '';
+$puskesmasParam = isset($_GET['puskesmas']) ? (string)$_GET['puskesmas'] : '';
+$kelurahanParam = isset($_GET['kelurahan']) ? (string)$_GET['kelurahan'] : '';
+$posyanduParam = isset($_GET['posyandu']) ? (string)$_GET['posyandu'] : '';
+$bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
 ?>
 
 <div class="content-body">
