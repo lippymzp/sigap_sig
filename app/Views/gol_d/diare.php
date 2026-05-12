@@ -951,9 +951,9 @@ slider.addEventListener("touchend", e=>{
             Saya DOXYP AI.<br><br>
 
             Silakan tanyakan tentang:
-            <br>• Diare
-            <br>• Gejala
-            <br>• Pencegahan
+            <br>• Penyakit Diare
+            <br>• Gejala Diare
+            <br>• Pencegahan Diare
         </div>
 
     </div>

@@ -89,7 +89,7 @@ body{
 }
 
 .tagline h3{
-    color:#ff4d4d;
+    color:#00BBC2;
     font-weight:700;
     font-size:2rem;
 }

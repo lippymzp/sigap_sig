@@ -38,6 +38,7 @@ class AI extends BaseController
 
                     Jawab:
                     - bahasa indonesia
+                    - khusus penyakit
                     - singkat
                     - jelas
                     - ramah
