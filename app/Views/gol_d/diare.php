@@ -89,6 +89,399 @@ body{
 .btn-teal:hover{
     background:var(--accent);
 }
+/* ==================================
+   AI BUTTON
+================================== */
+
+.ai-button{
+
+    position: fixed;
+
+    bottom: 30px;
+
+    right: 30px;
+
+    width: 70px;
+
+    height: 70px;
+
+    background: #00CED1;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 32px;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+
+}
+/* ======================================
+   AI FLOATING BUTTON
+====================================== */
+
+.ai-button{
+
+    position: fixed;
+
+    bottom: 30px;
+
+    right: 30px;
+
+    width: 75px;
+
+    height: 75px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg,#00CED1,#40EDD0);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 34px;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    box-shadow: 0 15px 35px rgba(0,206,209,0.4);
+
+    animation: pulseAI 2s infinite;
+
+    transition: 0.3s;
+
+}
+
+.ai-button:hover{
+
+    transform: scale(1.1);
+
+}
+
+@keyframes pulseAI{
+
+    0%{
+        box-shadow: 0 0 0 0 rgba(64,237,208,0.5);
+    }
+
+    70%{
+        box-shadow: 0 0 0 20px rgba(64,237,208,0);
+    }
+
+    100%{
+        box-shadow: 0 0 0 0 rgba(64,237,208,0);
+    }
+
+}
+
+/* ======================================
+   CHAT BOX
+====================================== */
+
+.ai-chat-box{
+
+    position: fixed;
+
+    bottom: 120px;
+
+    right: 30px;
+
+    width: 370px;
+
+    height: 560px;
+
+    background: white;
+
+    border-radius: 25px;
+
+    overflow: hidden;
+
+    z-index: 9999;
+
+    display: none;
+
+    flex-direction: column;
+
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+
+    animation: showChat 0.3s ease;
+
+}
+
+@keyframes showChat{
+
+    from{
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* HEADER */
+
+.ai-header{
+
+    background: linear-gradient(135deg,#00CED1,#40EDD0);
+
+    color: white;
+
+    padding: 18px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.ai-header b{
+
+    font-size: 18px;
+
+}
+
+.ai-header small{
+
+    opacity: 0.9;
+
+}
+
+.ai-header button{
+
+    background: rgba(255,255,255,0.2);
+
+    border: none;
+
+    width: 35px;
+
+    height: 35px;
+
+    border-radius: 50%;
+
+    color: white;
+
+    font-size: 16px;
+
+}
+
+/* BODY */
+
+.ai-body{
+
+    flex: 1;
+
+    padding: 20px;
+
+    overflow-y: auto;
+
+    background: #F4FEFD;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+/* MESSAGE */
+
+.bot-message,
+.user-message{
+
+    padding: 14px 18px;
+
+    border-radius: 18px;
+
+    margin-bottom: 15px;
+
+    max-width: 80%;
+
+    line-height: 1.7;
+
+    font-size: 14px;
+
+    animation: fadeChat 0.3s ease;
+
+}
+
+@keyframes fadeChat{
+
+    from{
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* BOT */
+
+.bot-message{
+
+    background: #E0F7F6;
+
+    color: #1F3A3A;
+
+    align-self: flex-start;
+
+}
+
+/* USER */
+
+.user-message{
+
+    background: linear-gradient(135deg,#00CED1,#40EDD0);
+
+    color: white;
+
+    align-self: flex-end;
+
+}
+
+/* INPUT */
+
+.ai-input{
+
+    display: flex;
+
+    padding: 15px;
+
+    gap: 10px;
+
+    border-top: 1px solid #eee;
+
+    background: white;
+
+}
+
+.ai-input input{
+
+    flex: 1;
+
+    border: none;
+
+    background: #F1F5F9;
+
+    border-radius: 15px;
+
+    padding: 14px;
+
+    outline: none;
+
+    font-size: 14px;
+
+}
+
+.ai-input button{
+
+    border: none;
+
+    background: linear-gradient(135deg,#00CED1,#40EDD0);
+
+    color: white;
+
+    border-radius: 15px;
+
+    padding: 0 20px;
+
+    font-weight: 600;
+
+}
+
+/* TYPING */
+
+.typing{
+
+    display: flex;
+
+    gap: 5px;
+
+    padding: 12px 15px;
+
+    background: #E0F7F6;
+
+    border-radius: 15px;
+
+    width: fit-content;
+
+    margin-bottom: 15px;
+
+}
+
+.typing span{
+
+    width: 8px;
+
+    height: 8px;
+
+    background: #00CED1;
+
+    border-radius: 50%;
+
+    animation: bounce 1.4s infinite;
+
+}
+
+.typing span:nth-child(2){
+
+    animation-delay: 0.2s;
+
+}
+
+.typing span:nth-child(3){
+
+    animation-delay: 0.4s;
+
+}
+
+@keyframes bounce{
+
+    0%,80%,100%{
+        transform: scale(0);
+    }
+
+    40%{
+        transform: scale(1);
+    }
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .ai-chat-box{
+
+        width: 92%;
+
+        right: 4%;
+
+        height: 80vh;
+
+    }
+
+}
 </style>
 
 <!-- HERO (TIDAK DIHAPUS, HANYA DIPERBAIKI STYLE) -->
@@ -528,4 +921,206 @@ slider.addEventListener("touchend", e=>{
 </div>
 
 </section>
+<!-- TOMBOL AI -->
+<div class="ai-button">
+
+🤖
+</div>
+<!-- CHAT BOX -->
+<div class="ai-chat-box" id="aiChatBox">
+
+    <!-- HEADER -->
+    <div class="ai-header">
+
+        <div>
+            <b>DOXY AI</b><br>
+            <small>Asisten Diare</small>
+        </div>
+
+        <button onclick="toggleChat()">
+            ✖
+        </button>
+
+    </div>
+
+    <!-- ISI CHAT -->
+    <div class="ai-body" id="aiBody">
+
+        <div class="bot-message">
+            Halo 👋<br>
+            Saya DOXYP AI.<br><br>
+
+            Silakan tanyakan tentang:
+            <br>• Diare
+            <br>• Gejala
+            <br>• Pencegahan
+        </div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="ai-input">
+
+        <input 
+            type="text"
+            id="aiInput"
+            placeholder="Tulis pertanyaan..."
+        >
+
+        <button onclick="sendMessage()">
+            Kirim
+        </button>
+
+    </div>
+
+</div>
+<script>
+
+/* KLIK TOMBOL 🤖 */
+document.querySelector('.ai-button').onclick = toggleChat;
+
+/* BUKA TUTUP CHAT */
+function toggleChat(){
+
+    let chat = document.getElementById('aiChatBox');
+
+    if(chat.style.display == 'flex'){
+
+        chat.style.display = 'none';
+
+    }else{
+
+        chat.style.display = 'flex';
+
+    }
+
+}
+
+/* KLIK TOMBOL AI */
+document.querySelector('.ai-button').onclick = toggleChat;
+
+/* ENTER */
+document.getElementById('aiInput').addEventListener('keypress', function(e){
+
+    if(e.key === 'Enter'){
+
+        sendMessage();
+
+    }
+
+});
+
+async function sendMessage(){
+
+    let input = document.getElementById('aiInput');
+
+    let body = document.getElementById('aiBody');
+
+    let text = input.value.trim();
+
+    if(text == '') return;
+
+    /*
+    =====================================
+    USER MESSAGE
+    =====================================
+    */
+
+    body.innerHTML += `
+        <div class="user-message">
+            ${text}
+        </div>
+    `;
+
+    input.value = '';
+
+    body.scrollTop = body.scrollHeight;
+
+    /*
+    =====================================
+    TYPING
+    =====================================
+    */
+
+    body.innerHTML += `
+        <div class="typing" id="typingAI">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+
+    body.scrollTop = body.scrollHeight;
+
+    try {
+
+        /*
+        =====================================
+        FETCH API
+        =====================================
+        */
+
+        const response = await fetch("<?= base_url('ai/chat') ?>", {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+
+            body: new URLSearchParams({
+                message: text
+            })
+
+        });
+
+        /*
+        =====================================
+        GET RESULT
+        =====================================
+        */
+
+        const result = await response.text();
+
+        console.log(result);
+
+        const data = JSON.parse(result);
+
+        /*
+        =====================================
+        REMOVE TYPING
+        =====================================
+        */
+
+        document.getElementById('typingAI').remove();
+
+        /*
+        =====================================
+        BOT MESSAGE
+        =====================================
+        */
+
+        body.innerHTML += `
+            <div class="bot-message">
+                ${data.answer}
+            </div>
+        `;
+
+        body.scrollTop = body.scrollHeight;
+
+    } catch(error){
+
+        document.getElementById('typingAI').remove();
+
+        body.innerHTML += `
+            <div class="bot-message">
+                Error: ${error}
+            </div>
+        `;
+
+    }
+
+}
+
+</script>
 <?= $this->include('layout/footer') ?>
