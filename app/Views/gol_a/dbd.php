@@ -331,7 +331,7 @@
 
                     <div>
                         <h5>
-                            <?= esc($f['judul_funfact']) ?></h5>
+                            <?= esc((string)$f['judul_funfact']) ?></h5>
 
                         <p>
     <?= substr(strip_tags((string)($f['deskripsi_funfact'] ?? '')), 0, 70) ?>...
