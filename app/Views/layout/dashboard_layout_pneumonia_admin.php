@@ -60,8 +60,8 @@
             <i class="fa-solid fa-chart-area me-2"></i> Grafik
         </a>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
+        <a href="<?= base_url('index.php/' . $penyakit . '/pegawai') ?>"
+            class="<?= ($menu == 'pegawai') ? 'active' : '' ?>">
             <i class="fa-solid fa-address-book me-2"></i> Data Pegawai
         </a>
 

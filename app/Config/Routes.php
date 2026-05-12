@@ -140,6 +140,7 @@ $routes->get('pneumonia/export', 'pneumonia::export');
 $routes->get('diare/dashboard', 'Dashboard::diare');
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
+$routes->get('pneumonia/pegawai', 'Pegawai::index');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
 $routes->get('dbd/dashboard/kader', 'dbd::dashboard');
