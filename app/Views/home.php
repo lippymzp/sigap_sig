@@ -268,5 +268,104 @@ function scrollCardRight() {
     document.getElementById('cardSlider').scrollBy({ left: 400, behavior: 'smooth' });
 }
 </script>
+<style>
+/* =================================
+   FIX READABILITY (TANPA MERUSAK UI)
+================================= */
 
+/* HERO */
+.hero{
+    position: relative;
+    background: linear-gradient(
+        135deg,
+        rgba(184, 255, 243, 0.88),
+        rgba(0,206,209,0.82)
+    );
+    border-radius: 0 0 30px 30px;
+}
+
+.hero::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background: rgba(255,255,255,0.18);
+    border-radius: inherit;
+}
+
+.hero .container{
+    position: relative;
+    z-index: 2;
+}
+
+/* TEXT HERO */
+.hero h2{
+    color:#083B3B !important;
+    font-weight:800;
+    text-shadow: 0 2px 8px rgba(255,255,255,0.55);
+}
+
+.hero p{
+    color:#1E4E4E !important;
+    font-weight:500;
+}
+
+/* SECTION TITLE */
+.text-teal{
+    color:#008A8E !important;
+    font-weight:700;
+    text-shadow: 0 1px 4px rgba(255,255,255,0.35);
+}
+
+/* MENU BOX */
+.menu-box{
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,206,209,0.12);
+    font-weight:600;
+}
+
+/* SLIDER */
+.card-item{
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.card-content h5{
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* MAP */
+#map{
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+}
+
+.map-info{
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    font-weight:600;
+    color:#234;
+}
+
+/* ABOUT IMAGE */
+.about-img{
+    border-radius:18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* BUTTON */
+.btn-teal{
+    box-shadow: 0 8px 18px rgba(0,206,209,0.28);
+    font-weight:600;
+}
+
+/* PENYAKIT CARD */
+.penyakit-card{
+    box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+}
+
+/* CONTACT */
+.contact-modern{
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    border-radius: 18px;
+}
+</style>
 <?= $this->include('layout/footer') ?>
