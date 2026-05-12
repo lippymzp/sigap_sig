@@ -33,6 +33,8 @@ $routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Pneumo
 $routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Pneumonia::skriningpneumonia3');
 $routes->get('/chat-pneumonia', 'ChatPneumonia::index');
 $routes->post('/chat-pneumonia/send', 'ChatPneumonia::send');
+
+$routes->get('/pneumonia/rekapskrining', 'Pneumonia::rekapskrining');
 /* ========================= */
 /* SKRINING DBD */
 /* ========================= */

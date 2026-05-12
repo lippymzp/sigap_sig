@@ -265,21 +265,14 @@ body{
 <li>
 <label class="dropdown-item">
 <input type="checkbox" class="filter-check" value="baik">
- Lingkungan Baik
+ Berisiko
 </label>
 </li>
 
 <li>
 <label class="dropdown-item">
 <input type="checkbox" class="filter-check" value="cukup">
- Lingkungan Cukup
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="buruk">
- Lingkungan Buruk
+ Tidak Berisiko
 </label>
 </li>
 
@@ -327,10 +320,10 @@ body{
     <th>Nama</th>
     <th>Umur</th>
     <th>Jenis Kelamin</th>
+    <th>No Telp</th>
     <th>Alamat</th>
     <th>Tanggal</th>
-    <th>Hasil</th>
-    <th>Aksi</th>
+    <th>Keterangan</th>
 </tr>
 </thead>
 
@@ -342,8 +335,13 @@ body{
 
 
 data-risiko="<?=
-strpos($row['hasil'], 'Buruk') !== false ? 'buruk' :
-(strpos($row['hasil'], 'Cukup') !== false ? 'cukup' : 'baik')
+$risiko = '';
+
+if (strpos($row['hasil'], 'Tidak Berisiko') !== false) {
+    $risiko = 'Tidak Berisiko';
+} elseif (strpos($row['hasil'], 'Berisiko') !== false) {
+    $risiko = 'Berisiko';
+}
 ?>"
 
 data-gender="<?= strtolower($row['jenis_kelamin']) ?>"
@@ -361,6 +359,8 @@ data-usia="<?= $row['usia'] ?>"
 
 <td><?= $row['jenis_kelamin'] ?></td>
 
+<td><?= $row['no_hp'] ?></td>
+
 <td>
 <?= 
 $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
@@ -371,12 +371,12 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 
 <td>
 
-<?php if(strpos($row['hasil'],'Buruk') !== false): ?>
+<?php if(strpos($row['hasil'],'Berisiko') !== false): ?>
 <span class="badge-custom badge-buruk">
     <?= $row['hasil'] ?>
 </span>
 
-<?php elseif(strpos($row['hasil'],'Cukup') !== false): ?>
+<?php elseif(strpos($row['hasil'],'Tidak Berisiko') !== false): ?>
 <span class="badge-custom badge-cukup">
     <?= $row['hasil'] ?>
 </span>
@@ -387,132 +387,8 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 </span>
 <?php endif; ?>
 
-<td>
-
-<button class="aksi-btn btn-detail"
-        data-bs-toggle="modal"
-        data-bs-target="#detailModal<?= $row['id_skrining'] ?>">
-    <i class="bi bi-eye"></i>
-</button>
-
-
-<button class="aksi-btn btn-hapus"
-        data-bs-toggle="modal"
-        data-bs-target="#hapusModal<?= $row['id_skrining'] ?>">
-    <i class="bi bi-trash"></i>
-</button>
-
 </td>
 
-</tr>
-<!-- MODAL DETAIL -->
-<div class="modal fade"
-     id="detailModal<?= $row['id_skrining'] ?>"
-     tabindex="-1">
-
-<div class="modal-dialog modal-lg modal-dialog-centered">
-
-<div class="modal-content"
-     style="border-radius:20px; overflow:hidden;">
-
-<!-- HEADER -->
-<div class="modal-header"
-     style="background:#00BBC2; color:white;">
-
-    <h5 class="modal-title">
-        Detail Hasil Skrining
-    </h5>
-
-    <button type="button"
-            class="btn-close btn-close-white"
-            data-bs-dismiss="modal"></button>
-</div>
-
-<!-- BODY -->
-<div class="modal-body p-4">
-
-<div class="row g-3">
-    <div class="col-md-6">
-        <label class="fw-bold">NIK</label>
-        <div class="form-control">
-            <?= $row['nik'] ?? '-' ?>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="fw-bold">Nama Pasien</label>
-        <div class="form-control">
-            <?= $row['nama_pasien_skrining'] ?>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="fw-bold">Jenis Kelamin</label>
-        <div class="form-control">
-            <?= $row['jenis_kelamin'] ?>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="fw-bold">Usia</label>
-        <div class="form-control">
-            <?= $row['usia'] ?>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="fw-bold">Tanggal Lahir</label>
-        <div class="form-control">
-            <?= $row['tanggal_lahir'] ?? '-' ?>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-    <label class="fw-bold">No HP</label>
-    <div class="form-control">
-        <?= $row['no_hp'] ?? '-' ?>
-    </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="fw-bold">Tanggal Skrining</label>
-        <div class="form-control">
-            <?= date('d-m-Y', strtotime($row['tanggal'])) ?>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <label class="fw-bold">Alamat</label>
-        <div class="form-control">
-            <?= $row['kelurahan'] ?>,
-            <?= $row['kecamatan'] ?>,
-            <?= $row['kabupaten'] ?>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <label class="fw-bold">Hasil Skrining</label>
-
-        <?php if(strpos($row['hasil'],'Buruk') !== false): ?>
-
-            <div class="alert alert-danger mb-0">
-                <?= $row['hasil'] ?>
-            </div>
-
-        <?php elseif(strpos($row['hasil'],'Cukup') !== false): ?>
-
-            <div class="alert alert-warning mb-0">
-                <?= $row['hasil'] ?>
-            </div>
-
-        <?php else: ?>
-
-            <div class="alert alert-success mb-0">
-                <?= $row['hasil'] ?>
-            </div>
-
-        <?php endif; ?>
-    </div>
 
 </div>
 </div>
@@ -531,40 +407,6 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 </div>
 </div>
 <!-- MODAL HAPUS -->
-<div class="modal fade"
-     id="hapusModal<?= $row['id_skrining'] ?>"
-     tabindex="-1">
-
-<div class="modal-dialog modal-dialog-centered">
-<div class="modal-content" style="border-radius:20px;">
-
-<div class="modal-header">
-    <h5 class="modal-title">
-        Konfirmasi Hapus
-    </h5>
-
-    <button type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body">
-    Yakin ingin menghapus data
-    <b><?= $row['nama_pasien_skrining'] ?></b> ?
-</div>
-
-<div class="modal-footer">
-
-<button type="button"
-        class="btn btn-secondary"
-        data-bs-dismiss="modal">
-    Batal
-</button>
-
-<a href="<?= base_url('dbd/hapus_skrining/'.$row['id_skrining']) ?>"
-   class="btn btn-danger">
-   Hapus
-</a>
 
 </div>
 </div>

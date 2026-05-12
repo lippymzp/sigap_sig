@@ -282,7 +282,7 @@ public function skriningpneumonia2()
     return view('gol_c/skrining2', $data);
 }
 
-public function rekap_skrining()
+public function rekapskrining()
 {
     $db = \Config\Database::connect();
 
@@ -350,14 +350,14 @@ public function rekap_skrining()
     $totalSkrining = $db->table('skrining')
         ->countAll();
 
-    // risiko tinggi
-    $risikoTinggi = $db->table('skrining')
-        ->where('hasil', 'Risiko Tinggi')
+    // berisiko
+    $berisiko = $db->table('skrining')
+        ->where('hasil', 'Berisiko')
         ->countAllResults();
 
-    // risiko rendah
-    $risikoRendah = $db->table('skrining')
-        ->where('hasil', 'Risiko Rendah')
+    // tidak berisiko
+    $tdkberisiko = $db->table('skrining')
+        ->where('hasil', 'Tidak Berisiko')
         ->countAllResults();
 
     // =========================
@@ -389,11 +389,11 @@ public function rekap_skrining()
         // overview
         'skriningHariIni' => $skriningHariIni,
         'totalSkrining' => $totalSkrining,
-        'risikoTinggi' => $risikoTinggi,
-        'risikoRendah' => $risikoRendah
+        'berisiko' => $berisiko,
+        'tdkberisiko' => $tdkberisiko
     ];
 
-    return view('gol_a/rekap_skrining', $data);
+    return view('gol_c/rekapskrining', $data);
 }
 
 public function skriningpneumonia3()
@@ -761,16 +761,4 @@ public function skriningpneumonia3()
 
         echo "</table>";
     }
-
-    
-
-public function hapus_skrining(int $id)
-{
-    $model = new \App\Models\SkriningPneumoniaModel();
-
-    $model->delete($id);
-
-    return redirect()->back()
-                     ->with('success', 'Data berhasil dihapus');
-}
 }
