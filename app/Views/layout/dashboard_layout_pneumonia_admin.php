@@ -70,8 +70,8 @@
 
         <div class="menu-label">Informasi</div>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/berita') ?>"
-            class="<?= ($menu == 'berita') ? 'active' : '' ?>">
+        <a href="<?= base_url('beritapneumonia') ?>"
+            class="<?= ($menu == 'beritapneumonia') ? 'active' : '' ?>">
             <i class="fa-solid fa-newspaper me-2"></i> Edit Berita
         </a>
 
