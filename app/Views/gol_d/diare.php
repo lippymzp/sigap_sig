@@ -1,4 +1,8 @@
 <?php $this->setVar('penyakit', 'diare'); ?>
+<?php 
+$this->setVar('penyakit', 'diare');
+$this->setVar('show_footer_maskot', true);
+?>
 <?= $this->include('layout/header') ?>
 
 <style>
@@ -913,13 +917,6 @@ slider.addEventListener("touchend", e=>{
     </p>
 
 </div>
-
-<div class="text-center mt-4">
-    <a href="<?= base_url('home') ?>" class="btn-kembali">
-        Kembali
-    </a>
-</div>
-
 </section>
 <!-- TOMBOL AI -->
 <div class="ai-button">

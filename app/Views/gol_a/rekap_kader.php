@@ -57,13 +57,14 @@ tbody td { background: #fff; padding: 12px; font-size: 14px; color: #555; border
 
 <?= $this->section('content'); ?>
 <?php 
+
 // Menangkap parameter GET untuk mempertahankan pilihan user
-$tahunAktif = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y'); 
-$searchParam = isset($_GET['search']) ? $_GET['search'] : '';
-$puskesmasParam = isset($_GET['puskesmas']) ? $_GET['puskesmas'] : '';
-$kelurahanParam = isset($_GET['kelurahan']) ? $_GET['kelurahan'] : '';
-$posyanduParam = isset($_GET['posyandu']) ? $_GET['posyandu'] : '';
-$bulanParam = isset($_GET['bulan']) ? $_GET['bulan'] : '';
+$tahunAktif = isset($_GET['tahun']) ? (string)$_GET['tahun'] : date('Y'); 
+$searchParam = isset($_GET['search']) ? (string)$_GET['search'] : '';
+$puskesmasParam = isset($_GET['puskesmas']) ? (string)$_GET['puskesmas'] : '';
+$kelurahanParam = isset($_GET['kelurahan']) ? (string)$_GET['kelurahan'] : '';
+$posyanduParam = isset($_GET['posyandu']) ? (string)$_GET['posyandu'] : '';
+$bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
 ?>
 
 <div class="info-banner">
@@ -128,9 +129,11 @@ $bulanParam = isset($_GET['bulan']) ? $_GET['bulan'] : '';
                     <?php foreach($pelaporan as $row): ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= esc($row['bulan']) ?></td>
-                        <td><?= esc($row['minggu']) ?></td>
-                        <td><?= esc($row['id_puskesmas']) ?></td> <td><?= esc($row['id_kelurahan']) ?></td> <td><?= esc($row['id_posyandu']) ?></td> <td><?= isset($row['abj']) ? round($row['abj']) . '%' : '75%' ?></td>
+                        <td><?= esc((string)$row['bulan']) ?></td>
+                        <td><?= esc((string)$row['minggu']) ?></td>
+                        <td><?= esc((string)$row['id_puskesmas']) ?></td> 
+                        <td><?= esc((string)$row['id_kelurahan']) ?></td> 
+                        <td><?= esc((string)$row['id_posyandu']) ?></td> <td><?= isset($row['abj']) ? round($row['abj']) . '%' : '75%' ?></td>
                         <td>
                             <div class="action-buttons">
                                 <a href="<?= base_url('kepala/view_laporan/' . $row['id_laporan']) ?>" class="btn-action view">
