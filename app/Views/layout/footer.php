@@ -9,16 +9,23 @@
 
             <div class="footer-brand">
 
-                <!-- GANTI medixa.png sesuai nama file logo -->
-                <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
+    <div class="footer-brand-top">
 
-                <h3 class="footer-title">SIGAP</h3>
+        <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
 
-                <p class="footer-desc">
-                    Sistem Informasi, Geografis Analisis & Pemantauan
-                </p>
+        <?php if (!empty($show_footer_maskot)): ?>
+            <img src="<?= base_url('img/maskotdsing.png') ?>" alt="Maskot AI" class="footer-maskot">
+        <?php endif; ?>
 
-            </div>
+    </div>
+
+    <h3 class="footer-title">SIGAP</h3>
+
+    <p class="footer-desc">
+        Sistem Informasi, Geografis Analisis & Pemantauan
+    </p>
+
+</div>
 
             <div class="footer-links mt-5">
                 <a href="#">Bantuan</a>
@@ -111,7 +118,32 @@
     margin-bottom:25px;
     filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
 }
+.footer-brand-top{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+    margin-bottom:25px;
+}
 
+.footer-maskot{
+    width:120px;
+    height:auto;
+    object-fit:contain;
+    animation: floatMaskot 3s ease-in-out infinite;
+    filter: drop-shadow(0 10px 20px rgba(64,237,208,0.25));
+}
+
+@keyframes floatMaskot{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-10px);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
 /* TITLE */
 .footer-title{
     color:#fff;
@@ -260,7 +292,15 @@
     .footer-heading{
         margin-top:10px;
     }
+.footer-brand-top{
+    justify-content:center;
+    flex-wrap:wrap;
+    text-align:center;
+}
 
+.footer-maskot{
+    width:90px;
+}
 }
 
 </style>
