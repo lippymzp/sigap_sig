@@ -447,13 +447,13 @@ if ($value == 1):
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
 
-<?php if (strpos($hasil, 'Berisiko') !== false): ?>
+<?php if ($hasil == 'Berisiko Pneumonia'): ?>
 
     <!-- HASIL BERISIKO -->
     <div class="tips-card">
 
         <div class="tips-header-modern bg-danger-modern">
-            📘 Rekomendasi
+            Rekomendasi
         </div>
 
         <div class="tips-content-modern">
@@ -474,7 +474,7 @@ if ($value == 1):
     <div class="tips-card">
 
         <div class="tips-header-modern bg-success-modern">
-            📘 Rekomendasi
+            Rekomendasi
         </div>
 
         <div class="tips-content-modern">
