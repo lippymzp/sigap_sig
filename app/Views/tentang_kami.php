@@ -54,20 +54,21 @@ body{
 }
 
 .logo-box{
-    background:#12D6D2;
-    border-radius:25px;
-    padding:50px;
+    background: transparent;
+    border-radius: 0;
+    padding: 20px;
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:320px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+    box-shadow: none;
 }
 
 .logo-box img{
     width:100%;
-    max-width:250px;
+    max-width:320px;
     object-fit:contain;
+    background: transparent;
 }
 
 .about-heading{
@@ -267,7 +268,7 @@ body{
 
             <div class="logo-box">
 
-                <img src="<?= base_url('img/medixa.png') ?>" alt="Logo SIGAP">
+                <img src="<?= base_url('img/sigap_logo.png') ?>" alt="Logo SIGAP">
 
             </div>
 
