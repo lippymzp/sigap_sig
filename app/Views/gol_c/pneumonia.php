@@ -442,17 +442,35 @@ h5 {
     <!-- FILTER -->
     <div class="row mb-4">
       <div class="col-md-4">
-        <label>Jenis Kelamin</label>
+        <label>Wilayah</label>
         <select class="form-control filter">
+          <option>Ajung</option>
+          <option>Wirowongso</option>
+          <option>Rowo Indah</option>
+          <option>Sukamakmur</option>
+          <option>Klompangan</option>
+          <option>Mangaran</option>
+          <option>Pancakarya</option>
+          <option>Pasien Luar Wilayah</option>
           <option>All</option>
-          <option>Laki-laki</option>
-          <option>Wanita</option>
         </select>
       </div>
 
       <div class="col-md-4">
         <label>Bulan</label>
         <select class="form-control filter">
+          <option>Januari</option>
+          <option>Februari</option>
+          <option>Maret</option>
+          <option>April</option>
+          <option>Mei</option>
+          <option>Juni</option>
+          <option>Juli</option>
+          <option>Agustus</option>
+          <option>September</option>
+          <option>Oktober</option>
+          <option>November</option>
+          <option>Desember</option>
           <option>All</option>
         </select>
       </div>
@@ -461,6 +479,8 @@ h5 {
         <label>Tahun</label>
         <select class="form-control filter">
           <option>2025</option>
+          <option>2024</option>
+          <option>2023</option>
         </select>
       </div>
     </div>
