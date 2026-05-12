@@ -696,4 +696,4 @@ function switchTab(type) {
     document.getElementById('titleGrafik').innerText = isKasus ? 'Grafik Kasus DBD' : 'Grafik Angka Bebas Jentik (ABJ)';
 }
 </script>
-<?= $this->include('layout/footer') ?>
+<?= $this->include('layout/footer_a') ?>

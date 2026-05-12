@@ -140,7 +140,7 @@
             </div>
             
             <div class="toolbar-right">
-                <a href="<?= base_url('manajemen_puskesmas/tambah') ?>" class="btn-add">
+                <a href="<?= base_url('dbd/admin/manajemen_puskesmas/tambah') ?>" class="btn-add">
                     <i class="fa-solid fa-circle-plus"></i> Tambah Data
                 </a>
             </div>

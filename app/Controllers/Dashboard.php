@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\BeritaTbcModel;
 use App\Models\FunfactTbcModel;
-
+use App\Models\profil_sistem;
 class Dashboard extends BaseController
 {
     public function index()
@@ -233,7 +233,14 @@ $dbd = $builder->get()->getResultArray();
         'desaTertinggi' => $desaTertinggi
     ]);
 }
+public function tentangkamiDBD()
+    {
+        $model = new profil_sistem();
 
+        $data['profil'] = $model->first();
+
+        return view('gol_a/tentang', $data);
+    }
 
     public function tbc()
 {

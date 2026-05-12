@@ -797,16 +797,93 @@ public function manajemen_pkm()
 
     return view('gol_a/manajemen_puskesmas', $data);
 }
-
-    // 3. Proses Simpan Data
-    public function simpan_manajemen_pkm()
+public function simpan_manajemen_pkm()
     {
-        $data = [
-            'nama_instansi' => $this->request->getPost('nama_instansi')
-        ];
+        $db = \Config\Database::connect();
+        
+        $nama_instansi = $this->request->getPost('nama_instansi');
+        $telepon       = $this->request->getPost('telepon');
+        $kode_pos      = $this->request->getPost('kode_pos');
+        
+        // Kita gabungkan input kecamatan ke dalam alamat, karena di database Anda 
+        // id_kecamatan berupa angka (INT), bukan teks.
+        $kecamatan     = $this->request->getPost('kecamatan');
+        $alamat        = "Kec. " . $kecamatan . ", " . $this->request->getPost('alamat');
+        
+        $daftar_kelurahan = $this->request->getPost('kelurahan');
 
-        $this->db->table('instansi')->insert($data);
-        return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil ditambahkan!');
+        if (empty($nama_instansi)) {
+            die("<h1>DATA KOSONG!</h1><p>Pastikan form terisi dengan benar.</p>");
+        }
+
+        $db->transBegin();
+
+        try {
+            // 1. Simpan HANYA nama ke tabel 'instansi' (Sesuai database asli Anda)
+            $dataInstansi = [
+                'nama_instansi' => $nama_instansi
+            ];
+            
+            if (!$db->table('instansi')->insert($dataInstansi)) {
+                $err = $db->error();
+                die("<h1>ERROR TABEL INSTANSI</h1><p>Pesan: " . $err['message'] . "</p>");
+            }
+            $id_instansi = $db->insertID(); // Ambil ID puskesmas
+
+            // 2. Simpan detail alamat & posyandu ke tabel 'manajemen_puskesmas'
+            if (!empty($daftar_kelurahan)) {
+                // Buat 1 baris data untuk setiap kelurahan yang diinput
+                foreach ($daftar_kelurahan as $kel) {
+                    $nama_kel = $kel['nama'];
+                    // Gabungkan daftar posyandu dengan koma (Contoh: Catleya 01, Catleya 02)
+                    $pos_str = isset($kel['posyandu']) ? implode(", ", $kel['posyandu']) : "";
+                    
+                    $dataManajemen = [
+                        'id_puskesmas'        => $id_instansi,
+                        'nama_puskesmas'      => $nama_instansi,
+                        'alamat'              => $alamat,
+                        'no_telpon_puskesmas' => $telepon,
+                        'kode_pos'            => empty($kode_pos) ? null : (int)$kode_pos,
+                        // Simpan kelurahan & posyandu ke dalam kolom varchar 'posyandu'
+                        'posyandu'            => "Kel. " . $nama_kel . " (" . $pos_str . ")",
+                        'created_at'          => date('Y-m-d H:i:s')
+                    ];
+                    
+                    if (!$db->table('manajemen_puskesmas')->insert($dataManajemen)) {
+                        $err = $db->error();
+                        die("<h1>ERROR TABEL MANAJEMEN</h1><p>Pesan: " . $err['message'] . "</p>");
+                    }
+                }
+            } else {
+                // Jika user tidak menambahkan kelurahan sama sekali
+                $dataManajemen = [
+                    'id_puskesmas'        => $id_instansi,
+                    'nama_puskesmas'      => $nama_instansi,
+                    'alamat'              => $alamat,
+                    'no_telpon_puskesmas' => $telepon,
+                    'kode_pos'            => empty($kode_pos) ? null : (int)$kode_pos,
+                    'created_at'          => date('Y-m-d H:i:s')
+                ];
+                if (!$db->table('manajemen_puskesmas')->insert($dataManajemen)) {
+                    $err = $db->error();
+                    die("<h1>ERROR TABEL MANAJEMEN</h1><p>Pesan: " . $err['message'] . "</p>");
+                }
+            }
+
+            // 3. Finalisasi Penyimpanan
+            if ($db->transStatus() === FALSE) {
+                $db->transRollback();
+                die("<h1>TRANSAKSI GAGAL</h1><p>Sistem membatalkan penyimpanan.</p>");
+            } else {
+                $db->transCommit();
+                // Jika sukses, kembali ke halaman daftar puskesmas
+                return redirect()->to(base_url('gol_a/manajemen_puskesmas'))->with('success', 'Data Puskesmas berhasil ditambahkan!');
+            }
+
+        } catch (\Exception $e) {
+            $db->transRollback();
+            die("<h1>ERROR FATAL</h1><p>" . $e->getMessage() . "</p>");
+        }
     }
 
     // 4. Menampilkan Detail
