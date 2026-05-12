@@ -2,73 +2,66 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Export PDF Data Pasien (Kepala)</title>
+    <title>Export PDF Data Pasien</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 11px;
+            font-size: 10px;
             color: #333;
         }
 
         h2 {
             text-align: center;
             margin-bottom: 5px;
-            color: #2c3e50;
         }
 
         .sub {
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 11px;
-            color: #555;
+            margin-bottom: 15px;
+            font-size: 10px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
 
         table th {
-            background: #00BBC2; /* Menyesuaikan warna Kepala */
+            background: #2c3e50;
             color: #fff;
-            padding: 8px;
-            border: 1px solid #009fa5;
+            padding: 6px;
         }
 
         table td {
             border: 1px solid #ddd;
-            padding: 6px;
+            padding: 5px;
         }
 
         .center {
             text-align: center;
         }
-        
-        .footer {
-            margin-top: 30px;
-            text-align: right;
-            font-size: 11px;
-        }
     </style>
 </head>
 <body>
 
-<h2>REKAPITULASI DATA PASIEN DBD</h2>
+<h2>DATA PASIEN DBD</h2>
 <div class="sub">
-    Hasil Export Berdasarkan Filter Kepala
+    Hasil Export Data Pasien DBD <br>
+    Dicetak pada :
+    <?= date('d-m-Y') ?>
 </div>
 
 <table>
     <thead>
         <tr>
-            <th width="5%">No</th>
-            <th width="20%">Kecamatan</th>
-            <th width="20%">Desa</th>
-            <th width="20%">Jenis Kelamin</th>
-            <th width="15%">Usia</th>
-            <th width="20%">Jumlah Kasus</th>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Tgl Kunjungan</th>
+            <th>JK</th>
+            <th>Usia</th>
+            <th>Catatan Klinis</th>
+            <th>Alamat Lengkap</th>
         </tr>
     </thead>
 
@@ -76,26 +69,54 @@
         <?php $no = 1; ?>
         <?php if (!empty($data)) : ?>
             <?php foreach ($data as $d) : ?>
-            <tr>
-                <td class="center"><?= $no++ ?></td>
-                <td><?= esc((string) ($d['kecamatan'] ?? '-')) ?></td>
-                <td><?= esc((string) ($d['kelurahan'] ?? '-')) ?></td>
-                <td class="center"><?= esc((string) ($d['jenis_kelamin'] ?? '-')) ?></td>
-                <td class="center"><?= esc((string) ($d['umur'] ?? '-')) ?></td>
-                <td class="center">1</td> 
-            </tr>
-            <?php endforeach; ?>
+    <tr>
+        <td class="center"><?= $no++ ?></td>
+
+        <td>
+            <?= esc((string) ($d['nama_pasien'] ?? '')) ?>
+        </td>
+
+        <td class="center">
+            <?= esc((string) ($d['tgl_kunjungan'] ?? '')) ?>
+        </td>
+
+        <td class="center">
+            <?= esc((string) ($d['jenis_kelamin'] ?? '')) ?>
+        </td>
+
+        <td class="center">
+            <?= esc((string) ($d['umur'] ?? '')) ?>
+        </td>
+
+        <td>
+            <?= esc((string) ($d['ctt_klinis'] ?? '')) ?>
+        </td>
+
+        <td>
+            <?= esc(
+                ($d['alamat_lengkap'] ?? '') .
+
+                ', RT ' . ($d['rt'] ?? '-') .
+                '/RW ' . ($d['rw'] ?? '-') .
+
+                ', Kel. ' . ($d['kelurahan'] ?? '-') .
+
+                ', Kec. ' . ($d['kecamatan'] ?? '-') .
+
+                ', ' . ($d['kabupaten'] ?? '-') .
+
+                ', ' . ($d['provinsi'] ?? '-')
+            ) ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
         <?php else : ?>
             <tr>
-                <td colspan="6" class="center">Data tidak tersedia untuk periode/filter ini</td>
+                <td colspan="9" class="center">Data tidak tersedia</td>
             </tr>
         <?php endif; ?>
     </tbody>
 </table>
-
-<div class="footer">
-    <p>Dicetak pada: <?= date('d-m-Y H:i') ?></p>
-</div>
 
 </body>
 </html>
