@@ -12,12 +12,13 @@ class Dbd extends BaseController
 {
     protected FunfactModel $funfact;
     protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
-
+    protected $db; 
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
     public function __construct()
     {
         $this->pelaporanModel = new PelaporanModel();
         $this->funfact = new FunfactModel();
+        $this->db = \Config\Database::connect();
     }
 
     public function inputData()
@@ -1729,85 +1730,84 @@ public function simpanDraft(int $id)
     }
 
     public function daftar_laporan()
-{
-    $model = new \App\Models\PelaporanModel();
+    {
+        $model = new \App\Models\PelaporanModel();
 
-    // 1. Tangkap semua input filter dari URL (GET)
-    $bulanNama = $this->request->getGet('bulan') ?: 'Mei'; // Default Mei jika kosong
-    $tahun     = $this->request->getGet('tahun') ?: date('Y');
-    $filterKelurahan = $this->request->getGet('kelurahan');
-    $filterPosyandu  = $this->request->getGet('posyandu');
+        // 1. Tangkap semua input filter dari URL (GET)
+        $bulanNama = $this->request->getGet('bulan') ?: 'Mei'; // Default Mei jika kosong
+        $tahun     = $this->request->getGet('tahun') ?: date('Y');
+        $filterKelurahan = $this->request->getGet('kelurahan');
+        $filterPosyandu  = $this->request->getGet('posyandu');
 
-    // 2. Logika Penentuan Daftar Catleya (Sesuai Filter)
-    $listCatleya = [];
+        // 2. Logika Penentuan Daftar Catleya (Sesuai Filter)
+        $listCatleya = [];
 
-    // Data mapping Kelurahan ke Posyandu (Sama dengan yang ada di JS View)
-    $dataMapping = [
-        'Sumbersari' => ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'],
-        'Wirolegi'   => ['36','36A','37','38','39','40','41','42','43','44','44A','45','46','47','48','49','50','51','52','53','54'],
-        'Karangrejo' => ['75','76','77','78','78A','79','80','81','82','83','84','85','86','87','88','88A','89','90','91','92','92A','93','94','95','95A','95B'],
-        'Tegalgede'  => ['68','69','70','71','72','73','74','74A','74B'],
-        'Antirogo'   => ['55','56','57','58','58A','59','60','61','62','63','64','65','65A','66','67']
-    ];
+        // Data mapping Kelurahan ke Posyandu (Sama dengan yang ada di JS View)
+        $dataMapping = [
+            'Sumbersari' => ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35'],
+            'Wirolegi'   => ['36', '36A', '37', '38', '39', '40', '41', '42', '43', '44', '44A', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54'],
+            'Karangrejo' => ['75', '76', '77', '78', '78A', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '88A', '89', '90', '91', '92', '92A', '93', '94', '95', '95A', '95B'],
+            'Tegalgede'  => ['68', '69', '70', '71', '72', '73', '74', '74A', '74B'],
+            'Antirogo'   => ['55', '56', '57', '58', '58A', '59', '60', '61', '62', '63', '64', '65', '65A', '66', '67']
+        ];
 
-    if (!empty($filterPosyandu)) {
-        // A. JIKA POSYANDU DIPILIH: Hanya tampilkan 1 kolom posyandu tersebut
-        // Kita bersihkan string "Catleya " jika ada, agar sesuai dengan ID di DB
-        $cleanId = str_replace('Catleya ', '', $filterPosyandu);
-        $listCatleya = [$cleanId];
-    } 
-    elseif (!empty($filterKelurahan) && isset($dataMapping[$filterKelurahan])) {
-        // B. JIKA HANYA KELURAHAN DIPILIH: Tampilkan semua posyandu di kelurahan itu
-        $listCatleya = $dataMapping[$filterKelurahan];
-    } 
-    else {
-        // C. JIKA TIDAK ADA FILTER: Tampilkan semua (105 Catleya)
-        for ($i = 1; $i <= 95; $i++) { $listCatleya[] = (string)$i; }
-        $bayangan = ['36A', '44A', '58A', '65A', '74A', '74B', '78A', '88A', '92A', '95A', '95B'];
-        $listCatleya = array_unique(array_merge($listCatleya, $bayangan));
-        sort($listCatleya, SORT_NATURAL); // Urutkan biar rapi
-    }
-
-    // 3. Logika Mencari Hari Jumat (Tetap seperti sebelumnya)
-    $bulanAngka = ['Januari'=>1,'Februari'=>2,'Maret'=>3,'April'=>4,'Mei'=>5,'Juni'=>6,'Juli'=>7,'Agustus'=>8,'September'=>9,'Oktober'=>10,'November'=>11,'Desember'=>12];
-    $m = $bulanAngka[$bulanNama] ?? date('n');
-    $jmlHari = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
-    
-    $listMinggu = [];
-    $mingguKe = 1;
-    for ($d = 1; $d <= $jmlHari; $d++) {
-        $dateStr = sprintf('%04d-%02d-%02d', $tahun, $m, $d);
-        if (date('N', strtotime($dateStr)) == 5) {
-            $listMinggu[] = "Minggu ke-" . $mingguKe;
-            $mingguKe++;
+        if (!empty($filterPosyandu)) {
+            // A. JIKA POSYANDU DIPILIH: Hanya tampilkan 1 kolom posyandu tersebut
+            // Kita bersihkan string "Catleya " jika ada, agar sesuai dengan ID di DB
+            $cleanId = str_replace('Catleya ', '', $filterPosyandu);
+            $listCatleya = [$cleanId];
+        } elseif (!empty($filterKelurahan) && isset($dataMapping[$filterKelurahan])) {
+            // B. JIKA HANYA KELURAHAN DIPILIH: Tampilkan semua posyandu di kelurahan itu
+            $listCatleya = $dataMapping[$filterKelurahan];
+        } else {
+            // C. JIKA TIDAK ADA FILTER: Tampilkan semua (105 Catleya)
+            for ($i = 1; $i <= 95; $i++) {
+                $listCatleya[] = (string)$i;
+            }
+            $bayangan = ['36A', '44A', '58A', '65A', '74A', '74B', '78A', '88A', '92A', '95A', '95B'];
+            $listCatleya = array_unique(array_merge($listCatleya, $bayangan));
+            sort($listCatleya, SORT_NATURAL); // Urutkan biar rapi
         }
+
+        // 3. Logika Mencari Hari Jumat (Tetap seperti sebelumnya)
+        $bulanAngka = ['Januari' => 1, 'Februari' => 2, 'Maret' => 3, 'April' => 4, 'Mei' => 5, 'Juni' => 6, 'Juli' => 7, 'Agustus' => 8, 'September' => 9, 'Oktober' => 10, 'November' => 11, 'Desember' => 12];
+        $m = $bulanAngka[$bulanNama] ?? date('n');
+        $jmlHari = cal_days_in_month(CAL_GREGORIAN, $m, $tahun);
+
+        $listMinggu = [];
+        $mingguKe = 1;
+        for ($d = 1; $d <= $jmlHari; $d++) {
+            $dateStr = sprintf('%04d-%02d-%02d', $tahun, $m, $d);
+            if (date('N', strtotime($dateStr)) == 5) {
+                $listMinggu[] = "Minggu ke-" . $mingguKe;
+                $mingguKe++;
+            }
+        }
+
+
+        // 4. Ambil Data Laporan dari DB (Menggunakan YEAR(created_at))
+        $laporanDb = $model->where('bulan', $bulanNama)
+            ->where('YEAR(created_at)', $tahun)
+            ->findAll();
+        $dataLaporan = [];
+        foreach ($laporanDb as $row) {
+            $dataLaporan[$row['minggu']][$row['id_posyandu']] = $row['id_laporan'];
+        }
+
+        // 5. Kirim ke View
+        $data = [
+            'title'       => 'Pelaporan Kader',
+            'judul'       => 'Pelaporan Kader', 
+            'menu'        => 'pelaporan_kader',
+            'bulanAktif'  => $bulanNama,
+            'tahunAktif'  => $tahun,
+            'listMinggu'  => $listMinggu,
+            'listCatleya' => $listCatleya,
+            'dataLaporan' => $dataLaporan
+        ];
+
+        return view('gol_a/daftar_laporan_kader_admin/daftar_laporan', $data);
     }
-
-    
-    // 4. Ambil Data Laporan dari DB (Menggunakan YEAR(created_at))
-    $laporanDb = $model->where('bulan', $bulanNama)
-                       ->where('YEAR(created_at)', $tahun)
-                       ->findAll();
-    $dataLaporan = [];
-    foreach ($laporanDb as $row) {
-        $dataLaporan[$row['minggu']][$row['id_posyandu']] = $row['id_laporan'];
-    }
-
-    // 5. Kirim ke View
-    $data = [
-        'title'       => 'Daftar Laporan Kader',
-        'bulanAktif'  => $bulanNama,
-        'tahunAktif'  => $tahun,
-        'listMinggu'  => $listMinggu,
-        'listCatleya' => $listCatleya,
-        'dataLaporan' => $dataLaporan,
-
-        'menu' => 'pelaporan_kader',
-        'judul' => 'Daftar Pelaporan Kader'
-    ];
-
-    return view('gol_a/daftar_laporan_kader_admin/daftar_laporan', $data);
-}
 
 public function pelaporan_kader()
 {
