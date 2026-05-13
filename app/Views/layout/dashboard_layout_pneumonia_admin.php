@@ -70,7 +70,7 @@
 
         <div class="menu-label">Informasi</div>
 
-        <a href="<?= base_url('beritapneumonia') ?>"
+        <a href="<?= base_url('/beritapneumonia/admin') ?>"
             class="<?= ($menu == 'beritapneumonia') ? 'active' : '' ?>">
             <i class="fa-solid fa-newspaper me-2"></i> Edit Berita
         </a>

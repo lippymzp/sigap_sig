@@ -77,24 +77,24 @@ $routes->get('pneumonia/export-hasil-data-pasien/excel', 'pneumonia::export_exce
 /* BERITA PNEUMONIA */
 /* ========================= */
 
-$routes->get('/beritapneumonia', 'BeritaPneumonia::index');
+$routes->get('/beritapneumonia/admin', 'BeritaPneumonia::index');
 
-$routes->get('/beritapneumonia/tambah', 'BeritaPneumonia::tambah');
-$routes->post('/beritapneumonia/simpan', 'BeritaPneumonia::simpan');
+$routes->get('/beritapneumonia/admin/tambah', 'BeritaPneumonia::tambah');
+$routes->post('/beritapneumonia/admin/simpan', 'BeritaPneumonia::simpan');
 
-$routes->get('/beritapneumonia/edit/(:num)', 'BeritaPneumonia::edit/$1');
-$routes->post('/beritapneumonia/update/(:num)', 'BeritaPneumonia::update/$1');
+$routes->get('/beritapneumonia/admin/edit/(:num)', 'BeritaPneumonia::edit/$1');
+$routes->post('/beritapneumonia/admin/update/(:num)', 'BeritaPneumonia::update/$1');
 
-$routes->get('/beritapneumonia/delete/(:num)', 'BeritaPneumonia::delete/$1');
+$routes->get('/beritapneumonia/admin/delete/(:num)', 'BeritaPneumonia::delete/$1');
 
-$routes->get('/beritapneumonia/view/(:num)', 'BeritaPneumonia::view/$1');
+$routes->get('/beritapneumonia/admin/view/(:num)', 'BeritaPneumonia::view/$1');
 
-$routes->get('/beritapneumonia/publish', 'BeritaPneumonia::publish');
-$routes->get('/beritapneumonia/draft', 'BeritaPneumonia::draft');
+$routes->get('/beritapneumonia/admin/publish', 'BeritaPneumonia::publish');
+$routes->get('/beritapneumonia/admin/draft', 'BeritaPneumonia::draft');
 
-$routes->get('/beritapneumonia/list', 'BeritaPneumonia::list_berita');
+$routes->get('/beritapneumonia/admin/list', 'BeritaPneumonia::list_berita');
 
-$routes->post('/beritapneumonia/upload-editor-image', 'BeritaPneumonia::uploadEditorImage');
+$routes->post('/beritapneumonia/admin/upload-editor-image', 'BeritaPneumonia::uploadEditorImage');
 /* ========================= */
 /* DIARE */
 /* ========================= */
