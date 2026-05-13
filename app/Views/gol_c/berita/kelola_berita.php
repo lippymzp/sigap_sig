@@ -365,24 +365,24 @@ $keyword = $keyword ?? '';
 
     <div class="left-tabs">
 
-        <a href="<?= site_url('berita'); ?>"
+        <a href="<?= base_url('beritapneumonia/admin'); ?>"
            class="tab-btn <?= empty($status) ? 'active' : '' ?>">
             Semua
         </a>
 
-        <a href="<?= site_url('berita?status=publish'); ?>"
+        <a href="<?= base_url('beritapneumonia/admin?status=publish'); ?>"
            class="tab-btn <?= ($status == 'publish') ? 'active' : '' ?>">
             Terunggah
         </a>
 
-        <a href="<?= site_url('berita?status=draft'); ?>"
+        <a href="<?= base_url('beritapneumonia/admin?status=draft'); ?>"
            class="tab-btn <?= ($status == 'draft') ? 'active' : '' ?>">
             Draft
         </a>
 
     </div>
 
-    <a href="berita/tambah" class="add-btn">
+    <a href="<?= base_url('beritapneumonia/admin/tambah'); ?>" class="add-btn">
         Tambah Berita
     </a>
 

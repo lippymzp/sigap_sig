@@ -22,7 +22,7 @@ class BeritaPneumonia extends Controller
 
     // FILTER STATUS
     if ($status == 'publish') {
-        $builder = $builder->where('status_beritapneumonia', 'publish');
+        $builder = $builder->where('status_berita', 'publish');
     }
 
     if ($status == 'draft') {

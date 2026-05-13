@@ -377,7 +377,7 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 </span>
 
 <?php elseif(strpos($row['hasil'],'Tidak Berisiko') !== false): ?>
-<span class="badge-custom badge-cukup">
+<span class="badge-custom badge-baik">
     <?= $row['hasil'] ?>
 </span>
 
