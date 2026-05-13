@@ -776,9 +776,101 @@ $modelPasien->save([
 ]);
 
     $id_pasien_skrining = $modelPasien->insertID();
+    // ======================
+    // HITUNG SKOR
+    // ======================
 
-    // Biasaya setelah insert ada return (contoh: return redirect()->to(...);)
-    
+            $totalSkor = 0;
+
+        $reverse = [14, 15, 16, 17, 18, 19, 20, 21];
+
+        for ($i = 1; $i <= 21; $i++) {
+            $nilai = $this->request->getPost("p".$i) ?? 0;
+
+            if (in_array($i, $reverse)) {
+                $nilai = ($nilai == 1) ? 0 : 1;
+            }
+
+            $totalSkor += $nilai;
+        }
+
+        if ($totalSkor >= 0 && $totalSkor <= 6) {
+            $hasil = "Kategori Lingkungan Buruk";
+            $alasan = "Skor Anda: $totalSkor (0 - 6)";
+        }
+        elseif ($totalSkor >= 7 && $totalSkor <= 13) {
+            $hasil = "Kategori Lingkungan Cukup";
+            $alasan = "Skor Anda: $totalSkor (7 - 13)";
+        }
+        else {
+            $hasil = "Kategori Lingkungan Baik";
+            $alasan = "Skor Anda: $totalSkor (14 - 21)";
+        }
+
+    // ======================
+    // SIMPAN tabel skrining
+    // ======================
+
+    $modelSkrining = new \App\Models\SkriningdbdModel();
+    $p1 = ($this->request->getPost('p1') == 1) ? 'Iya' : 'Tidak';
+    $p2 = ($this->request->getPost('p2') == 1) ? 'Iya' : 'Tidak';
+    $p3 = ($this->request->getPost('p3') == 1) ? 'Iya' : 'Tidak';
+    $p4 = ($this->request->getPost('p4') == 1) ? 'Iya' : 'Tidak';
+    $p5 = ($this->request->getPost('p5') == 1) ? 'Iya' : 'Tidak';
+    $p6 = ($this->request->getPost('p6') == 1) ? 'Iya' : 'Tidak';
+    $p7 = ($this->request->getPost('p7') == 1) ? 'Iya' : 'Tidak';
+    $p8 = ($this->request->getPost('p8') == 1) ? 'Iya' : 'Tidak';
+    $p9 = ($this->request->getPost('p9') == 1) ? 'Iya' : 'Tidak';
+    $p10 = ($this->request->getPost('p10') == 1) ? 'Iya' : 'Tidak';
+    $p11 = ($this->request->getPost('p11') == 1) ? 'Iya' : 'Tidak';
+    $p12 = ($this->request->getPost('p12') == 1) ? 'Iya' : 'Tidak';
+    $p13 = ($this->request->getPost('p13') == 1) ? 'Iya' : 'Tidak';
+    $p14 = ($this->request->getPost('p14') == 1) ? 'Iya' : 'Tidak';
+    $p15 = ($this->request->getPost('p15') == 1) ? 'Iya' : 'Tidak';
+    $p16 = ($this->request->getPost('p16') == 1) ? 'Iya' : 'Tidak';
+    $p17 = ($this->request->getPost('p17') == 1) ? 'Iya' : 'Tidak';
+    $p18 = ($this->request->getPost('p18') == 1) ? 'Iya' : 'Tidak';
+    $p19 = ($this->request->getPost('p19') == 1) ? 'Iya' : 'Tidak';
+    $p20 = ($this->request->getPost('p20') == 1) ? 'Iya' : 'Tidak';
+    $p21 = ($this->request->getPost('p21') == 1) ? 'Iya' : 'Tidak';
+    $modelSkrining->save([
+        'id_pasien_skrining' => $id_pasien_skrining,
+        'id_penyakit' => 1,
+        'tanggal' => date('Y-m-d'),
+
+        'var1' => $p1,
+        'var2' => $p2,
+        'var3' => $p3,
+        'var4' => $p4,
+        'var5' => $p5,
+        'var6' => $p6,
+        'var7' => $p7,
+        'var8' => $p8,
+        'var9' => $p9,
+        'var10' => $p10,
+        'var11' => $p11,
+        'var12' => $p12,
+        'var13' => $p13,
+        'var14' => $p14,
+        'var15' => $p15,
+        'var16' => $p16,
+        'var17' => $p17,
+        'var18' => $p18,
+        'var19' => $p19,
+        'var20' => $p20,
+        'var21' => $p21,
+
+        'hasil' => $hasil
+    ]);
+
+   $data = $this->request->getPost();
+$data['provinsi']  = $provinsi;   // sudah berisi nama
+$data['kabupaten'] = $kabupaten;
+$data['kecamatan'] = $kecamatan;
+$data['hasil']     = $hasil;
+$data['alasan']    = $alasan;
+$data['totalSkor'] = $totalSkor;
+return view('gol_a/skrining3', $data);
 }
 
 public function manajemen_pkm()
@@ -940,106 +1032,8 @@ public function simpan_manajemen_pkm()
 
         $this->db->table('instansi')->where('id_instansi', $id)->delete();
         return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil dihapus!');
-
-
-
-    // ======================
-    // HITUNG SKOR
-    // ======================
-
-            $totalSkor = 0;
-
-        $reverse = [14, 15, 16, 17, 18, 19, 20, 21];
-
-        for ($i = 1; $i <= 21; $i++) {
-            $nilai = $this->request->getPost("p".$i) ?? 0;
-
-            if (in_array($i, $reverse)) {
-                $nilai = ($nilai == 1) ? 0 : 1;
-            }
-
-            $totalSkor += $nilai;
-        }
-
-        if ($totalSkor >= 0 && $totalSkor <= 6) {
-            $hasil = "Kategori Lingkungan Buruk";
-            $alasan = "Skor Anda: $totalSkor (0 - 6)";
-        }
-        elseif ($totalSkor >= 7 && $totalSkor <= 13) {
-            $hasil = "Kategori Lingkungan Cukup";
-            $alasan = "Skor Anda: $totalSkor (7 - 13)";
-        }
-        else {
-            $hasil = "Kategori Lingkungan Baik";
-            $alasan = "Skor Anda: $totalSkor (14 - 21)";
-        }
-
-    // ======================
-    // SIMPAN tabel skrining
-    // ======================
-
-    $modelSkrining = new \App\Models\SkriningdbdModel();
-    $p1 = ($this->request->getPost('p1') == 1) ? 'Iya' : 'Tidak';
-    $p2 = ($this->request->getPost('p2') == 1) ? 'Iya' : 'Tidak';
-    $p3 = ($this->request->getPost('p3') == 1) ? 'Iya' : 'Tidak';
-    $p4 = ($this->request->getPost('p4') == 1) ? 'Iya' : 'Tidak';
-    $p5 = ($this->request->getPost('p5') == 1) ? 'Iya' : 'Tidak';
-    $p6 = ($this->request->getPost('p6') == 1) ? 'Iya' : 'Tidak';
-    $p7 = ($this->request->getPost('p7') == 1) ? 'Iya' : 'Tidak';
-    $p8 = ($this->request->getPost('p8') == 1) ? 'Iya' : 'Tidak';
-    $p9 = ($this->request->getPost('p9') == 1) ? 'Iya' : 'Tidak';
-    $p10 = ($this->request->getPost('p10') == 1) ? 'Iya' : 'Tidak';
-    $p11 = ($this->request->getPost('p11') == 1) ? 'Iya' : 'Tidak';
-    $p12 = ($this->request->getPost('p12') == 1) ? 'Iya' : 'Tidak';
-    $p13 = ($this->request->getPost('p13') == 1) ? 'Iya' : 'Tidak';
-    $p14 = ($this->request->getPost('p14') == 1) ? 'Iya' : 'Tidak';
-    $p15 = ($this->request->getPost('p15') == 1) ? 'Iya' : 'Tidak';
-    $p16 = ($this->request->getPost('p16') == 1) ? 'Iya' : 'Tidak';
-    $p17 = ($this->request->getPost('p17') == 1) ? 'Iya' : 'Tidak';
-    $p18 = ($this->request->getPost('p18') == 1) ? 'Iya' : 'Tidak';
-    $p19 = ($this->request->getPost('p19') == 1) ? 'Iya' : 'Tidak';
-    $p20 = ($this->request->getPost('p20') == 1) ? 'Iya' : 'Tidak';
-    $p21 = ($this->request->getPost('p21') == 1) ? 'Iya' : 'Tidak';
-    $modelSkrining->save([
-        'id_pasien_skrining' => $id_pasien_skrining,
-        'id_penyakit' => 1,
-        'tanggal' => date('Y-m-d'),
-
-        'var1' => $p1,
-        'var2' => $p2,
-        'var3' => $p3,
-        'var4' => $p4,
-        'var5' => $p5,
-        'var6' => $p6,
-        'var7' => $p7,
-        'var8' => $p8,
-        'var9' => $p9,
-        'var10' => $p10,
-        'var11' => $p11,
-        'var12' => $p12,
-        'var13' => $p13,
-        'var14' => $p14,
-        'var15' => $p15,
-        'var16' => $p16,
-        'var17' => $p17,
-        'var18' => $p18,
-        'var19' => $p19,
-        'var20' => $p20,
-        'var21' => $p21,
-
-        'hasil' => $hasil
-    ]);
-
-   $data = $this->request->getPost();
-$data['provinsi']  = $provinsi;   // sudah berisi nama
-$data['kabupaten'] = $kabupaten;
-$data['kecamatan'] = $kecamatan;
-$data['hasil']     = $hasil;
-$data['alasan']    = $alasan;
-$data['totalSkor'] = $totalSkor;
-return view('gol_a/skrining3', $data);
-}
-
+    
+    }
 public function rekap_skrining()
 {
     $db = \Config\Database::connect();
