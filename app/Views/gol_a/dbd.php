@@ -2,57 +2,139 @@
 <?= $this->include('layout/header') ?>
 
 <style>
-/* HERO BACKGROUND */
-.dbd-hero {
-    position: relative;
-    background: url('<?= base_url("img/dbd.png") ?>') center/cover no-repeat;
-    padding: 120px 0;
-    border-radius: 0 0 40px 40px;
+/* ================= HERO SLIDER ================= */
+
+.dbd-hero{
+    position:relative;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    border-radius:0 0 40px 40px;
+}
+
+/* TRACK SLIDER */
+.hero-slider{
+    display:flex;
+    flex-wrap:nowrap;
+    width:100%;
+    height:100%;
+    transition:transform 0.7s ease-in-out;
+}
+
+/* ITEM SLIDE */
+.hero-slide{
+    min-width:100%;
+    width:100%;
+    height:100vh;
+    flex-shrink:0;
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+/* OVERLAY */
+.overlay{
+    position:absolute;
+    inset:0;
+    z-index:1;
+}
+
+/* CONTENT */
+.hero-content{
+    position:relative;
+    z-index:2;
+    color:#fff;
 }
 
 /* TEXT */
-.hero-title {
-    font-size: 52px;
-    font-weight: 800;
-    margin-bottom: 15px;
+.hero-title{
+    font-size:52px;
+    font-weight:800;
+    margin-bottom:15px;
+    max-width:700px;
 }
 
-.hero-desc {
-    font-size: 18px;
-    max-width: 420px;
-    line-height: 1.6;
+.hero-desc{
+    font-size:18px;
+    max-width:500px;
+    line-height:1.7;
 }
 
 /* BUTTON */
-.btn-hero {
-    background: #1b9aaa;
-    color: white;
-    padding: 14px 30px;
-    border-radius: 30px;
-    margin-top: 20px;
-    display: inline-block;
-    text-decoration: none;
-    transition: 0.3s;
+.btn-hero{
+    background:#1b9aaa;
+    color:white;
+    padding:14px 30px;
+    border-radius:30px;
+    margin-top:20px;
+    display:inline-block;
+    text-decoration:none;
+    transition:0.3s;
+    border:none;
 }
 
-.btn-hero:hover {
-    background: #168aad;
-    color: white;
+.btn-hero:hover{
+    background:#168aad;
+    color:white;
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .dbd-hero {
-        padding: 80px 20px;
-        text-align: center;
+/* BUTTON NAVIGATION */
+.hero-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,0.45);
+    color:white;
+    border:none;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    font-size:30px;
+    cursor:pointer;
+    z-index:10;
+    transition:0.3s;
+}
+
+.hero-btn:hover{
+    background:#00BBC2;
+}
+
+.hero-btn.left{
+    left:20px;
+}
+
+.hero-btn.right{
+    right:20px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+    .dbd-hero{
+        height:85vh;
     }
 
-    .hero-title {
-        font-size: 32px;
+    .hero-slide{
+        height:85vh;
+        padding:0 20px;
     }
 
-    .hero-desc {
-        margin: auto;
+    .hero-title{
+        font-size:34px;
+    }
+
+    .hero-desc{
+        font-size:15px;
+    }
+
+    .hero-content{
+        text-align:center;
+    }
+
+    .hero-btn{
+        width:42px;
+        height:42px;
+        font-size:24px;
     }
 }
 
@@ -271,53 +353,264 @@
     scroll-behavior: smooth;
     padding: 10px 0;
 }
+.slider-track::-webkit-scrollbar{
+    display:none;
+}
+.video-slider-wrapper{
+    position:relative;
+    width:100%;
+    padding:10px 40px;
+}
+.video-card-item{
+    min-width:400px;
+    max-width:400px;
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+    transition:0.3s;
+    flex-shrink:0;
+    position:relative;
+}
+
+.video-card-item:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+.video-box{
+    position:relative;
+    width:100%;
+    height:230px;
+    overflow:hidden;
+    background:#000;
+}
+
+.video-box video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    pointer-events:none;
+}
+.video-content{
+    padding:18px;
+}
+
+.video-content h5{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:10px;
+    color:#222;
+    line-height:1.5;
+}
+.play-icon{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:70px;
+    height:70px;
+    background:rgba(0,0,0,0.6);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:28px;
+    transition:0.3s;
+}
+.video-card-item:hover .play-icon{
+    background:#00BBC2;
+    transform:translate(-50%, -50%) scale(1.1);
+}
+.video-content p{
+    font-size:14px;
+    color:#666;
+    line-height:1.7;
+}
+.lihat-btn{
+    display:inline-block;
+    padding:8px 14px;
+    background:#00BBC2;
+    color:#fff;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.lihat-btn:hover{
+    background:#009da3;
+    color:#fff;
+}
+.slider-btn{
+    position:absolute;
+    top:45%;
+    transform:translateY(-50%);
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:#00BBC2;
+    color:#fff;
+    font-size:24px;
+    cursor:pointer;
+    z-index:10;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+.slider-btn:hover{
+    background:#009da3;
+}
+
+.slider-btn.left{
+    left:0;
+}
+
+.slider-btn.right{
+    right:0;
+}
+@media(max-width:768px){
+
+.video-card-item{
+    min-width:280px;
+    max-width:280px;
+}
+
+.video-box{
+    height:170px;
+}
+.fitur-slider-wrapper{
+    overflow-x:auto;
+    padding:10px 0;
+    gap:25px;
+}
+
+.fitur-slider{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:70px;
+    width:max-content;
+}
+
+.fitur-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:220px;
+    padding:18px;
+    background:#fff;
+    border-radius:16px;
+    text-decoration:none;
+    color:#222;
+    font-weight:600;
+    white-space:nowrap;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.fitur-box:hover{
+    transform:translateY(-3px);
+    background:#00BBC2;
+    color:#fff;
+}
+.hero-slider {
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: white;
+    transition: transform 0.6s ease-in-out;
+    width: 100%;
+}
+.hero-slide{
+    min-width: 100%;
+    height: 100vh;
+    flex-shrink: 0;
+    position: relative;
+}
+.hero-slide.active{
+    display: block;
+}
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
 </style>
 
-<section class="dbd-hero text-white">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1>Demam Berdarah</h1>
-                <p>Demam berdarah adalah penyakit yang disebabkan oleh virus dengue dan ditularkan melalui gigitan nyamuk.</p>
-                <a href="<?= base_url('dbd-detail') ?>" class="btn btn-hero">
-                    Pelajari selengkapnya
-                </a>
-            </div>
+<section class="dbd-hero">
+
+<?php $banners = $banner ?? []; ?>
+
+<?php if(!empty($banners)) : ?>
+
+<div class="hero-slider" id="heroSlider">
+
+    <?php foreach($banners as $b) : ?>
+
+    <div class="hero-slide"
+        style="background:url('<?= base_url('uploads/banner/' . $b['gambar']) ?>') center/cover no-repeat;">
+
+        <div class="overlay"></div>
+
+        <div class="container hero-content">
+
+            <h1 class="hero-title">
+                <?= esc((string) ($b['judul_banner'] ?? '')) ?>
+            </h1>
+
+            <p class="hero-desc">
+                <?= esc((string) ($b['deskripsi'] ?? '')) ?>
+            </p>
+
+            <a href="#funfact" class="btn-hero">
+                Pelajari Selengkapnya
+            </a>
+
         </div>
+
     </div>
+
+    <?php endforeach; ?>
+
+</div>
+
+<button class="hero-btn left" onclick="moveSlide(-1)">‹</button>
+<button class="hero-btn right" onclick="moveSlide(1)">›</button>
+
+<?php endif; ?>
+
 </section>
 
 <section class="container text-center mt-5" data-aos="fade-up">
     <h4 class="fw-bold mb-4" style="color: var(--primary-teal);">Fitur Menarik yang Bisa Dimanfaatkan</h4>
-    <div class="row g-4 justify-content-center">
-        <div class="col-lg-3 col-md-6">
-            <a href="#grafik" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">📊 Grafik Kesehatan</div>
-            </a>
+    <div class="fitur-slider-wrapper">
+            <a href="#grafik" class="fitur-box shadow-sm text-decoration-none">
+                📊 Grafik Kesehatan</a>
+            <a href="#map" class="fitur-box shadow-sm text-decoration-none">
+                🗺️ Peta Persebaran</a>
+            <a href="<?= base_url('skriningdbd') ?>" class="fitur-box shadow-sm text-decoration-none">
+               🩺 Skrining Kesehatan</a>
+            <a href="<?= base_url('berita/list_berita') ?>" class="fitur-box shadow-sm text-decoration-none">
+                📄 Berita Kesehatan</a>
+            <a href="<?= base_url('video/list_video') ?>" class="fitur-box shadow-sm text-decoration-none">
+            <i class="fas fa-video me-2"></i> Video</a>
         </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="#map" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">🗺️ Peta Persebaran</div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="<?= base_url('berita/list_berita') ?>" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">📄 Berita Kesehatan</div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="<?= base_url('skriningdbd') ?>" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">🩺 Skrining Kesehatan</div>
-            </a>
-        </div>
-    </div>
 </section>
 
-<section class="container mt-5">
-    <div class="slider-wrapper">
-    <button class="slider-btn left" onclick="slideScroll(-1)">‹</button>
+<section id="funfact" class="container mt-5">
 
-    <div id="sliderTrack" class="slider-track">
+<div class="slider-wrapper">
+
+    <button class="slider-btn left" onclick="slideFunfact(-1)">‹</button>
+
+    <div id="funfactTrack" class="slider-track">
 
         <?php if(!empty($funfact)) : ?>
 
@@ -330,18 +623,21 @@
                         : base_url('img/default.png') ?>">
 
                     <div>
+
                         <h5>
-                            <?= esc((string)$f['judul_funfact']) ?></h5>
+                            <?= esc((string) ($f['judul_funfact'] ?? '')) ?>
+                        </h5>
 
                         <p>
-    <?= substr(strip_tags((string)($f['deskripsi_funfact'] ?? '')), 0, 70) ?>...
-    </p>
+                            <?= substr(strip_tags((string)($f['deskripsi_funfact'] ?? '')), 0, 70) ?>...
+                        </p>
 
-                        <a href="<?= base_url('funfact/view/' . $f['id_funfact']) ?>"
+                        <a href="<?= base_url('berita/funfact_user/' . $f['id_funfact']) ?>"
                            class="text-decoration-none fw-bold"
                            style="color:#00BBC2; font-size:14px;">
                             Baca Selengkapnya →
                         </a>
+
                     </div>
 
                 </div>
@@ -349,12 +645,17 @@
             <?php endforeach; ?>
 
         <?php else : ?>
+
             <p>Belum ada funfact.</p>
+
         <?php endif; ?>
 
-      
-    <button class="slider-btn right" onclick="slideScroll(1)">›</button>
+    </div>
+
+    <button class="slider-btn right" onclick="slideFunfact(1)">›</button>
+
 </div>
+
 </section>
 
 <section class="container mt-5" data-aos="zoom-in">
@@ -527,9 +828,9 @@
     <div id="map" style="height:400px; border-radius:15px; z-index: 1;"></div>
     
     <div class="mt-3 d-flex gap-2 justify-content-center">
-        <span class="badge bg-warning">Rendah</span>
-        <span class="badge bg-danger">Sedang</span>
-        <span class="badge bg-dark">Tinggi</span>
+        <span class="badge bg-success">Rendah</span>
+        <span class="badge bg-warning">Sedang</span>
+        <span class="badge bg-danger">Tinggi</span>
     </div>
     
     <div id="detailModal" class="custom-modal">
@@ -561,6 +862,62 @@
         </div>
     </div>
 </section>
+
+<section id="video" class="container mt-5">
+
+<div class="video-slider-wrapper">
+
+    <button class="slider-btn left" onclick="slideVideo(-1)">‹</button>
+
+    <div id="videoTrack" class="slider-track">
+
+        <?php if(!empty($video)) : ?>
+
+            <?php foreach($video as $v) : ?>
+
+                <a href="<?= base_url('video/list_video/' . $v['id_video']) ?>" 
+                   class="video-card-item text-decoration-none">
+
+                    <div class="video-box">
+
+                        <video muted>
+                            <source src="<?= base_url('uploads/video/' . $v['file_video']) ?>" type="video/mp4">
+                        </video>
+
+                        <div class="play-icon">▶</div>
+
+                    </div>
+
+                    <div class="video-content">
+
+                        <h5>
+                            <?= esc((string) ($v['judul_video'] ?? '')) ?>
+                        </h5>
+
+                        <p>
+                            <?= substr(strip_tags((string)($v['deskripsi_video'] ?? '')), 0, 70) ?>...
+                        </p>
+
+                    </div>
+
+                </a>
+
+            <?php endforeach; ?>
+
+        <?php else : ?>
+
+            <p>Belum ada video.</p>
+
+        <?php endif; ?>
+
+    </div>
+
+    <button class="slider-btn right" onclick="slideVideo(1)">›</button>
+
+</div>
+
+</section>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -695,5 +1052,69 @@ function switchTab(type) {
     document.getElementById('slideIndicator').style.transform = isKasus ? 'translateX(0)' : 'translateX(100%)';
     document.getElementById('titleGrafik').innerText = isKasus ? 'Grafik Kasus DBD' : 'Grafik Angka Bebas Jentik (ABJ)';
 }
+
+let currentSlide = 0;
+const slider = document.getElementById("heroSlider");
+const slides = document.querySelectorAll(".hero-slide");
+
+function moveSlide(direction){
+
+    const total = slides.length;
+
+    currentSlide += direction;
+
+    if(currentSlide < 0){
+        currentSlide = total - 1;
+    }
+
+    if(currentSlide >= total){
+        currentSlide = 0;
+    }
+
+    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+
+/* AUTO SLIDE */
+setInterval(() => {
+    moveSlide(1);
+}, 5000);
+
+/* SWIPE MOBILE */
+let startX = 0;
+
+slider.addEventListener("touchstart", (e)=>{
+    startX = e.touches[0].clientX;
+});
+
+slider.addEventListener("touchend", (e)=>{
+    let endX = e.changedTouches[0].clientX;
+
+    if(startX > endX + 50){
+        moveSlide(1);
+    }else if(startX < endX - 50){
+        moveSlide(-1);
+    }
+});
+
+function slideFunfact(direction){
+
+document.getElementById('funfactTrack')
+.scrollBy({
+    left: direction * 350,
+    behavior:'smooth'
+});
+
+}
+
+function slideVideo(direction){
+
+document.getElementById('videoTrack')
+.scrollBy({
+    left: direction * 350,
+    behavior:'smooth'
+});
+
+}
+
 </script>
 <?= $this->include('layout/footer_a') ?>

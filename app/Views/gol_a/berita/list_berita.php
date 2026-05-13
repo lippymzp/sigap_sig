@@ -1,292 +1,358 @@
-<?php /** @var array $berita */ ?>
-<?= $this->include('layout/header') ?>
 <?php
-$status = $_GET ['status'] ?? '';
-$keyword = $keyword ?? '';
+/** @var array $semuaData */
+?>
+
+<?= $this->include('layout/header') ?>
+
+<?php
+$keyword  = $keyword ?? '';
+$kategori = $kategori ?? '';
 ?>
 
 <title>List Berita</title>
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 <style>
+/* ====== (CSS kamu tetap aku pertahankan, tidak aku ubah karena sudah bagus) ====== */
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Poppins', sans-serif;
+    font-family:'Poppins',sans-serif;
 }
 
 body{
-    background:#f5f7fa;
+    background:#f5f5f5;
 }
 
-/* WRAPPER */
-.berita-wrapper {
-    padding: 20px;
-    background: #f8f8f8;
-    min-height: 100vh;
-    max-width: 1100px;
-    margin: 0 auto;
+.berita-wrapper{
+    max-width:1280px;
+    margin:auto;
+    padding-bottom:60px;
 }
 
-/* TITLE */
-.page-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 20px;
+.hero-section{
+    background:linear-gradient(90deg,#19bcc2,#9fd8d3);
+    padding:38px 20px;
+    text-align:center;
+    color:#fff;
 }
 
-/* SEARCH */
-.search-box {
-    position: relative;
-    margin-bottom: 20px;
-}
-.search-box i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-    font-size: 14px;
-}
-.search-box input {
-    width: 100%;
-    padding: 12px 18px 12px 42px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    background: #fff;
+.hero-section h2{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:6px;
 }
 
-/* FILTER BUTTON */
-.filter-tabs {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
+.hero-section p{
+    font-size:14px;
+    opacity:.95;
+    margin-bottom:14px;
 }
 
-.tab-btn {
-    padding: 8px 24px;
-    border: none;
-    border-radius: 7px;
-    font-size: 13px;
-    cursor: pointer;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-
-    color: #333;
-    text-decoration: none;
-    transition: 0.2s;
-}
-
-.tab-btn.active {
-    background: #18c4c9;
-    color: #fff !important;
-    font-weight: 600;
-    transform: scale(1.05);
-}
-
-/* CARD */
-.card-berita {
-    background: #eef9fb;
-    padding: 14px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 10px;
-    border: 1px solid #d8eef2;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-    width: 100%;
-}
-.card-berita:hover{
-    transform:translateY(-3px);
-}
-.card-left {
+.breadcrumb{
     display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+}
+
+.top-filter{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:28px 20px;
+}
+
+.search-box{
+    position:relative;
+    width:700px;
+    display:flex;
+    align-items:center;
+    background:#fff;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(25,188,194,.25);
+    padding:0 12px;
+    transition:.3s;
+    border:1px solid #19bcc2;;
+}
+
+.search-box:focus-within{
+    border:1px solid #19bcc2;
+    box-shadow:0 6px 20px rgba(25,188,194,.25);
+}
+
+.search-box i{
+    color:#19bcc2;
+    font-size:15px;
+    margin-right:10px;
+}
+
+.search-box input{
     flex:1;
-    gap:18px;
-    padding:18px;
+    height:46px;
+    border:none;
+    outline:none;
+    font-size:14px;
+    background:transparent;
+    color:#333;
 }
 
-.card-left img {
-    width: 120px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    flex-shrink:0;
-}
-/* INFO */
-.card-info{
-    flex:1;
-}
-.card-info h4 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    color: #111;
+.search-box input::placeholder{
+    color:#aaa;
 }
 
-.card-info p {
-    font-size: 13px;
-    color: #777;
-    margin: 6px 0;
-    max-width: 100%;
-}
-
-.card-info small {
-    display:block;
-    margin-bottom:12px;
+/* tombol clear */
+.clear-btn{
+    background:transparent;
+    border:none;
+    cursor:pointer;
     color:#999;
-    font-size:12px;
+    font-size:14px;
+    padding:6px;
+    transition:.2s;
 }
 
-.upload-status {
-    display:inline-block;
-    background:#e8f9fa;
-    color:#00aab0;
-    padding:7px 14px;
-    border-radius:30px;
-    font-size:12px;
+.clear-btn:hover{
+    color:#ff4d4d;
+    transform:scale(1.1);
+}
+
+.filter-select{
+    width:220px;
+    height:42px;
+    border:1px solid #d8d8d8;
+    border-radius:8px;
+    padding:0 14px;
+    font-size:13px;
+    color:#666;
+    outline:none;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.berita-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:34px;
+    padding:0 20px;
+}
+
+.berita-link{
+    text-decoration:none;
+    color:inherit;
+}
+
+.berita-card{
+    background:#eef6f6;
+    border:1px solid #bccccc;
+    border-radius:10px;
+    padding:14px;
+    box-shadow:0 3px 8px rgba(0,0,0,.12);
+    transition:.25s;
+}
+
+.berita-card:hover{
+    transform:translateY(-4px);
+}
+
+.berita-image{
+    width:100%;
+    height:165px;
+    overflow:hidden;
+    border-radius:10px;
+    margin-bottom:12px;
+    background:#ddd;
+}
+
+.berita-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.berita-title{
+    font-size:14px;
+    font-weight:700;
+    color:#222;
+    line-height:1.5;
+    margin-bottom:6px;
+    min-height:42px;
+}
+
+.berita-date{
+    font-size:10px;
+    color:#999;
+    margin-bottom:12px;
+}
+
+.berita-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:120px;
+    height:28px;
+    border-radius:999px;
+    border:1px solid #19bcc2;
+    background:#dff7f6;
+    color:#19bcc2;
+    font-size:11px;
     font-weight:600;
 }
-/* EMPTY */
+
 .empty-data{
+    grid-column:1/-1;
+    background:#fff;
+    border-radius:12px;
+    padding:60px;
     text-align:center;
-    padding:50px 20px;
     color:#777;
-    font-size:15px;
 }
 
-/* RESPONSIVE */
+@media(max-width:992px){
+    .berita-grid{grid-template-columns:repeat(2,1fr);}
+}
+
 @media(max-width:768px){
-
-    .card-berita{
-        flex-direction:column;
-    }
-
-    .card-left{
-        flex-direction:column;
-    }
-    .card-left img{
-        width:100%;
-        height:220px;
-    }
-
-    .card-info h4{
-        font-size:20px;
-    }
+    .top-filter{flex-direction:column;align-items:stretch;}
+    .search-box{width:100%;}
+    .filter-select{width:100%;}
+    .berita-grid{grid-template-columns:1fr;}
 }
 </style>
 
 <div class="berita-wrapper">
 
-    <div class="page-title">Berita DBD</div>
+    <!-- HERO -->
+    <div class="hero-section">
+        <h2>Berita Kesehatan dan Funfact DBD</h2>
+        <p>Temukan berita kesehatan dan artikel terbaik</p>
 
-    <!-- SEARCH -->
-    <form method="get" action="<?= current_url(); ?>">
+        <div class="breadcrumb">
+            <span>Beranda</span>
+            <span>›</span>
+            <span>Berita</span>
+        </div>
+    </div>
 
-        <input type="hidden"
-               name="status"
-               value="<?= esc(is_string($status) ? $status : 'publish') ?>">
+    <!-- FILTER -->
+    <form method="GET">
 
-        <div class="search-box">
+        <div class="top-filter">
 
-            <i class="fa fa-search"></i>
+            <!-- SEARCH -->
+            <div class="search-box">
 
-            <input type="text"
-                   id="searchInput"
-                   name="keyword"
-                   class="search-input"
-                   placeholder="Cari berita disini"
-                   value="<?= esc($keyword ?? '') ?>">
+                <i class="fa fa-search"></i>
+
+                <input type="text"
+                    name="keyword"
+                    placeholder="Cari berita atau funfact..."
+                    value="<?= esc($keyword) ?>">
+
+                <?php if(!empty($keyword)) : ?>
+                    <button type="button" class="clear-btn" onclick="window.location.href='<?= current_url() ?>'">
+                        <i class="fa fa-times"></i>
+                    </button>
+                <?php endif; ?>
+
+            </div>
+
+            <!-- KATEGORI -->
+            <select name="kategori"
+                    class="filter-select"
+                    onchange="this.form.submit()">
+
+                <option value="">Semua Kategori</option>
+
+                <option value="Berita Kesehatan"
+                    <?= ($kategori == 'Berita Kesehatan') ? 'selected' : '' ?>>
+                    Berita Kesehatan
+                </option>
+
+                <option value="Funfact DBD"
+                    <?= ($kategori == 'Funfact DBD') ? 'selected' : '' ?>>
+                    Funfact DBD
+                </option>
+
+            </select>
 
         </div>
 
     </form>
 
+    <!-- GRID -->
+    <div class="berita-grid">
 
-    <!-- LIST BERITA -->
-    <?php if (!empty($berita)) : ?>
-        <?php foreach ($berita as $b): ?>
+        <?php if (!empty($semuaData)) : ?>
 
-        <a href="<?= base_url('berita/view_user/' . $b['id_berita']) ?>" 
-        style="text-decoration:none; color:inherit;">
+            <?php foreach ($semuaData as $item) : ?>
 
-        <div class="card-berita" 
-            data-search="<?= strtolower(($b['judul_berita'] ?? '') . ' ' . ($b['deskripsi_berita'] ?? '')) ?>">
+                <?php
+                $isBerita = $item['tipe'] == 'berita';
 
-            <!-- LEFT -->
-            <div class="card-left">
+                if ($isBerita) {
+                    $judul   = $item['judul_berita'] ?? '';
+                    $tanggal = $item['tanggal_berita'] ?? '';
+                    $gambar  = $item['gambar_berita'] ?? 'default.jpg';
+                    $kategoriItem = 'Berita Kesehatan';
+                    $link = base_url('berita/view_user/' . $item['id_berita']);
+                    $path = 'uploads/berita/';
+                } else {
+                    $judul   = $item['judul_funfact'] ?? '';
+                    $tanggal = $item['tanggal_funfact'] ?? '';
+                    $gambar  = $item['gambar_funfact'] ?? 'default.jpg';
+                    $kategoriItem = 'Funfact DBD';
+                    $link = base_url('berita/funfact_user/' . $item['id_funfact']);
+                    $path = 'uploads/funfact/';
+                }
+                ?>
 
-                <img src="/uploads/berita/<?= $b['gambar_berita'] ?? 'default.jpg'; ?>" alt="Berita">
+                <a href="<?= $link ?>" class="berita-link">
 
-                <div class="card-info">
+                    <div class="berita-card">
 
-                    <h4><?= $b['judul_berita'] ?? '' ?></h4>
+                        <div class="berita-image">
+                            <img src="<?= base_url($path . $gambar) ?>"
+                                 alt="<?= esc($judul) ?>">
+                        </div>
 
-                    <p>
-                        <?= substr(strip_tags($b['isi_berita'] ?? ''), 0, 120) ?>...
-                    </p>
+                        <div class="berita-title">
+                            <?= esc($judul) ?>
+                        </div>
 
-                    <p>
-                        <?= substr(strip_tags($b['deskripsi_berita'] ?? ''), 0, 120) ?>...
-                    </p>
+                        <div class="berita-date">
+                            <?= esc($tanggal ?: '-') ?>
+                        </div>
 
-                    <small><?= $b['tanggal_berita'] ?? '' ?></small>
+                        <div class="berita-badge">
+                            <?= esc($kategoriItem) ?>
+                        </div>
 
-                    <div class="upload-status">
-
-                    <?php 
-                    $statusBerita = strtolower(trim($b['status_berita'] ?? 'draft'));
-                    ?>
-
-                    <div class="upload-status">
-                        Status: <?= $statusBerita ?>
                     </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-</a>
 
-        <?php endforeach; ?>
-    <?php else : ?>
-        <p>Tidak ada data berita.</p>
-    <?php endif; ?>
+                </a>
+
+            <?php endforeach; ?>
+
+        <?php else : ?>
+
+            <div class="empty-data">
+                Tidak ada data tersedia.
+            </div>
+
+        <?php endif; ?>
+
+    </div>
 
 </div>
 
-
-<script>
-const input = document.getElementById("searchInput");
-
-input.addEventListener("input", function () {
-
-    let keyword = this.value.toLowerCase().trim();
-
-    document.querySelectorAll(".card-berita")
-    .forEach(function (item) {
-
-        let data = item.getAttribute("data-search");
-
-        if (data.includes(keyword)) {
-
-            item.style.display = "flex";
-
-        } else {
-
-            item.style.display = "none";
-        }
-
-    });
-
-});
-
-</script>
+<?= $this->include('layout/footer_a') ?>

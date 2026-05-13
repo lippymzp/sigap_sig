@@ -123,7 +123,7 @@ class BeritaDbd extends Controller
     public function tambah()
     {
         return view('gol_a/berita/tambah', [
-            'judul' => 'Kelola Berita'
+            'title' => 'Tambah Berita'
         ]);
     }
     
@@ -359,7 +359,7 @@ public function uploadEditorImage()
         ]);
     }
 
-    $path = FCPATH . 'uploads/berita';
+    $path = FCPATH . 'uploads/berita/';
 
     if (!is_dir($path)) {
         mkdir($path, 0777, true);

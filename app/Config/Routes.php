@@ -303,7 +303,7 @@ $routes->get('/berita/publish', 'BeritaDbd::publish');
 $routes->get('/berita/draft', 'BeritaDbd::draft');
 $routes->get('/berita/view_berita/(:num)', 'BeritaDbd::view/$1');
 $routes->get('berita/view_berita/(:any)', 'BeritaDbd::view/$1');
-$routes->get('berita/list_berita', 'BeritaDbd::list_berita');
+$routes->get('berita/list_berita', 'LandingpageDbd::list_berita');
 $routes->get('/berita/view_user/(:num)', 'BeritaDbd::viewUser/$1');
 $routes->post('berita/upload-editor-image', 'BeritaDbd::uploadEditorImage');
 
@@ -330,7 +330,7 @@ $routes->get('/video/draft', 'VideoDbd::draft');
 $routes->get('/video/tambah2', 'VideoDbd::tambah2');
 $routes->post('video/simpanDetail', 'VideoDbd::simpanDetail');
 
-$routes->get('/video/view/(:num)', 'VideoDbd::view/$1');
+$routes->get('/video/video_dbd/(:num)', 'VideoDbd::view/$1');
 
 $routes->get('/video/tambah1', 'VideoDbd::tambah');
 $routes->post('/video/simpan', 'VideoDbd::simpan');
@@ -339,6 +339,9 @@ $routes->get('/video/tambah2/(:num)', 'VideoDbd::edit/$1');
 $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 
 $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
+$routes->get('VideoDbd/view/(:num)', 'VideoDbd::view/$1');
+$routes->get('/video/list_video', 'LandingpageDbd::list_video');
+$routes->get('/video/video_dbd/(:num)', 'LandingpageDbd::list_video/$1');
 
 // ================= Manajemen Banner DBD =================
 $routes->get('/bannerDbd', 'ManajemenBanner::index');
@@ -348,7 +351,7 @@ $routes->post('/bannerDbd/simpan', 'ManajemenBanner::simpan');
 $routes->get('bannerDbd/edit/(:num)','ManajemenBanner::edit/$1');
 $routes->post('bannerDbd/update/(:num)','ManajemenBanner::update/$1');
 $routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
-
+$routes->get('bannerDbd/preview/(:num)', 'ManajemenBanner::preview/$1');
 
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen-user', 'ManajemenUser::index');
@@ -375,6 +378,7 @@ $routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'dbd::view/$1');;
 $routes->get('/tentang-kami', 'Home::tentangKami');
+$routes->get('berita/funfact_user/(:num)', 'dbd::Funfactview/$1');
 
 // PROFIL SISTEM
 $routes->get('profil_sistem', 'ProfilSistem::index');

@@ -38,7 +38,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => $publish,
             'draft'     => $draft,
-            'judul'     => 'Kelola Video'
+            'title'     => 'Video'
 
         ]);
     }
@@ -61,7 +61,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => count($video),
             'draft'     => 0,
-            'judul'     => 'Kelola Video'
+            'title'     => 'Rekap Skrining'
 
         ]);
     }
@@ -84,7 +84,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => 0,
             'draft'     => count($video),
-            'judul'     => 'Kelola Video'
+            'title'     => 'Rekap Skrining'
 
         ]);
     }
@@ -93,26 +93,41 @@ class VideoDbd extends Controller
     // =========================
     // DETAIL VIDEO
     // =========================
-    public function view(int $id)
-    {
-        $model = new VideoDbdModel();
+    public function view($id = null)
+{
+    // kalau id kosong
+    if ($id == null) {
 
-        $video = $model->find($id);
-
-        if (!$video) {
-
-            throw new \CodeIgniter\Exceptions\PageNotFoundException(
-                'Video tidak ditemukan'
-            );
-        }
-
-        return view('gol_a/video/detail', [
-
-            'video' => $video,
-            'judul' => 'Kelola Video'
-
-        ]);
+        return redirect()->to('/video/list_video');
     }
+
+    $model = new VideoDbdModel();
+
+    // ambil data video berdasarkan id
+    $video = $model->find($id);
+
+    // kalau video tidak ditemukan
+    if (!$video) {
+
+        throw new \CodeIgniter\Exceptions\PageNotFoundException(
+            'Video tidak ditemukan'
+        );
+    }
+
+    // rekomendasi video lain
+    $rekomendasi = $model
+        ->where('id_video !=', $id)
+        ->findAll(10);
+
+    // tampilkan view
+    return view('gol_a/video/video_dbd', [
+
+        'video' => $video,
+        'rekomendasi' => $rekomendasi,
+        'title' => 'Video'
+
+    ]);
+}
 
 
     // =========================
@@ -122,7 +137,7 @@ class VideoDbd extends Controller
     {
         return view('gol_a/video/tambah1', [
 
-            'judul' => 'Kelola Video'
+            'title' => 'Rekap Skrining'
 
         ]);
     }
@@ -187,7 +202,7 @@ class VideoDbd extends Controller
             'video'   => $video,
             'file'    => $video['file_video'],
             'is_edit' => true,
-            'judul'   => 'Edit Video'
+            'title'   => 'Edit Video'
 
         ]);
     }
@@ -259,5 +274,4 @@ class VideoDbd extends Controller
         return redirect()->to('/video')
             ->with('success', 'Video berhasil dihapus');
     }
-
 }

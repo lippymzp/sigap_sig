@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\BeritaDbdModel;
+use App\Models\FunfactModel;
+use App\Models\VideoDbdModel;
+use App\Models\BannerDbdModel;
 
 class LandingpageDbd extends BaseController
 {
@@ -32,12 +36,27 @@ class LandingpageDbd extends BaseController
         // 3. Ambil Data ABJ
         $dataABJ = $this->getABJData($db, $bulan_abj, $tahun_abj, $wilayah_abj);
         // 4. Ambil Funfact
-$funfactModel = new \App\Models\FunfactModel();
+        $funfactModel = new \App\Models\FunfactModel();
 
-$funfact = $funfactModel
-    ->where('status_funfact', 'upload')
-    ->orderBy('tanggal_funfact', 'DESC')
-    ->findAll(10);
+        $funfact = $funfactModel
+            ->where('status_funfact', 'upload')
+            ->orderBy('tanggal_funfact', 'DESC')
+            ->findAll(10);
+
+        // ================= VIDEO =================
+        $videoModel = new \App\Models\VideoDbdModel();
+
+        $video = $videoModel
+            ->where('status_video', 'publish')
+            ->orderBy('tanggal_video', 'DESC')
+            ->findAll(10);
+
+        $bannerModel = new BannerDbdModel();
+
+        $banner = $bannerModel
+            ->where('status_banner', 'publish')
+            ->orderBy('urutan', 'ASC')
+            ->findAll();
 
        return view('gol_a/dbd', [
     'grafik'        => $grafik,
@@ -48,7 +67,9 @@ $funfact = $funfactModel
     'tab_aktif'     => $this->request->getGet('tab') ?? 'kasus',
 
     // FUNFACT
-    'funfact'       => $funfact
+    'funfact'       => $funfact,
+    'video'         => $video,
+    'banner'        => $banner
 ]);
     }
 
@@ -206,4 +227,116 @@ $funfact = $funfactModel
         }
         return $final;
     }
+
+    public function list_berita()
+    {
+        $beritaModel  = new BeritaDbdModel();
+        $funfactModel = new FunfactModel();
+
+        $keyword  = $this->request->getGet('keyword');
+        $kategori = $this->request->getGet('kategori');
+
+        $semuaData = [];
+
+        // =========================
+        // AMBIL BERITA
+        // =========================
+        if ($kategori == '' || $kategori == 'Berita Kesehatan') {
+
+            $builder = $beritaModel;
+
+            if (!empty($keyword)) {
+                $builder = $builder->like('judul_berita', $keyword)
+                                   ->orLike('deskripsi_berita', $keyword);
+            }
+
+            $dataBerita = $builder->findAll();
+
+            foreach ($dataBerita as $b) {
+                $b['tipe'] = 'berita';
+                $semuaData[] = $b;
+            }
+        }
+
+        // =========================
+        // AMBIL FUNFACT
+        // =========================
+        if ($kategori == '' || $kategori == 'Funfact DBD') {
+
+            $builder = $funfactModel;
+
+            if (!empty($keyword)) {
+                $builder = $builder->like('judul_funfact', $keyword)
+                                   ->orLike('deskripsi_funfact', $keyword);
+            }
+
+            $dataFunfact = $builder->findAll();
+
+            foreach ($dataFunfact as $f) {
+                $f['tipe'] = 'funfact';
+                $semuaData[] = $f;
+            }
+        }
+
+        // =========================
+        // KIRIM KE VIEW
+        // =========================
+        return view('gol_a/berita/list_berita', [
+            'semuaData' => $semuaData,
+            'keyword'   => $keyword,
+            'kategori'  => $kategori
+        ]);
+    }
+    public function list_video()
+{
+    $videoModel = new VideoDbdModel();
+
+    $status = $this->request->getGet('status');
+
+    $video = $videoModel->findAll();
+
+    // =========================
+    // SESSION WATCHED VIDEO
+    // =========================
+    $watched = session()->get('watched_video');
+
+    if (!is_array($watched)) {
+        $watched = [];
+    }
+
+    // =========================
+    // FILTER: SUDAH DITONTON
+    // =========================
+    if ($status === 'sudah') {
+
+        $video = array_values(array_filter($video, function ($v) use ($watched) {
+            return in_array($v['id_video'], $watched);
+        }));
+    }
+
+    // =========================
+    // FILTER: BELUM DITONTON
+    // =========================
+    elseif ($status === 'belum') {
+
+        $video = array_values(array_filter($video, function ($v) use ($watched) {
+            return !in_array($v['id_video'], $watched);
+        }));
+    }
+
+    // =========================
+    // FILTER: BARU (SORT)
+    // =========================
+    elseif ($status === 'baru') {
+
+        usort($video, function ($a, $b) {
+            return $b['id_video'] <=> $a['id_video'];
+        });
+    }
+
+    return view('gol_a/video/list_video', [
+        'video'  => $video,
+        'status' => $status
+    ]);
+}
 }

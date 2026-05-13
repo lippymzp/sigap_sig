@@ -440,13 +440,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
                                 <!-- VIEW -->
                                 <a
-                                    href="<?= base_url('uploads/banner/' . (string)($b['gambar'] ?? '')); ?>"
+                                    href="<?= base_url('bannerDbd/preview/' . $b['id_manajemen_banner']); ?>"
                                     target="_blank"
                                     class="icon-btn view-btn"
                                 >
                                     <i class="fas fa-eye"></i>
                                 </a>
-
                                 <!-- EDIT -->
                                 <a
                                     href="<?= base_url('bannerDbd/edit/' . $b['id_manajemen_banner']); ?>"

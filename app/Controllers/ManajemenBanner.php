@@ -277,4 +277,18 @@ class ManajemenBanner extends BaseController
                 'Banner berhasil diupdate'
             );
     }
+    public function preview(int $id)
+{
+    $bannerModel = new BannerDbdModel();
+    $banner = $bannerModel->find($id);
+
+
+    if (!$banner) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
+
+    return view('gol_a/bannerDbd/preview', [
+        'banner' => $banner
+    ]);
+}
 }
