@@ -381,22 +381,22 @@ textarea:invalid{
 /* ACTION BUTTON AREA */
 
 .custom-action{
-    margin-top:40px;
-    padding-top:25px;
+    margin-top:34px;
+    padding-top:22px;
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:16px;
-    flex-wrap:nowrap;
-    width:100%;
+    flex-wrap:wrap;
 }
+
+/* WRAPPER BUTTON */
 
 .button-wrapper{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:10px;
     margin-left:auto;
-    flex-wrap:nowrap;
 }
 
 /* BUTTON DASAR */
@@ -593,6 +593,16 @@ textarea:invalid{
         gap:10px;
     }
 
+    .cancel-btn,
+    .draft-btn,
+    .upload-btn{
+        width:auto;
+        min-width:auto;
+        padding:0 22px;
+        height:44px !important;
+        font-size:14px !important;
+    }
+
     .editor-toolbar{
         gap:4px;
         padding:8px 10px;
@@ -627,45 +637,6 @@ textarea:invalid{
         font-size:15px;
     }
 }
-
-/* ================= FIX FOOTER FINAL ================= */
-
-html,
-body {
-    overflow-x: hidden;
-}
-
-.content-wrapper {
-    width: 100%;
-    overflow: hidden;
-}
-
-
-.row {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* hanya atur upload-side, jangan paksa col-lg-4 */
-.col-lg-4{
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-.upload-side {
-    width: 100%;
-    max-width: 320px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    height: 100%;
-    margin: 0 auto;
-    position: relative;
-}
-
 
 </style>
 
@@ -703,7 +674,7 @@ body {
 
 <input type="hidden" name="id_funfact" value="<?= $f['id_funfact'] ?? '' ?>">
 
-            <div class="row mt-5 align-items-start">
+            <div class="row mt-5 align-items-center">
 
                 <div class="col-lg-8 pe-lg-5">
 
@@ -998,63 +969,68 @@ body {
 
                 </div>
 
- <!-- RIGHT -->
-<div class="col-lg-4">
+                <!-- RIGHT -->
 
-    <div class="upload-side">
+                <div class="col-lg-4 d-flex align-items-center justify-content-center">
 
-        <div class="upload-box">
+                    <div class="upload-side w-100">
 
-            <div class="upload-title">
-                UNGGAH GAMBAR
+                       <!-- GAMBAR -->
+
+<div class="upload-box">
+
+    <div class="upload-title">
+        UNGGAH GAMBAR
+    </div>
+
+    <div class="upload-area" id="gambarArea">
+
+        <input type="file"
+               id="gambarInput"
+               name="gambar_funfact"
+               accept=".png,.jpg,.jpeg,.webp"
+               hidden>
+
+        <img id="previewImage"
+             class="preview-image"
+             src="<?= !empty($f['gambar_funfact']) ? base_url('uploads/funfact/'.$f['gambar_funfact']) : '' ?>"
+             style="<?= !empty($f['gambar_funfact']) ? 'display:block;' : 'display:none;' ?>">
+
+        <div id="uploadContent"
+             style="<?= !empty($f['gambar_funfact']) ? 'display:none;' : '' ?>">
+
+            <div class="upload-icon">
+                <i class="fa fa-upload"></i>
             </div>
 
-            <div class="upload-area" id="gambarArea">
-
-                <input
-                    type="file"
-                    id="gambarInput"
-                    name="gambar_funfact"
-                    accept=".png,.jpg,.jpeg,.webp"
-                    hidden
-                >
-
-                <img
-                    id="previewImage"
-                    class="preview-image"
-                    src="<?= !empty($f['gambar_funfact']) ? base_url('uploads/funfact/'.$f['gambar_funfact']) : '' ?>"
-                    style="<?= !empty($f['gambar_funfact']) ? 'display:block;' : 'display:none;' ?>"
-                >
-
-                <div
-                    id="uploadContent"
-                    style="<?= !empty($f['gambar_funfact']) ? 'display:none;' : '' ?>"
-                >
-
-                    <div class="upload-icon">
-                        <i class="fa fa-upload"></i>
-                    </div>
-
-                    <div class="upload-click">
-                        KLIK UNTUK UNGGAH
-                    </div>
-
-                    <div class="upload-note">
-                        PNG, JPG, atau WEBP (maks 5mb)
-                    </div>
-
-                </div>
-
+            <div class="upload-click">
+                KLIK UNTUK UNGGAH
             </div>
 
-            <div class="error-upload" id="gambarError">
-                <i class="fa fa-circle-exclamation me-1"></i>
-                Gambar wajib diunggah
+            <div class="upload-note">
+                PNG,JPG, atau WEBP (maks 5mb)
             </div>
 
         </div>
 
     </div>
+
+    <div class="error-upload" id="gambarError">
+        <i class="fa fa-circle-exclamation me-1"></i>
+        Gambar wajib diunggah
+    </div>
+
+</div> 
+
+</div> 
+
+</div> 
+
+</div>
+
+</form>
+
+</div>
 
 </div>
 
@@ -1259,6 +1235,7 @@ sessionStorage.setItem('showSuccessUploadModal', 'true');
 const form = document.getElementById('funfactForm');
 
 const STORAGE_KEY = 'funfact_autosave';
+const storage = sessionStorage;
 
 /* =========================
 SYNC EDITOR
@@ -1299,7 +1276,7 @@ function saveFormToLocal()
         document.getElementById('tanggal_funfact').value
     };
 
-    localStorage.setItem(
+    storage.setItem(
         STORAGE_KEY,
         JSON.stringify(data)
     );
@@ -1332,7 +1309,7 @@ window.addEventListener('load', function(){
     // JIKA MODE EDIT -> jangan load localStorage
     <?php if(!isset($f)) : ?>
 
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = storage.getItem(STORAGE_KEY);
 
     if(saved){
 
@@ -1369,7 +1346,7 @@ CLEAR AUTO SAVE
 
 function clearLocalStorage()
 {
-    localStorage.removeItem(STORAGE_KEY);
+    storage.removeItem(STORAGE_KEY);
 }
 
 /* =========================
@@ -2191,6 +2168,15 @@ if(closeCancelModal){
 
     });
 }
+
+window.addEventListener('beforeunload', function () {
+
+    // jika reload / refresh
+    if (performance.navigation.type === 1) {
+        sessionStorage.removeItem(STORAGE_KEY);
+    }
+
+});
 
 window.addEventListener('load', function(){
 
