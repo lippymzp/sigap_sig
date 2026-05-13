@@ -396,11 +396,7 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 <!-- FOOTER -->
 <div class="modal-footer">
 
-<button type="button"
-        class="btn btn-secondary"
-        data-bs-dismiss="modal">
-    Tutup
-</button>
+
 
 </div>
 </div>
@@ -467,7 +463,7 @@ function applyFilter(){
         let show = true;
 
         // ===== RISIKO (BAIK / CUKUP / BURUK) =====
-        let risikoList = ['baik','cukup','buruk'];
+        let risikoList = ['Berisiko','Tidak Berisiko'];
         let filterRisiko = activeFilters.filter(f => risikoList.includes(f));
 
         if(filterRisiko.length > 0){

@@ -45,7 +45,7 @@
             <i class="fa-solid fa-folder me-2"></i> Hasil Data Pasien
         </a>
 
-        <a href="<?= base_url( $penyakit . '/rekapskrining') ?>"
+        <a href="<?= base_url( $penyakit . '/rekapskrining/admin') ?>"
             class="<?= ($menu == 'rekapskrining') ? 'active' : '' ?>">
             <i class="fa-solid fa-file-lines me-2"></i> Rekap Skrining
         </a>
