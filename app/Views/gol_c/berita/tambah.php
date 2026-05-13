@@ -172,16 +172,18 @@ $newId = session()->getFlashdata('new_id');
 }
 
 /* TEXT */
-.modal-title {
-    font-size: 18px;
+   .modal-title {
+    font-size: 24px;
     font-weight: 700;
-    margin-bottom: 5px;
+    color: #111;
+    margin-bottom: 10px;
+    line-height: 1.2;
 }
 
 .modal-desc {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 18px;
+    font-size: 16px;
+    color: #7a7a7a;
+    margin-bottom: 28px;
 }
 
 /* BUTTON */
@@ -254,50 +256,59 @@ $newId = session()->getFlashdata('new_id');
     display:none;
 }
 .modal-box {
-    width: 360px;
-    background: white;
-    border-radius: 18px;
-    padding: 28px 22px;
+    width: 420px;
+    background: #fff;
+    border-radius: 22px;
+    padding: 40px 32px;
     text-align: center;
     transform: scale(0.9);
-    transition: 0.3s ease;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    transition: 0.25s ease;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.12);
 }
 
 .popup-success.show .modal-box {
     transform: scale(1);
 }
-.modal-btn,
-.modal-link{
-    display:block;
+.modal-btn{
     width:100%;
-    padding:10px;
+    height:56px;
     border:none;
-    border-radius:10px;
-    background:#00BBC2;
+    border-radius:14px;
+    background:#16C2CC;
     color:white;
-    text-decoration:none;
-    text-align:center;
+    font-size:18px;
+    font-weight:500;
     cursor:pointer;
-    margin-top:10px;
+    margin-bottom:14px;
+    transition:0.2s ease;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
 }
-
 .modal-link{
-    background:#eee;
-    color:#333;
-}
-
-.modal-icon{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    margin:0 auto 15px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:28px;
+    width:100%;
+    height:56px;
+    border-radius:14px;
+    background:#fff;
+    color:#666;
+    font-size:18px;
+    font-weight:500;
+    text-decoration:none;
+    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+}
+
+.modal-icon{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    margin:0 auto 22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
     color:white;
-    background:#00c896;
+    background:#59C785;
 }
 </style>
 
@@ -326,11 +337,11 @@ $newId = session()->getFlashdata('new_id');
         </small>
 
         <form id="formBerita"
-        action="<?= !empty($berita['id_berita'] ?? null) 
-            ? base_url('/berita/update/'.($berita['id_berita'] ?? '')) 
-            : base_url('/berita/simpan') ?>"
-            method="post"
-            enctype="multipart/form-data">
+action="<?= !empty($berita['id_berita'] ?? null) 
+    ? base_url('/beritapneumonia/admin/update/' . ($berita['id_berita'] ?? '')) 
+    : base_url('/beritapneumonia/admin/simpan') ?>"
+method="post"
+enctype="multipart/form-data">
         
         <!-- ===================== -->
         <!-- MODE TULIS BERITA -->
@@ -510,11 +521,10 @@ $newId = session()->getFlashdata('new_id');
                 <!-- BUTTON -->
 <div class="d-flex justify-content-between mt-4">
 
-<button type="button"
-        class="btn-back"
-        onclick="window.location.href='<?= base_url('berita') ?>'">
+<a href="<?= base_url('beritapneumonia/admin') ?>"
+   class="btn-back">
     Batal
-</button>
+</a>
 
 <div class="d-flex gap-2">
 
@@ -587,11 +597,10 @@ $newId = session()->getFlashdata('new_id');
 <!-- BUTTON -->
 <div class="d-flex justify-content-between mt-4">
 
-    <button type="button"
-            class="btn-back"
-            onclick="window.location.href='<?= base_url('berita') ?>'">
-        Batal
-    </button>
+   <a href="<?= base_url('beritapneumonia/admin') ?>"
+   class="btn-back">
+    Batal
+</a>
 
     <div class="d-flex gap-2">
 
@@ -628,16 +637,12 @@ $newId = session()->getFlashdata('new_id');
         </div>
 
         <div class="modal-title" id="successTitle">
-            <?= $isEditUpload
-                ? 'Update berita Berhasil'
-                : 'Unggah berita Berhasil' ?>
-        </div>
+                Unggah Berita Berhasil
+                </div>
 
         <div class="modal-desc" id="successDesc">
-            <?= $isEditUpload
-                ? 'berita berhasil diperbarui'
-                : 'berita berhasil diunggah' ?>
-        </div>
+                Berita Berhasil Diunggah
+                </div>
 
 <button class="modal-btn lihat-btn"
         data-id="<?= session()->getFlashdata('new_id') ?>">
@@ -807,7 +812,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("ID berita tidak tersedia");
                 return;
             }
-            window.location.href = "<?= base_url('berita/view_berita/') ?>" + id;
+            window.location.href = "<?= base_url('beritapneumonia/admin/view/') ?>" + id;
         });
     });
 
@@ -816,12 +821,12 @@ document.addEventListener("DOMContentLoaded", function () {
     
     document.getElementById("selesaiBtn")?.addEventListener("click", function (e) {
         e.preventDefault();
-        window.location.href = "<?= base_url('berita') ?>";
+        window.location.href = "<?= base_url('beritapneumonia/admin') ?>";
     });
 
     document.getElementById("draftOkBtn")?.addEventListener("click", function () {
         // Karena data sudah tersimpan (refresh), arahkan saja ke list
-        window.location.href = "<?= base_url('berita') ?>";
+        window.location.href = "<?= base_url('beritapneumonia/admin') ?>";
     });
 
     // 4. Inisialisasi Mode Tab (Kutip atau Tulis)
@@ -960,7 +965,7 @@ if (uploadInput) {
         const formData = new FormData();
         formData.append("image", file);
 
-        fetch("<?= base_url('berita/upload-editor-image') ?>", {
+        fetch("<?= base_url('beritapneumonia/admin/upload-editor-image') ?>", {
             method: "POST",
             body: formData
         })
