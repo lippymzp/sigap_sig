@@ -235,7 +235,27 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 }
 
 </style>
+<?php if(session()->getFlashdata('success')): ?>
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil!',
+    text: '<?= session()->getFlashdata('success') ?>',
+    confirmButtonText: 'OK'
+});
+</script>
+<?php endif; ?>
 
+<?php if(session()->getFlashdata('error')): ?>
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Gagal!',
+    text: '<?= session()->getFlashdata('error') ?>',
+    confirmButtonText: 'OK'
+});
+</script>
+<?php endif; ?>
 <div class="main">
 
     <div class="page-title">
@@ -447,9 +467,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <!-- EDIT -->
-                                <a
+                               <a
                                     href="<?= base_url('bannerDbd/edit/' . $b['id_manajemen_banner']); ?>"
                                     class="icon-btn edit-btn"
+                                    onclick="confirmEdit(event, '<?= base_url('bannerDbd/edit/' . $b['id_manajemen_banner']); ?>')"
                                 >
                                     <i class="fas fa-pen"></i>
                                 </a>
@@ -457,7 +478,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
                                 <!-- DELETE -->
                                 <a
                                     href="<?= base_url('bannerDbd/delete/' . $b['id_manajemen_banner']); ?>"
-                                    onclick="return confirm('Hapus banner ini?')"
+                                    onclick="confirmDelete(event, '<?= base_url('bannerDbd/delete/' . $b['id_manajemen_banner']); ?>')"
                                     class="icon-btn delete-btn"
                                 >
                                     <i class="fas fa-trash"></i>
@@ -578,7 +599,42 @@ filterButtons.forEach(function(btn){
     });
 
 });
+function confirmDelete(event, url) {
+    event.preventDefault();
 
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+function confirmEdit(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Edit banner ini?',
+        text: "Anda akan masuk ke halaman edit banner",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#11bccd',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Edit!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?= $this->endSection(); ?>
