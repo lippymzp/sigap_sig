@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\BeritaDbdModel;
+use App\Models\PetugasModel;
 use CodeIgniter\Controller;
 
 class BeritaDbd extends Controller
@@ -148,6 +149,14 @@ class BeritaDbd extends Controller
     public function simpan()
 {
     $model = new BeritaDbdModel();
+    $petugasModel = new PetugasModel();
+
+    // =====================
+    // AMBIL ID PETUGAS DARI SESSION
+    // =====================
+    $id_petugas = session()->get('id_petugas');
+    $petugas = $petugasModel->find($id_petugas);
+    $id_penyakit = $petugas['id_penyakit'] ?? null;
 
     $file = $this->request->getFile('gambar_berita');
     $namaFile = null;
@@ -179,6 +188,8 @@ class BeritaDbd extends Controller
     // DATA INSERT
     // =====================
     $data = [
+        'id_petugas'       => $id_petugas,
+        'id_penyakit'      => $id_penyakit,
         'penulis'          => $this->request->getPost('penulis'),
         'judul_berita'     => $judul,
         'isi_berita'       => $this->request->getPost('isi_berita'),
@@ -285,6 +296,26 @@ public function edit(int $id)
 public function update(int $id)
 {
     $model = new BeritaDbdModel();
+    $petugasModel = new PetugasModel();
+
+    // =====================
+    // AMBIL ID PETUGAS DARI SESSION
+    // =====================
+    $id_petugas = session()->get('id_petugas');
+
+    // =====================
+    // AMBIL DATA PETUGAS
+    // =====================
+    $petugas = $petugasModel->find($id_petugas);
+
+    // =====================
+    // AMBIL ID PENYAKIT
+    // =====================
+    $id_penyakit = $petugas['id_penyakit'] ?? null;
+
+    // =====================
+    // CEK DATA BERITA LAMA
+    // =====================
     $dataLama = $model->find($id);
 
     if (!$dataLama) {
@@ -324,6 +355,8 @@ public function update(int $id)
     }
 
     $model->update($id, [
+        'id_petugas'       => $id_petugas,
+        'id_penyakit'      => $id_penyakit,
         'judul_berita'     => $judul,
         'isi_berita'        => $this->request->getPost('isi_berita'),
         'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),

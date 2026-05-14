@@ -11,6 +11,7 @@ class BeritaDbdModel extends Model
 
     protected $allowedFields = [
         'id_petugas',
+        'id_penyakit',
         'judul_berita',
         'isi_berita',
         'deskripsi_berita',

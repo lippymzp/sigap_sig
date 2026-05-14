@@ -11,6 +11,8 @@ class VideoDbdModel extends Model
 
     protected $allowedFields = [
         'judul_video',
+        'id_petugas',
+        'id_penyakit',
         'deskripsi_video',
         'file_video',
         'tanggal_video',

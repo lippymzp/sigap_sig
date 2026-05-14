@@ -3,7 +3,14 @@
 
 <style>
 /* ================= HERO SLIDER ================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
 .dbd-hero{
     position:relative;
     width:100%;
@@ -136,6 +143,31 @@
         height:42px;
         font-size:24px;
     }
+    .slider-item{
+        min-width:100%;
+        flex-direction:column;
+        text-align:center;
+        padding:24px;
+    }
+
+    .slider-item img{
+        width:100%;
+        height:220px;
+    }
+
+    .funfact-content h5{
+        font-size:22px;
+    }
+
+    .funfact-content p{
+        font-size:15px;
+    }
+
+    .slider-btn{
+        width:48px;
+        height:48px;
+        font-size:28px;
+    }
 }
 
 /* --- STYLE MAP LABEL --- */
@@ -153,6 +185,7 @@
     display: none;
     position: fixed;
     z-index: 99999;
+    inset:0;
     left: 0;
     top: 0;
     width: 100%;
@@ -160,28 +193,43 @@
     background: rgba(0,0,0,0.45);
     justify-content: center;
     align-items: center;
+    padding:20px;
+    overflow-y:auto;
 }
 
 .custom-modal-content {
     background: #fff;
     width: 85%;
     max-width: 760px;
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 30px 35px;
     position: relative;
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     max-height: 90vh;
     overflow-y: auto;
+    margin:auto;
+    animation:modalFade .25s ease;
+}
+@keyframes modalFade{
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.96);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
 }
 
 .close-modal {
     position: absolute;
     right: 25px;
-    top: 12px;
+    top:14px;
     font-size: 30px;
     cursor: pointer;
     font-weight: bold;
     color: #444;
+    transition:.2s;
 }
 
 .close-modal:hover { color: #000; }
@@ -346,15 +394,53 @@
     width: 100% !important;
     height: 100% !important;
 }
+.slider-wrapper{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
 .slider-track {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 10px 0;
+    display:flex;
+    gap:24px;
+    overflow:hidden;
+    scroll-behavior:smooth;
+    width:100%;
+    padding:10px 5px;
 }
 .slider-track::-webkit-scrollbar{
     display:none;
+}
+.slider-item{
+    min-width:420px;
+    min-height:220px;
+
+    background:#fff;
+    border-radius:24px;
+
+    padding:22px;
+
+    display:flex;
+    gap:22px;
+    align-items:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+    transition:0.3s ease;
+    border:1px solid rgba(0,187,194,0.12);
+}
+.slider-item:hover{
+    transform:translateY(-5px);
+    box-shadow:0 16px 35px rgba(0,187,194,0.16);
+}
+
+/* IMAGE */
+.slider-item img{
+    width:150px;
+    height:150px;
+    object-fit:cover;
+    border-radius:18px;
+    flex-shrink:0;
 }
 .video-slider-wrapper{
     position:relative;
@@ -476,14 +562,104 @@
     min-width:280px;
     max-width:280px;
 }
+.fitur-box{
+        width:100%;
+        min-height:120px;
+        font-size:16px;
+    }
+
+    .fitur-box i{
+        font-size:36px;
+    }
+}
+/* CONTENT */
+.funfact-content{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+/* TITLE */
+.funfact-content h5{
+    font-size:24px;
+    font-weight:700;
+    color:#222;
+    margin-bottom:12px;
+    line-height:1.4;
+}
+
+/* DESC */
+.funfact-content p{
+    font-size:16px;
+    line-height:1.8;
+    color:#666;
+    margin-bottom:16px;
+}
+
+/* LINK */
+.funfact-link{
+    color:#00BBC2;
+    font-size:16px;
+    font-weight:700;
+    text-decoration:none;
+    transition:0.25s ease;
+}
+
+.funfact-link:hover{
+    color:#009ca3;
+    letter-spacing:0.5px;
+}
+
+/* BUTTON */
+.slider-btn{
+    width:58px;
+    height:58px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#00BBC2;
+    color:white;
+
+    font-size:34px;
+    font-weight:bold;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    box-shadow:0 8px 20px rgba(0,187,194,0.25);
+
+    transition:0.25s ease;
+}
+
+.slider-btn:hover{
+    transform:scale(1.08);
+    background:#009ca3;
+}
 
 .video-box{
     height:170px;
 }
 .fitur-slider-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:stretch;
+    flex-wrap:nowrap;
+    gap:18px;
+    margin-top:20px;
     overflow-x:auto;
-    padding:10px 0;
-    gap:25px;
+    padding-bottom:10px;
+}
+.fitur-slider-wrapper::-webkit-scrollbar{
+    height:6px;
+}
+
+.fitur-slider-wrapper::-webkit-scrollbar-thumb{
+    background:#00BBC2;
+    border-radius:10px;
 }
 
 .fitur-slider{
@@ -494,24 +670,40 @@
 }
 
 .fitur-box{
+    flex:1;
+    min-width:190px;
+    max-width:220px;
+    min-height:160px;
+    padding:26px 18px;
+    background:#fff;
+    border-radius:24px;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    min-width:220px;
-    padding:18px;
-    background:#fff;
-    border-radius:16px;
-    text-decoration:none;
-    color:#222;
-    font-weight:600;
-    white-space:nowrap;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    gap:16px;
+    text-align:center;
+    color:#00aeb5;
+    font-size:16px;
+    font-weight:700;
+    border:1px solid rgba(0,187,194,.15);
+    transition:.3s ease;
 }
-
+.fitur-box i{
+    font-size:42px;
+    transition:.3s ease;
+}
+.fitur-box span{
+    line-height:1.5;
+}
 .fitur-box:hover{
-    transform:translateY(-3px);
+    transform:translateY(-6px);
     background:#00BBC2;
     color:#fff;
+    box-shadow:0 15px 35px rgba(0,187,194,.25);
+}
+.fitur-box:hover i{
+    transform:scale(1.1);
 }
 .hero-slider {
     height: 100%;
@@ -534,14 +726,186 @@
 .overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.45);
 }
 
 .hero-content {
     position: relative;
     z-index: 2;
 }
+/* IMPORT FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
+/* CTA BOX */
+.cta-box{
+    background: #bfeff2;
+    border-radius:24px;
+    padding:38px 28px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    font-family:'Poppins',sans-serif;
+    border: 2px solid #00BBC2;
+    box-shadow: 0 8px 25px rgba(0,187,194,0.08);
+    transition: all 0.35s ease;
+}
+/* HOVER CARD */
+.cta-box:hover{
+    transform: translateY(-4px);
+    background: #bfeff2;
+    box-shadow: 0 14px 35px rgba(0,187,194,0.16);
+    border-color: #00aeb5;
+}
+/* ICON */
+.cta-icon{
+    width:72px;
+    height:72px;
+    margin:auto auto 18px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.cta-icon i{
+    font-size:30px;
+    color:#00BBC2;
+}
+
+/* TITLE */
+.cta-title{
+    font-size:24px;
+    font-weight:700;
+    color:#00aeb5;
+    margin-bottom:14px;
+    line-height:1.4;
+}
+
+/* DESC */
+.cta-desc{
+    max-width:700px;
+    margin:auto auto 24px;
+    font-size:16px;
+    line-height:1.9;
+    color:#2f6f73;
+}
+
+/* BUTTON */
+.cta-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:13px 26px;
+    border-radius:50px;
+    background:white;
+    color:#00a3a9;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:700;
+    transition:0.3s ease;
+    box-shadow:0 8px 20px rgba(0,187,194,0.18);
+}
+
+.cta-btn:hover{
+    transform:translateY(-3px);
+    background:#00aab0;
+    color:white;
+}
+.ringkasan-card{
+    background: #d8f7f7;
+    border: 2px solid #00BBC2;
+    border-radius: 22px;
+    padding: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    overflow: hidden;
+}
+
+.ringkasan-left{
+    flex: 1;
+}
+
+.ringkasan-left h3{
+    color: #00aeb5;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.ringkasan-left p{
+    color: #4b4b4b;
+    font-size: 17px;
+    line-height: 1.9;
+    margin-bottom: 10px;
+}
+
+.ringkasan-left span{
+    color: #e53935;
+    font-weight: 700;
+}
+
+.ringkasan-right img{
+    width: 260px;
+    max-width: 100%;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    
+    .fitur-slider-wrapper{
+        justify-content:flex-start;
+        gap:14px;
+    }
+
+    .fitur-box{
+        min-width:180px;
+        max-width:180px;
+        min-height:140px;
+        font-size:15px;
+    }
+
+    .fitur-box i{
+        font-size:34px;
+    }
+    .cta-box{
+        padding:30px 20px;
+    }
+
+    .cta-title{
+        font-size:22px;
+    }
+
+    .cta-desc{
+        font-size:14px;
+    }
+
+    .cta-btn{
+        width:100%;
+        font-size:14px;
+        padding:12px 20px;
+    }
+    .ringkasan-card{
+        flex-direction: column;
+        text-align: left;
+        padding: 25px;
+    }
+
+    .ringkasan-left h3{
+        font-size: 26px;
+    }
+
+    .ringkasan-left p{
+        font-size: 15px;
+    }
+
+    .ringkasan-right img{
+        width: 180px;
+    }
+}
 </style>
 
 <section class="dbd-hero">
@@ -588,23 +952,76 @@
 
 </section>
 
+<!-- FONT AWESOME -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 <section class="container text-center mt-5" data-aos="fade-up">
-    <h4 class="fw-bold mb-4" style="color: var(--primary-teal);">Fitur Menarik yang Bisa Dimanfaatkan</h4>
+
+    <h4 class="fw-bold mb-4"
+        style="color: var(--primary-teal);">
+        Fitur Menarik yang Bisa Dimanfaatkan<br><br>
+    </h4>
+
     <div class="fitur-slider-wrapper">
-            <a href="#grafik" class="fitur-box shadow-sm text-decoration-none">
-                📊 Grafik Kesehatan</a>
-            <a href="#map" class="fitur-box shadow-sm text-decoration-none">
-                🗺️ Peta Persebaran</a>
-            <a href="<?= base_url('skriningdbd') ?>" class="fitur-box shadow-sm text-decoration-none">
-               🩺 Skrining Kesehatan</a>
-            <a href="<?= base_url('berita/list_berita') ?>" class="fitur-box shadow-sm text-decoration-none">
-                📄 Berita Kesehatan</a>
-            <a href="<?= base_url('video/list_video') ?>" class="fitur-box shadow-sm text-decoration-none">
-            <i class="fas fa-video me-2"></i> Video</a>
-        </div>
+
+        <a href="#grafik"
+           class="fitur-box shadow-sm text-decoration-none">
+
+            <i class="fas fa-chart-line"></i>
+            <span>Grafik Kesehatan</span>
+
+        </a>
+
+        <a href="#map"
+           class="fitur-box shadow-sm text-decoration-none">
+
+            <i class="fas fa-map-location-dot"></i>
+            <span>Peta Persebaran</span>
+
+        </a>
+
+        <a href="<?= base_url('skriningdbd') ?>"
+           class="fitur-box shadow-sm text-decoration-none">
+
+            <i class="fas fa-stethoscope"></i>
+            <span>Skrining Lingkungan</span>
+
+        </a>
+
+        <a href="<?= base_url('berita/list_berita') ?>"
+           class="fitur-box shadow-sm text-decoration-none">
+
+            <i class="fas fa-newspaper"></i>
+            <span>Berita Kesehatan</span>
+
+        </a>
+
+        <a href="<?= base_url('video/list_video') ?>"
+           class="fitur-box shadow-sm text-decoration-none">
+
+            <i class="fas fa-circle-play"></i>
+            <span>Video Edukasi</span>
+
+        </a>
+
+    </div>
+
 </section>
 
 <section id="funfact" class="container mt-5">
+    <!-- HEADER -->
+    <div class="text-center mb-4">
+
+        <span class="funfact-badge">
+            Insight Kesehatan
+        </span>
+
+        <h4 class="fw-bold mb-4"
+        style="color: var(--primary-teal);">
+            Telusuri Informasi Berikut
+        </h2>
+    </div>
 
 <div class="slider-wrapper">
 
@@ -622,19 +1039,18 @@
                         ? base_url('uploads/funfact/' . $f['gambar_funfact'])
                         : base_url('img/default.png') ?>">
 
-                    <div>
+                    <div class="funfact-content">
 
                         <h5>
                             <?= esc((string) ($f['judul_funfact'] ?? '')) ?>
                         </h5>
 
                         <p>
-                            <?= substr(strip_tags((string)($f['deskripsi_funfact'] ?? '')), 0, 70) ?>...
+                            <?= substr(strip_tags((string)($f['deskripsi_funfact'] ?? '')), 0, 120) ?>...
                         </p>
 
                         <a href="<?= base_url('berita/funfact_user/' . $f['id_funfact']) ?>"
-                           class="text-decoration-none fw-bold"
-                           style="color:#00BBC2; font-size:14px;">
+                           class="funfact-link">
                             Baca Selengkapnya →
                         </a>
 
@@ -659,16 +1075,33 @@
 </section>
 
 <section class="container mt-5" data-aos="zoom-in">
-    <div class="p-4 text-center shadow-sm cta-box">
-        <h5 class="fw-bold">Mengalami Gejala?</h5>
-        <p>
-            Tubuhmu memberi sinyal, jangan diabaikan.<br>
-            Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
+
+    <div class="cta-box shadow-lg">
+
+        <div class="cta-icon">
+            <i class="fas fa-house-circle-check"></i>
+        </div>
+
+        <h2 class="cta-title">
+            Sudahkah Lingkungan Anda Aman dari Jentik Nyamuk?
+        </h2>
+
+        <p class="cta-desc">
+            Lakukan skrining lingkungan secara mandiri untuk membantu
+            mendeteksi potensi perkembangbiakan nyamuk DBD
+            dan menjaga kesehatan keluarga sejak dini.
         </p>
-        <a href="<?= base_url('skriningdbd') ?>" class="btn btn-success px-4 py-2 rounded-pill shadow">
-            Mulai Skrining →
+
+        <a href="<?= base_url('skriningdbd') ?>"
+           class="cta-btn">
+
+            <i class="fas fa-stethoscope me-2"></i>
+            Mulai Skrining Lingkungan
+
         </a>
+
     </div>
+
 </section>
 
 <section id="grafik" class="container mt-5 mb-5 p-0" data-aos="fade-up">
@@ -824,7 +1257,7 @@
     </div>
 </section>
 <section class="container mt-5" data-aos="fade-up">
-    <h4 class="text-teal mb-3 fw-bold text-center">Peta Persebaran Penyakit</h4>
+    <h4 class="text-dark mb-4 fw-bold text-center">Peta Persebaran Penyakit</h4>
     <div id="map" style="height:400px; border-radius:15px; z-index: 1;"></div>
     
     <div class="mt-3 d-flex gap-2 justify-content-center">
@@ -832,6 +1265,7 @@
         <span class="badge bg-warning">Sedang</span>
         <span class="badge bg-danger">Tinggi</span>
     </div>
+</section>
     
     <div id="detailModal" class="custom-modal">
         <div class="custom-modal-content">
@@ -861,60 +1295,77 @@
             </div>
         </div>
     </div>
-</section>
 
-<section id="video" class="container mt-5">
+<?php
+$detailDesa = $detailDesa ?? [];
 
-<div class="video-slider-wrapper">
+$maxKasus = 0;
+$desaTertinggiNama = '-';
+$totalKasus = 0;
+$totalDesaTinggi = 0;
 
-    <button class="slider-btn left" onclick="slideVideo(-1)">‹</button>
+foreach ($detailDesa as $d) {
 
-    <div id="videoTrack" class="slider-track">
+    $jumlahKasus = (int)($d['jumlah_kasus'] ?? 0);
 
-        <?php if(!empty($video)) : ?>
+    $totalKasus += $jumlahKasus;
 
-            <?php foreach($video as $v) : ?>
+    if ($jumlahKasus > $maxKasus) {
+        $maxKasus = $jumlahKasus;
+        $desaTertinggiNama = $d['nama'] ?? '-';
+    }
 
-                <a href="<?= base_url('video/list_video/' . $v['id_video']) ?>" 
-                   class="video-card-item text-decoration-none">
+    if ($jumlahKasus > 0) {
+        $totalDesaTinggi++;
+    }
+}
 
-                    <div class="video-box">
+$totalDesa = count($detailDesa);
 
-                        <video muted>
-                            <source src="<?= base_url('uploads/video/' . $v['file_video']) ?>" type="video/mp4">
-                        </video>
+$rataDesa = $totalDesa > 0
+    ? round($totalKasus / $totalDesa)
+    : 0;
 
-                        <div class="play-icon">▶</div>
+?>
 
-                    </div>
+<section class="container mt-5 mb-5">
 
-                    <div class="video-content">
+    <div class="ringkasan-card">
 
-                        <h5>
-                            <?= esc((string) ($v['judul_video'] ?? '')) ?>
-                        </h5>
+        <div class="ringkasan-left">
 
-                        <p>
-                            <?= substr(strip_tags((string)($v['deskripsi_video'] ?? '')), 0, 70) ?>...
-                        </p>
+            <h3>Ringkasan Data</h3>
 
-                    </div>
+            <p>
+                Kasus Demam Berdarah (DBD) tertinggi terjadi di Desa
+                <span><?= esc((string)$desaTertinggiNama) ?> </span>
+                yang masuk kategori sangat tinggi dibanding wilayah lain
+            </p>
 
-                </a>
+            <p>
+                Terdapat
+                <span><?= $totalDesaTinggi ?></span>
+                desa dengan kasus di atas rata-rata
+            </p>
 
-            <?php endforeach; ?>
+            <p>
+                Rata-rata kasus demam berdarah di tiap desa adalah
+                <span><?= $rataDesa ?> kasus</span>
+            </p>
 
-        <?php else : ?>
+            <p>
+                Total kasus demam berdarah di kecamatan Sumbersari adalah
+                <span><?= $totalKasus ?> kasus</span>
+            </p>
 
-            <p>Belum ada video.</p>
+            <p>
+                Wilayah dengan kasus tinggi lainnya adalah
+                <span><?= esc((string)$desaTertinggiNama) ?></span>
+            </p>
 
-        <?php endif; ?>
+        </div>
 
     </div>
-
-    <button class="slider-btn right" onclick="slideVideo(1)">›</button>
-
-</div>
 
 </section>
 
@@ -1117,4 +1568,4 @@ document.getElementById('videoTrack')
 }
 
 </script>
-<?= $this->include('layout/footer') ?>
+<?= $this->include('layout/footer_a') ?>

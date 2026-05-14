@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\BannerDbdModel;
+use App\Models\PetugasModel;
 
 class ManajemenBanner extends BaseController
 {
@@ -64,6 +65,16 @@ class ManajemenBanner extends BaseController
     public function simpan()
     {
         $bannerModel = new BannerDbdModel();
+        $petugasModel = new PetugasModel();
+
+        // AMBIL ID PETUGAS DARI SESSION
+        $id_petugas = session()->get('id_petugas');
+
+        // AMBIL DATA PETUGAS
+        $petugas = $petugasModel->find($id_petugas);
+
+        // AMBIL ID PENYAKIT DARI PETUGAS
+        $id_penyakit = $petugas['id_penyakit'] ?? null;
 
         $file =
         $this->request->getFile('gambar');
@@ -104,19 +115,17 @@ class ManajemenBanner extends BaseController
 
         // SIMPAN DATABASE
        $bannerModel->save([
+        'id_petugas'     => $id_petugas,
+        'id_penyakit'    => $id_penyakit,
+        'judul_banner' => $this->request->getPost('judul_banner'),
+        'gambar' => $namaFile,
+        'deskripsi' => $this->request->getPost('deskripsi'),
+        'urutan' => $urutan,
 
-    'judul_banner' => $this->request->getPost('judul_banner'),
+        // default otomatis jika kosong
+        'status_banner' => $this->request->getPost('status_banner')
 
-    'gambar' => $namaFile,
-
-    'deskripsi' => $this->request->getPost('deskripsi'),
-
-    'urutan' => $urutan,
-
-    // default otomatis jika kosong
-    'status_banner' => $this->request->getPost('status_banner')
-
-    ]);
+       ]);
 
         return redirect()
             ->to('/bannerDbd')
@@ -200,6 +209,12 @@ class ManajemenBanner extends BaseController
     public function update(int $id)
     {
         $bannerModel = new BannerDbdModel();
+        $petugasModel = new PetugasModel();
+
+        $id_petugas = session()->get('id_petugas');
+        $petugasModel = new PetugasModel();
+        $petugas = $petugasModel->find($id_petugas);
+        $id_penyakit = $petugas['id_penyakit'] ?? null;
 
         $banner =
         $bannerModel->find($id);
@@ -216,6 +231,8 @@ class ManajemenBanner extends BaseController
 
         $data = [
 
+            'id_petugas'  => $id_petugas,
+            'id_penyakit' => $id_penyakit,
             'judul_banner' =>
             $this->request->getPost('judul_banner'),
 

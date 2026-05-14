@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\VideoDbdModel;
+use App\Models\PetugasModel;
 use CodeIgniter\Controller;
 
 class VideoDbd extends Controller
@@ -14,8 +15,21 @@ class VideoDbd extends Controller
     public function index()
     {
         $model = new VideoDbdModel();
+        $petugasModel = new PetugasModel();
 
-        $video = $model->findAll();
+        // ambil id petugas dari session
+        $id_petugas = session()->get('id_petugas');
+
+        // ambil data petugas
+        $petugas = $petugasModel->find($id_petugas);
+
+        // ambil id penyakit
+        $id_penyakit = $petugas['id_penyakit'];
+
+        // hanya tampilkan video sesuai penyakit
+        $video = $model
+            ->where('id_penyakit', $id_penyakit)
+            ->findAll();
 
         $publish = 0;
         $draft = 0;
@@ -50,8 +64,13 @@ class VideoDbd extends Controller
     public function publish()
     {
         $model = new VideoDbdModel();
+        $petugasModel = new PetugasModel();
+        $id_petugas = session()->get('id_petugas');
+        $petugas = $petugasModel->find($id_petugas);
+        $id_penyakit = $petugas['id_penyakit'];
 
         $video = $model
+            ->where('id_penyakit', $id_penyakit)
             ->where('status_video', 'publish')
             ->findAll();
 
@@ -61,7 +80,7 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => count($video),
             'draft'     => 0,
-            'title'     => 'Rekap Skrining'
+            'title'     => 'Video'
 
         ]);
     }
@@ -73,8 +92,16 @@ class VideoDbd extends Controller
     public function draft()
     {
         $model = new VideoDbdModel();
+        $petugasModel = new PetugasModel();
 
+        $id_petugas = session()->get('id_petugas');
+    
+        $petugas = $petugasModel->find($id_petugas);
+    
+        $id_penyakit = $petugas['id_penyakit'];
+    
         $video = $model
+            ->where('id_penyakit', $id_penyakit)
             ->where('status_video', 'draft')
             ->findAll();
 
@@ -93,7 +120,7 @@ class VideoDbd extends Controller
     // =========================
     // DETAIL VIDEO
     // =========================
-    public function view($id = null)
+public function view($id = null)
 {
     // kalau id kosong
     if ($id == null) {
@@ -104,7 +131,11 @@ class VideoDbd extends Controller
     $model = new VideoDbdModel();
 
     // ambil data video berdasarkan id
-    $video = $model->find($id);
+    $video = $model
+        ->where('id_video', $id)
+        ->where('id_penyakit', 1)
+        ->where('status_video', 'publish')
+        ->first();
 
     // kalau video tidak ditemukan
     if (!$video) {
@@ -114,9 +145,30 @@ class VideoDbd extends Controller
         );
     }
 
-    // rekomendasi video lain
+    // =========================
+    // SIMPAN HISTORY DITONTON
+    // =========================
+    $watched = session()->get('watched_video');
+
+    if (!is_array($watched)) {
+        $watched = [];
+    }
+
+    // tambahkan id video kalau belum ada
+    if (!in_array($id, $watched)) {
+
+        $watched[] = $id;
+
+        session()->set('watched_video', $watched);
+    }
+
+    // =========================
+    // REKOMENDASI VIDEO
+    // =========================
     $rekomendasi = $model
         ->where('id_video !=', $id)
+        ->where('id_penyakit', 1)
+        ->where('status_video', 'publish')
         ->findAll(10);
 
     // tampilkan view
@@ -215,6 +267,7 @@ class VideoDbd extends Controller
     public function simpanDetail()
     {
         $model = new VideoDbdModel();
+        $petugasModel = new PetugasModel();
 
         $file = session()->get('video_temp');
 
@@ -223,9 +276,18 @@ class VideoDbd extends Controller
             return redirect()->to('/video/tambah')
                 ->with('error', 'Video belum diupload');
         }
+        // ambil id petugas dari session
+        $id_petugas = session()->get('id_petugas');
+
+        // ambil data petugas
+        $petugas = $petugasModel->find($id_petugas);
+
+        // ambil id penyakit
+        $id_penyakit = $petugas['id_penyakit'];
 
         $model->save([
-
+            'id_petugas'       => $id_petugas,
+            'id_penyakit'      => $id_penyakit,
             'judul_video'      => $this->request->getPost('judul_video'),
             'deskripsi_video'  => $this->request->getPost('deskripsi_video'),
             'file_video'       => $file,
