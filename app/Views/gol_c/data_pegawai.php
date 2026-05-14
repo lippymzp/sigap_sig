@@ -8,7 +8,6 @@
     font-family: 'Poppins', sans-serif;
 }
 
-/* SEARCH */
 .search-box{
     position: relative;
     margin-bottom: 12px;
@@ -36,7 +35,6 @@
     font-size: 18px;
 }
 
-/* TOOLBAR */
 .pegawai-toolbar{
     display: flex;
     justify-content: space-between;
@@ -57,6 +55,7 @@
     font-size: 12px;
     background: #e5e5e5;
     color: #8a8a8a;
+    text-decoration: none;
     box-shadow: 0 2px 4px rgba(0,0,0,0.12);
 }
 
@@ -82,7 +81,6 @@
     color: #fff;
 }
 
-/* TABLE */
 .table-responsive{
     background: #fff;
     border: 1px solid #e6edf2;
@@ -98,7 +96,6 @@
     margin-bottom: 0;
 }
 
-/* HEADER TABEL */
 .table-pegawai thead tr{
     border-bottom: 3px solid #e9eef2;
 }
@@ -114,7 +111,6 @@
     white-space: nowrap;
 }
 
-/* BODY TABEL */
 .table-pegawai tbody tr{
     border-bottom: 2px solid #e9eef2;
 }
@@ -127,7 +123,6 @@
     color: #666;
 }
 
-/* KOLOM */
 .table-pegawai .col-no{
     width: 60px;
     text-align: center;
@@ -142,13 +137,13 @@
     text-align: center;
 }
 
-.table-pegawai .col-pangkat{
-    min-width: 150px;
+.table-pegawai .col-jabatan{
+    min-width: 140px;
     text-align: center;
 }
 
-.table-pegawai .col-jabatan{
-    min-width: 160px;
+.table-pegawai .col-instansi{
+    min-width: 190px;
     text-align: center;
 }
 
@@ -167,7 +162,6 @@
     text-align: center;
 }
 
-/* TOMBOL AKSI */
 .aksi-btn{
     width: 30px;
     height: 30px;
@@ -194,7 +188,6 @@
     opacity: 0.85;
 }
 
-/* PAGINATION */
 .pagination-pegawai{
     display: flex;
     justify-content: flex-end;
@@ -216,22 +209,162 @@
     border-color: #dee2e6;
     color: #333;
 }
+
+/* ========================= */
+/* POP UP SWEETALERT CRUD */
+/* ========================= */
+
+.popup-crud {
+    width: 300px !important;
+    border-radius: 8px !important;
+    padding: 28px 30px 32px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+}
+
+.popup-crud .swal2-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #111 !important;
+    padding: 0 !important;
+    margin-bottom: 12px !important;
+}
+
+.popup-crud .swal2-html-container {
+    font-size: 15px !important;
+    color: #666 !important;
+    line-height: 1.5 !important;
+    margin: 0 0 22px !important;
+}
+
+.popup-crud .swal2-actions {
+    width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.popup-icon-tambah,
+.popup-icon-edit,
+.popup-icon-hapus,
+.popup-icon-sukses,
+.popup-icon-error {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50% !important;
+    color: #fff !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 5px auto 14px !important;
+}
+
+.popup-icon-tambah {
+    background: #f28c00 !important;
+}
+
+.popup-icon-edit {
+    background: #f5e600 !important;
+}
+
+.popup-icon-hapus,
+.popup-icon-error {
+    background: #ff4b4b !important;
+}
+
+.popup-icon-sukses {
+    background: #59bd83 !important;
+}
+
+.popup-icon-tambah i,
+.popup-icon-edit i,
+.popup-icon-hapus i,
+.popup-icon-sukses i,
+.popup-icon-error i {
+    font-size: 22px !important;
+}
+
+.btn-popup-ya {
+    width: 230px !important;
+    height: 30px !important;
+    border-radius: 6px !important;
+    background: #08b9c5 !important;
+    color: #fff !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 0 !important;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.22) !important;
+}
+
+.btn-popup-tidak {
+    width: 230px !important;
+    height: 30px !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    color: #666 !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 0 !important;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.22) !important;
+}
+
+.btn-popup-ya:hover {
+    background: #07a8b3 !important;
+}
+
+.btn-popup-tidak:hover {
+    background: #f8f8f8 !important;
+}
 </style>
+
+<?php
+$jabatanList = [
+    1 => 'Kepala',
+    2 => 'Kader',
+    3 => 'Admin',
+    4 => 'Superadmin'
+];
+
+$instansiList = [
+    1 => 'Puskesmas Sumbersari',
+    2 => 'Puskesmas Kaliwates',
+    3 => 'Puskesmas Ajung',
+    4 => 'Puskesmas Panti',
+    5 => 'Dinas Kesehatan',
+    6 => 'Politeknik Negeri Jember'
+];
+?>
 
 <div class="pegawai-page">
 
-    <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Cari nama atau NIP">
-    </div>
+    <form method="get" action="<?= base_url('index.php/pneumonia/pegawai') ?>">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input 
+                type="text" 
+                name="keyword"
+                value="<?= esc($keyword ?? '') ?>"
+                placeholder="Cari nama atau NIP"
+            >
+        </div>
+    </form>
 
     <div class="pegawai-toolbar">
         <div class="pegawai-tab">
-            <button type="button" class="btn-tab active">Pegawai</button>
-            <button type="button" class="btn-tab">Admin</button>
+            <a href="<?= base_url('index.php/pneumonia/pegawai') ?>" class="btn-tab active">
+                Pegawai
+            </a>
+
+            <a href="#" class="btn-tab">
+                Admin
+            </a>
         </div>
 
-        <a href="<?= base_url('index.php/pneumonia/pegawai/tambah') ?>" class="btn-tambah">
+        <a href="<?= base_url('index.php/pneumonia/pegawai/tambah') ?>" 
+           class="btn-tambah btn-tambah-confirm">
             <i class="fa-solid fa-circle-plus"></i> Tambah
         </a>
     </div>
@@ -243,111 +376,347 @@
                     <th class="col-no">No</th>
                     <th class="col-nama">Nama</th>
                     <th class="col-nip">NIP</th>
-                    <th class="col-pangkat">Pangkat/Gol</th>
                     <th class="col-jabatan">Jabatan</th>
+                    <th class="col-instansi">Instansi</th>
                     <th class="col-email">Email</th>
                     <th class="col-telepon">No Telepon</th>
                     <th class="col-aksi">Aksi</th>
                 </tr>
             </thead>
 
-            <tbody>
-                <tr>
-                    <td class="col-no">1</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
+        <tbody>
+    <?php if (!empty($petugas)) : ?>
+        <?php $no = 1 + (10 * (($currentPage ?? 1) - 1)); ?>
 
-                <tr>
-                    <td class="col-no">2</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
+        <?php foreach ($petugas as $row) : ?>
+            <tr>
+                <td class="col-no"><?= $no++ ?></td>
 
-                <tr>
-                    <td class="col-no">3</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
+                <td class="col-nama">
+                    <?= esc($row['nama_petugas']) ?>
+                </td>
 
-                <tr>
-                    <td class="col-no">4</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
+                <td class="col-nip">
+                    <?= esc($row['NIP']) ?>
+                </td>
 
-                <tr>
-                    <td class="col-no">5</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
+                <td class="col-jabatan">
+                    <?= esc($jabatanList[$row['id_jabatan']] ?? '-') ?>
+                </td>
 
-                <tr>
-                    <td class="col-no">6</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
+                <td class="col-instansi">
+                    <?= esc($instansiList[$row['id_instansi']] ?? '-') ?>
+                </td>
 
-                <tr>
-                    <td class="col-no">7</td>
-                    <td class="col-nama"></td>
-                    <td class="col-nip"></td>
-                    <td class="col-pangkat"></td>
-                    <td class="col-jabatan"></td>
-                    <td class="col-email"></td>
-                    <td class="col-telepon"></td>
-                    <td class="col-aksi"></td>
-                </tr>
-            </tbody>
+                <td class="col-email">
+                    <?= esc($row['email']) ?>
+                </td>
+
+                <td class="col-telepon">
+                    <?= esc($row['no_telp']) ?>
+                </td>
+
+                <td class="col-aksi">
+                    <a href="<?= base_url('index.php/pneumonia/pegawai/edit/' . $row['id_petugas']) ?>" 
+                       class="aksi-btn aksi-edit btn-edit-confirm">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+
+                    <a href="<?= base_url('index.php/pneumonia/pegawai/hapus/' . $row['id_petugas']) ?>"
+                       class="aksi-btn aksi-hapus btn-hapus-confirm">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+
+        <?php
+        $sisaBaris = 10 - count($petugas);
+        if ($sisaBaris > 0) :
+            for ($i = 1; $i <= $sisaBaris; $i++) :
+        ?>
+            <tr>
+                <td class="col-no"></td>
+                <td class="col-nama"></td>
+                <td class="col-nip"></td>
+                <td class="col-jabatan"></td>
+                <td class="col-instansi"></td>
+                <td class="col-email"></td>
+                <td class="col-telepon"></td>
+                <td class="col-aksi"></td>
+            </tr>
+        <?php
+            endfor;
+        endif;
+        ?>
+
+    <?php else : ?>
+
+        <?php for ($i = 1; $i <= 10; $i++) : ?>
+            <tr>
+                <td class="col-no"></td>
+                <td class="col-nama"></td>
+                <td class="col-nip"></td>
+                <td class="col-jabatan"></td>
+                <td class="col-instansi"></td>
+                <td class="col-email"></td>
+                <td class="col-telepon"></td>
+                <td class="col-aksi"></td>
+            </tr>
+        <?php endfor; ?>
+
+    <?php endif; ?>
+</tbody>
         </table>
     </div>
 
-    <div class="pagination-pegawai">
-        <nav>
-            <ul class="pagination pagination-sm">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Previous</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+<?php
+$totalPages  = $pager->getPageCount('petugas');
+$currentPage = $pager->getCurrentPage('petugas');
 
+$queryParams = $_GET;
+
+function pageUrlPegawai($page, $queryParams)
+{
+    $queryParams['page_petugas'] = $page;
+    return current_url() . '?' . http_build_query($queryParams);
+}
+?>
+
+<div class="pagination-pegawai">
+    <nav>
+        <ul class="pagination pagination-sm">
+
+            <?php $prevPage = max(1, $currentPage - 1); ?>
+
+            <li class="page-item <?= ($currentPage <= 1) ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= ($currentPage <= 1) ? '#' : pageUrlPegawai($prevPage, $queryParams) ?>">
+                    Previous
+                </a>
+            </li>
+
+            <?php if ($totalPages <= 5) : ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                    <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                        <a class="page-link" href="<?= pageUrlPegawai($i, $queryParams) ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+
+            <?php else : ?>
+
+                <?php if ($currentPage <= 3) : ?>
+
+                    <?php for ($i = 1; $i <= 3; $i++) : ?>
+                        <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= pageUrlPegawai($i, $queryParams) ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+
+                    <li class="page-item">
+                        <a class="page-link" href="<?= pageUrlPegawai($totalPages, $queryParams) ?>">
+                            <?= $totalPages ?>
+                        </a>
+                    </li>
+
+                <?php elseif ($currentPage >= $totalPages - 2) : ?>
+
+                    <li class="page-item">
+                        <a class="page-link" href="<?= pageUrlPegawai(1, $queryParams) ?>">
+                            1
+                        </a>
+                    </li>
+
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+
+                    <?php for ($i = $totalPages - 2; $i <= $totalPages; $i++) : ?>
+                        <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= pageUrlPegawai($i, $queryParams) ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                <?php else : ?>
+
+                    <li class="page-item">
+                        <a class="page-link" href="<?= pageUrlPegawai(1, $queryParams) ?>">
+                            1
+                        </a>
+                    </li>
+
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+
+                    <?php for ($i = $currentPage - 1; $i <= $currentPage + 1; $i++) : ?>
+                        <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= pageUrlPegawai($i, $queryParams) ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+
+                    <li class="page-item">
+                        <a class="page-link" href="<?= pageUrlPegawai($totalPages, $queryParams) ?>">
+                            <?= $totalPages ?>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+
+            <?php endif; ?>
+
+            <?php $nextPage = min($totalPages, $currentPage + 1); ?>
+
+            <li class="page-item <?= ($currentPage >= $totalPages) ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= ($currentPage >= $totalPages) ? '#' : pageUrlPegawai($nextPage, $queryParams) ?>">
+                    Next
+                </a>
+            </li>
+
+        </ul>
+    </nav>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".btn-tambah-confirm").forEach(function(button) {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const url = this.getAttribute("href");
+
+            Swal.fire({
+                iconHtml: '<i class="fa-solid fa-plus"></i>',
+                title: "Tambah Data",
+                html: "Apakah Anda Yakin<br>Ingin Menambah Data?",
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+                buttonsStyling: false,
+                customClass: {
+                    popup: "popup-crud",
+                    icon: "popup-icon-tambah",
+                    confirmButton: "btn-popup-ya",
+                    cancelButton: "btn-popup-tidak"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll(".btn-edit-confirm").forEach(function(button) {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const url = this.getAttribute("href");
+
+            Swal.fire({
+                iconHtml: '<i class="fa-solid fa-pen"></i>',
+                title: "Edit Data",
+                html: "Apakah Anda Yakin<br>Ingin Mengedit Data Ini?",
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+                buttonsStyling: false,
+                customClass: {
+                    popup: "popup-crud",
+                    icon: "popup-icon-edit",
+                    confirmButton: "btn-popup-ya",
+                    cancelButton: "btn-popup-tidak"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll(".btn-hapus-confirm").forEach(function(button) {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const url = this.getAttribute("href");
+
+            Swal.fire({
+                iconHtml: '<i class="fa-solid fa-trash"></i>',
+                title: "Hapus Data",
+                html: "Apakah Anda Yakin<br>Ingin Menghapus Data Ini?",
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+                buttonsStyling: false,
+                customClass: {
+                    popup: "popup-crud",
+                    icon: "popup-icon-hapus",
+                    confirmButton: "btn-popup-ya",
+                    cancelButton: "btn-popup-tidak"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+});
+</script>
+
+<?php if (session()->getFlashdata('success')) : ?>
+<script>
+Swal.fire({
+    iconHtml: '<i class="fa-solid fa-check"></i>',
+    title: "Berhasil",
+    html: "<?= session()->getFlashdata('success') ?>",
+    confirmButtonText: "Selesai",
+    buttonsStyling: false,
+    customClass: {
+        popup: "popup-crud",
+        icon: "popup-icon-sukses",
+        confirmButton: "btn-popup-ya"
+    }
+});
+</script>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')) : ?>
+<script>
+Swal.fire({
+    iconHtml: '<i class="fa-solid fa-xmark"></i>',
+    title: "Gagal",
+    html: "<?= session()->getFlashdata('error') ?>",
+    confirmButtonText: "Selesai",
+    buttonsStyling: false,
+    customClass: {
+        popup: "popup-crud",
+        icon: "popup-icon-error",
+        confirmButton: "btn-popup-ya"
+    }
+});
+</script>
+<?php endif; ?>
 
 <?= $this->endSection() ?>
