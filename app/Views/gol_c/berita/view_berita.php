@@ -383,7 +383,7 @@ $bulan = [
 
         <!-- TOMBOL KEMBALI DI BAWAH -->
         <div class="berita-footer">
-            <br><br><a href="<?= base_url('berita') ?>" class="back-btn">
+            <br><br><a href="<?= base_url('beritapneumonia/admin') ?>" class="back-btn">
                 <i class="fa-solid"></i> Kembali
             </a>
         </div>
