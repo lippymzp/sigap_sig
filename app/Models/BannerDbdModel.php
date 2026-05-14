@@ -11,6 +11,8 @@ class BannerDbdModel extends Model
     protected $useAutoIncrement = true;
     protected $allowedFields = [
         'judul_banner',
+        'id_petugas',
+        'id_penyakit',
         'gambar',
         'urutan',
         'deskripsi',

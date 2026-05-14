@@ -121,7 +121,10 @@ class InputDataPasienModel extends Model
                 SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
                 SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
 
+                SUM(CASE WHEN p.status_akhir = 'Meninggal' THEN 1 ELSE 0 END) as jumlah_kematian,
+
                 COUNT(*) as jumlah
+                
             ")
             ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
             ->where('YEAR(p.tgl_kunjungan)', $tahun)
@@ -140,7 +143,7 @@ class InputDataPasienModel extends Model
     public function getDataExport(
         ?string $mode,
         ?int $tahun,
-        ?int $waktu,
+        ?string $waktu,
         ?string $kelurahan
     )
     {
@@ -149,12 +152,14 @@ class InputDataPasienModel extends Model
         $builder = $db->table('pasien p');
 
         $builder->select('
-            p.no_rm,
+            p.nik,
             p.nama_pasien,
             p.tgl_kunjungan,
             p.ctt_klinis,
             p.jenis_kelamin,
             p.umur,
+            p.status_akhir,
+            p.tindak_lanjut,
 
             w.kelurahan,
             w.kecamatan,

@@ -56,12 +56,15 @@
     <thead>
         <tr>
             <th>No</th>
+            <th>NIK</th>
             <th>Nama</th>
             <th>Tgl Kunjungan</th>
             <th>JK</th>
             <th>Usia</th>
             <th>Catatan Klinis</th>
             <th>Alamat Lengkap</th>
+            <th>Status Akhir</th>
+            <th>Tindak Lanjut</th>
         </tr>
     </thead>
 
@@ -71,6 +74,10 @@
             <?php foreach ($data as $d) : ?>
     <tr>
         <td class="center"><?= $no++ ?></td>
+
+        <td>
+            <?= esc((string) ($d['nik'] ?? '')) ?>
+        </td>
 
         <td>
             <?= esc((string) ($d['nama_pasien'] ?? '')) ?>
@@ -107,6 +114,13 @@
 
                 ', ' . ($d['provinsi'] ?? '-')
             ) ?>
+        </td>
+
+        <td>
+            <?= esc((string) ($d['status_akhir'] ?? '')) ?>
+        </td>
+        <td>
+            <?= esc((string) ($d['tindak_lanjut'] ?? '')) ?>
         </td>
     </tr>
 <?php endforeach; ?>

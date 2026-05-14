@@ -219,6 +219,10 @@ $fotoNavbar = (!empty($profil['foto_profil']))
   <i class="fa-solid fa-hospital me-2"></i> Manajemen Puskesmas
 </a>
 
+<a href="<?= base_url('bannerDbd') ?>" class="<?= ($menu == 'manajemen_banner') ? 'active' : '' ?>">
+  <i class="fa-solid fa-hospital me-2"></i> Manajemen Banner
+</a>
+
 <a href="<?= base_url('profil_sistem') ?>" class="<?= ($menu == 'sistem') ? 'active' : '' ?>">
   <i class="fa-solid fa-gear me-2"></i> Profil Sistem
 </a>

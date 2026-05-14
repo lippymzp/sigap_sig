@@ -39,6 +39,7 @@ class LandingpageDbd extends BaseController
         $funfactModel = new \App\Models\FunfactModel();
 
         $funfact = $funfactModel
+            ->where('id_penyakit', 1)
             ->where('status_funfact', 'upload')
             ->orderBy('tanggal_funfact', 'DESC')
             ->findAll(10);
@@ -47,6 +48,7 @@ class LandingpageDbd extends BaseController
         $videoModel = new \App\Models\VideoDbdModel();
 
         $video = $videoModel
+            ->where('id_penyakit', 1)
             ->where('status_video', 'publish')
             ->orderBy('tanggal_video', 'DESC')
             ->findAll(10);
@@ -54,6 +56,7 @@ class LandingpageDbd extends BaseController
         $bannerModel = new BannerDbdModel();
 
         $banner = $bannerModel
+            ->where('id_penyakit', 1)
             ->where('status_banner', 'publish')
             ->orderBy('urutan', 'ASC')
             ->findAll();
@@ -69,9 +72,7 @@ class LandingpageDbd extends BaseController
     // FUNFACT
     'funfact'       => $funfact,
     'video'         => $video,
-    'banner'        => $banner,
-    'show_footer_maskot' => true,
-    'footer_maskot' => 'logo_denggis.png'
+    'banner'        => $banner
 ]);
     }
 
@@ -252,7 +253,10 @@ class LandingpageDbd extends BaseController
                                    ->orLike('deskripsi_berita', $keyword);
             }
 
-            $dataBerita = $builder->findAll();
+            $dataBerita = $builder
+                ->where('id_penyakit', 1)
+                ->where('status_berita', 'publish')
+                ->findAll();
 
             foreach ($dataBerita as $b) {
                 $b['tipe'] = 'berita';
@@ -272,7 +276,10 @@ class LandingpageDbd extends BaseController
                                    ->orLike('deskripsi_funfact', $keyword);
             }
 
-            $dataFunfact = $builder->findAll();
+            $dataFunfact = $builder
+                ->where('id_penyakit', 1)
+                ->where('status_funfact', 'upload')
+                ->findAll();
 
             foreach ($dataFunfact as $f) {
                 $f['tipe'] = 'funfact';
@@ -295,7 +302,10 @@ class LandingpageDbd extends BaseController
 
     $status = $this->request->getGet('status');
 
-    $video = $videoModel->findAll();
+    $video = $videoModel
+        ->where('id_penyakit', 1)
+        ->where('status_video', 'publish')
+        ->findAll();
 
     // =========================
     // SESSION WATCHED VIDEO
