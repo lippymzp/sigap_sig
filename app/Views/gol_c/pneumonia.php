@@ -383,8 +383,57 @@ fitur.forEach(btn => {
 
 <title>Kasus Umum</title>
 
+
 <!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+$conn = mysqli_connect("localhost","root","","sigap_db");
+
+$bulanLabels = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+
+$laki = array_fill(0, 12, 0);
+$wanita = array_fill(0, 12, 0);
+
+$query = mysqli_query($conn, "
+
+    SELECT 
+        MONTH(tgl_kunjungan) as bulan,
+        jenis_kelamin,
+        COUNT(*) as total
+
+    FROM pasien
+
+    WHERE YEAR(tgl_kunjungan) = 2025
+
+    GROUP BY 
+        MONTH(tgl_kunjungan),
+        jenis_kelamin
+
+");
+
+while($row = mysqli_fetch_assoc($query)){
+
+    $index = $row['bulan'] - 1;
+
+    if(
+        strtolower($row['jenis_kelamin']) == 'laki-laki'
+        || strtolower($row['jenis_kelamin']) == 'laki laki'
+    ){
+
+        $laki[$index] = (int)$row['total'];
+
+    }else{
+
+        $wanita[$index] = (int)$row['total'];
+
+    }
+}
+
+?>
+
 
 <!-- Style -->
 <style>
