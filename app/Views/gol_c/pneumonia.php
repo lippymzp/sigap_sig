@@ -374,18 +374,10 @@ fitur.forEach(btn => {
 </style>
 
 <!-- GRAFIK -->
- 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<title>Kasus Umum</title>
-
-
-<!-- Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<?php
 
 $conn = mysqli_connect("localhost","root","","sigap_db");
 
@@ -434,158 +426,144 @@ while($row = mysqli_fetch_assoc($query)){
 
 ?>
 
-
-<!-- Style -->
 <style>
-body {
-  background: #ffffff;
+
+#grafik{
+    margin-top:40px;
 }
 
-.judul-grafik {
-  color: #1aa6a6;
-  font-weight: 600;
-  text-align: left;   /* sesuai gambar (kiri) */
-  margin-bottom: 10px; /* biar deket ke card */
+.judul-grafik{
+    color:#00a8b5;
+    font-weight:700;
+    font-size:42px;
+    margin-bottom:15px;
 }
 
-/* CARD */
-.card-custom {
-  background: #f4f8f8;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.card-grafik{
+    background:#f8f8f8;
+    border:4px solid #1e88e5;
+    border-radius:25px;
+    padding:25px;
 }
 
-/* FILTER */
-.filter {
-  border-radius: 10px;
-  padding: 10px;
+.chart-container{
+    position:relative;
+    width:100%;
+    height:500px;
 }
 
-/* CHART FULL */
-.chart-container {
-  position: relative;
-  width: 100%;
-  height: 260px;
+.btn-wrapper{
+    margin-top:20px;
+    text-align:right;
 }
 
-canvas {
-  width: 100% !important;
-  height: 100% !important;
+.btn-selengkapnya{
+    background:linear-gradient(to right,#00bcd4,#4dd0e1);
+    color:white;
+    padding:14px 28px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:600;
+    display:inline-block;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
-h5 {
-  font-weight: bold;
+.btn-selengkapnya:hover{
+    color:white;
+    transform:scale(1.03);
 }
+
 </style>
 
-</head>
-<body>
+<div id="grafik" class="container">
 
-<div id="grafik" class="container mt-4">
-<h4 class="judul-grafik">Grafik Pneumonia</h4>
-  <div class="card-custom">
+    <h1 class="judul-grafik">
+        Grafik Pneumonia
+    </h1>
 
-    <h5 class="mb-4">Kasus Umum</h5>
+    <div class="card-grafik">
 
-    <!-- FILTER -->
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <label>Wilayah</label>
-        <select class="form-control filter">
-          <option>Ajung</option>
-          <option>Wirowongso</option>
-          <option>Rowo Indah</option>
-          <option>Sukamakmur</option>
-          <option>Klompangan</option>
-          <option>Mangaran</option>
-          <option>Pancakarya</option>
-          <option>Pasien Luar Wilayah</option>
-          <option>All</option>
-        </select>
-      </div>
+        <div class="chart-container">
+            <canvas id="chartKasus"></canvas>
+        </div>
 
-      <div class="col-md-4">
-        <label>Bulan</label>
-        <select class="form-control filter">
-          <option>Januari</option>
-          <option>Februari</option>
-          <option>Maret</option>
-          <option>April</option>
-          <option>Mei</option>
-          <option>Juni</option>
-          <option>Juli</option>
-          <option>Agustus</option>
-          <option>September</option>
-          <option>Oktober</option>
-          <option>November</option>
-          <option>Desember</option>
-          <option>All</option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <label>Tahun</label>
-        <select class="form-control filter">
-          <option>2025</option>
-          <option>2024</option>
-          <option>2023</option>
-        </select>
-      </div>
     </div>
 
-    <!-- GRAFIK FULL -->
-    <div class="chart-container">
-      <canvas id="chartKasus"></canvas>
-    </div>
-    
-</div>
-<!-- BUTTON -->
-<div class="btn-wrapper">
-    <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
-        Lihat Selengkapnya →
-    </a>
-</div>
-</div>
+    <div class="btn-wrapper">
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
+            Lihat selengkapnya →
+        </a>
+
+    </div>
+
+</div>
 
 <script>
+
+const labels = <?= json_encode($bulanLabels); ?>;
+
+const dataLaki = <?= json_encode($laki); ?>;
+const dataWanita = <?= json_encode($wanita); ?>;
+
 const ctx = document.getElementById('chartKasus');
 
 new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'],
-    datasets: [
-      {
-        label: 'Laki-laki',
-        data: [270,140,60,100,90,75,65,90,100,120,150,90],
-        backgroundColor: '#16a085'
-      },
-      {
-        label: 'Wanita',
-        data: [240,120,80,60,75,45,40,85,105,160,120,60],
-        backgroundColor: '#a3d5d3'
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false, // BIAR FULL
-    plugins: {
-      legend: {
-        position: 'top'
-      }
+
+    type: 'bar',
+
+    data: {
+
+        labels: labels,
+
+        datasets: [
+
+            {
+                label: 'Laki-laki',
+                data: dataLaki,
+                backgroundColor: '#1f6f78',
+                borderRadius: 6
+            },
+
+            {
+                label: 'Wanita',
+                data: dataWanita,
+                backgroundColor: '#a7d7d3',
+                borderRadius: 6
+            }
+
+        ]
     },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
+
+    options: {
+
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                position: 'top'
+            }
+
+        },
+
+        scales: {
+
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 10
+                }
+            }
+
+        }
+
     }
-  }
+
 });
+</script>
+
 
 </script>
 
