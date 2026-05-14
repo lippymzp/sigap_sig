@@ -560,6 +560,7 @@ tahun.addEventListener('change', updateChart);
 updateChart();
 
 </script>
+</div> <!-- BUTTON --> <div class="btn-wrapper"> <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya"> Lihat Selengkapnya → </a> </div> </div>
 
 
 <!-- PETA -->
