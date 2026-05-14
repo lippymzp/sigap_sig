@@ -1,9 +1,12 @@
 <?php $pagerLinks = $pagerLinks ?? ''; ?>
 <?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
+
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <style>
+
 body{
     background:#f5f7fb;
     font-family:'Poppins',sans-serif;
@@ -15,6 +18,35 @@ body{
     border-radius:20px;
     padding:20px;
     box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* OVERVIEW */
+.overview-card{
+    background: linear-gradient(135deg,#00BBC2,#009aa0);
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:20px;
+    color:white;
+}
+
+.overview-title{
+    font-size:14px;
+    opacity:0.9;
+}
+
+.overview-total{
+    font-size:38px;
+    font-weight:700;
+    line-height:1.2;
+    margin-top:8px;
+}
+
+.overview-info{
+    display:flex;
+    gap:20px;
+    margin-top:15px;
+    flex-wrap:wrap;
+    font-size:15px;
 }
 
 /* TOPBAR */
@@ -58,90 +90,26 @@ body{
     min-width:160px;
 }
 
-<!-- OVERVIEW -->
-<div style="
-    background: linear-gradient(135deg,#00BBC2,#009aa0);
-    border-radius:18px;
-    padding:25px;
-    margin-bottom:20px;
-    color:white;
-">
-
-    <div style="font-size:14px; opacity:0.9;">
-        TODAY'S OVERVIEW
-    </div>
-
-    <div style="
-        font-size:38px;
-        font-weight:700;
-        line-height:1.2;
-        margin-top:8px;
-    ">
-        <?= $skriningHariIni ?> Skrining Hari Ini 
-        dari <?= $totalSkrining ?> Total Skrining
-    </div>
-
-    <div style="
-        display:flex;
-        gap:20px;
-        margin-top:15px;
-        flex-wrap:wrap;
-        font-size:15px;
-    ">
-
-        <div>
-            ● <?= $berisiko ?> Berisiko 
-        </div>
-
-        <div>
-            ● <?= $tdkberisiko ?> Tidak Berisiko
-        </div>
-
-    </div>
-</div>
-
 /* TABLE */
 .table{
     border-radius:20px;
     overflow:hidden;
+    border:1px solid #d1d5db;
+    border-collapse:collapse;
 }
 
-.table thead {
+.table thead th{
     background: linear-gradient(135deg, #00BBC2, #009aa0);
-    color: white;
-}
-
-.table thead th {
-    background: linear-gradient(135deg, #00BBC2, #009aa0);
-    color: white;
-    border: none;
-    padding: 18px;
-    text-align: center;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-}
-
-/* rounded header biar soft UI */
-.table thead tr th:first-child {
-    border-top-left-radius: 12px;
-}
-
-.table thead tr th:last-child {
-    border-top-right-radius: 12px;
-}
-
-/* efek halus header */
-.table thead tr {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-.table {
-    border: 1px solid #d1d5db;;
-    border-collapse: collapse;
+    color:white;
+    border:none;
+    padding:18px;
+    text-align:center;
+    font-weight:600;
 }
 
 .table th,
-.table td {
-    border: 1px solid #d1d5db;
+.table td{
+    border:1px solid #d1d5db;
 }
 
 /* BADGE */
@@ -156,322 +124,290 @@ body{
     color:#d60000;
 }
 
-.badge-cukup{
-    background:#fff4cc;
-    color:#856404;
-}
-
 .badge-baik{
     background:#d4f8e8;
     color:#0f8b4c;
 }
 
-/* BUTTON AKSI */
-.aksi-btn{
-    width:35px;
-    height:35px;
-    border:none;
-    border-radius:8px;
-    color:white;
-    margin:0 3px;
+/* PAGINATION */
+.pagination-custom{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
 }
 
-.btn-detail{
-    background:#1d4ed8;
+.pagination-custom .pages{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
 }
 
-.btn-edit{
-    background:#facc15;
-    color:black;
-}
-
-.btn-hapus{
-    background:#ef4444;
-}
-/* PAGINATION MODERN FULL */
-.pagination-custom .pages {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-}
-
-/* semua link pager */
 .pagination-custom .pages a,
-.pagination-custom .pages span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 42px;
-    height: 42px;
-    padding: 0 14px;
-
-    border-radius: 12px;
-    border: 1px solid #d1d5db;
-
-    background: #fff;
-    color: #374151;
-
-    font-weight: 500;
-    text-decoration: none;
-
-    transition: all 0.25s ease;
+.pagination-custom .pages span{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:42px;
+    height:42px;
+    padding:0 14px;
+    border-radius:12px;
+    border:1px solid #d1d5db;
+    background:#fff;
+    color:#374151;
+    font-weight:500;
+    text-decoration:none;
+    transition:all 0.25s ease;
 }
 
-/* hover */
-.pagination-custom .pages a:hover {
-    background: #00BBC2;
-    color: white;
-    border-color: #00BBC2;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 187, 194, 0.25);
+.pagination-custom .pages a:hover{
+    background:#00BBC2;
+    color:white;
+    border-color:#00BBC2;
 }
 
-/* active page */
-.pagination-custom .pages .active {
+.pagination-custom .pages .active{
     background: linear-gradient(135deg, #00BBC2, #009aa0);
-    color: white !important;
-    border: none;
-    box-shadow: 0 6px 14px rgba(0, 187, 194, 0.35);
+    color:white !important;
+    border:none;
 }
 
-/* PREV & NEXT styling */
-.pagination-custom .pages a[rel="prev"],
-.pagination-custom .pages a[rel="next"] {
-    min-width: 90px;
-    font-weight: 600;
-    background: #f3f4f6;
-}
-
-.pagination-custom .pages a[rel="prev"]:hover,
-.pagination-custom .pages a[rel="next"]:hover {
-    background: #00BBC2;
-    color: white;
-}
 </style>
 
-   <div class="custom-card">
+<div class="custom-card">
 
-<div class="topbar">
+    <!-- OVERVIEW -->
+    <div class="overview-card">
 
-    <!-- SEARCH -->
-    <div class="search-box">
-        <i class="bi bi-search"></i>
-        <input type="text" id="searchInput"
-            class="form-control"
-            placeholder="Cari data pasien">
-    </div>
-<script>
+        <div class="overview-title">
+            TODAY'S OVERVIEW
+        </div>
 
+        <div class="overview-total">
+            <?= $skriningHariIni ?> Skrining Hari Ini
+            dari <?= $totalSkrining ?> Total Skrining
+        </div>
 
-</script>
+        <div class="overview-info">
 
-    <!-- FILTER -->
-    <div class="filter-group">
+            <div>
+                ● <?= $berisiko ?> Berisiko
+            </div>
 
-        <select id="sortData" class="form-select">
-            <option value="">Urutkan</option>
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-        </select>
+            <div>
+                ● <?= $tdkberisiko ?> Tidak Berisiko
+            </div>
 
-        <div class="dropdown">
-   
-<button class="form-select text-start"
-        type="button"
-        data-bs-toggle="dropdown"
-        style="height:45px; min-width:220px;">
-        
-    <i class="bi bi-funnel"></i> Filter
-</button>
-
-<ul class="dropdown-menu p-3"
-    style="width:300px; border-radius:15px;">
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="semua">
- Tampilkan semua
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="hariini">
- Hari ini
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="baik">
- Berisiko
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="cukup">
- Tidak Berisiko
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="perempuan">
- Perempuan
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="lakilaki">
- Laki-laki
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="anak">
- Anak-anak (0-19 tahun)
-</label>
-</li>
-
-<li>
-<label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="dewasa">
- Dewasa (>19 tahun)
-</label>
-</li>
-
-</ul>
-</div>
+        </div>
 
     </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <!-- SEARCH -->
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   id="searchInput"
+                   class="form-control"
+                   placeholder="Cari data pasien">
+        </div>
+
+        <!-- FILTER -->
+        <div class="filter-group">
+
+            <select id="sortData" class="form-select">
+                <option value="">Urutkan</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+
+            <div class="dropdown">
+
+                <button class="form-select text-start"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        style="height:45px; min-width:220px;">
+
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+
+                <ul class="dropdown-menu p-3"
+                    style="width:300px; border-radius:15px;">
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="semua">
+                            Tampilkan semua
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="hariini">
+                            Hari ini
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="Berisiko">
+                            Berisiko
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="Tidak Berisiko">
+                            Tidak Berisiko
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="perempuan">
+                            Perempuan
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="lakilaki">
+                            Laki-laki
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="anak">
+                            Anak-anak (0-19 tahun)
+                        </label>
+                    </li>
+
+                    <li>
+                        <label class="dropdown-item">
+                            <input type="checkbox"
+                                   class="filter-check"
+                                   value="dewasa">
+                            Dewasa (>19 tahun)
+                        </label>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Nama</th>
+                    <th>Umur</th>
+                    <th>Jenis Kelamin</th>
+                    <th>No Telp</th>
+                    <th>Alamat</th>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            <?php $no=1; foreach(($skrining ?? []) as $row): ?>
+
+            <tr class="data-row"
+
+                data-risiko="<?= $row['hasil'] ?>"
+                data-gender="<?= strtolower($row['jenis_kelamin']) ?>"
+                data-tanggal="<?= date('Y-m-d', strtotime($row['tanggal'])) ?>"
+                data-usia="<?= $row['usia'] ?>">
+
+                <td><?= $no++ ?></td>
+
+                <td><?= $row['nama_pasien_skrining'] ?></td>
+
+                <td><?= $row['usia'] ?></td>
+
+                <td><?= $row['jenis_kelamin'] ?></td>
+
+                <td><?= $row['no_hp'] ?></td>
+
+                <td>
+                    <?= $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten'] ?>
+                </td>
+
+                <td><?= $row['tanggal'] ?></td>
+
+                <td>
+
+                    <?php if(strpos($row['hasil'],'Berisiko') !== false): ?>
+
+                        <span class="badge-custom badge-buruk">
+                            <?= $row['hasil'] ?>
+                        </span>
+
+                    <?php else: ?>
+
+                        <span class="badge-custom badge-baik">
+                            <?= $row['hasil'] ?>
+                        </span>
+
+                    <?php endif; ?>
+
+                </td>
+
+            </tr>
+
+            <?php endforeach; ?>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination-custom">
+
+        <div>
+            Menampilkan <?= count($skrining ?? []) ?> data
+        </div>
+
+        <div class="pages">
+            <?= $pagerLinks ?>
+        </div>
+
+    </div>
+
 </div>
-
-<!-- TABLE -->
-<div class="table-responsive">
-<table class="table align-middle">
-
-<thead>
-<tr>
-    <th>No.</th>
-    <th>Nama</th>
-    <th>Umur</th>
-    <th>Jenis Kelamin</th>
-    <th>No Telp</th>
-    <th>Alamat</th>
-    <th>Tanggal</th>
-    <th>Keterangan</th>
-</tr>
-</thead>
-
-<tbody>
-
-<?php $no=1; foreach(($skrining ?? []) as $row): ?>
-
-<tr class="data-row"
-
-
-data-risiko="<?=
-$risiko = '';
-
-if (strpos($row['hasil'], 'Tidak Berisiko') !== false) {
-    $risiko = 'Tidak Berisiko';
-} elseif (strpos($row['hasil'], 'Berisiko') !== false) {
-    $risiko = 'Berisiko';
-}
-?>"
-
-data-gender="<?= strtolower($row['jenis_kelamin']) ?>"
-
-data-tanggal="<?= date('Y-m-d', strtotime($row['tanggal'])) ?>"
-
-data-usia="<?= $row['usia'] ?>"
->
-
-<td><?= $no++ ?></td>
-
-<td><?= $row['nama_pasien_skrining'] ?></td>
-
-<td><?= $row['usia'] ?></td>
-
-<td><?= $row['jenis_kelamin'] ?></td>
-
-<td><?= $row['no_hp'] ?></td>
-
-<td>
-<?= 
-$row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
-?>
-</td>
-
-<td><?= $row['tanggal'] ?></td>
-
-<td>
-
-<?php if(strpos($row['hasil'],'Berisiko') !== false): ?>
-<span class="badge-custom badge-buruk">
-    <?= $row['hasil'] ?>
-</span>
-
-<?php elseif(strpos($row['hasil'],'Tidak Berisiko') !== false): ?>
-<span class="badge-custom badge-baik">
-    <?= $row['hasil'] ?>
-</span>
-
-<?php else: ?>
-<span class="badge-custom badge-baik">
-    <?= $row['hasil'] ?>
-</span>
-<?php endif; ?>
-
-</td>
-
-
-</div>
-</div>
-
-<!-- FOOTER -->
-<div class="modal-footer">
-
-
-
-</div>
-</div>
-</div>
-</div>
-<!-- MODAL HAPUS -->
-
-</div>
-</div>
-</div>
-</div>
-
-<?php endforeach; ?>
-
-</tbody>
-</table>
-</div>
-
-<!-- PAGINATION -->
-<div class="pagination-custom">
-
-<div>
-Menampilkan <?= count($skrining ?? []) ?> data
-</div>
-
-<div class="pages">
-    <?= $pagerLinks ?>
-</div>
-
-</div>
-
-</div>
-
 
 <script>
 
@@ -504,7 +440,7 @@ function applyFilter(){
 
         let show = true;
 
-        // ===== RISIKO (BAIK / CUKUP / BURUK) =====
+        // RISIKO
         let risikoList = ['Berisiko','Tidak Berisiko'];
         let filterRisiko = activeFilters.filter(f => risikoList.includes(f));
 
@@ -514,12 +450,13 @@ function applyFilter(){
             }
         }
 
-        // ===== GENDER =====
-        let genderFilter = activeFilters.filter(f => 
+        // GENDER
+        let genderFilter = activeFilters.filter(f =>
             ['perempuan','lakilaki'].includes(f)
         );
 
         if(genderFilter.length > 0){
+
             let matchGender =
                 (genderFilter.includes('perempuan') && gender.includes('perempuan')) ||
                 (genderFilter.includes('lakilaki') && gender.includes('laki'));
@@ -529,12 +466,13 @@ function applyFilter(){
             }
         }
 
-        // ===== UMUR =====
+        // UMUR
         let umurFilter = activeFilters.filter(f =>
             ['anak','dewasa'].includes(f)
         );
 
         if(umurFilter.length > 0){
+
             let matchUmur =
                 (umurFilter.includes('anak') && usia <= 19) ||
                 (umurFilter.includes('dewasa') && usia > 19);
@@ -544,22 +482,22 @@ function applyFilter(){
             }
         }
 
-        // ===== HARI INI =====
+        // HARI INI
         if(activeFilters.includes('hariini') && tanggal !== today){
             show = false;
         }
 
-        // ===== TAMPIL SEMUA =====
+        // TAMPILKAN SEMUA
         if(activeFilters.includes('semua')){
             show = true;
         }
 
-        // ===== kalau tidak filter apa-apa =====
         if(activeFilters.length === 0){
             show = true;
         }
 
         row.style.display = show ? "" : "none";
+
     });
 }
 
@@ -584,8 +522,7 @@ searchInput.addEventListener("keyup", function(){
 
 });
 
-
-// SORTING
+// SORT
 const sortData = document.getElementById("sortData");
 
 sortData.addEventListener("change", function(){
