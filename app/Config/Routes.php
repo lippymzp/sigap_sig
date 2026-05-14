@@ -95,6 +95,25 @@ $routes->get('/beritapneumonia/admin/draft', 'BeritaPneumonia::draft');
 $routes->get('/beritapneumonia/admin/list', 'BeritaPneumonia::list_berita');
 
 $routes->post('/beritapneumonia/admin/upload-editor-image', 'BeritaPneumonia::uploadEditorImage');
+
+/* ========================= */
+/* FUNFACT PNEUMONIA */
+/* ========================= */
+
+$routes->get('pneumonia/funfact', 'FunfactPneumonia::index');
+$routes->get('pneumonia/funfact/create', 'FunfactPneumonia::create');
+
+$routes->post('pneumonia/funfact/simpan', 'FunfactPneumonia::simpan');
+$routes->post('pneumonia/funfact/kutip', 'FunfactPneumonia::simpanKutip');
+
+$routes->get('pneumonia/funfact/detail/(:num)', 'FunfactPneumonia::detail/$1');
+$routes->get('pneumonia/funfact/edit/(:num)', 'FunfactPneumonia::edit/$1');
+$routes->post('pneumonia/funfact/update/(:num)', 'FunfactPneumonia::update/$1');
+
+$routes->get('pneumonia/funfact/hapus/(:num)', 'FunfactPneumonia::hapus/$1');
+$routes->get('pneumonia/funfact/arsip/(:num)', 'FunfactPneumonia::arsip/$1');
+$routes->get('pneumonia/funfact/publish/(:num)', 'FunfactPneumonia::publish/$1');
+
 /* ========================= */
 /* DIARE */
 /* ========================= */
