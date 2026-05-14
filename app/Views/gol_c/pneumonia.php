@@ -321,8 +321,7 @@ fitur.forEach(btn => {
 }
 
 </style>
-
-<!-- grafik -->
+<!-- GRAFIK -->
 <!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
