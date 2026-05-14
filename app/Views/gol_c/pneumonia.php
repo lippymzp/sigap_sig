@@ -518,7 +518,7 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 
 $dataPneumonia = [];
 
-$query = mysqli_query($conn,"SELECT * FROM grafik");
+$query = mysqli_query($conn,"SELECT * FROM pasien");
 
 while($row = mysqli_fetch_assoc($query)){
 
