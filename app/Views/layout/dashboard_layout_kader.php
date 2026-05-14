@@ -134,7 +134,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <?= $this->renderSection('style'); ?>
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <?php
@@ -236,9 +236,11 @@ $fotoNavbar = (!empty($profil['foto_profil']))
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#" onclick="showLogoutModal(event)">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-                            </a>
+                            <a class="dropdown-item"
+       href="javascript:void(0)"
+       onclick="confirmLogout('<?= base_url('logout') ?>')">
+       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+    </a>
                         </li>
                     </ul>
                 </div>
@@ -260,8 +262,90 @@ document.addEventListener("DOMContentLoaded", function () {
             wrapper.classList.toggle("hide");
         });
     }
+    // ============================================================
+    // 2. LOGIKA ACTIVE MENU OTOMATIS BERDASARKAN URL HASH (#)
+    // ============================================================
+    function updateActiveSidebarMenu() {
+        const currentHash = window.location.hash;
+        const currentPath = window.location.pathname;
+
+        // Script ini hanya bekerja jika kita sedang berada di halaman dashboard
+        if (currentPath.includes('dashboard')) {
+            const navDashboard = document.getElementById('nav-dashboard');
+            const navMap = document.getElementById('nav-map');
+            const navGrafik = document.getElementById('nav-grafik');
+
+            // Jika elemen tidak ditemukan, hentikan fungsi
+            if(!navDashboard || !navMap || !navGrafik) return; 
+
+            // Hapus blok warna dari ketiga menu dashboard
+            navDashboard.classList.remove('active');
+            navMap.classList.remove('active');
+            navGrafik.classList.remove('active');
+
+            // Tambahkan blok warna sesuai tujuan Hash
+            if (currentHash === '#map') {
+                navMap.classList.add('active');
+            } else if (currentHash === '#grafik') {
+                navGrafik.classList.add('active');
+            } else {
+                // Jika tidak ada hash (standar), warnai Dashboard
+                navDashboard.classList.add('active');
+            }
+        }
+    }
+
+    // Jalankan pengecekan pertama kali saat halaman baru dimuat
+    updateActiveSidebarMenu();
+
+    // Jalankan kembali pengecekan setiap kali menu sidebar (yang ada # nya) diklik
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            // Cek apakah link yang diklik mengarah ke Hash (#)
+            if (href.includes('#')) {
+                // Berikan sedikit jeda agar URL di browser sempat terupdate
+                setTimeout(updateActiveSidebarMenu, 50);
+            }
+        });
+    });
+});
+
+/* --- FUNGSI MODAL LOGOUT --- */
+function showLogoutModal(e) {
+    e.preventDefault(); 
+    document.getElementById('modalLogoutOverlay').classList.add('show');
+}
+
+function closeLogoutModal() {
+    document.getElementById('modalLogoutOverlay').classList.remove('show');
+}
+
+document.getElementById('modalLogoutOverlay').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLogoutModal();
+    }
 });
 </script>
   <div class="footer-dashboard">
     <?= $this->include('layout/footer') ?>
 </div>
+<script>
+function confirmLogout(url) {
+    Swal.fire({
+        title: 'Yakin ingin keluar?',
+        text: "Sesi login akan diakhiri",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>

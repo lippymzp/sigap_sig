@@ -29,8 +29,14 @@ class ManajemenUser extends BaseController
 
     // QUERY
     $this->petugas
-        ->select('petugas.*, jabatan.nama_jabatan')
-        ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan');
+    ->select('petugas.*, jabatan.nama_jabatan')
+    ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan')
+
+    // FILTER JABATAN
+    ->whereIn('petugas.id_jabatan', [1,2])
+
+    // FILTER PENYAKIT LOGIN
+    ->where('petugas.id_penyakit', session()->get('id_penyakit'));
 
     // SEARCH
     if (!empty($keyword)) {
@@ -74,7 +80,9 @@ class ManajemenUser extends BaseController
         'start' => $start,
         'end' => $end,
 
-        'jabatan_list' => $this->jabatan->findAll(),
+        'jabatan_list' => $this->jabatan
+            ->whereIn('id_jabatan', [1,2])
+            ->findAll(),
 
         'keyword' => $keyword,
         'selected_jabatan' => $jabatan,
@@ -93,7 +101,9 @@ class ManajemenUser extends BaseController
         $data['instansi'] = $this->instansi->findAll();
 
        $data = [
-        'jabatan' => $this->jabatan->findAll(),
+        'jabatan' => $this->jabatan
+            ->whereIn('id_jabatan', [1,2])
+            ->findAll(),
         'instansi' => $this->instansi->findAll(),
         'mode' => $mode,
         'menu' => 'manajemen_user',
@@ -105,10 +115,6 @@ class ManajemenUser extends BaseController
     }
 
     return view('gol_a/manajemen_user/form', $data);
-
-
-
-        return view('gol_a/manajemen_user/form', $data);
     }
 
     // ================= SIMPAN =================
@@ -124,6 +130,24 @@ class ManajemenUser extends BaseController
                 ->withInput()
                 ->with('error', 'Konfirmasi password tidak sama.');
         }
+
+        $id_jabatan = $this->request->getPost('id_jabatan');
+
+            if(!in_array($id_jabatan, [1,2])){
+
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Jabatan tidak valid.');
+            }
+
+            $id_jabatan = $this->request->getPost('id_jabatan');
+
+            if(!in_array($id_jabatan, [1,2])){
+
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Jabatan tidak valid.');
+            }
 
         $this->petugas->save([
 
@@ -209,19 +233,28 @@ class ManajemenUser extends BaseController
             ->where('id_petugas', $id)
             ->countAllResults();
 
-        // kalau masih dipakai
+        // kalau masih dipakai pasien
         if ($jumlahPasien > 0) {
 
             return redirect()->to('/manajemen-user')
                 ->with('error', 'Data petugas tidak bisa dihapus karena masih digunakan pada data pasien.');
         }
 
-        // hapus jika aman
+        // =========================
+        // HAPUS DATA PROFIL DULU
+        // =========================
+        $db->table('profil')
+            ->where('id_petugas', $id)
+            ->delete();
+
+        // =========================
+        // BARU HAPUS PETUGAS
+        // =========================
         $this->petugas->delete($id);
 
         return redirect()->to('/manajemen-user')
             ->with('success', 'Data berhasil dihapus.');
-}
+    }
 
     // ================= DETAIL =================
     public function view($id)

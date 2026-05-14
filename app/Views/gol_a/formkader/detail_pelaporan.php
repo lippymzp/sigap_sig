@@ -51,7 +51,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Kelurahan</label>
-                <div class="view-input"><?= $laporan['nama_kelurahan'] ?></div>
+                <div class="view-input"><?= $laporan['kelurahan'] ?></div>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Pos Posyandu</label>

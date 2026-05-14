@@ -1,6 +1,19 @@
 <?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
 
+    <?php
+
+    $petugas = $petugas ?? [];
+    $start = $start ?? 0;
+    $end = $end ?? 0;
+    $total = $total ?? 0;
+    $pager = $pager ?? null;
+    $jabatan_list = $jabatan_list ?? [];
+    $selected_jabatan = $selected_jabatan ?? '';
+    $keyword = $keyword ?? '';
+
+    ?>
+
 <?php if(session()->getFlashdata('success')): ?>
 
 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -333,9 +346,9 @@
     </div>
 
     <!-- PAGINATION -->
-    <div>
+    <?php if ($pager): ?>
         <?= $pager->links() ?>
-    </div>
+    <?php endif; ?>
 
 </div>
 

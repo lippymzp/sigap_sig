@@ -125,7 +125,7 @@ html,body{
 .contact-item span { flex: 1; }
 </style>
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <?php
@@ -255,9 +255,18 @@ $fotoNavbar = (!empty($profil['foto_profil']))
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><a class="dropdown-item" href="<?= base_url('profil_admin') ?>">Profile</a></li>
+                        <li>
+                            <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
+                                <i class="fa-regular fa-user me-2"></i> Profile
+                            </a>
+                </li>
                 <li>
-                    <a class="dropdown-item" href="javascript:void(0)" onclick="confirmLogout('<?= base_url('/logout') ?>')">Keluar</a>
+              <a class="dropdown-item"
+       href="javascript:void(0)"
+       onclick="confirmLogout('<?= base_url('logout') ?>')">
+       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+    </a>
+                </a>
                 </li>
             </ul>
         </div>
@@ -280,8 +289,85 @@ document.addEventListener("DOMContentLoaded", function () {
             wrapper.classList.toggle("hide");
         });
     }
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+    const currentUrl = window.location.href;
+    const currentPath = currentUrl.split('?')[0].split('#')[0]; // URL murni tanpa parameter dan hash
+    const currentHash = window.location.hash;
+
+    // ============================================================
+    // 2. LOGIKA ACTIVE MENU (Otomatis memperbaiki PHP yang kosong)
+    // ============================================================
+    // Jika kita mengklik Peta Sebaran
+    if (currentHash === '#map') {
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        const navMap = document.getElementById('nav-map');
+        if (navMap) navMap.classList.add('active');
+    } 
+    else {
+        // Cek apakah ada menu yang sudah diwarnai oleh Controller PHP
+        let isAnyActive = document.querySelector('.sidebar a.active');
+        
+        // Jika PHP lupa mewarnai (misal controller berita tidak mengirim $menu), 
+        // JS ini akan otomatis mendeteksi URL dan mewarnai menu yang tepat
+        if (!isAnyActive) {
+            sidebarLinks.forEach(link => {
+                const linkPath = link.href.split('?')[0].split('#')[0];
+                if (linkPath === currentPath && link.id !== 'nav-map') {
+                    link.classList.add('active');
+                }
+            });
+        }
+    }
+
+    // ============================================================
+    // 3. AUTO SCROLL SIDEBAR KE MENU YANG AKTIF
+    // ============================================================
+    const activeMenu = document.querySelector('.sidebar a.active');
+    if (activeMenu) {
+        // Sidebar akan otomatis menggulung agar menu aktif tampil di tengah
+        activeMenu.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+
+    // ============================================================
+    // 4. EFEK WARNA INSTAN SAAT MENU APAPUN DIKLIK
+    // ============================================================
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Hapus blok warna dari semua menu
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            // Berikan blok warna pada menu yang baru saja diklik
+            this.classList.add('active');
+        });
+    });
 });
+
+/* LOGOUT */
+function confirmLogout(url)
+{
+    if(confirm('Yakin ingin keluar?'))
+    {
+        window.location.href = url;
+    }
+}
 </script>
 <div class="footer-dashboard">
     <?= $this->include('layout/footer') ?>
 </div>
+<script>
+function confirmLogout(url) {
+    Swal.fire({
+        title: 'Yakin ingin keluar?',
+        text: "Sesi login akan diakhiri",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>

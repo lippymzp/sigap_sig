@@ -181,7 +181,7 @@ html,body{
 }
 </style>
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <?php
@@ -284,8 +284,18 @@ $fotoNavbar = (!empty($profil['foto_profil']))
             </div>
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><a class="dropdown-item" href="<?= base_url('profil_kepala') ?>">Profile</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="confirmLogout('<?= base_url('/logout') ?>')">Keluar</a></li>
+                <li>
+                            <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
+                                <i class="fa-regular fa-user me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+       href="javascript:void(0)"
+       onclick="confirmLogout('<?= base_url('logout') ?>')">
+       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+    </a>
+                       
             </ul>
         </div>
     </div>
@@ -307,8 +317,73 @@ document.addEventListener("DOMContentLoaded", function () {
             wrapper.classList.toggle("hide");
         });
     }
+    // --- FITUR AKTIF MENU OTOMATIS BERDASARKAN SCROLL (SCROLLSPY) ---
+    const navDashboard = document.getElementById('nav-dashboard');
+    const navPeta = document.getElementById('nav-peta');
+    const navGrafik = document.getElementById('nav-grafik');
+
+    // Hanya jalankan jika berada di halaman dashboard
+    if (window.location.href.includes('dashboard/kepala') && navDashboard && navPeta && navGrafik) {
+        
+        function updateActiveNav() {
+            // Mengambil elemen section (ID peta-sebaran/map dan grafik dari dashboard_kepala.php)
+            const mapSection = document.getElementById('map') || document.getElementById('peta-sebaran');
+            const grafikSection = document.getElementById('grafik');
+            
+            // Jarak toleransi dari atas layar
+            let scrollPos = window.scrollY + 200; 
+
+            let currentActive = navDashboard; // Default di paling atas adalah Dashboard
+
+            // Cek section mana yang sedang dilihat
+            if (grafikSection && scrollPos >= grafikSection.offsetTop) {
+                currentActive = navGrafik;
+            } else if (mapSection && scrollPos >= mapSection.offsetTop) {
+                currentActive = navPeta;
+            }
+
+            // Hapus class active dari ketiga menu tersebut
+            navDashboard.classList.remove('active');
+            navPeta.classList.remove('active');
+            navGrafik.classList.remove('active');
+
+            // Tambahkan class active ke menu yang sesuai dengan posisi layar
+            currentActive.classList.add('active');
+        }
+
+        // Jalankan fungsi saat pengguna melakukan scroll
+        window.addEventListener('scroll', updateActiveNav);
+        
+        // Jalankan fungsi satu kali saat halaman pertama kali dimuat
+        setTimeout(updateActiveNav, 100);
+    }
 });
+
+// FUNGSI LOGOUT KUSTOM
+function confirmLogout(url) {
+    document.getElementById('btnConfirmLogout').href = url;
+    var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+    logoutModal.show();
+}
 </script>
 <div class="footer-dashboard">
     <?= $this->include('layout/footer') ?>
 </div>
+<script>
+function confirmLogout(url) {
+    Swal.fire({
+        title: 'Yakin ingin keluar?',
+        text: "Sesi login akan diakhiri",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
