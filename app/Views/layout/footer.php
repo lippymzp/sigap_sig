@@ -2,7 +2,7 @@
 
 <div class="container">
 
-    <div class="row gy-5">
+    <div class="row gy-3">
 
         <!-- LOGO & DESKRIPSI -->
         <div class="col-lg-6" data-aos="fade-up">
@@ -14,7 +14,7 @@
         <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
 
         <?php if (!empty($show_footer_maskot)): ?>
-            <img src="<?= base_url('img/maskotdsing.png') ?>" alt="Maskot AI" class="footer-maskot">
+            <img src="<?= base_url('img/logo_denggis.png') ?>" alt="Maskot AI" class="footer-maskot">
         <?php endif; ?>
 
     </div>
@@ -27,7 +27,7 @@
 
 </div>
 
-            <div class="footer-links mt-5">
+            <div class="footer-links mt-2">
                 <a href="#">Bantuan</a>
                 <a href="#">Tentang Kami</a>
             </div>
@@ -101,11 +101,26 @@
 
 .footer-sigap{
     background:#014F4F;
-    padding:80px 0 30px;
+    padding:25px 0 15px;
     position:relative;
     overflow:hidden;
 }
-
+.footer-dashboard .footer-sigap{
+    margin-left:260px;
+    width:calc(100% - 260px);
+    transition: all 0.3s ease;
+}
+/* SAAT SIDEBAR DITUTUP */
+.wrapper.hide ~ .footer-dashboard .footer-sigap{
+    margin-left:0;
+    width:100%;
+}
+@media (max-width:768px){
+    .footer-dashboard .footer-sigap{
+        margin-left:0;
+        width:100%;
+    }
+}
 /* CONTAINER */
 .footer-sigap .container{
     position:relative;
@@ -244,9 +259,9 @@
 /* LINE */
 .footer-line{
     width:100%;
-    height:2px;
+    height:1px;
     background:rgba(255,255,255,0.4);
-    margin:70px 0 25px;
+    margin:30px 0 15px;
 }
 
 /* COPYRIGHT */

@@ -248,153 +248,22 @@ $fotoNavbar = (!empty($profil['foto_profil']))
         <div class="content-body">
             <?= $this->renderSection('content'); ?>
         </div>
-
-        <footer class="footer">
-            <div class="container text-white py-3">
-                <div class="row align-items-start">
-                    <div class="col-md-4 text-center mb-2">
-                        <div class="logo mb-1">
-                            <img src="<?= base_url('img/logo_sigap.png') ?>" alt="Logo Sigap" style="max-width:70px;">
-                        </div>
-                        <h6 class="fw-bold mb-1">SIGAP</h6>
-                        <p class="small mb-0" style="line-height:1.3;">Sistem Informasi Geografis Analisis<br>& Pemantauan Penyakit</p>
-                    </div>
-
-                    <!-- SOSIAL -->
-    <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Media Sosial</h6>
-
-        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
-       
-    </div>
-
-    <!-- KONTAK -->
-    <div class="col-md-4 mb-2">
-    <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
-
-    <div class="contact-item mb-3">
-        <i class="fa-solid fa-envelope"></i>
-        <span>medixatechnology@gmail.com</span>
-    </div>
-
-    <div class="contact-item mb-3">
-        <i class="fa-solid fa-location-dot"></i>
-        <span>
-            Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari,
-            Kabupaten Jember, Jawa Timur 68121
-        </span>
-    </div>
-
-    <div class="contact-item">
-        <i class="fa-solid fa-phone"></i>
-        <span>087888888888</span>
-    </div>
-                </div>
-                <hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
-                <p class="text-center small mb-0">© 2026 SIGAP</p>
-            </div>
-        </footer>
-
-    </div>
-</div>
-
-<div id="modalLogoutOverlay" class="logout-overlay">
-    <div class="logout-card">
-        <div class="logout-icon-circle">
-            <i class="fa-solid fa-xmark"></i>
         </div>
-        <h4 class="logout-title">Apakah anda yakin<br>keluar?</h4>
-        <div class="logout-btn-group">
-            <a href="<?= base_url('/logout') ?>" class="btn-logout-ya">Ya</a>
-            <button type="button" class="btn-logout-tidak" onclick="closeLogoutModal()">Tidak</button>
         </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<?= base_url('js/script.js') ?>"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<?= $this->renderSection('script'); ?>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // 1. Toggle Sidebar Logic
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
     const toggle = document.getElementById("toggleSidebar");
     const wrapper = document.getElementById("wrapper");
 
     if (toggle && wrapper) {
-        toggle.addEventListener("click", function() {
+        toggle.addEventListener("click", function () {
             wrapper.classList.toggle("hide");
         });
     }
-
-    // ============================================================
-    // 2. LOGIKA ACTIVE MENU OTOMATIS BERDASARKAN URL HASH (#)
-    // ============================================================
-    function updateActiveSidebarMenu() {
-        const currentHash = window.location.hash;
-        const currentPath = window.location.pathname;
-
-        // Script ini hanya bekerja jika kita sedang berada di halaman dashboard
-        if (currentPath.includes('dashboard')) {
-            const navDashboard = document.getElementById('nav-dashboard');
-            const navMap = document.getElementById('nav-map');
-            const navGrafik = document.getElementById('nav-grafik');
-
-            // Jika elemen tidak ditemukan, hentikan fungsi
-            if(!navDashboard || !navMap || !navGrafik) return; 
-
-            // Hapus blok warna dari ketiga menu dashboard
-            navDashboard.classList.remove('active');
-            navMap.classList.remove('active');
-            navGrafik.classList.remove('active');
-
-            // Tambahkan blok warna sesuai tujuan Hash
-            if (currentHash === '#map') {
-                navMap.classList.add('active');
-            } else if (currentHash === '#grafik') {
-                navGrafik.classList.add('active');
-            } else {
-                // Jika tidak ada hash (standar), warnai Dashboard
-                navDashboard.classList.add('active');
-            }
-        }
-    }
-
-    // Jalankan pengecekan pertama kali saat halaman baru dimuat
-    updateActiveSidebarMenu();
-
-    // Jalankan kembali pengecekan setiap kali menu sidebar (yang ada # nya) diklik
-    const sidebarLinks = document.querySelectorAll('.sidebar a');
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            // Cek apakah link yang diklik mengarah ke Hash (#)
-            if (href.includes('#')) {
-                // Berikan sedikit jeda agar URL di browser sempat terupdate
-                setTimeout(updateActiveSidebarMenu, 50);
-            }
-        });
-    });
-});
-
-/* --- FUNGSI MODAL LOGOUT --- */
-function showLogoutModal(e) {
-    e.preventDefault(); 
-    document.getElementById('modalLogoutOverlay').classList.add('show');
-}
-
-function closeLogoutModal() {
-    document.getElementById('modalLogoutOverlay').classList.remove('show');
-}
-
-document.getElementById('modalLogoutOverlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeLogoutModal();
-    }
 });
 </script>
-
-</body>
-</html>
+    <div class="footer-dashboard">
+    <?= $this->include('layout/footer', [
+        'show_footer_maskot' => true
+    ]) ?>
+</div>

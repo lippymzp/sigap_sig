@@ -22,11 +22,10 @@
 .footer {
     background: #11b5b9;
     color: white;
-    padding: 35px 0 15px;
-    margin-top: 40px;
+    padding: 20px 0 10px;
+    margin-top: 30px;
     margin-left: 260px;
     width: calc(100% - 260px);
-    transition: all 0.3s ease;
 }
 
 .wrapper.hide ~ .footer {
@@ -265,122 +264,22 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <div class="content-body">
     <?= $this->renderSection('content'); ?>
 </div>
-
 </div>
 </div>
-
-<footer class="footer">
-
-<div class="container text-white py-3">
-<div class="row align-items-start">
-
-    <div class="col-md-4 text-center mb-2">
-         <div class="logo mb-1">
-            <img src="<?= base_url('img/logo_sigap.png') ?>" alt="Logo SIGAP" style="max-width:70px;">
-        </div>
-        <h6 class="fw-bold mb-1">SIGAP</h6>
-        <p class="small mb-0" style="line-height:1.3;">Sistem Informasi Geografis Analisis<br>& Pemantauan Penyakit</p>
-    </div>
-
-    <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Media Sosial</h6>
-        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
-    </div>
-
-    <div class="col-md-4 mb-2">
-    <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
-    <div class="contact-item mb-3"><i class="fa-solid fa-envelope"></i><span>medixatechnology@gmail.com</span></div>
-    <div class="contact-item mb-3"><i class="fa-solid fa-location-dot"></i><span>Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121</span></div>
-    <div class="contact-item"><i class="fa-solid fa-phone"></i><span>087888888888</span></div>
-</div>
-
-</div>
-<hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
-<p class="text-center small mb-0">© 2026 SIGAP</p>
-</div>
-</footer>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // 1. Toggle Sidebar Logic
+document.addEventListener("DOMContentLoaded", function () {
     const toggle = document.getElementById("toggleSidebar");
     const wrapper = document.getElementById("wrapper");
 
     if (toggle && wrapper) {
-        toggle.addEventListener("click", function() {
+        toggle.addEventListener("click", function () {
             wrapper.classList.toggle("hide");
         });
     }
-
-    const sidebarLinks = document.querySelectorAll('.sidebar a');
-    const currentUrl = window.location.href;
-    const currentPath = currentUrl.split('?')[0].split('#')[0]; // URL murni tanpa parameter dan hash
-    const currentHash = window.location.hash;
-
-    // ============================================================
-    // 2. LOGIKA ACTIVE MENU (Otomatis memperbaiki PHP yang kosong)
-    // ============================================================
-    // Jika kita mengklik Peta Sebaran
-    if (currentHash === '#map') {
-        sidebarLinks.forEach(l => l.classList.remove('active'));
-        const navMap = document.getElementById('nav-map');
-        if (navMap) navMap.classList.add('active');
-    } 
-    else {
-        // Cek apakah ada menu yang sudah diwarnai oleh Controller PHP
-        let isAnyActive = document.querySelector('.sidebar a.active');
-        
-        // Jika PHP lupa mewarnai (misal controller berita tidak mengirim $menu), 
-        // JS ini akan otomatis mendeteksi URL dan mewarnai menu yang tepat
-        if (!isAnyActive) {
-            sidebarLinks.forEach(link => {
-                const linkPath = link.href.split('?')[0].split('#')[0];
-                if (linkPath === currentPath && link.id !== 'nav-map') {
-                    link.classList.add('active');
-                }
-            });
-        }
-    }
-
-    // ============================================================
-    // 3. AUTO SCROLL SIDEBAR KE MENU YANG AKTIF
-    // ============================================================
-    const activeMenu = document.querySelector('.sidebar a.active');
-    if (activeMenu) {
-        // Sidebar akan otomatis menggulung agar menu aktif tampil di tengah
-        activeMenu.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-
-    // ============================================================
-    // 4. EFEK WARNA INSTAN SAAT MENU APAPUN DIKLIK
-    // ============================================================
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Hapus blok warna dari semua menu
-            sidebarLinks.forEach(l => l.classList.remove('active'));
-            // Berikan blok warna pada menu yang baru saja diklik
-            this.classList.add('active');
-        });
-    });
 });
-
-/* LOGOUT */
-function confirmLogout(url)
-{
-    if(confirm('Yakin ingin keluar?'))
-    {
-        window.location.href = url;
-    }
-}
 </script>
-
-<?= $this->renderSection('script'); ?>
-
-</body>
-</html>
+<div class="footer-dashboard">
+    <?= $this->include('layout/footer', [
+        'show_footer_maskot' => true
+    ]) ?>
+</div>
