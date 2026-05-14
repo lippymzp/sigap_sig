@@ -297,129 +297,18 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 </div>
 </div>
-
-<footer class="footer">
-<div class="container text-white py-3">
-<div class="row align-items-start">
-    <div class="col-md-4 text-center mb-2">
-         <div class="logo mb-1">
-            <img src="<?= base_url('img/logo_sigap.png') ?>" alt="Logo SIGAP" style="max-width:70px;">
-        </div>
-        <h6 class="fw-bold mb-1">SIGAP</h6>
-        <p class="small mb-0" style="line-height:1.3;">Sistem Informasi Geografis Analisis<br>& Pemantauan Penyakit</p>
-    </div>
-
-    <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Media Sosial</h6>
-        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>sigap.co.id</p>
-    </div>
-
-    <div class="col-md-4 mb-2">
-    <h6 class="fw-bold mb-3 text-white">Informasi Kontak</h6>
-    <div class="contact-item mb-3">
-        <i class="fa-solid fa-envelope"></i>
-        <span>medixatechnology@gmail.com</span>
-    </div>
-    <div class="contact-item mb-3">
-        <i class="fa-solid fa-location-dot"></i>
-        <span>Jl. Mastrip, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121</span>
-    </div>
-    <div class="contact-item">
-        <i class="fa-solid fa-phone"></i>
-        <span>087888888888</span>
-    </div>
-</div>
-</div>
-
-<hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
-<p class="text-center small mb-0">© 2026 SIGAP</p>
-</div>
-</footer>
-
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 320px;">
-        <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.15);">
-            <div class="modal-body text-center p-4">
-                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: #ff4d4f; border-radius: 50%;">
-                    <i class="fa-solid fa-xmark text-white fs-2"></i>
-                </div>
-                <h5 class="fw-bold mb-4 text-dark" style="font-size: 18px;">Apakah anda yakin<br>keluar?</h5>
-                <div class="d-grid gap-2">
-                    <a href="#" id="btnConfirmLogout" class="btn text-white py-2" style="background-color: #11b5b9; border-radius: 8px; font-weight: 500;">Ya</a>
-                    <button type="button" class="btn text-white py-2" data-bs-dismiss="modal" style="background-color: #d1d1d1; border-radius: 8px; font-weight: 500;">Tidak</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // --- FITUR TOGGLE SIDEBAR ---
+document.addEventListener("DOMContentLoaded", function () {
     const toggle = document.getElementById("toggleSidebar");
     const wrapper = document.getElementById("wrapper");
 
     if (toggle && wrapper) {
-        toggle.addEventListener("click", function() {
+        toggle.addEventListener("click", function () {
             wrapper.classList.toggle("hide");
-            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 300);
         });
     }
-
-    // --- FITUR AKTIF MENU OTOMATIS BERDASARKAN SCROLL (SCROLLSPY) ---
-    const navDashboard = document.getElementById('nav-dashboard');
-    const navPeta = document.getElementById('nav-peta');
-    const navGrafik = document.getElementById('nav-grafik');
-
-    // Hanya jalankan jika berada di halaman dashboard
-    if (window.location.href.includes('dashboard/kepala') && navDashboard && navPeta && navGrafik) {
-        
-        function updateActiveNav() {
-            // Mengambil elemen section (ID peta-sebaran/map dan grafik dari dashboard_kepala.php)
-            const mapSection = document.getElementById('map') || document.getElementById('peta-sebaran');
-            const grafikSection = document.getElementById('grafik');
-            
-            // Jarak toleransi dari atas layar
-            let scrollPos = window.scrollY + 200; 
-
-            let currentActive = navDashboard; // Default di paling atas adalah Dashboard
-
-            // Cek section mana yang sedang dilihat
-            if (grafikSection && scrollPos >= grafikSection.offsetTop) {
-                currentActive = navGrafik;
-            } else if (mapSection && scrollPos >= mapSection.offsetTop) {
-                currentActive = navPeta;
-            }
-
-            // Hapus class active dari ketiga menu tersebut
-            navDashboard.classList.remove('active');
-            navPeta.classList.remove('active');
-            navGrafik.classList.remove('active');
-
-            // Tambahkan class active ke menu yang sesuai dengan posisi layar
-            currentActive.classList.add('active');
-        }
-
-        // Jalankan fungsi saat pengguna melakukan scroll
-        window.addEventListener('scroll', updateActiveNav);
-        
-        // Jalankan fungsi satu kali saat halaman pertama kali dimuat
-        setTimeout(updateActiveNav, 100);
-    }
 });
-
-// FUNGSI LOGOUT KUSTOM
-function confirmLogout(url) {
-    document.getElementById('btnConfirmLogout').href = url;
-    var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
-    logoutModal.show();
-}
 </script>
-
-<?= $this->renderSection('script'); ?>
-
-</body>
-</html>
+<div class="footer-dashboard">
+    <?= $this->include('layout/footer') ?>
+</div>

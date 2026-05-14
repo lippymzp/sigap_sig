@@ -190,7 +190,7 @@ class Dbd extends BaseController
             'title'     => 'Pelaporan Kader',
             'judul'     => 'Pelaporan Kader',
             'menu'      => 'riwayat_jentik', // Sesuai dengan menu sidebar Anda
-            'pelaporan' => $dataPelaporan    // Variabel berisi data database
+            'pelaporan' => $dataPelaporan ,  // Variabel berisi data database
         ];
 
         // 5. Tampilkan ke file View yang tepat
@@ -699,7 +699,9 @@ class Dbd extends BaseController
         'wilayah' => 6,
 
         'grafik' => $grafik, // 🔥 TAMBAH
-        'dbd' => $dbd        // 🔥 TAMBAH
+        'dbd' => $dbd,        // 🔥 TAMBAH
+        'show_footer_maskot' => true,
+        'footer_maskot' => 'logo_denggis.png'
     ]);}
 
 

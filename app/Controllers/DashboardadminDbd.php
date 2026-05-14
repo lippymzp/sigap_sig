@@ -227,21 +227,16 @@ $builder->groupBy('w.kelurahan');
         // =========================
         // RETURN VIEW
         // =========================
-        return view('gol_a/dashboard_dbd', [
-
-            'menu' => 'dashboard',
-
-            'grafik' => $grafik,
-
-            'dbd' => $dbd,
-
-            'detailDesa' => $detailDesa,
-
-            'desaTertinggi' => $desaTertinggi,
-
-            'berita'  => $berita,
-            
-            'funfact' => $funfact
-        ]);
-    }
+      return view('gol_a/dashboard_dbd', [
+    'menu' => 'dashboard',
+    'grafik' => $grafik,
+    'dbd' => $dbd,
+    'detailDesa' => $detailDesa,
+    'desaTertinggi' => $desaTertinggi,
+    'berita' => $berita,
+    'funfact' => $funfact,
+    'show_footer_maskot' => true,
+    'footer_maskot' => 'logo_denggis.png'
+]);
+}
 }
