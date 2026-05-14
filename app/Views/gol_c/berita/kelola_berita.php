@@ -434,18 +434,18 @@ $keyword = $keyword ?? '';
                 <div class="action-icons">
 
                                 <!-- VIEW -->
-                <a href="/berita/view_berita/<?= $b['id_berita']; ?>" class="icon-btn view">
+                <a href="/beritapneumonia/admin/view_berita/<?= $b['id_berita']; ?>" class="icon-btn view">
                     <i class="fas fa-eye"></i>
                 </a>
 
                 <!-- EDIT -->
-                <a href="/berita/edit/<?= $b['id_berita']; ?>" class="icon-btn status">
+                <a href="/beritapneumonia/admin/edit/<?= $b['id_berita']; ?>" class="icon-btn status">
                     <i class="fas fa-pen"></i>
                 </a>
 
                 <!-- DELETE -->
                 <a href="javascript:void(0)"
-                onclick="openDeleteModal('/berita/delete/<?= $b['id_berita']; ?>')"
+                onclick="openDeleteModal('/beritapneumonia/admin/delete/<?= $b['id_berita']; ?>')"
                 class="icon-btn delete">
 
                     <i class="fas fa-trash"></i>
