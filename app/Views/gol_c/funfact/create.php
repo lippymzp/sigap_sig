@@ -149,26 +149,17 @@ placeholder="Masukkan judul funfact utama...">
 
 <input type="hidden" name="isi" id="isiHidden">
 
-<label class="fw-bold">Ringkasan / Deskripsi Singkat</label>
+<label class="fw-bold mt-3">Ringkasan / Deskripsi Singkat</label>
 <input type="text" name="ringkasan"
 class="form-control"
 placeholder="Masukkan ringkasan singkat...">
 
 <div class="row">
-
-<div class="col-md-6">
-<label class="fw-bold">Penulis</label>
-<input type="text" name="penulis"
-class="form-control"
-placeholder="Nama penulis">
-</div>
-
-<div class="col-md-6">
+<div class="col-md-4">
 <label class="fw-bold">Tanggal Unggah</label>
 <input type="date" name="tanggal"
 class="form-control">
 </div>
-
 </div>
 
 <div class="bottom-btn">
@@ -295,10 +286,9 @@ document.getElementById('editor').innerHTML.trim();
 let judul = document.querySelector('[name=judul]').value.trim();
 let isi = document.getElementById('isiHidden').value.trim();
 let ringkasan = document.querySelector('[name=ringkasan]').value.trim();
-let penulis = document.querySelector('[name=penulis]').value.trim();
 let tanggal = document.querySelector('[name=tanggal]').value.trim();
 
-if(judul=='' || isi=='' || ringkasan=='' || penulis=='' || tanggal==''){
+if(judul=='' || isi=='' || ringkasan=='' || tanggal==''){
 
 document.getElementById('popupBg').style.display='block';
 document.getElementById('popupTitle').innerHTML='Unggah Funfact Gagal';
