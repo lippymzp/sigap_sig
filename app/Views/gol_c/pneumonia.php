@@ -330,6 +330,410 @@ fitur.forEach(btn => {
 <h6 class="text-center text-muted">Insights</h6>
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
 
+<?php
+$conn = mysqli_connect("localhost","root","","sigap_db");
+
+$queryBerita = mysqli_query($conn, "
+    SELECT *
+    FROM berita
+    WHERE id_penyakit = 3
+    ORDER BY tanggal_berita DESC
+");
+
+$totalBerita = mysqli_num_rows($queryBerita);
+?>
+
+<div class="news-slider">
+
+    <button class="slide-btn prev-btn">
+        &#10094;
+    </button>
+
+    <div class="news-track">
+
+        <?php if($totalBerita > 0): ?>
+
+            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+
+                <?php
+                // CEK GAMBAR
+                $gambar = $berita['gambar_berita'];
+
+                if(empty($gambar)){
+                    $gambarFix = base_url('uplouds/berita/default.jpeg');
+                }else{
+                    $gambarFix = base_url('uploads/berita/' . $gambar);
+                }
+
+                // CEK URL
+                $urlBerita = !empty($berita['url_berita'])
+                    ? $berita['url_berita']
+                    : '#';
+                ?>
+
+                <!-- CARD BERITA -->
+                <div class="news-card">
+
+                    <img 
+                        src="<?= $gambarFix ?>" 
+                        alt="<?= $berita['judul_berita'] ?>"
+                    >
+
+                    <div class="news-content">
+
+                        <span class="news-badge">
+                            Pneumonia
+                        </span>
+
+                        <h5>
+                            <?= $berita['judul_berita'] ?>
+                        </h5>
+
+                        <p>
+                            <?= substr(strip_tags($berita['deskripsi_berita']),0,100) ?>...
+                        </p>
+
+                        <a 
+                            href="<?= $urlBerita ?>" 
+                            class="news-link"
+                        >
+                            Baca Selengkapnya
+                        </a>
+
+                    </div>
+
+                </div>
+
+            <?php endwhile; ?>
+
+        <?php else: ?>
+
+            <!-- DUMMY CARD 1 -->
+            <div class="news-card">
+
+                <img 
+                    src="<?= base_url('uplouds/berita/default.jpeg') ?>" 
+                    alt=""
+                >
+
+                <div class="news-content">
+
+                    <span class="news-badge">
+                        Informasi
+                    </span>
+
+                    <h5>
+                        Belum Ada Berita Pneumonia
+                    </h5>
+
+                    <p>
+                        Saat ini belum tersedia artikel atau berita terbaru mengenai pneumonia.
+                    </p>
+
+                    <a href="#" class="news-link">
+                        Nantikan Update →
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- DUMMY CARD 2 -->
+            <div class="news-card">
+
+                <img 
+                    src="<?= base_url('uplouds/berita/default.jpeg') ?>" 
+                    alt=""
+                >
+
+                <div class="news-content">
+
+                    <span class="news-badge">
+                        Edukasi
+                    </span>
+
+                    <h5>
+                        Informasi Akan Segera Ditambahkan
+                    </h5>
+
+                    <p>
+                        Tim kami sedang menyiapkan informasi kesehatan pneumonia terbaru.
+                    </p>
+
+                    <a href="#" class="news-link">
+                        Segera Hadir →
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- DUMMY CARD 3 -->
+            <div class="news-card">
+
+                <img 
+                    src="<?= base_url('uplouds/berita/default.jpeg') ?>" 
+                    alt=""
+                >
+
+                <div class="news-content">
+
+                    <span class="news-badge">
+                        Kesehatan
+                    </span>
+
+                    <h5>
+                        Tetap Jaga Kesehatan Paru-Paru
+                    </h5>
+
+                    <p>
+                        Hindari asap rokok dan jaga daya tahan tubuh untuk mencegah pneumonia.
+                    </p>
+
+                    <a href="#" class="news-link">
+                        Pelajari
+                    </a>
+
+                </div>
+
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+
+    <button class="slide-btn next-btn">
+        &#10095;
+    </button>
+
+</div>
+
+</section>
+
+<style>
+
+/* ========================= NEWS SLIDER ========================= */
+
+.news-slider{
+    position: relative;
+    overflow: hidden;
+    padding: 10px 45px;
+}
+
+.news-track{
+    display: flex;
+    gap: 20px;
+
+    overflow-x: auto;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+}
+
+.news-track::-webkit-scrollbar{
+    display: none;
+}
+
+/* CARD */
+/* CARD */
+/* CARD */
+.news-card{
+    min-width: 380px;
+    max-width: 380px;
+    min-height: 470px;
+
+    background: white;
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+
+    transition: 0.3s;
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* IMAGE */
+.news-card img{
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    background: #f1f1f1;
+}
+
+/* CONTENT */
+.news-content{
+    padding: 20px;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* LINK DI BAWAH */
+.news-link{
+    margin-top: auto;
+
+    text-decoration: none;
+
+    color: #11b7c4;
+    font-weight: 700;
+
+    transition: 0.3s;
+}
+
+.news-card:hover{
+    transform: translateY(-6px);
+}
+
+/* IMAGE */
+.news-card img{
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    background: #f1f1f1;
+}
+
+/* CONTENT */
+.news-content{
+    padding: 20px;
+}
+
+/* BADGE */
+.news-badge{
+    display: inline-block;
+
+    background: #dff7f8;
+    color: #13aab5;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    padding: 6px 12px;
+
+    border-radius: 6px; /* sebelumnya 50px */
+
+    margin-bottom: 14px;
+}
+
+.news-content h5{
+    font-size: 20px;
+    font-weight: 700;
+
+    margin-bottom: 12px;
+    color: #173b4d;
+}
+
+.news-content p{
+    font-size: 14px;
+    color: #6c757d;
+
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+/* LINK */
+.news-link{
+    text-decoration: none;
+
+    color: #11b7c4;
+    font-weight: 700;
+
+    transition: 0.3s;
+}
+
+.news-link:hover{
+    color: #0a8d98;
+}
+
+/* BUTTON */
+.slide-btn{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+    color: #14b9c8;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+    z-index: 10;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.slide-btn:hover{
+    background: #14b9c8;
+    color: white;
+}
+
+.prev-btn{
+    left: 0;
+}
+
+.next-btn{
+    right: 0;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+
+    .news-card{
+        min-width: 270px;
+        max-width: 270px;
+    }
+
+    .news-card img{
+        height: 180px;
+    }
+
+    .news-content h5{
+        font-size: 18px;
+    }
+
+}
+
+</style>
+
+<script>
+
+const newsTrack = document.querySelector('.news-track');
+const nextBtn = document.querySelector('.next-btn');
+const prevBtn = document.querySelector('.prev-btn');
+
+nextBtn.addEventListener('click', () => {
+
+    newsTrack.scrollBy({
+        left: 340,
+        behavior: 'smooth'
+    });
+
+});
+
+prevBtn.addEventListener('click', () => {
+
+    newsTrack.scrollBy({
+        left: -340,
+        behavior: 'smooth'
+    });
+
+});
+
+</script>
+
 <div class="carousel-wrapper">
 </div>
 
