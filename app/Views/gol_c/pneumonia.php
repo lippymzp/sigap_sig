@@ -2,14 +2,14 @@
 <?= $this->include('layout/header') ?>
 
 <!-- HERO BANNER -->
-<section class="pneu-hero text-white mb-4">
+<section class="pneu-hero text-white">
 <div class="container">
 <div class="row align-items-center">
 
 <div class="col-md-6">
     <h1>Pneumonia</h1>
     <p>
-    Tau ga sih, Apa Itu Pneumonia ?   
+    Tau ga sih, Apa Itu Pneumonia?   
 </p> 
 <p>
         Pneumonia adalah infeksi pada paru-paru yang menyebabkan kantung udara (alveoli) terisi cairan atau nanah, 
@@ -214,11 +214,7 @@ h5 {
     Fitur Menarik yang Bisa Dimanfaatkan
 </h4>
 <div class="row g-4 justify-content-center">
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <!-- GRAFIK FITUR -->
 <div class="col-md-3">
 <a href="#grafik" class="fitur-box d-block" data-target="grafik">
@@ -327,8 +323,99 @@ fitur.forEach(btn => {
 </style>
 
 <!-- GRAFIK -->
+<title>Kasus Umum</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Style -->
+<style>
+body {
+  background: #ffffff;
+}
+
+.judul-grafik {
+  color: #1aa6a6;
+  font-weight: 600;
+  text-align: left;   /* sesuai gambar (kiri) */
+  margin-bottom: 10px; /* biar deket ke card */
+}
+
+/* CARD */
+.card-custom {
+  background: #f4f8f8;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* FILTER */
+.filter {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* CHART FULL */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+h5 {
+  font-weight: bold;
+}
+</style>
+
+<div id="grafik" class="container mt-4">
+<h4 class="judul-grafik">Grafik Pneumonia</h4>
+  <div class="card-custom">
+
+    <h5 class="mb-4">Kasus Umum</h5>
+
+    <!-- FILTER -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label>Jenis Kelamin</label>
+        <select class="form-control filter">
+          <option>All</option>
+          <option>Laki-laki</option>
+          <option>Wanita</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Bulan</label>
+        <select class="form-control filter">
+          <option>All</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Tahun</label>
+        <select class="form-control filter">
+          <option>2025</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- GRAFIK FULL -->
+    <div class="chart-container">
+      <canvas id="chartKasus"></canvas>
+    </div>
+    
+</div>
+<!-- BUTTON -->
+<div class="btn-wrapper">
+    <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
+        Lihat Selengkapnya →
+    </a>
+</div>
+</div>
+
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
