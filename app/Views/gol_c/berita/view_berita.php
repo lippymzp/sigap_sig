@@ -365,6 +365,13 @@ $bulan = [
         <?php endif; ?>
 
         <!-- TOMBOL KEMBALI DI BAWAH -->
+<<<<<<< HEAD
+=======
+        <div class="berita-footer">
+            <br><br><a href="<?= base_url('beritapneumonia/admin') ?>" class="back-btn">
+                <i class="fa-solid"></i> Kembali
+            </a>
+>>>>>>> 48a40b4a3c78addb4ed4ba87800810f41ce432b3
         </div>
 
 <div class="berita-footer" style="text-align:center; margin-top:25px;">

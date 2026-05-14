@@ -136,6 +136,7 @@ class BeritaPneumonia extends Controller
             'url_berita'       => $this->request->getPost('url_berita'),
             'gambar_berita'    => $namaFile,
             'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
+            'penulis'   => $this->request->getPost('penulis'),
             'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
         ];
 
@@ -228,7 +229,7 @@ class BeritaPneumonia extends Controller
         // UPDATE DATA
         $updateData = [
 
-            'id_petugas'       => session()->get('id_petugas') ?? null,
+            'id_petugas'       => session()->get('id_petugas') ?? 3,
             'id_penyakit'      => 3,
 
             'judul_berita'     => $judul,
@@ -237,6 +238,7 @@ class BeritaPneumonia extends Controller
             'url_berita'       => $this->request->getPost('url_berita'),
             'gambar_berita'    => $namaFile,
             'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
+            'penulis'   => $this->request->getPost('penulis'),
             'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
         ];
 
