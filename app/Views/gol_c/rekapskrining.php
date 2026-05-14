@@ -58,6 +58,48 @@ body{
     min-width:160px;
 }
 
+<!-- OVERVIEW -->
+<div style="
+    background: linear-gradient(135deg,#00BBC2,#009aa0);
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:20px;
+    color:white;
+">
+
+    <div style="font-size:14px; opacity:0.9;">
+        TODAY'S OVERVIEW
+    </div>
+
+    <div style="
+        font-size:38px;
+        font-weight:700;
+        line-height:1.2;
+        margin-top:8px;
+    ">
+        <?= $skriningHariIni ?> Skrining Hari Ini 
+        dari <?= $totalSkrining ?> Total Skrining
+    </div>
+
+    <div style="
+        display:flex;
+        gap:20px;
+        margin-top:15px;
+        flex-wrap:wrap;
+        font-size:15px;
+    ">
+
+        <div>
+            ● <?= $berisiko ?> Berisiko 
+        </div>
+
+        <div>
+            ● <?= $tdkberisiko ?> Tidak Berisiko
+        </div>
+
+    </div>
+</div>
+
 /* TABLE */
 .table{
     border-radius:20px;
