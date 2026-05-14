@@ -481,13 +481,23 @@
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <label>Nama Pasien</label>
-                    <input name="nama" type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama">
+                    <label>NIK</label>
+                    <input name="nik" type="text" pattern="\d*" maxlength="16" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control custom-input" placeholder="Masukkan 16 digit NIK" id="nik" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label>Tanggal Kunjungan</label>
-                    <input name="tanggal" type="date" class="form-control custom-input" id="tanggal">
+                    <label>Nama Pasien</label>
+                    <input name="nama" type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Tanggal Lahir</label>
+                    <input name="tgl_lahir" type="date" class="form-control custom-input" id="tgl_lahir" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Usia (Otomatis)</label>
+                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia" readonly>
                 </div>
 
                 <div class="col-md-6">
@@ -497,8 +507,27 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label>Usia</label>
-                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia">
+                    <label>Tanggal Pemeriksaan</label>
+                    <input name="tanggal_pemeriksaan" type="date" class="form-control custom-input" id="tanggal_pemeriksaan" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Status Akhir</label>
+                    <select name="status_akhir" class="form-control custom-input" id="status_akhir" required>
+                        <option value="">Pilih Status</option>
+                        <option value="Sembuh">Sembuh</option>
+                        <option value="Meninggal">Meninggal</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Tindak Lanjut</label>
+                    <select name="tindak_lanjut" class="form-control custom-input" id="tindak_lanjut" required>
+                        <option value="">Pilih Tindak Lanjut</option>
+                        <option value="Larvasidasi">Larvasidasi</option>
+                        <option value="Fogging">Fogging</option>
+                        <option value="3M">3M</option>
+                    </select>
                 </div>
 
                 <div class="col-md-12">
@@ -569,6 +598,12 @@
             <div class="summary-box">
 
     <div class="row mb-2">
+    <div class="col-4 text-muted">NIK</div>
+    <div class="col-1 text-center">:</div>
+    <div class="col-7 fw-semibold" id="sumNIK">-</div>
+    </div>
+
+    <div class="row mb-2">
     <div class="col-4 text-muted">Nama Pasien</div>
     <div class="col-1 text-center">:</div>
     <div class="col-7 fw-semibold" id="sumNama">-</div>
@@ -587,15 +622,33 @@
     </div>
 
     <div class="row mb-2">
+        <div class="col-4 text-muted">Tanggal Lahir</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTglLahir">-</div>
+    </div>
+
+    <div class="row mb-2">
         <div class="col-4 text-muted">Usia</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumUsia">-</div>
     </div>
 
     <div class="row mb-2">
-        <div class="col-4 text-muted">Tanggal</div>
+        <div class="col-4 text-muted">Tanggal Pemeriksaan</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumTanggal">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Status Akhir</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumStatus">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Tindak Lanjut</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTindak">-</div>
     </div>
 
     <div class="row mb-3">
@@ -651,10 +704,14 @@
                 <input type="hidden" name="lat" id="formLat">
                 <input type="hidden" name="lng" id="formLng">
 
+                <input type="hidden" name="nik" id="formNIK">
                 <input type="hidden" name="nama" id="formNama">
-                <input type="hidden" name="tanggal" id="formTanggal">
+                <input type="hidden" name="tgl_lahir" id="formTglLahir">
+                <input type="hidden" name="tanggal_pemeriksaan" id="formTanggalPemeriksaan">
                 <input type="hidden" name="jenis_kelamin" id="formJK">
                 <input type="hidden" name="usia" id="formUsia">
+                <input type="hidden" name="status_akhir" id="formStatus">
+                <input type="hidden" name="tindak_lanjut" id="formTindak">
                 <input type="hidden" name="catatan" id="formCatatan">
 
                     
@@ -735,12 +792,20 @@ function nextStep(step){
 
         let kosong = [];
 
+        if(document.getElementById('nik').value === '' || document.getElementById('nik').value.length !== 16){
+            kosong.push('NIK (harus 16 digit)');
+        }
+
         if(document.getElementById('nama').value === ''){
             kosong.push('Nama Pasien');
         }
 
-        if(document.getElementById('tanggal').value === ''){
-            kosong.push('Tanggal Kunjungan');
+        if(document.getElementById('tgl_lahir').value === ''){
+            kosong.push('Tanggal Lahir');
+        }
+
+        if(document.getElementById('tanggal_pemeriksaan').value === ''){
+            kosong.push('Tanggal Pemeriksaan');
         }
 
         if(!document.querySelector('input[name="jk"]:checked')){
@@ -749,6 +814,14 @@ function nextStep(step){
 
         if(document.getElementById('usia').value === ''){
             kosong.push('Usia');
+        }
+        
+        if(document.getElementById('status_akhir').value === ''){
+            kosong.push('Status Akhir');
+        }
+
+        if(document.getElementById('tindak_lanjut').value === ''){
+            kosong.push('Tindak Lanjut');
         }
 
         if(document.getElementById('catatan').value === ''){
@@ -793,9 +866,13 @@ function nextStep(step){
         let rw = document.getElementById('rw').value;
         let alamat = document.getElementById('alamat').value;
 
+        let nik = document.getElementById('nik').value;
         let nama = document.getElementById('nama').value;
-        let tanggal = document.getElementById('tanggal').value;
+        let tgl_lahir = document.getElementById('tgl_lahir').value;
+        let tanggal = document.getElementById('tanggal_pemeriksaan').value;
         let usia = document.getElementById('usia').value;
+        let status = document.getElementById('status_akhir').value;
+        let tindak = document.getElementById('tindak_lanjut').value;
         let catatan = document.getElementById('catatan').value;
 
         let jk = document.querySelector('input[name="jk"]:checked');
@@ -805,13 +882,30 @@ function nextStep(step){
             prov + ', ' + kab + ', ' + kec + ', ' + desa +
             ' RT ' + rt + ' RW ' + rw + ' - ' + alamat;
 
+        document.getElementById('sumNIK').innerText = nik;
         document.getElementById('sumNama').innerText = nama;
+        document.getElementById('sumTglLahir').innerText = tgl_lahir;
         document.getElementById('sumJK').innerText = jk;
         document.getElementById('sumUsia').innerText = usia;
         document.getElementById('sumTanggal').innerText = tanggal;
+        document.getElementById('sumStatus').innerText = status;
+        document.getElementById('sumTindak').innerText = tindak;
         document.getElementById('sumCatatan').innerText = catatan;
     }
 }
+
+document.getElementById('tgl_lahir').addEventListener('change', function() {
+    let dob = new Date(this.value);
+    let today = new Date();
+    if (!isNaN(dob.getTime())) {
+        let age = today.getFullYear() - dob.getFullYear();
+        let m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        document.getElementById('usia').value = age;
+    }
+});
 
 function prevStep(step){
 
@@ -869,14 +963,26 @@ function submitData(){
         document.getElementById('lng').value;
 
     // STEP 2
+    document.getElementById('formNIK').value =
+        document.getElementById('nik').value;
+
     document.getElementById('formNama').value =
         document.getElementById('nama').value;
 
-    document.getElementById('formTanggal').value =
-        document.getElementById('tanggal').value;
+    document.getElementById('formTglLahir').value =
+        document.getElementById('tgl_lahir').value;
+
+    document.getElementById('formTanggalPemeriksaan').value =
+        document.getElementById('tanggal_pemeriksaan').value;
 
     document.getElementById('formUsia').value =
         document.getElementById('usia').value;
+
+    document.getElementById('formStatus').value =
+        document.getElementById('status_akhir').value;
+
+    document.getElementById('formTindak').value =
+        document.getElementById('tindak_lanjut').value;
 
     document.getElementById('formCatatan').value =
         document.getElementById('catatan').value;

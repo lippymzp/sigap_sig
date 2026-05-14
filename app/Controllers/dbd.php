@@ -1063,7 +1063,9 @@ public function hapus_skrining(int $id)
             SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
             SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
 
+            SUM(CASE WHEN p.status_akhir = 'Meninggal' THEN 1 ELSE 0 END) as jumlah_kematian,
             COUNT(*) as jumlah
+            
         ");
 
         // JOIN
@@ -1209,12 +1211,20 @@ public function hapus_skrining(int $id)
 
                 <tr>
                     <th>No</th>
+                    <th>NIK</th>
                     <th>Nama Pasien</th>
                     <th>Tgl Kunjungan</th>
                     <th>JK</th>
                     <th>Usia</th>
                     <th>Catatan Klinis</th>
                     <th>Alamat Lengkap</th>
+                    <th>Kelurahan</th>
+                    <th>Kecamatan</th>
+                    <th>Kabupaten</th>
+                    <th>Provinsi</th>
+                    <th>Status Akhir</th>
+                    <th>Tindak Lanjut</th>
+
                 </tr>
             ";
             $no = 1;
@@ -1224,15 +1234,14 @@ public function hapus_skrining(int $id)
                     $alamat =
                         ($d['alamat_lengkap'] ?? '-') .
                         ", RT " . ($d['rt'] ?? '-') .
-                        "/RW " . ($d['rw'] ?? '-') .
-                        ", Kel. " . ($d['kelurahan'] ?? '-') .
-                        ", Kec. " . ($d['kecamatan'] ?? '-') .
-                        ", " . ($d['kabupaten'] ?? '-') .
-                        ", " . ($d['provinsi'] ?? '-');
+                        "/RW " . ($d['rw'] ?? '-') ;
                     echo "
                     <tr>
                         <td class='center'>
                             {$no}
+                        </td>
+                        <td class='center'>
+                            {$d['nik']}
                         </td>
                         <td>
                             {$d['nama_pasien']}
@@ -1252,6 +1261,25 @@ public function hapus_skrining(int $id)
                         <td class='alamat'>
                             {$alamat}
                         </td>
+                        <td class='center'>
+                            {$d['kelurahan']}
+                        </td>
+                        <td class='center'>
+                            {$d['kecamatan']}
+                        </td>
+                        <td class='center'>
+                            {$d['kabupaten']}
+                        </td>
+                        <td class='center'>
+                            {$d['provinsi']}
+                        </td>
+                        <td class='center'>
+                            {$d['status_akhir']}
+                        </td>
+                        <td class='center'>
+                            {$d['tindak_lanjut']}
+                        </td>
+                        
                     </tr>
                     ";
                     $no++;

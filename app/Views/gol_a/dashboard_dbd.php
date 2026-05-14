@@ -111,7 +111,7 @@ $tahunSekarang = date('Y');
 }
 /* ================= GRAFIK ================= */
 
-/* Toggle KASUS / ABJ */
+/* Toggle KASUS / MORTALITAS / ABJ */
 .slide-toggle-container {
     position: relative;
     display: flex;
@@ -145,7 +145,7 @@ $tahunSekarang = date('Y');
     position: absolute;
     top: 0;
     left: 0;
-    width: 50%;
+    width: 33.33%;
     height: 100%;
     background: #00BBC2;
     border-radius: 30px;
@@ -204,7 +204,6 @@ $tahunSekarang = date('Y');
 
 </style>
 
-<!-- WELCOME -->
 <div class="welcome-box">
     <div class="welcome-text">
         <h5>Selamat datang kembali,</h5>
@@ -238,7 +237,6 @@ $tahunSekarang = date('Y');
 ?>
 </div>
 
-<!-- STAT -->
 <div class="stat-row">
     <div class="stat-card">
         <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
@@ -268,7 +266,6 @@ $tahunSekarang = date('Y');
     </div>
 </div>
 
-<!-- MAP -->
 <div class="section-card">
     <div class="section-block">
         <div class="section-header">
@@ -291,7 +288,6 @@ $tahunSekarang = date('Y');
         <div class="inner-card">
             <div id="map"></div>
 
-            <!-- =================== MODAL DETAIL DESA =================== -->
             <div id="detailModal" class="custom-modal">
                 <div class="custom-modal-content">
 
@@ -388,8 +384,6 @@ $tahunSekarang = date('Y');
                     </div>
                 </div>
             </div>
-            <!-- =================== END MODAL =================== -->
-
             <script>
                
             //FIX NAMA 
@@ -604,7 +598,6 @@ d = d || {};
         </div>
     </div>
 
-    <!--STYLE LABEL -->
     <style>
     .label-desa{
         background: rgba(0,0,0,0.6);
@@ -617,7 +610,6 @@ d = d || {};
     </style>
 </div>
 
-<!-- GRAFIK -->
 <section id="grafik" class="container mt-5 mb-5 p-0">
 
     <h4 id="titleGrafik" class="text-dark mb-4 fw-bold">Grafik Kasus DBD</h4>
@@ -628,6 +620,7 @@ d = d || {};
             <div class="slide-toggle-container">
                 <div id="slideIndicator" class="slide-indicator"></div>
                 <button type="button" class="btn-toggle active" id="tabKasus" onclick="switchTab('kasus')">KASUS</button>
+                <button type="button" class="btn-toggle" id="tabMortalitas" onclick="switchTab('mortalitas')">MORTALITAS</button>
                 <button type="button" class="btn-toggle" id="tabABJ" onclick="switchTab('abj')">ABJ</button>
             </div>
         </div>
@@ -650,7 +643,6 @@ d = d || {};
                                     <option value="Tegalgede" <?= request()->getGet('wilayah') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
                                     <option value="Wirolegi" <?= request()->getGet('wilayah') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -665,7 +657,6 @@ d = d || {};
                                     <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>25-59</option>
                                     <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>60+</option>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -678,7 +669,6 @@ d = d || {};
                                     <option value="L" <?= request()->getGet('jk') == 'L' ? 'selected' : '' ?>>Laki-laki</option>
                                     <option value="P" <?= request()->getGet('jk') == 'P' ? 'selected' : '' ?>>Perempuan</option>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -694,7 +684,6 @@ d = d || {};
                                         <option value="<?= $k ?>" <?= request()->getGet('bulan') == $k ? 'selected' : '' ?>><?= $v ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -708,7 +697,51 @@ d = d || {};
                                         <option value="<?= $t ?>" <?= request()->getGet('tahun') == $t ? 'selected' : '' ?>><?= $t ?></option>
                                     <?php endfor; ?>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wrapperMortalitas" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'mortalitas' ? 'block' : 'none' ?>;">
+                <div class="filter-row">
+                    <div class="filter-col">
+                        <label class="filter-label">WILAYAH</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="wilayah_mort" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="Antirogo" <?= request()->getGet('wilayah_mort') == 'Antirogo' ? 'selected' : '' ?>>Antirogo</option>
+                                    <option value="Sumbersari" <?= request()->getGet('wilayah_mort') == 'Sumbersari' ? 'selected' : '' ?>>Sumbersari</option>
+                                    <option value="Karangrejo" <?= request()->getGet('wilayah_mort') == 'Karangrejo' ? 'selected' : '' ?>>Karangrejo</option>
+                                    <option value="Tegalgede" <?= request()->getGet('wilayah_mort') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
+                                    <option value="Wirolegi" <?= request()->getGet('wilayah_mort') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">JENIS KELAMIN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="jk_mort" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <option value="L" <?= request()->getGet('jk_mort') == 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                    <option value="P" <?= request()->getGet('jk_mort') == 'P' ? 'selected' : '' ?>>Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-col">
+                        <label class="filter-label">TAHUN</label>
+                        <div class="filter-rect">
+                            <div class="pill-select-wrapper">
+                                <select name="tahun_mort" class="pill-select" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    <?php for($t=2024; $t<=date('Y'); $t++): ?>
+                                        <option value="<?= $t ?>" <?= request()->getGet('tahun_mort') == $t ? 'selected' : '' ?>><?= $t ?></option>
+                                    <?php endfor; ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -729,7 +762,6 @@ d = d || {};
                                     <option value="Tegalgede" <?= request()->getGet('wilayah_abj') == 'Tegalgede' ? 'selected' : '' ?>>Tegal Gede</option>
                                     <option value="Wirolegi" <?= request()->getGet('wilayah_abj') == 'Wirolegi' ? 'selected' : '' ?>>Wirolegi</option>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -743,7 +775,6 @@ d = d || {};
                                         <option value="<?= $k ?>" <?= request()->getGet('bulan_abj') == $k ? 'selected' : '' ?>><?= $v ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -757,7 +788,6 @@ d = d || {};
                                         <option value="<?= $t ?>" <?= request()->getGet('tahun_abj') == $t ? 'selected' : '' ?>><?= $t ?></option>
                                     <?php endfor; ?>
                                 </select>
-                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -766,6 +796,7 @@ d = d || {};
 
             <div id="chartWrapper" style="position: relative; height: 350px;">
                 <canvas id="chartKasus" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'kasus' ? 'block' : 'none' ?>;"></canvas>
+                <canvas id="chartMortalitas" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'mortalitas' ? 'block' : 'none' ?>;"></canvas>
                 <canvas id="chartABJ" style="display: <?= ($_GET['tab'] ?? 'kasus') == 'abj' ? 'block' : 'none' ?>;"></canvas>
             </div>
 
@@ -773,8 +804,7 @@ d = d || {};
     </div>
 </section>
 
-<!-- ================= BERITA ================= -->
- <style>
+<style>
 
 .berita-section,
 .funfact-section{
@@ -1106,7 +1136,6 @@ d = d || {};
 </section>
 
 
-<!-- ================= FUNFACT ================= -->
 <style>
 
 .funfact-section{
@@ -1377,6 +1406,51 @@ d = d || {};
         }
     }
     if (!empty($reqWilayahABJ)) { foreach ($dataFinalABJ as $nama => $val) { if ($nama !== $reqWilayahABJ) unset($dataFinalABJ[$nama]); } }
+
+    // ================= DATA GRAFIK MORTALITAS =================
+    $builderMort = $db->table('pasien');
+    $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
+    $builderMort->where('pasien.status_akhir', 'Meninggal');
+    
+    $reqWilayahMort = $_GET['wilayah_mort'] ?? '';
+    $reqTahunMort = $_GET['tahun_mort'] ?? '';
+    $reqJkMort = $_GET['jk_mort'] ?? '';
+
+    if (!empty($reqTahunMort)) { 
+        $builderMort->where('YEAR(pasien.tgl_kunjungan)', $reqTahunMort); 
+    }
+    if (!empty($reqJkMort)) { 
+        $builderMort->where('pasien.jenis_kelamin', $reqJkMort == 'L' ? 'Laki-laki' : 'Perempuan'); 
+    }
+    
+    $builderMort->select('wilayah.kelurahan, MONTH(pasien.tgl_kunjungan) as bulan, COUNT(pasien.id_pasien) as total_meninggal');
+    $builderMort->groupBy('wilayah.kelurahan, MONTH(pasien.tgl_kunjungan)');
+    $rawDB_Mort = $builderMort->get()->getResultArray();
+
+    $kelMapMort = ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegalgede', 'Karangrejo'];
+    $dataFinalMort = [];
+    
+    foreach ($kelMapMort as $nama) { 
+        $dataFinalMort[$nama] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
+    }
+
+    foreach ($rawDB_Mort as $row) {
+        $namaKel = ucwords(strtolower(trim($row['kelurahan'])));
+        if ($namaKel == 'Tegal Gede') $namaKel = 'Tegalgede';
+
+        if (in_array($namaKel, $kelMapMort)) {
+            $blnIdx = intval($row['bulan']) - 1; 
+            if ($blnIdx >= 0 && $blnIdx <= 11) { 
+                $dataFinalMort[$namaKel][$blnIdx] = (int)$row['total_meninggal']; 
+            }
+        }
+    }
+
+    if (!empty($reqWilayahMort)) { 
+        foreach ($dataFinalMort as $nama => $val) { 
+            if ($nama !== $reqWilayahMort) unset($dataFinalMort[$nama]); 
+        } 
+    }
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1392,27 +1466,50 @@ function updateMap(){
 function switchTab(type) {
     const indicator = document.getElementById('slideIndicator');
     const tabKasus = document.getElementById('tabKasus');
+    const tabMortalitas = document.getElementById('tabMortalitas');
     const tabABJ = document.getElementById('tabABJ');
     const title = document.getElementById('titleGrafik');
     const input = document.getElementById('activeTabInput');
+    
     const wrapKasus = document.getElementById('wrapperKasus');
+    const wrapMortalitas = document.getElementById('wrapperMortalitas');
     const wrapABJ = document.getElementById('wrapperABJ');
+    
     const chartK = document.getElementById('chartKasus');
+    const chartM = document.getElementById('chartMortalitas');
     const chartA = document.getElementById('chartABJ');
 
     input.value = type;
-    title.innerText = type === 'kasus' ? 'Grafik Kasus DBD' : 'Grafik Angka Bebas Jentik (ABJ)';
+
+    // Reset Class & Display
+    tabKasus.classList.remove('active');
+    tabMortalitas.classList.remove('active');
+    tabABJ.classList.remove('active');
+    wrapKasus.style.display = 'none';
+    wrapMortalitas.style.display = 'none';
+    wrapABJ.style.display = 'none';
+    chartK.style.display = 'none';
+    chartM.style.display = 'none';
+    chartA.style.display = 'none';
 
     if (type === 'kasus') {
+        title.innerText = 'Grafik Kasus DBD';
         indicator.style.transform = 'translateX(0%)';
-        tabKasus.classList.add('active'); tabABJ.classList.remove('active');
-        wrapKasus.style.display = 'block'; wrapABJ.style.display = 'none';
-        chartK.style.display = 'block'; chartA.style.display = 'none';
-    } else {
+        tabKasus.classList.add('active');
+        wrapKasus.style.display = 'block';
+        chartK.style.display = 'block';
+    } else if (type === 'mortalitas') {
+        title.innerText = 'Grafik Kematian / Mortalitas DBD';
         indicator.style.transform = 'translateX(100%)';
-        tabABJ.classList.add('active'); tabKasus.classList.remove('active');
-        wrapABJ.style.display = 'block'; wrapKasus.style.display = 'none';
-        chartA.style.display = 'block'; chartK.style.display = 'none';
+        tabMortalitas.classList.add('active');
+        wrapMortalitas.style.display = 'block';
+        chartM.style.display = 'block';
+    } else {
+        title.innerText = 'Grafik Angka Bebas Jentik (ABJ)';
+        indicator.style.transform = 'translateX(200%)';
+        tabABJ.classList.add('active');
+        wrapABJ.style.display = 'block';
+        chartA.style.display = 'block';
     }
 }
 
@@ -1422,7 +1519,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     const hasFilter = urlParams.has('wilayah') || urlParams.has('usia') || urlParams.has('jk') || 
                       urlParams.has('bulan') || urlParams.has('tahun') || urlParams.has('tab') ||
-                      urlParams.has('wilayah_abj') || urlParams.has('bulan_abj') || urlParams.has('tahun_abj');
+                      urlParams.has('wilayah_abj') || urlParams.has('bulan_abj') || urlParams.has('tahun_abj') ||
+                      urlParams.has('wilayah_mort') || urlParams.has('tahun_mort') || urlParams.has('jk_mort');
 
     if (hasFilter) {
         const grafikSection = document.getElementById('grafik');
@@ -1448,9 +1546,39 @@ document.addEventListener("DOMContentLoaded", function() {
         options: { responsive: true, maintainAspectRatio: false }
     });
 
+    // --- GRAFIK MORTALITAS ---
+    const rawDataMort = <?= json_encode($dataFinalMort) ?>;
+    const colorMapping = { 'Antirogo': '#1f4e5b', 'Sumbersari': '#00BBC2', 'Karangrejo': '#b2dfdb', 'Tegalgede': '#5cb85c', 'Wirolegi': '#4fc3f7' };
+    let datasetsMort = [];
+    
+    for (const kelurahan in rawDataMort) {
+        datasetsMort.push({ 
+            label: kelurahan, 
+            data: rawDataMort[kelurahan], 
+            borderColor: colorMapping[kelurahan] || '#333', 
+            backgroundColor: colorMapping[kelurahan] || '#333', 
+            fill: false, tension: 0, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2, spanGaps: true 
+        });
+    }
+
+    new Chart(document.getElementById('chartMortalitas').getContext('2d'), {
+        type: 'line', 
+        data: { 
+            labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'], 
+            datasets: datasetsMort 
+        },
+        options: { 
+            responsive: true, maintainAspectRatio: false, 
+            plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } } },
+            scales: { 
+                y: { min: 0, ticks: { stepSize: 1 }, grid: { borderDash: [5, 5] } }, 
+                x: { grid: { display: false } } 
+            }
+        }
+    });
+
     // --- GRAFIK ABJ ---
     const rawDataABJ = <?= json_encode($dataFinalABJ) ?>;
-    const colorMapping = { 'Antirogo': '#1f4e5b', 'Sumbersari': '#00BBC2', 'Karangrejo': '#b2dfdb', 'Tegalgede': '#5cb85c', 'Wirolegi': '#4fc3f7' };
     let datasetsABJ = [];
     for (const kelurahan in rawDataABJ) {
         datasetsABJ.push({ label: kelurahan, data: rawDataABJ[kelurahan], borderColor: colorMapping[kelurahan] || '#333', backgroundColor: colorMapping[kelurahan] || '#333', fill: false, tension: 0.2, pointRadius: 4, pointHoverRadius: 6, borderWidth: 2, spanGaps: true });
