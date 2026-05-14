@@ -262,8 +262,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
-    <div class="footer-dashboard">
-    <?= $this->include('layout/footer', [
-        'show_footer_maskot' => true
-    ]) ?>
+  <div class="footer-dashboard">
+    <?= $this->include('layout/footer') ?>
 </div>
