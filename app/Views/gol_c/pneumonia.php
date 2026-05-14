@@ -361,7 +361,7 @@ while($row = mysqli_fetch_assoc($query)){
 
     }else{
 
-        $wanita[$index] = (int)$row['total'];
+        $perempuan[$index] = (int)$row['total'];
 
     }
 }
