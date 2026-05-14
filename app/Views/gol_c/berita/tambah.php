@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <?php
-$beritapneumonia = $beritapneumonia ?? [];
+$berita = $berita ?? [];
 $newId = session()->getFlashdata('new_id');
 ?>
 
@@ -439,7 +439,7 @@ enctype="multipart/form-data">
                         <textarea name="isi_berita"
                         placeholder="Masukkan isi berita..."
                         id="hiddenInput"
-                        hidden required><?= $beritapneumonia['isi_berita'] ?? '' ?></textarea>
+                        hidden required><?= $berita['isi_berita'] ?? '' ?></textarea>
                     </div>
                     <div class="error-text" id="editorError">
                             Isi berita wajib diisi
@@ -451,7 +451,7 @@ enctype="multipart/form-data">
                                name="deskripsi_berita"
                                class="form-control"
                                placeholder="Masukkan deskripsi berita..."
-                               value="<?= $beritapneumonia['deskripsi_berita'] ?? '' ?>"
+                               value="<?= $berita['deskripsi_berita'] ?? '' ?>"
                                required>
                         <div class="error-text">
                             Judul Berita wajib diisi
@@ -459,25 +459,14 @@ enctype="multipart/form-data">
                         </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <label>Penulis</label>
-                            <input type="text"
-                                name="penulis"
-                                class="form-control"
-                                value="<?= $beritapneumonia['penulis'] ?? '' ?>"
-                                required>
-                        <div class="error-text">
-                                Penulis wajib diisi
-                        </div>
-                        </div>
 
                         <div class="col-md-6">
                             <label>Tanggal</label>
                             <input type="datetime-local"
                                    name="tanggal_berita"
                                    class="form-control"
-                                   value="<?= isset($beritapneumonia['tanggal_berita']) 
-                                    ? date('Y-m-d\TH:i', strtotime($beritapneumonia['tanggal_berita'])) : '' ?>"
+                                   value="<?= isset($berita['tanggal_berita']) 
+                                    ? date('Y-m-d\TH:i', strtotime($berita['tanggal_berita'])) : '' ?>"
                                    required>
                             <div class="error-text">
                                 Tanggal unggah wajib diisi
@@ -494,8 +483,8 @@ enctype="multipart/form-data">
 
                     <div class="bg-white p-3 rounded-3 mb-3 text-center">
                     <img id="previewImg"
-                        src="<?= !empty($beritapneumonia['gambar_berita']) 
-                            ? '/uploads/berita/'.$beritapneumonia['gambar_berita'] 
+                        src="<?= !empty($berita['gambar_berita']) 
+                            ? '/uploads/berita/'.$berita['gambar_berita'] 
                             : 'https://via.placeholder.com/250x140' ?>"
                              class="img-fluid rounded mb-2"
                              style="max-height:150px; object-fit:cover;">
@@ -509,12 +498,12 @@ enctype="multipart/form-data">
                         id="inputGambar"
                         class="form-control"
                         accept="image/*"
-                        <?= isset($beritapneumonia) ? '' : 'required' ?>>
+                        <?= isset($berita) ? '' : 'required' ?>>
 
-                    <input type="hidden" name="gambar_lama" value="<?= $beritapneumonia['gambar_berita'] ?? '' ?>">
+                    <input type="hidden" name="gambar_lama" value="<?= $berita['gambar_berita'] ?? '' ?>">
 
-                    <?php if (!empty($beritapneumonia['gambar_berita'])): ?>
-                        <img src="/uploads/berita/<?= $beritapneumonia['gambar_berita']; ?>" width="150" style="margin-top:10px;">
+                    <?php if (!empty($berita['gambar_berita'])): ?>
+                        <img src="/uploads/berita/<?= $berita['gambar_berita']; ?>" width="150" style="margin-top:10px;">
                     <?php endif; ?>
                     </div>
                 </div>
@@ -565,7 +554,7 @@ enctype="multipart/form-data">
                 <input type="text"
                        name="judul_berita1"
                        class="form-control"
-                       value="<?= $beritapneumonia['judul_berita'] ?? '' ?>">
+                       value="<?= $berita['judul_berita'] ?? '' ?>">
 
                 <div class="error-text">
                     Judul berita wajib diisi
@@ -580,7 +569,7 @@ enctype="multipart/form-data">
                        name="url_berita"
                        class="form-control"
                        placeholder="https://..."
-                       value="<?= $beritapneumonia['url_berita'] ?? '' ?>">
+                       value="<?= $berita['url_berita'] ?? '' ?>">
 
                 <div class="error-text">
                     Link berita wajib diisi

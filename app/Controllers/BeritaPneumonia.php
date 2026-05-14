@@ -179,15 +179,17 @@ class BeritaPneumonia extends Controller
     // DATA INSERT
     // =====================
     $data = [
-        'penulis'          => $this->request->getPost('penulis'),
-        'judul_berita'     => $judul,
-        'isi_berita'       => $this->request->getPost('isi_berita'),
-        'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
-        'url_berita'       => $this->request->getPost('url_berita'),
-        'gambar_berita'    => $namaFile,
-        'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
-        'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
-    ];
+    'id_petugas'      => session()->get('id_petugas') ?? 3,
+    'id_penyakit'     => 3, // pneumonia
+
+    'judul_berita'     => $judul,
+    'isi_berita'       => $this->request->getPost('isi_berita'),
+    'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
+    'url_berita'       => $this->request->getPost('url_berita'),
+    'gambar_berita'    => $namaFile,
+    'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
+    'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
+];
 
     $model->insert($data);
         // ambil ID hasil insert
@@ -324,14 +326,19 @@ public function update(int $id)
     }
 
     $model->update($id, [
-        'judul_berita'     => $judul,
-        'isi_berita'        => $this->request->getPost('isi_berita'),
-        'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
-        'url_berita'       => $this->request->getPost('url_berita'),
-        'gambar_berita'    => $namaFile,
-        'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
-        'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
+
+    'id_petugas'      => session()->get('id_petugas') ?? 3,
+    'id_penyakit'     => 3,
+
+    'judul_berita'     => $judul,
+    'isi_berita'       => $this->request->getPost('isi_berita'),
+    'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
+    'url_berita'       => $this->request->getPost('url_berita'),
+    'gambar_berita'    => $namaFile,
+    'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
+    'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
     ]);
+
 
     return redirect()->to('/beritapneumonia')
     ->with('success', 'Berita berhasil diupdate!')
