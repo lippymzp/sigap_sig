@@ -322,334 +322,191 @@ fitur.forEach(btn => {
 
 </style>
 
-<!-- GRAFIK -->
-<title>Kasus Umum</title>
-
-<!-- Style -->
-<style>
-body {
-  background: #ffffff;
-}
-
-.judul-grafik {
-  color: #1aa6a6;
-  font-weight: 600;
-  text-align: left;   /* sesuai gambar (kiri) */
-  margin-bottom: 10px; /* biar deket ke card */
-}
-
-/* CARD */
-.card-custom {
-  background: #f4f8f8;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-/* FILTER */
-.filter {
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* CHART FULL */
-.chart-container {
-  position: relative;
-  width: 100%;
-  height: 260px;
-}
-
-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-h5 {
-  font-weight: bold;
-}
-</style>
-
-<div id="grafik" class="container mt-4">
-<h4 class="judul-grafik">Grafik Pneumonia</h4>
-  <div class="card-custom">
-
-    <h5 class="mb-4">Kasus Umum</h5>
-
-    <!-- FILTER -->
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <label>Jenis Kelamin</label>
-        <select class="form-control filter">
-          <option>All</option>
-          <option>Laki-laki</option>
-          <option>Wanita</option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <label>Bulan</label>
-        <select class="form-control filter">
-          <option>All</option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <label>Tahun</label>
-        <select class="form-control filter">
-          <option>2025</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- GRAFIK FULL -->
-    <div class="chart-container">
-      <canvas id="chartKasus"></canvas>
-    </div>
-    
-</div>
-<!-- BUTTON -->
-<div class="btn-wrapper">
-    <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
-        Lihat Selengkapnya →
-    </a>
-</div>
-</div>
-
-<!-- Chart.js -->
+<!-- grafik -->
+<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
-.chart-container{
-    width:100%;
-    height:350px;
-}
-
-</style>
-
-<div id="grafik" class="container mt-4">
-
-<h4>Grafik Pneumonia</h4>
-
-<div class="card p-4 shadow-sm">
-
-<h5 class="mb-4">Kasus Umum</h5>
-
-<!-- FILTER -->
-<div class="row mb-4">
-
-    <!-- WILAYAH -->
-    <div class="col-md-4">
-
-        <label>Wilayah</label>
-
-        <select id="filterWilayah" class="form-control">
-
-            <option value="Ajung">Ajung</option>
-            <option value="Wirowongso">Wirowongso</option>
-            <option value="Rowo Indah">Rowo Indah</option>
-            <option value="Sukamakmur">Sukamakmur</option>
-            <option value="Klompangan">Klompangan</option>
-            <option value="Mangaran">Mangaran</option>
-            <option value="Pancakarya">Pancakarya</option>
-            <option value="Pasien Luar Wilayah">Pasien Luar Wilayah</option>
-
-        </select>
-
-    </div>
-
-    <!-- BULAN -->
-    <div class="col-md-4">
-
-        <label>Bulan</label>
-
-        <select id="filterBulan" class="form-control">
-
-            <option value="All">All</option>
-
-            <option value="Januari">Januari</option>
-            <option value="Februari">Februari</option>
-            <option value="Maret">Maret</option>
-            <option value="April">April</option>
-            <option value="Mei">Mei</option>
-            <option value="Juni">Juni</option>
-            <option value="Juli">Juli</option>
-            <option value="Agustus">Agustus</option>
-            <option value="September">September</option>
-            <option value="Oktober">Oktober</option>
-            <option value="November">November</option>
-            <option value="Desember">Desember</option>
-
-        </select>
-
-    </div>
-
-    <!-- TAHUN -->
-    <div class="col-md-4">
-
-        <label>Tahun</label>
-
-        <select id="filterTahun" class="form-control">
-
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-
-        </select>
-
-    </div>
-
-</div>
-
-<!-- CHART -->
-<div class="chart-container">
-    <canvas id="chartKasus"></canvas>
-</div>
-
-</div>
-
-</div>
-
-<script>
 
 <?php
 
 $conn = mysqli_connect("localhost","root","","sigap_db");
 
-$dataPneumonia = [];
+$bulanLabels = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
 
-$query = mysqli_query($conn,"SELECT * FROM pasien");
+$laki = array_fill(0, 12, 0);
+$wanita = array_fill(0, 12, 0);
+
+
+$query = mysqli_query($conn, "
+    SELECT 
+        MONTH(tgl_kunjungan) as bulan,
+        jenis_kelamin,
+        COUNT(*) as total
+    FROM pasien
+    WHERE YEAR(tgl_kunjungan) = 2026
+    GROUP BY MONTH(tgl_kunjungan), jenis_kelamin
+");
 
 while($row = mysqli_fetch_assoc($query)){
 
-    $tahun   = $row['tahun'];
-    $wilayah = $row['wilayah'];
-    $bulan   = $row['bulan'];
+    $index = $row['bulan'] - 1;
 
-    if(!isset($dataPneumonia[$tahun])){
-        $dataPneumonia[$tahun] = [];
-    }
+    if(
+        strtolower($row['jenis_kelamin']) == 'laki-laki'
+        || strtolower($row['jenis_kelamin']) == 'laki laki'
+    ){
 
-    if(!isset($dataPneumonia[$tahun][$wilayah])){
-        $dataPneumonia[$tahun][$wilayah] = [];
-    }
+        $laki[$index] = (int)$row['total'];
 
-    if(!isset($dataPneumonia[$tahun][$wilayah][$bulan])){
-        $dataPneumonia[$tahun][$wilayah][$bulan] = [
-            'laki' => 0,
-            'wanita' => 0
-        ];
-    }
+    }else{
 
-    if($row['jenis_kelamin'] == 'Laki-laki'){
-        $dataPneumonia[$tahun][$wilayah][$bulan]['laki']
-        = $row['jumlah_kasus'];
-    }
+        $wanita[$index] = (int)$row['total'];
 
-    if($row['jenis_kelamin'] == 'Wanita'){
-        $dataPneumonia[$tahun][$wilayah][$bulan]['wanita']
-        = $row['jumlah_kasus'];
     }
 }
 
 ?>
 
-const dataPneumonia = <?= json_encode($dataPneumonia); ?>;
+<style>
 
-/* FILTER */
-const wilayah = document.getElementById('filterWilayah');
-const bulan   = document.getElementById('filterBulan');
-const tahun   = document.getElementById('filterTahun');
+#grafik{
+    margin-top:40px;
+}
 
-/* LIST BULAN */
-const bulanList = [
-    'Januari','Februari','Maret','April',
-    'Mei','Juni','Juli','Agustus',
-    'September','Oktober','November','Desember'
-];
+.judul-grafik{
+    color:#00a8b5;
+    font-weight:700;
+    font-size:42px;
+    margin-bottom:15px;
+}
 
-/* CHART */
-const chart = new Chart(document.getElementById('chartKasus'), {
+.card-grafik{
+    background:#f8f8f8;
+    border:4px solid #1e88e5;
+    border-radius:25px;
+    padding:25px;
+}
+
+.chart-container{
+    position:relative;
+    width:100%;
+    height:500px;
+}
+
+.btn-wrapper{
+    margin-top:20px;
+    text-align:right;
+}
+
+.btn-selengkapnya{
+    background:linear-gradient(to right,#00bcd4,#4dd0e1);
+    color:white;
+    padding:14px 28px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:600;
+    display:inline-block;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-selengkapnya:hover{
+    color:white;
+    transform:scale(1.03);
+}
+
+</style>
+
+<div id="grafik" class="container">
+
+    <h1 class="judul-grafik">
+        Grafik Pneumonia
+    </h1>
+
+    <div class="card-grafik">
+
+        <div class="chart-container">
+            <canvas id="chartKasus"></canvas>
+        </div>
+
+    </div>
+
+    <div class="btn-wrapper">
+
+        <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
+            Lihat selengkapnya →
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+const labels = <?= json_encode($bulanLabels); ?>;
+
+const dataLaki = <?= json_encode($laki); ?>;
+const dataWanita = <?= json_encode($wanita); ?>;
+
+const ctx = document.getElementById('chartKasus');
+
+new Chart(ctx, {
 
     type: 'bar',
 
     data: {
-        labels: [],
+
+        labels: labels,
+
         datasets: [
+
             {
                 label: 'Laki-laki',
-                data: [],
-                backgroundColor:'#16a085'
+                data: dataLaki,
+                backgroundColor: '#1f6f78',
+                borderRadius: 6
             },
+
             {
                 label: 'Wanita',
-                data: [],
-                backgroundColor:'#a8d5d5'
+                data: dataWanita,
+                backgroundColor: '#a7d7d3',
+                borderRadius: 6
             }
+
         ]
     },
 
     options: {
-        responsive:true,
-        maintainAspectRatio:false,
-        scales:{
-            y:{
-                beginAtZero:true
+
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                position: 'top'
             }
+
+        },
+
+        scales: {
+
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 10
+                }
+            }
+
         }
+
     }
 
 });
 
-/* UPDATE CHART */
-function updateChart(){
-
-    let labels = [];
-    let laki = [];
-    let wanita = [];
-
-    if(bulan.value === 'All'){
-
-        labels = bulanList;
-
-        bulanList.forEach(b => {
-
-            let data = dataPneumonia[tahun.value]?.[wilayah.value]?.[b];
-
-            laki.push(data ? data.laki : 0);
-            wanita.push(data ? data.wanita : 0);
-
-        });
-
-    } else {
-
-        let data = dataPneumonia[tahun.value]?.[wilayah.value]?.[bulan.value];
-
-        labels = [bulan.value];
-
-        laki = [data ? data.laki : 0];
-        wanita = [data ? data.wanita : 0];
-
-    }
-
-    chart.data.labels = labels;
-    chart.data.datasets[0].data = laki;
-    chart.data.datasets[1].data = wanita;
-
-    chart.update();
-
-}
-
-wilayah.addEventListener('change', updateChart);
-bulan.addEventListener('change', updateChart);
-tahun.addEventListener('change', updateChart);
-
-updateChart();
-
 </script>
-</div> <!-- BUTTON --> <div class="btn-wrapper"> <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya"> Lihat Selengkapnya → </a> </div> </div>
-
-
 <!-- PETA -->
 <section id="mapSection" class="container mt-5" data-aos="fade-up">
 
