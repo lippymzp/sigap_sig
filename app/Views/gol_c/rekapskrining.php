@@ -397,9 +397,9 @@ body{
     <!-- PAGINATION -->
     <div class="pagination-custom">
 
-        <div>
-            Menampilkan <?= count($skrining ?? []) ?> data
-        </div>
+        <div id="infoData">
+    Menampilkan <?= count($skrining ?? []) ?> data
+</div>
 
         <div class="pages">
             <?= $pagerLinks ?>
@@ -450,6 +450,7 @@ function applyFilter(){
             }
         }
 
+
         // GENDER
         let genderFilter = activeFilters.filter(f =>
             ['perempuan','lakilaki'].includes(f)
@@ -499,6 +500,8 @@ function applyFilter(){
         row.style.display = show ? "" : "none";
 
     });
+
+    updateInfoData();
 }
 
 // SEARCH
@@ -519,6 +522,8 @@ searchInput.addEventListener("keyup", function(){
         }
 
     });
+
+    updateInfoData();
 
 });
 
@@ -552,8 +557,39 @@ sortData.addEventListener("change", function(){
         tbody.appendChild(row);
     });
 
+    updateInfoData();
+
 });
 
+
+
+function updateInfoData() {
+
+    let visibleRows = 0;
+
+    document.querySelectorAll(".data-row").forEach(row => {
+
+        if(row.style.display !== "none"){
+            visibleRows++;
+        }
+
+    });
+
+    const infoData = document.getElementById("infoData");
+
+    if(visibleRows > 0){
+
+        infoData.innerHTML =
+            `Menampilkan ${visibleRows} data`;
+
+    } else {
+
+        infoData.innerHTML =
+            `Data tidak ditemukan`;
+
+    }
+}
+updateInfoData();
 </script>
 
 <?= $this->endSection() ?>
