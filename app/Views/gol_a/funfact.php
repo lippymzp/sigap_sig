@@ -2,6 +2,17 @@
 
 <?= $this->section('content'); ?>
 
+<?php
+
+$totalFunfact = $totalFunfact ?? 0;
+$totalUpload  = $totalUpload ?? 0;
+$totalDraft   = $totalDraft ?? 0;
+$status       = $status ?? '';
+$keyword      = $keyword ?? '';
+$funfact      = $funfact ?? [];
+
+?>
+
 <style>
 
 body{
@@ -562,7 +573,7 @@ body{
             <input type="text"
                    name="keyword"
                    class="search-input"
-                   placeholder="Cari berita disini"
+                   placeholder="Cari funfact disini"
                    value="<?= esc($keyword ?? '') ?>">
 
         </div>
@@ -672,7 +683,7 @@ foreach($funfact ?? [] as $f)
 
                     <div class="card-title">
 
-                        <?= esc($f['judul_funfact']); ?>
+                        <?= ($f['judul_funfact']); ?>
 
                     </div>
 
