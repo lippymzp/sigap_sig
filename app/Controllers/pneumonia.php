@@ -292,6 +292,7 @@ public function rekapskrining()
         s.id_skrining,
         s.hasil,
         s.tanggal,
+        s.id_penyakit,
 
         p.nik,
         p.no_hp,
@@ -318,6 +319,9 @@ public function rekapskrining()
         'w.id_wilayah = p.id_wilayah'
     );
 
+    // FILTER ID PENYAKIT = 3
+    $builder->where('s.id_penyakit', 3);
+
     $builder->orderBy('s.id_skrining', 'DESC');
 
     // =========================
@@ -343,20 +347,24 @@ public function rekapskrining()
 
     // skrining hari ini
     $skriningHariIni = $db->table('skrining')
+        ->where('id_penyakit', 3)
         ->where('DATE(tanggal)', date('Y-m-d'))
         ->countAllResults();
 
     // total seluruh skrining
     $totalSkrining = $db->table('skrining')
-        ->countAll();
+        ->where('id_penyakit', 3)
+        ->countAllResults();
 
     // berisiko
     $berisiko = $db->table('skrining')
+        ->where('id_penyakit', 3)
         ->where('hasil', 'Berisiko')
         ->countAllResults();
 
     // tidak berisiko
     $tdkberisiko = $db->table('skrining')
+        ->where('id_penyakit', 3)
         ->where('hasil', 'Tidak Berisiko')
         ->countAllResults();
 

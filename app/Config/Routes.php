@@ -73,28 +73,29 @@ $routes->get('pneumonia/get-tahun-list', 'pneumonia::get_tahun_list');
 $routes->get('pneumonia/export-hasil-data-pasien/pdf', 'pneumonia::export_pdf_pasien');
 $routes->get('pneumonia/export-hasil-data-pasien/excel', 'pneumonia::export_excel_pasien');
 
-/* ========================= */
-/* BERITA PNEUMONIA */
-/* ========================= */
+// ===========================
+// BERITA PNEUMONIA ADMIN
+// ===========================
 
-$routes->get('/beritapneumonia/admin', 'BeritaPneumonia::index');
+$routes->get('beritapneumonia/admin', 'BeritaPneumonia::index');
 
-$routes->get('/beritapneumonia/admin/tambah', 'BeritaPneumonia::tambah');
-$routes->post('/beritapneumonia/admin/simpan', 'BeritaPneumonia::simpan');
+$routes->get('beritapneumonia/admin/tambah', 'BeritaPneumonia::tambah');
+$routes->post('beritapneumonia/admin/simpan', 'BeritaPneumonia::simpan');
 
-$routes->get('/beritapneumonia/admin/edit/(:num)', 'BeritaPneumonia::edit/$1');
-$routes->post('/beritapneumonia/admin/update/(:num)', 'BeritaPneumonia::update/$1');
+$routes->get('beritapneumonia/admin/edit/(:num)', 'BeritaPneumonia::edit/$1');
+$routes->post('beritapneumonia/admin/update/(:num)', 'BeritaPneumonia::update/$1');
 
-$routes->get('/beritapneumonia/admin/delete/(:num)', 'BeritaPneumonia::delete/$1');
+$routes->get('beritapneumonia/admin/delete/(:num)', 'BeritaPneumonia::delete/$1');
 
-$routes->get('/beritapneumonia/admin/view/(:num)', 'BeritaPneumonia::view/$1');
+$routes->get('beritapneumonia/admin/view/(:num)', 'BeritaPneumonia::view/$1');
 
-$routes->get('/beritapneumonia/admin/publish', 'BeritaPneumonia::publish');
-$routes->get('/beritapneumonia/admin/draft', 'BeritaPneumonia::draft');
+$routes->get('beritapneumonia/admin/publish', 'BeritaPneumonia::publish');
+$routes->get('beritapneumonia/admin/draft', 'BeritaPneumonia::draft');
 
-$routes->get('/beritapneumonia/admin/list', 'BeritaPneumonia::list_berita');
-
-$routes->post('/beritapneumonia/admin/upload-editor-image', 'BeritaPneumonia::uploadEditorImage');
+$routes->post(
+    'beritapneumonia/admin/upload-editor-image',
+    'BeritaPneumonia::uploadEditorImage'
+);
 
 /* ========================= */
 /* FUNFACT PNEUMONIA */
