@@ -6,6 +6,8 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 body {
     background: #ffffff;
@@ -261,31 +263,42 @@ $pertanyaan = [
     "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
     "Apakah Anda menanam tanaman pengusir nyamuk?",
     "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
-    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
-    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?",
-    "Apakah hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M?",
-    "Apakah Anda menggantungkan baju di rumah?",
-    "Apakah semua anggota keluarga Anda menggantungkan baju di rumah?",
-    "Apakah di rumah Anda banyak genangan air?",
-    "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
-    "Apakah dalam 2 minggu terakhir Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
-    "Apakah dalam 2 minggu terakhir Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
-    "Apakah dalam 2 minggu terakhir Anda sering berkunjung ke tempat umum atau lokasi ramai?"
+    "Apakah Anda rutin mengecek jentik di rumah?",
+    "Apakah talang air dan saluran pembuangan rutin dibersihkan?",
+    "Apakah hanya orang tertentu dalam keluarga yang melakukan 3M?",
+    "Apakah Anda menggantungkan baju di rumah?"
 ];
 
 ?>
 
 <?php foreach($pertanyaan as $index => $text): ?>
 <div class="pertanyaan step-form" data-step="<?= $index+1 ?>" style="display:none;">
-    
+
     <label class="text-center w-100 d-block">
         <b><?= $text ?></b>
     </label>
 
+    <?php
+    $nomor = $index + 1;
+    $reverse = [14, 15];
+    ?>
+
     <div class="opsi-group">
-        <button type="button" class="opsi" data-value="1">Iya</button>
-        <button type="button" class="opsi" data-value="0">Tidak</button>
-        <input type="hidden" name="p<?= $index+1 ?>" value="">
+
+        <?php if(in_array($nomor, $reverse)): ?>
+
+            <button type="button" class="opsi" data-value="0">Iya</button>
+            <button type="button" class="opsi" data-value="1">Tidak</button>
+
+        <?php else: ?>
+
+            <button type="button" class="opsi" data-value="1">Iya</button>
+            <button type="button" class="opsi" data-value="0">Tidak</button>
+
+        <?php endif; ?>
+
+        <input type="hidden" name="p<?= $nomor ?>" value="">
+
     </div>
 
 </div>
@@ -364,7 +377,7 @@ document.querySelectorAll('.opsi-group').forEach(group => {
 <!-- SCRIPT STEP -->
 <script>
 let currentGroup = 1;
-const questionPerPage = 4;
+const questionPerPage = 3;
 
 const steps = document.querySelectorAll('.step-form');
 const totalGroup = Math.ceil(steps.length / questionPerPage);
@@ -411,16 +424,62 @@ btnNext.addEventListener('click', function () {
     }
 
     if (!valid) {
-        alert("Masih ada pertanyaan yang belum dijawab!");
-        return;
+        Swal.fire({
+    icon: 'warning',
+    title: 'Yah, belum lengkap 🚀✨',
+    text: 'Jawab semua pertanyaan dulu ya sebelum lanjut',
+    confirmButtonText: 'Oke siap!',
+    confirmButtonColor: '#00BBC2',
+    background: '#ffffff',
+    color: '#2c3e50',
+    iconColor: '#00BBC2',
+    backdrop: 'rgba(0,187,194,0.15)',
+    customClass: {
+        popup: 'rounded-4 shadow-lg'
+    },
+    showClass: {
+        popup: 'animate__animated animate__fadeInUp animate__faster'
+    },
+    hideClass: {
+        popup: 'animate__animated animate__fadeOutDown animate__faster'
+    }
+});
     }
 
     if (currentGroup < totalGroup) {
         currentGroup++;
         showGroup(currentGroup);
     } else {
-        document.querySelector('form').submit();
-    }
+
+    Swal.fire({
+        icon: 'question',
+        title: 'Yakin sudah sesuai? 🤔🌿',
+        text: 'Pastikan jawaban kamu sesuai kondisi lingkungan saat ini yaa 🚀✨',
+        showCancelButton: true,
+        confirmButtonText: 'Iya, kirim 👍',
+        cancelButtonText: 'Cek lagi 👀',
+        confirmButtonColor: '#00BBC2',
+        cancelButtonColor: '#6c757d',
+        background: '#ffffff',
+        color: '#2c3e50',
+        iconColor: '#00BBC2',
+        backdrop: 'rgba(0,187,194,0.15)',
+        customClass: {
+            popup: 'rounded-4 shadow-lg'
+        },
+        showClass: {
+            popup: 'animate__animated animate__zoomIn'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__zoomOut'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.querySelector('form').submit();
+        }
+    });
+
+}
 });
 
 btnPrev.addEventListener('click', function () {

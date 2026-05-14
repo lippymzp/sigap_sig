@@ -287,6 +287,116 @@ $tahunSekarang = date('Y');
 
         <div class="inner-card">
             <div id="map"></div>
+            <div style="margin-top:20px;text-align:right;">
+    <button onclick="openPendudukModal()"
+        style="
+            background:#00BBC2;
+            color:white;
+            border:none;
+            padding:12px 18px;
+            border-radius:10px;
+            font-weight:600;
+            cursor:pointer;
+        ">
+        <i class="fa-solid fa-users"></i>
+        Data Penduduk
+    </button>
+</div>
+
+<div id="pendudukModal" class="custom-modal">
+    <div class="custom-modal-content" style="max-width:900px;">
+        <span class="close-modal" onclick="closePendudukModal()">&times;</span>
+
+        <div class="modal-title">
+            Manajemen Data Penduduk
+        </div>
+          <div id="formTambah" style="display:none; margin-bottom:25px; border: 1px solid #00BBC2; padding: 20px; border-radius: 15px;">
+    FORM UPDATE PENDUDUK
+</div>
+
+<table class="table table-hover">
+   <!-- MODAL DATA PENDUDUK -->
+<div id="pendudukModal" class="custom-modal">
+    <div class="custom-modal-content" style="max-width:900px;">
+        <span class="close-modal" onclick="closePendudukModal()">&times;</span>
+        <div class="modal-title">Manajemen Data Penduduk</div>
+
+        <div id="formTambah" style="display:none; margin-bottom:25px; border: 1px solid #00BBC2; padding: 20px; border-radius: 15px;">
+            <h5 id="formTitle">Update Data Penduduk</h5>
+            <form id="pendudukForm" action="<?= base_url('/dbd/dashboard/admin/simpanPenduduk') ?>" method="post">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id_penduduk" id="id_penduduk">
+                
+                <div class="row">
+    <div class="col-md-4">
+        <label>Kelurahan</label>
+        <input type="text" name="kelurahan" id="kelurahan" class="form-control" readonly>
+    </div>
+    <div class="col-md-3">
+        <label>Laki-laki</label>
+        <input type="number" name="laki" id="input_laki" class="form-control" oninput="hitungTotalManual()">
+    </div>
+    <div class="col-md-3">
+        <label>Perempuan</label>
+        <input type="number" name="perempuan" id="input_perempuan" class="form-control" oninput="hitungTotalManual()">
+    </div>
+    <div class="col-md-2">
+        <label>Total</label>
+        <input type="text" id="display_total" class="form-control" readonly>
+    </div>
+</div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary" style="background:#00BBC2; border:none;">Update Data</button>
+                    <button type="button" onclick="showTambahForm()" class="btn btn-secondary">Batal</button>
+                </div>
+            </form>
+        </div>
+
+       <table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Kelurahan</th>
+            <th>Laki-laki</th>
+            <th>Perempuan</th>
+            <th>Total</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        $list_kelurahan = ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo'];
+        foreach($list_kelurahan as $nama_kel): 
+            $jml_laki = 0;
+            $jml_perempuan = 0;
+            
+            // Mencari data di variabel $penduduk yang dikirim dari controller
+            foreach($penduduk as $p) {
+                if($p['kelurahan'] == $nama_kel) {
+                    if($p['jenis_kelamin'] == 'Laki-laki') $jml_laki = $p['total_penduduk'];
+                    if($p['jenis_kelamin'] == 'Perempuan') $jml_perempuan = $p['total_penduduk'];
+                }
+            }
+        ?>
+        <tr>
+            <td><?= $nama_kel ?></td>
+            <td><?= $jml_laki ?></td>
+            <td><?= $jml_perempuan ?></td>
+            <td><strong><?= $jml_laki + $jml_perempuan ?></strong></td>
+            <td>
+                <button type="button" class="btn btn-warning btn-sm" 
+                    onclick="editPenduduk('<?= $nama_kel ?>', <?= $jml_laki ?>, <?= $jml_perempuan ?>)">
+                    <i class="fa-solid fa-pen"></i> Update
+                </button>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</table>              
+        <!-- isi modal kamu taruh di sini -->
+    </div>
+</div>
 
             <div id="detailModal" class="custom-modal">
                 <div class="custom-modal-content">
@@ -1589,6 +1699,48 @@ document.addEventListener("DOMContentLoaded", function() {
             scales: { y: { min: 0, max: 100, ticks: { stepSize: 25, callback: function(value) { return value + '%'; } }, grid: { borderDash: [5, 5] } }, x: { grid: { display: false } } }
         }
     });
+    
 });
+function openPendudukModal(){
+    document.getElementById("pendudukModal").style.display="flex";
+}
+
+function closePendudukModal(){
+    document.getElementById("pendudukModal").style.display="none";
+}
+
+window.onclick=function(e){
+
+    let modalPenduduk=document.getElementById("pendudukModal");
+
+    if(e.target===modalPenduduk){
+        closePendudukModal();
+    }
+}
+function showTambahForm(){
+
+    let form=document.getElementById("formTambah");
+
+    if(form.style.display=="none"){
+        form.style.display="block";
+    }else{
+        form.style.display="none";
+    }
+
+}
+function hitungTotalManual() {
+    let l = parseInt(document.getElementById('input_laki').value) || 0;
+    let p = parseInt(document.getElementById('input_perempuan').value) || 0;
+    document.getElementById('display_total').value = l + p;
+}
+
+function editPenduduk(kelurahan, laki, perempuan) {
+    document.getElementById("formTambah").style.display = "block";
+    document.getElementById("kelurahan").value = kelurahan; // Input readonly
+    document.getElementById("input_laki").value = laki;
+    document.getElementById("input_perempuan").value = perempuan;
+    hitungTotalManual();
+}
+</script>
 </script>
 <?= $this->endSection() ?>

@@ -27,290 +27,358 @@ $kategori = ($kategori_usia <= 19) ? 'Anak-anak' : 'Dewasa';
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-body {
-    background: #ffffff;
+body{
+    background: linear-gradient(135deg,#e9fbfc,#f7ffff);
+    min-height:100vh;
+    font-family:'Poppins',sans-serif;
 }
 
 /* CARD */
-.card-custom {
-    border-radius: 15px;
-    border: 2px solid #00BBC2;
-    background: #f1f3f5;
-    padding: 40px;
-    max-width: 1000px;
-    margin: 40px auto;
+.card-custom{
+    max-width:1000px;
+    margin:40px auto;
+    padding:40px;
+    border-radius:15px;
+    border:2px solid #00BBC2;
+    background:#f1f3f5;
 }
 
-/* TITLE */
-.section-title {
-    font-weight: bold;
-    margin: 25px 0 15px;
+/* SECTION */
+.section-title{
+    font-weight:bold;
+    margin:35px 0 15px;
 }
 
-/* BOX */
-.data-box {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+.data-box{
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:25px;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
 
-/* HASIL */
-.hasil-box {
-    background: #00BBC2;
-    color: white;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
+.hasil-box{
+    background:#00BBC2;
+    color:white;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+}
+
+/* FORM */
+.form-control[readonly]{
+    background:#f8f9fa;
+    border-radius:10px;
 }
 
 /* TABLE */
-.table th {
-    background: #00BBC2;
-    color: white;
-}
-.badge {
-    padding: 8px 15px;
-    font-size: 14px;
+.table{
+    margin-bottom:25px;
+    border-radius:12px;
+    overflow:hidden;
 }
 
-/* TIPS */
-.tips-box {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 10px;
+.table th{
+    background:#00BBC2;
+    color:white;
 }
 
-.tips-header {
-    background: #00BBC2;
-    color: white;
-    padding: 10px 15px;
-    font-weight: bold;
+.table thead tr th:first-child{
+    border-top-left-radius:12px;
 }
 
-.tips-content {
-    background: #cfe8f3;
-    padding: 15px;
+.table thead tr th:last-child{
+    border-top-right-radius:12px;
 }
 
-.tips-content ul {
-    margin: 0;
-    padding-left: 20px;
+.table tbody tr:last-child td:first-child{
+    border-bottom-left-radius:12px;
 }
 
-.form-control[readonly] {
-    background-color: #f8f9fa;
-    border-radius: 10px;
+.table tbody tr:last-child td:last-child{
+    border-bottom-right-radius:12px;
+}
+
+/* Badge */
+.badge{
+    padding:8px 15px;
+    font-size:14px;
+}
+
+/* TIPS CARD */
+.tips-box{
+    margin:20px 0 30px;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.tips-card{
+    margin-top:20px;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    animation:fadeUp .6s ease-in-out;
+}
+
+.tips-header-modern{
+    padding:18px 20px;
+    font-size:16px;
+    font-weight:600;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.tips-content-modern{
+    background:#f9fcfc;
+    padding:18px 22px;
+}
+
+.tips-content-modern p{
+    color:#444;
+    margin-bottom:10px;
+}
+
+.tips-content-modern ul{
+    padding-left:18px;
+}
+
+.tips-content-modern li{
+    margin-bottom:8px;
+    transition:.2s;
+}
+
+.tips-content-modern li:hover{
+    transform:translateX(5px);
+}
+
+/* HEADER COLOR */
+.bg-danger-modern{
+    background:linear-gradient(135deg,#ff6b6b,#d64545);
+}
+
+.bg-warning-modern{
+    background:linear-gradient(135deg,#ffd86b,#c9a227);
+}
+
+.bg-success-modern{
+    background:linear-gradient(135deg,#00BBC2,#007f6b);
+}
+
+/* BUTTON */
+.btn-wrapper{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:40px;
+}
+
+.btn-kembali,
+.btn-selesai,
+.btn-cetak{
+    width:160px;
+    height:50px;
+    border-radius:10px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+}
+
+.btn-kembali{
+    background:white;
+    color:#00BBC2;
+    border:2px solid #00BBC2;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.btn-selesai{
+    background:#00BBC2;
+    color:white;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+
+.btn-cetak-full{
+    width:100%;
+    height:50px;
+    border:none;
+    border-radius:10px;
+    background:#00BBC2;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+}
+
+.btn-cetak-full:hover{
+    opacity:.9;
+}
+
+.cetak-wrapper{
+    margin-top:20px;
 }
 
 /* FOOTER */
-.footer-text {
-    text-align: center;
-    margin-top: 30px;
-    color: gray;
-    font-size: 14px;
-}
-.btn-custom {
-    height: 55px;
-    border-radius: 12px;
-    font-weight: 600;
+.footer-text{
+    margin-top:30px;
+    text-align:center;
+    color:gray;
+    font-size:14px;
 }
 
-
-.btn-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 40px;
-}
-
-.btn-kembali, .btn-selesai, .btn-cetak {
-    width: 160px;
-    height: 50px;
-    border-radius: 10px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-}
-
-/* warna */
-.btn-kembali {
-    background: white;
-    border: 2px solid #00BBC2;
-    color: #00BBC2;
-}
-
-.btn-selesai {
-    background: #00BBC2;
-    color: white;
-}
-
-.btn-cetak {
-    width: 200px;
-    height: 50px;
-    background: #555;
-    color: white;
-    border-radius: 10px;
-    font-weight: 600;
-    
-}
+/* PRINT */
 @media print {
-    .btn-wrapper, .btn-cetak {
-        display: none;
+
+    /* Sembunyikan tombol */
+    .btn-wrapper,
+    .btn-cetak,
+    .cetak-wrapper{
+        display:none !important;
+    }
+
+    body{
+        background:white !important;
+        margin:0 !important;
+        padding:0 !important;
+
+        /* ganti zoom */
+        transform:scale(.95);
+        transform-origin:top left;
+        width:105%;
+    }
+
+    .card-custom{
+        width:100% !important;
+        max-width:100% !important;
+        margin:0 !important;
+        padding:10px !important;
+        border:none !important;
+        box-shadow:none !important;
+    }
+
+    /* Hindari section penting pecah */
+    .data-box,
+    .hasil-box,
+    .tips-card{
+        page-break-inside:avoid !important;
+        break-inside:avoid !important;
+    }
+
+    /* Informasi umum tetap 2 kolom */
+    .row{
+        display:flex !important;
+        flex-wrap:wrap !important;
+    }
+
+    .col-md-6{
+        width:50% !important;
+    }
+
+    .form-control{
+        height:auto !important;
+        min-height:35px;
+        font-size:12px;
+        padding:6px 10px;
+
+        white-space:normal !important;
+        overflow:visible !important;
+    }
+
+    /* ===== TABEL ===== */
+
+    .table,
+    table{
+        width:100% !important;
+        font-size:12px;
+        border-collapse:collapse !important;
+    }
+
+    thead{
+        display:table-header-group !important;
+    }
+
+    tfoot{
+        display:table-footer-group !important;
+    }
+
+    tbody{
+        display:table-row-group !important;
+    }
+
+    tbody tr{
+        page-break-inside:auto !important;
+        break-inside:auto !important;
+    }
+
+    th,
+    td{
+        padding:6px !important;
+        vertical-align:middle !important;
+        white-space:normal !important;
+        overflow-wrap:break-word !important;
+        word-break:break-word !important;
+    }
+
+    /* lebar kolom */
+    td:nth-child(1),
+    th:nth-child(1){
+        width:8%;
+    }
+
+    td:nth-child(2),
+    th:nth-child(2){
+        width:72%;
+    }
+
+    td:nth-child(3),
+    th:nth-child(3){
+        width:20%;
+    }
+
+    /* Footer */
+    .footer-text{
+        margin-top:20px;
+    }
+/* HASIL pindah ke halaman baru */
+.section-title:nth-of-type(3){
+    page-break-before: always !important;
+    break-before: page !important;
+}
+
+/* REKOMENDASI pindah ke halaman baru */
+.section-title:nth-of-type(4){
+    page-break-before: always !important;
+    break-before: page !important;
+}
+
+/* Isi card jangan terpotong */
+.hasil-box,
+.tips-card{
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+    @page{
+        size:A4;
+        margin:10mm;
     }
 }
-.btn-cetak-full {
-    width: 100%;                 /* full lebar */
-    height: 50px;
-    background: #00BBC2;         /* warna tosca */
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 16px;
-}
 
-.btn-cetak-full:hover {
-    opacity: 0.9;
-}
-/* TABLE ROUNDED */
-.table {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* HEADER */
-.table thead tr th:first-child {
-    border-top-left-radius: 12px;
-}
-
-.table thead tr th:last-child {
-    border-top-right-radius: 12px;
-}
-
-/* FOOTER (baris terakhir) */
-.table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 12px;
-}
-
-.table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 12px;
-}
-/* BUTTON STYLE */ 
-.btn-kembali { 
-    background: white; 
-    color: #00BBC2; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); } 
-
-.btn-selesai { 
-    background: #00BBC2; 
-    color: white; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-/* SPACING BIAR NGGAK RAPET */
-.section-title {
-    margin-top: 35px;
-}
-
-.data-box {
-    margin-bottom: 25px;
-}
-
-.table {
-    margin-bottom: 25px;
-}
-
-.hasil-box {
-    margin-bottom: 15px;
-}
-
-.tips-box {
-    margin-top: 20px;
-    margin-bottom: 30px;
-}
-
-.cetak-wrapper {
-    margin-top: 20px;
-}
-* {
-    font-family: 'Poppins', sans-serif;
-}
-
-/* ===== CARD MODERN ===== */
-.tips-card {
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin-top: 20px;
-    animation: fadeUp 0.6s ease-in-out;
-    transition: 0.3s;
-}
-
-/* animasi masuk */
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+/* ANIMATION */
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(20px);
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    to{
+        opacity:1;
+        transform:translateY(0);
     }
-}
-
-/* HEADER */
-.tips-header-modern {
-    padding: 18px 20px;
-    font-weight: 600;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-}
-
-/* CONTENT */
-.tips-content-modern {
-    padding: 18px 22px;
-    background: #f9fcfc;
-}
-
-.tips-content-modern p {
-    margin-bottom: 10px;
-    color: #444;
-}
-
-.tips-content-modern ul {
-    padding-left: 18px;
-}
-
-.tips-content-modern li {
-    margin-bottom: 8px;
-    transition: 0.2s;
-}
-
-.tips-content-modern li:hover {
-    transform: translateX(5px);
-}
-
-/* VARIAN WARNA */
-.bg-danger-modern {
-    background: linear-gradient(135deg, #ff6b6b, #d64545);
-}
-
-.bg-warning-modern {
-    background: linear-gradient(135deg,  #ffd86b, #c9a227);
-}
-
-.bg-success-modern {
-    background: linear-gradient(135deg, #00BBC2, #007f6b);
 }
 </style>
-
 
 </head>
 
@@ -402,16 +470,10 @@ $pertanyaan = [
     "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
     "Apakah Anda menanam tanaman pengusir nyamuk?",
     "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
-    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
-    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?",
-    "Apakah hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M?",
-    "Apakah Anda menggantungkan baju di rumah?",
-    "Apakah semua anggota keluarga Anda menggantungkan baju di rumah?",
-    "Apakah di rumah Anda banyak genangan air?",
-    "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
-    "Apakah dalam 2 minggu terakhir Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
-    "Apakah dalam 2 minggu terakhir Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
-    "Apakah dalam 2 minggu terakhir Anda sering berkunjung ke tempat umum atau lokasi ramai?"
+    "Apakah Anda rutin mengecek keberadaan jentik di rumah?",
+    "Apakah talang air dan saluran pembuangan rutin dibersihkan?",
+    "Apakah hanya orang tertentu dalam keluarga yang melakukan 3M?",
+    "Apakah Anda menggantungkan baju di rumah?"
 ];
 ?>
 
@@ -450,9 +512,7 @@ if ($value == 1):
     <?= $hasil ?>
 </div>
 
-<p class="text-center mt-2 text-muted">
-    <?= $alasan ?>
-</p>
+
 
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
@@ -533,9 +593,10 @@ if ($value == 1):
 <!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-    <a href="/skriningdbd" class="btn btn-kembali">
-        Kembali
-    </a>
+   <button type="button" onclick="confirmBack(event)" class="btn btn-kembali">
+    Kembali
+</button>
+
 
    <a href="<?= base_url('/') ?>" class="btn btn-selesai">
     Selesai
@@ -553,7 +614,31 @@ if ($value == 1):
 </div>
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script>
+function confirmBack(event) {
+    event.preventDefault();
 
+    Swal.fire({
+        icon: 'question',
+        title: 'Yakin mau kembali?',
+        text: 'Kamu akan kembali ke halaman skrining.',
+        showCancelButton: true,
+        confirmButtonText: 'Iya, kembali',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#00BBC2',
+        cancelButtonColor: '#6c757d',
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            window.location.href = "<?= base_url('skriningdbd') ?>";
+        }
+
+        // kalau cancel → diam saja (tetap di halaman)
+    });
+}
+</script>
 </body>
 </html>
 <?= $this->include('layout/footer') ?>
