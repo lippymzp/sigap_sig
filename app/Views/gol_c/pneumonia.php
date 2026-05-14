@@ -62,7 +62,7 @@
 
 
 <style>
-/* ================= HERO ================= */
+/* ================= CSS ================= */
 .pneu-hero{
     background: linear-gradient(135deg,#00bcd4,#36d1dc,#5b86e5);
     padding: 70px 0;
@@ -78,108 +78,33 @@
     background:#0088aa;
     color:#fff;
 }
-
 .pneu-hero {
-    height: 400px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    padding: 40px 20px;
-    color: white;
-
+    height: 400px; border-radius: 20px; display: flex; align-items: center; padding: 40px 20px; color: white;
     background: 
     linear-gradient(
         to right,
-        rgba(0, 206, 209, 0.9) 40%,   /* Menggunakan Dark Turquoise #00CED1 */
-        rgba(0, 206, 209, 0.3) 70%,
-        rgba(0, 206, 209, 0) 100%
-    ),
-    url("<?= base_url('img/pneumonia.png') ?>");
-
-    background-size: cover;
-    background-position: right center;
-    background-repeat: no-repeat;
-}
-
-@keyframes floatHero{
-    0%{transform:translateY(0);}
-    50%{transform:translateY(-10px);}
-    100%{transform:translateY(0);}
-}
-.grafik-container{
-    width: 100%;
-    max-width: 1000px;
-    margin: auto;
-}
+        rgba(0, 206, 209, 0.9) 40%,rgba(0, 206, 209, 0.3) 70%,rgba(0, 206, 209, 0) 100% ), 
+        url("<?= base_url('img/pneumonia.png') ?>"); background-size: cover; background-position: right center; background-repeat: no-repeat; }
+@keyframes floatHero{ 0%{transform:translateY(0);} 50%{transform:translateY(-10px);} 100%{transform:translateY(0);} }
+.grafik-container{ width: 100%; max-width: 1000px; margin: auto }
 
 /* BUTTON POSISI */
-.btn-wrapper{
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 15px;
-}
+.btn-wrapper{ display: flex; justify-content: flex-end; margin-top: 15px; }
 
 /* BUTTON */
-.btn-selengkapnya{
-    background: linear-gradient(
-        135deg,
-        #14c7cf,
-        #18b7d3
-    );
+.btn-selengkapnya{ background: linear-gradient( 135deg, #14c7cf, #18b7d3 );
+color: white; text-decoration: none; padding: 12px 24px; border-radius: 14px;
+font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.3s; }
 
-    color: white;
-    text-decoration: none;
-
-    padding: 12px 24px;
-    border-radius: 14px;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-
-    transition: 0.3s;
-}
-
-.btn-selengkapnya:hover{
-    transform: translateY(-2px);
-
-    background: linear-gradient(
-        135deg,
-        #11b8c0,
-        #149fc0
-    );
-
-    color: white;
-}
+.btn-selengkapnya:hover{ transform: translateY(-2px); background: linear-gradient( 135deg, #11b8c0, #149fc0 ); color: white; }
 /* ================= FILTER ================= */
-.filter-container {
-    display:flex;
-    gap:15px;
-    margin-bottom:20px;
-    flex-wrap:wrap;
-}
+.filter-container { display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap; }
 
-.filter-box {
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:#f5f5f5;
-    padding:8px 12px;
-    border-radius:10px;
-}
+.filter-box { display:flex; align-items:center; gap:8px; background:#f5f5f5; padding:8px 12px; border-radius:10px; }
 
-.filter-box select {
-    border:none;
-    background:transparent;
-    outline:none;
-}
+.filter-box select { border:none; background:transparent; outline:none; }
 
-.main-layout {
-    display:flex;
-    gap:20px;
-    align-items:flex-start;
-}
+.main-layout { display:flex; gap:20px; align-items:flex-start; }
 
 .chart-container {
     flex:3;
@@ -222,6 +147,62 @@
     width:15px;
     height:15px;
     border-radius:3px;
+}
+/* BOX FITUR */
+.fitur-box {
+    padding: 15px; border-radius: 20px; text-align: center; color: white;
+    background: linear-gradient(135deg, #20c997, #0dcaf0);
+    text-decoration: none; box-shadow: 0 6px 15px rgba(0,0,0,0.15); transition: 0.3s;
+}
+/* HOVER */
+.fitur-box:hover {
+    transform: translateY(-5px); color: white;
+}
+/* AKTIF */
+.fitur-box.active {
+    transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+/* ICON GARIS */
+.icon {
+    margin-bottom: 10px;
+}
+.icon span {
+    display: inline-block; width: 3px; height: 18px; background: white; margin: 0 2px; border-radius: 2px;
+}
+.icon span:nth-child(2) {
+    height: 24px;
+}
+.icon span:nth-child(3) {height: 14px;}
+/* CSS GRAFIK */
+body {
+  background: #ffffff;
+}
+
+.judul-grafik { color: #1aa6a6; font-weight: 600; text-align: left;margin-bottom: 10px; }
+
+/* CARD */
+.card-custom { background: #f4f8f8; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+/* FILTER */
+.filter {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* CHART FULL */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+h5 {
+  font-weight: bold;
 }
 </style>
 
@@ -277,34 +258,6 @@
 </div>
 </div>
 </section>
-<style>
-/* BOX FITUR */
-.fitur-box {
-    padding: 15px; border-radius: 20px; text-align: center; color: white;
-    background: linear-gradient(135deg, #20c997, #0dcaf0);
-    text-decoration: none; box-shadow: 0 6px 15px rgba(0,0,0,0.15); transition: 0.3s;
-}
-/* HOVER */
-.fitur-box:hover {
-    transform: translateY(-5px); color: white;
-}
-/* AKTIF */
-.fitur-box.active {
-    transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
-/* ICON GARIS */
-.icon {
-    margin-bottom: 10px;
-}
-.icon span {
-    display: inline-block; width: 3px; height: 18px; background: white; margin: 0 2px; border-radius: 2px;
-}
-.icon span:nth-child(2) {
-    height: 24px;
-}
-.icon span:nth-child(3) {height: 14px;}
-</style>
-
 <script>
 const fitur = document.querySelectorAll('.fitur-box');
 
@@ -374,7 +327,7 @@ fitur.forEach(btn => {
 </style>
 
 <!-- GRAFIK -->
- 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -383,50 +336,14 @@ fitur.forEach(btn => {
 
 <title>Kasus Umum</title>
 
-<!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Style -->
 <style>
-body {
-  background: #ffffff;
-}
 
-.judul-grafik {
-  color: #1aa6a6;
-  font-weight: 600;
-  text-align: left;   /* sesuai gambar (kiri) */
-  margin-bottom: 10px; /* biar deket ke card */
-}
-
-/* CARD */
-.card-custom {
-  background: #f4f8f8;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-/* FILTER */
-.filter {
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* CHART FULL */
-.chart-container {
-  position: relative;
-  width: 100%;
-  height: 260px;
-}
-
-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-h5 {
-  font-weight: bold;
+.chart-container{
+    width:100%;
+    height:350px;
 }
 </style>
 
@@ -434,70 +351,205 @@ h5 {
 <body>
 
 <div id="grafik" class="container mt-4">
-<h4 class="judul-grafik">Grafik Pneumonia</h4>
-  <div class="card-custom">
 
-    <h5 class="mb-4">Kasus Umum</h5>
+<h4>Grafik Pneumonia</h4>
 
-    <!-- FILTER -->
-    <div class="row mb-4">
-      <div class="col-md-4">
+<div class="card p-4 shadow-sm">
+
+<h5 class="mb-4">Kasus Umum</h5>
+
+<!-- FILTER -->
+<div class="row mb-4">
+
+    <!-- WILAYAH -->
+    <div class="col-md-4">
         <label>Wilayah</label>
-        <select class="form-control filter">
-          <option>Ajung</option>
-          <option>Wirowongso</option>
-          <option>Rowo Indah</option>
-          <option>Sukamakmur</option>
-          <option>Klompangan</option>
-          <option>Mangaran</option>
-          <option>Pancakarya</option>
-          <option>Pasien Luar Wilayah</option>
-          <option>All</option>
-        </select>
-      </div>
 
-      <div class="col-md-4">
+        <select id="filterWilayah" class="form-control">
+
+            <option value="All">All</option>
+            <option value="Ajung">Ajung</option>
+            <option value="Wirowongso">Wirowongso</option>
+            <option value="Rowo Indah">Rowo Indah</option>
+            <option value="Sukamakmur">Sukamakmur</option>
+            <option value="Klompangan">Klompangan</option>
+            <option value="Mangaran">Mangaran</option>
+            <option value="Pancakarya">Pancakarya</option>
+            <option value="Pasien Luar Wilayah">Pasien Luar Wilayah</option>
+
+        </select>
+    </div>
+
+    <!-- BULAN -->
+    <div class="col-md-4">
         <label>Bulan</label>
-        <select class="form-control filter">
-          <option>Januari</option>
-          <option>Februari</option>
-          <option>Maret</option>
-          <option>April</option>
-          <option>Mei</option>
-          <option>Juni</option>
-          <option>Juli</option>
-          <option>Agustus</option>
-          <option>September</option>
-          <option>Oktober</option>
-          <option>November</option>
-          <option>Desember</option>
-          <option>All</option>
-        </select>
-      </div>
 
-      <div class="col-md-4">
+        <select id="filterBulan" class="form-control">
+
+            <option value="All">All</option>
+
+            <option value="Januari">Januari</option>
+            <option value="Februari">Februari</option>
+            <option value="Maret">Maret</option>
+            <option value="April">April</option>
+            <option value="Mei">Mei</option>
+            <option value="Juni">Juni</option>
+            <option value="Juli">Juli</option>
+            <option value="Agustus">Agustus</option>
+            <option value="September">September</option>
+            <option value="Oktober">Oktober</option>
+            <option value="November">November</option>
+            <option value="Desember">Desember</option>
+
+        </select>
+    </div>
+
+    <!-- TAHUN -->
+    <div class="col-md-4">
         <label>Tahun</label>
-        <select class="form-control filter">
-          <option>2025</option>
-          <option>2024</option>
-          <option>2023</option>
+
+        <select id="filterTahun" class="form-control">
+
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+
         </select>
-      </div>
     </div>
 
-    <!-- GRAFIK FULL -->
-    <div class="chart-container">
-      <canvas id="chartKasus"></canvas>
-    </div>
-    
 </div>
-<!-- BUTTON -->
-<div class="btn-wrapper">
-    <a href="<?= base_url('grafik_pneumonia') ?>" class="btn-selengkapnya">
-        Lihat Selengkapnya →
-    </a>
+
+<!-- CHART -->
+<div class="chart-container">
+    <canvas id="chartKasus"></canvas>
 </div>
+
 </div>
+
+</div>
+
+<script>
+
+/* DATA */
+const dataPneumonia = {
+
+    2025: {
+
+        Ajung: {
+            Januari:{laki:9,wanita:0},
+            Februari:{laki:2,wanita:2},
+            Maret:{laki:0,wanita:0},
+            April:{laki:1,wanita:0},
+            Mei:{laki:1,wanita:1},
+            Juni:{laki:3,wanita:2},
+            Juli:{laki:5,wanita:2},
+            Agustus:{laki:5,wanita:2},
+            September:{laki:1,wanita:1},
+            Oktober:{laki:0,wanita:3},
+            November:{laki:3,wanita:3},
+            Desember:{laki:6,wanita:3}
+        }
+
+    }
+
+};
+
+/* FILTER */
+const wilayah = document.getElementById('filterWilayah');
+const bulan   = document.getElementById('filterBulan');
+const tahun   = document.getElementById('filterTahun');
+
+/* LIST BULAN */
+const bulanList = [
+    'Januari','Februari','Maret','April',
+    'Mei','Juni','Juli','Agustus',
+    'September','Oktober','November','Desember'
+];
+
+/* CHART */
+const chart = new Chart(document.getElementById('chartKasus'), {
+
+    type: 'bar',
+
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: 'Laki-laki',
+                data: [],
+                backgroundColor:'#16a085'
+            },
+            {
+                label: 'Wanita',
+                data: [],
+                backgroundColor:'#a8d5d5'
+            }
+        ]
+    },
+
+    options: {
+        responsive:true,
+        maintainAspectRatio:false
+    }
+
+});
+
+/* UPDATE CHART */
+function updateChart(){
+
+    let labels = [];
+    let laki = [];
+    let wanita = [];
+
+    // ALL BULAN
+    if(bulan.value === 'All'){
+
+        labels = bulanList;
+
+        bulanList.forEach(b => {
+
+            let data = dataPneumonia[tahun.value]?.[wilayah.value]?.[b];
+
+            laki.push(data ? data.laki : 0);
+            wanita.push(data ? data.wanita : 0);
+
+        });
+
+    }
+
+    // SATU BULAN
+    else {
+
+        let data = dataPneumonia[tahun.value]?.[wilayah.value]?.[bulan.value];
+
+        labels = [bulan.value];
+
+        laki = [data ? data.laki : 0];
+        wanita = [data ? data.wanita : 0];
+
+    }
+
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = laki;
+    chart.data.datasets[1].data = wanita;
+
+    chart.update();
+
+}
+
+/* EVENT */
+wilayah.addEventListener('change', updateChart);
+bulan.addEventListener('change', updateChart);
+tahun.addEventListener('change', updateChart);
+
+/* LOAD AWAL */
+updateChart();
+
+</script>
+
+</body>
+</html>
+
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
