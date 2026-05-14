@@ -434,7 +434,7 @@ $keyword = $keyword ?? '';
                 <div class="action-icons">
 
                                 <!-- VIEW -->
-                <a href="/beritapneumonia/admin/view_berita/<?= $b['id_berita']; ?>" class="icon-btn view">
+                <a href="/beritapneumonia/admin/view/<?= $b['id_berita']; ?>" class="icon-btn view">
                     <i class="fas fa-eye"></i>
                 </a>
 

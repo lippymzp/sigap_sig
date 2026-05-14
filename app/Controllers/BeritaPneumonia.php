@@ -59,14 +59,18 @@ class BeritaPneumonia extends Controller
     // =========================
     // VIEW ADMIN
     // =========================
-    public function view($id)
-    {
-        $model = new BeritaPneumoniaModel();
+    public function view(int $id)
+{
+    $model = new BeritaPneumoniaModel();
 
-        $data['berita'] = $model->find($id);
+    $data['beritapneumonia'] = $model->find($id);
 
-        return view('gol_c/berita/view_berita', $data);
+    if (!$data['beritapneumonia']) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
     }
+
+    return view('gol_c/berita/view_berita', $data);
+}
 
     // =========================
     // VIEW USER
@@ -158,14 +162,18 @@ class BeritaPneumonia extends Controller
     // =========================
     // EDIT
     // =========================
-    public function edit($id)
-    {
-        $model = new BeritaPneumoniaModel();
+    public function edit(int $id)
+{
+    $model = new BeritaPneumoniaModel();
 
-        $data['berita'] = $model->find($id);
+    $data['beritapneumonia'] = $model->find($id);
 
-        return view('gol_c/berita/tambah', $data);
+    if (!$data['beritapneumonia']) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
     }
+
+    return view('gol_c/berita/tambah', $data);
+}
 
     // =========================
     // UPDATE
