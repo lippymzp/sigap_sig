@@ -21,7 +21,7 @@ body{
 
 /* CONTAINER */
 .berita-container{
-    background:#bfe3e5;
+    background:#ffffff;
     border-radius:28px;
     padding:40px;
     position:relative;
@@ -29,9 +29,11 @@ body{
 
 /* FRAME */
 .berita-frame{
-    border:3px solid #009ea3;
+    border:1px solid #dfeeee;
     border-radius:22px;
     padding:35px 40px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.05);
+background:#fff;
 }
 
 /* HEADER */
@@ -54,20 +56,18 @@ body{
 
 /* BUTTON BACK */
 .back-btn{
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Teks di tengah */
-    gap: 10px;
-    background: #11c5d8; /* Warna cyan sesuai screenshot */
-    color: white;
-    width: 100%; /* MEMBUAT FULL WIDTH */
-    padding: 15px 0;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    transition: background 0.3s ease;
-    border: none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:#11c5d8;
+    color:white;
+    padding:12px 30px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    font-size:15px;
+    transition:0.3s ease;
+    border:none;
 }
 
 .back-btn:hover{
@@ -176,20 +176,6 @@ body{
     word-break:break-all;
 }
 
-/* ICON */
-.icon-nyamuk{
-    position:absolute;
-    top:5px;
-    right:15px;
-    width:75px;
-}
-
-.icon-air{
-    position:absolute;
-    bottom:5px;
-    right:15px;
-    width:120px;
-}
 .btn-sumber{
     display:inline-block;
     background:#11c5d8;
@@ -247,9 +233,6 @@ body{
 
 <div class="berita-container">
 
-    <!-- ICON -->
-    <img src="<?= base_url('img/nyamuk.png') ?>" class="icon-nyamuk">
-    <img src="<?= base_url('img/air.png') ?>" class="icon-air">
 
     <div class="berita-frame">
 
@@ -382,11 +365,15 @@ $bulan = [
         <?php endif; ?>
 
         <!-- TOMBOL KEMBALI DI BAWAH -->
-        <div class="berita-footer">
-            <br><br><a href="<?= base_url('berita') ?>" class="back-btn">
-                <i class="fa-solid"></i> Kembali
-            </a>
         </div>
+
+<div class="berita-footer" style="text-align:center; margin-top:25px;">
+    <a href="<?= base_url('beritapneumonia/admin') ?>" class="back-btn">
+        Kembali
+    </a>
+</div>
+
+</div>
 
     </div>
 
