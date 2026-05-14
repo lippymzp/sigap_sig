@@ -224,6 +224,13 @@ $builder->groupBy('w.kelurahan');
         ->orderBy('id_funfact', 'DESC')
         ->get()
         ->getResultArray();
+
+    // ======================
+    // DATA PENDUDUK
+    // ======================
+    $penduduk = $db->table('data_penduduk')
+        ->get()
+        ->getResultArray();
         // =========================
         // RETURN VIEW
         // =========================
@@ -235,8 +242,66 @@ $builder->groupBy('w.kelurahan');
     'desaTertinggi' => $desaTertinggi,
     'berita' => $berita,
     'funfact' => $funfact,
+    'penduduk' => $penduduk,
     'show_footer_maskot' => true,
     'footer_maskot' => 'logo_denggis.png'
-]);
+    
+
+        ]);
+    }
+
+   public function simpanPenduduk()
+{
+    $db = \Config\Database::connect();
+    
+    $kelurahan = $this->request->getPost('kelurahan');
+    $laki      = (int)$this->request->getPost('laki');
+    $perempuan = (int)$this->request->getPost('perempuan');
+
+    // 1. Hapus semua data lama kelurahan ini (biar tidak double)
+    $db->table('data_penduduk')->where('kelurahan', $kelurahan)->delete();
+
+    // 2. Siapkan data baru untuk dimasukkan kembali
+    $data_baru = [
+        [
+            'kelurahan'      => $kelurahan,
+            'jenis_kelamin'  => 'Laki-laki',
+            'total_penduduk' => $laki
+        ],
+        [
+            'kelurahan'      => $kelurahan,
+            'jenis_kelamin'  => 'Perempuan',
+            'total_penduduk' => $perempuan
+        ]
+    ];
+
+    // 3. Masukkan data (langsung dua baris)
+    $db->table('data_penduduk')->insertBatch($data_baru);
+
+    return redirect()->back()->with('success', 'Data ' . $kelurahan . ' berhasil diperbarui');
 }
+public function hapusPenduduk($id)
+{
+    $db = \Config\Database::connect();
+
+    $db->table('data_penduduk')
+       ->where('id_penduduk', $id)
+       ->delete();
+
+    return redirect()->back()
+        ->with('success','Data berhasil dihapus');
+}
+
+public function editPenduduk($id)
+{
+    $db = \Config\Database::connect();
+
+    $data['pendudukEdit'] = $db->table('data_penduduk')
+        ->where('id_penduduk', $id)
+        ->get()
+        ->getRowArray();
+
+    return view('gol_a/edit_penduduk',$data);
+}
+
 }

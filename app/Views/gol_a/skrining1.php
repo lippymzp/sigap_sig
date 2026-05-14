@@ -6,6 +6,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <style>
 body {
     background: #ffffff;
@@ -176,7 +177,7 @@ body {
 }
 </style>
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <div class="container mt-5">
@@ -483,8 +484,56 @@ document.getElementById('formSkrining').addEventListener('submit', function(e){
         let field = document.querySelector(`[name="${name}"]`);
 
         if (!field || field.value.trim() === "" || field.value === "-- Pilih --" || field.value.includes("Pilih")) {
-            alert("Semua data wajib diisi sebelum melanjutkan!");
+            document.getElementById('formSkrining').addEventListener('submit', function(e){
+
+    let requiredFields = [
+        'nik',
+        'nama',
+        'jenis_kelamin',
+        'tanggal_lahir',
+        'kategori_usia',
+        'telepon',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'kelurahan',
+        'rt_rw'
+    ];
+
+    for (let name of requiredFields) {
+        let field = document.querySelector(`[name="${name}"]`);
+
+        if (!field || field.value.trim() === "" || field.value === "-- Pilih --" || field.value.includes("Pilih")) {
+
+            e.preventDefault();
+
+           Swal.fire({
+    icon: 'info',
+    title: 'Hampir selesai! 🌟',
+    text: 'Isi seluruh data dulu ya biar bisa lanjut skrining',
+    confirmButtonText: 'Baik',
+    confirmButtonColor: '#00BBC2',
+    background: '#f9feff',
+    color: '#2c3e50',
+    iconColor: '#00BBC2',
+    backdrop: 'rgba(0,187,194,0.15)',
+    customClass: {
+        popup: 'rounded-4 shadow-lg'
+    },
+    showClass: {
+        popup: 'animate__animated animate__zoomIn'
+    },
+    hideClass: {
+        popup: 'animate__animated animate__zoomOut'
+    }
+});
+
             field.focus();
+            return;
+        }
+    }
+
+});
             e.preventDefault();
             return;
         }
