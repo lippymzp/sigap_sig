@@ -328,14 +328,6 @@ fitur.forEach(btn => {
 
 <!-- GRAFIK -->
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Kasus Umum</title>
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -345,10 +337,8 @@ fitur.forEach(btn => {
     width:100%;
     height:350px;
 }
-</style>
 
-</head>
-<body>
+</style>
 
 <div id="grafik" class="container mt-4">
 
@@ -363,11 +353,11 @@ fitur.forEach(btn => {
 
     <!-- WILAYAH -->
     <div class="col-md-4">
+
         <label>Wilayah</label>
 
         <select id="filterWilayah" class="form-control">
 
-            <option value="All">All</option>
             <option value="Ajung">Ajung</option>
             <option value="Wirowongso">Wirowongso</option>
             <option value="Rowo Indah">Rowo Indah</option>
@@ -378,10 +368,12 @@ fitur.forEach(btn => {
             <option value="Pasien Luar Wilayah">Pasien Luar Wilayah</option>
 
         </select>
+
     </div>
 
     <!-- BULAN -->
     <div class="col-md-4">
+
         <label>Bulan</label>
 
         <select id="filterBulan" class="form-control">
@@ -402,10 +394,12 @@ fitur.forEach(btn => {
             <option value="Desember">Desember</option>
 
         </select>
+
     </div>
 
     <!-- TAHUN -->
     <div class="col-md-4">
+
         <label>Tahun</label>
 
         <select id="filterTahun" class="form-control">
@@ -415,6 +409,7 @@ fitur.forEach(btn => {
             <option value="2023">2023</option>
 
         </select>
+
     </div>
 
 </div>
@@ -430,29 +425,49 @@ fitur.forEach(btn => {
 
 <script>
 
-/* DATA */
-const dataPneumonia = {
+<?php
 
-    2025: {
+$conn = mysqli_connect("localhost","root","","sigap_db");
 
-        Ajung: {
-            Januari:{laki:9,wanita:0},
-            Februari:{laki:2,wanita:2},
-            Maret:{laki:0,wanita:0},
-            April:{laki:1,wanita:0},
-            Mei:{laki:1,wanita:1},
-            Juni:{laki:3,wanita:2},
-            Juli:{laki:5,wanita:2},
-            Agustus:{laki:5,wanita:2},
-            September:{laki:1,wanita:1},
-            Oktober:{laki:0,wanita:3},
-            November:{laki:3,wanita:3},
-            Desember:{laki:6,wanita:3}
-        }
+$dataPneumonia = [];
 
+$query = mysqli_query($conn,"SELECT * FROM grafik");
+
+while($row = mysqli_fetch_assoc($query)){
+
+    $tahun   = $row['tahun'];
+    $wilayah = $row['wilayah'];
+    $bulan   = $row['bulan'];
+
+    if(!isset($dataPneumonia[$tahun])){
+        $dataPneumonia[$tahun] = [];
     }
 
-};
+    if(!isset($dataPneumonia[$tahun][$wilayah])){
+        $dataPneumonia[$tahun][$wilayah] = [];
+    }
+
+    if(!isset($dataPneumonia[$tahun][$wilayah][$bulan])){
+        $dataPneumonia[$tahun][$wilayah][$bulan] = [
+            'laki' => 0,
+            'wanita' => 0
+        ];
+    }
+
+    if($row['jenis_kelamin'] == 'Laki-laki'){
+        $dataPneumonia[$tahun][$wilayah][$bulan]['laki']
+        = $row['jumlah_kasus'];
+    }
+
+    if($row['jenis_kelamin'] == 'Wanita'){
+        $dataPneumonia[$tahun][$wilayah][$bulan]['wanita']
+        = $row['jumlah_kasus'];
+    }
+}
+
+?>
+
+const dataPneumonia = <?= json_encode($dataPneumonia); ?>;
 
 /* FILTER */
 const wilayah = document.getElementById('filterWilayah');
@@ -489,7 +504,12 @@ const chart = new Chart(document.getElementById('chartKasus'), {
 
     options: {
         responsive:true,
-        maintainAspectRatio:false
+        maintainAspectRatio:false,
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
     }
 
 });
@@ -501,7 +521,6 @@ function updateChart(){
     let laki = [];
     let wanita = [];
 
-    // ALL BULAN
     if(bulan.value === 'All'){
 
         labels = bulanList;
@@ -515,10 +534,7 @@ function updateChart(){
 
         });
 
-    }
-
-    // SATU BULAN
-    else {
+    } else {
 
         let data = dataPneumonia[tahun.value]?.[wilayah.value]?.[bulan.value];
 
@@ -537,63 +553,13 @@ function updateChart(){
 
 }
 
-/* EVENT */
 wilayah.addEventListener('change', updateChart);
 bulan.addEventListener('change', updateChart);
 tahun.addEventListener('change', updateChart);
 
-/* LOAD AWAL */
 updateChart();
 
 </script>
-
-</body>
-</html>
-
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-const ctx = document.getElementById('chartKasus');
-
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'],
-    datasets: [
-      {
-        label: 'Laki-laki',
-        data: [270,140,60,100,90,75,65,90,100,120,150,90],
-        backgroundColor: '#16a085'
-      },
-      {
-        label: 'Wanita',
-        data: [240,120,80,60,75,45,40,85,105,160,120,60],
-        backgroundColor: '#a3d5d3'
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false, // BIAR FULL
-    plugins: {
-      legend: {
-        position: 'top'
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  }
-});
-
-</script>
-
-</body>
-</html>
 
 
 <!-- PETA -->
