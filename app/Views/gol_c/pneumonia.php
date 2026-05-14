@@ -357,11 +357,20 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 <?php
                 // CEK GAMBAR
-                $gambar = $berita['gambar_berita'];
+                $gambar = trim((string)($berita['gambar_berita'] ?? ''));
 
-                if(empty($gambar)){
-                    $gambarFix = base_url('uplouds/berita/default.jpeg');
-                }else{
+                // FILE ASLI
+                $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
+                // DEFAULT DUMMY
+                $gambarFix = base_url('uploads/berita/default.jpeg');
+
+                // CEK GAMBAR VALID
+                if(
+                    $gambar !== '' &&
+                    strtolower($gambar) !== 'null' &&
+                    file_exists($pathFile)
+                ){
                     $gambarFix = base_url('uploads/berita/' . $gambar);
                 }
 
@@ -393,6 +402,10 @@ $totalBerita = mysqli_num_rows($queryBerita);
                             <?= substr(strip_tags($berita['deskripsi_berita']),0,100) ?>...
                         </p>
 
+                        <?php
+                        $urlBerita = base_url('beritapneumonia/viewUser/' . $berita['id_berita']);
+                        ?>
+
                         <a 
                             href="<?= $urlBerita ?>" 
                             class="news-link"
@@ -412,7 +425,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
             <div class="news-card">
 
                 <img 
-                    src="<?= base_url('uplouds/berita/default.jpeg') ?>" 
+                    src="<?= base_url('uploads/berita/default.jpeg') ?>" 
                     alt=""
                 >
 
@@ -431,7 +444,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
                     </p>
 
                     <a href="#" class="news-link">
-                        Nantikan Update →
+                        Nantikan Update
                     </a>
 
                 </div>
@@ -442,7 +455,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
             <div class="news-card">
 
                 <img 
-                    src="<?= base_url('uplouds/berita/default.jpeg') ?>" 
+                    src="<?= base_url('uploads/berita/default.jpeg') ?>" 
                     alt=""
                 >
 
@@ -461,7 +474,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
                     </p>
 
                     <a href="#" class="news-link">
-                        Segera Hadir →
+                        Segera Hadir
                     </a>
 
                 </div>
@@ -472,7 +485,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
             <div class="news-card">
 
                 <img 
-                    src="<?= base_url('uplouds/berita/default.jpeg') ?>" 
+                    src="<?= base_url('uploads/berita/default.jpeg') ?>" 
                     alt=""
                 >
 
