@@ -23,7 +23,7 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 
 body{
     background:#dcdcdc;
-    font-family:Poppins;
+    font-family:Poppins, sans-serif;
 }
 
 /* NAVBAR */

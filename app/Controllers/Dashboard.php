@@ -312,11 +312,10 @@ public function tbc()
         ->select('kelurahan')
         ->distinct()
         ->countAllResults();
-
+    
     return view('gol_c/dashboard_pneumonia', [
         'menu' => 'dashboard',
         'artikels' => [],
-
         'totalKasus' => $totalKasus,
         'kasusBaru' => $kasusBaru,
         'kelurahanTerdampak' => $kelurahanTerdampak
