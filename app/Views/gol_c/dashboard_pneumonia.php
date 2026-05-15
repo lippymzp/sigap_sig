@@ -1352,6 +1352,21 @@ document.addEventListener("DOMContentLoaded", function () {
         padding:10px 20px;
     }
 }
+/* =========================
+   GRAFIK INTERAKTIF DETAIL
+========================= */
+.chart-frame{
+    width:100%;
+    height:1150px;
+    overflow:hidden;
+    border-radius:18px;
+}
+
+.chart-frame iframe{
+    width:100%;
+    height:100%;
+    border:none;
+}
 </style>
 
    <!-- CHART -->
@@ -1378,10 +1393,12 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     </div>
 
-    <div class="inner-card">
-        <div class="chart-box">
-            <canvas id="chartTbc"></canvas>
-        </div>
+    <div class="chart-frame">
+    <iframe 
+        src="<?= base_url('grafik_pneumonia') ?>" 
+        frameborder="0">
+    </iframe>
+</div>
     </div>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
