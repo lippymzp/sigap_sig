@@ -367,4 +367,21 @@ public function hitungAir()
         'hasil' => round($air / 1000, 1)
     ]);
 }
+public function detailBerita($id)
+{
+    $beritaModel = new \App\Models\BeritaModelDD();
+
+    $berita = $beritaModel
+        ->where('id_berita', $id)
+        ->where('status_berita', 'publish')
+        ->first();
+
+    if (!$berita) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
+
+    return view('gol_d/detail_berita', [
+        'berita' => $berita
+    ]);
+}
 }

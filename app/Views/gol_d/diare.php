@@ -886,8 +886,8 @@ body{
                         </div>
 
                         <a href="<?= base_url('berita/' . $b['id_berita']) ?>" class="btn-premium">
-                            Selengkapnya →
-                        </a>
+    Selengkapnya →
+</a>
                     </div>
 
                     <div class="premium-right">

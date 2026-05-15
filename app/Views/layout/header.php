@@ -270,13 +270,13 @@ $uri = service('uri')->getSegment(1);
 */
 $fullUrl = current_url();
 
-$isDiarePage =
-    $uri === 'diare' ||
-    $uri === 'skrining-diare' ||
-    $uri === 'hasil-diare' ||
-    $uri === 'diare-detail' ||
-    $uri === 'kalkulator-air' ||
-    strpos($fullUrl, 'diare') !== false;
+$isDiarePage = in_array($uri, [
+    'diare',
+    'skrining-diare',
+    'hasil-diare',
+    'diare-detail',
+    'berita'
+]) || strpos(current_url(), 'diare') !== false;
 
 /*
 |--------------------------------------------------------------------------

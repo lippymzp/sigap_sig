@@ -200,4 +200,18 @@ public function publishBerita($id)
 
     return redirect()->to('admind/berita');
 }
+public function detailBerita($id)
+{
+    $model = new \App\Models\BeritaModelDD();
+
+    $berita = $model->find($id);
+
+    if (!$berita) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
+
+    return view('gol_d/berita/detail', [
+        'berita' => $berita
+    ]);
+}
 }

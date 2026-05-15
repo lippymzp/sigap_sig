@@ -280,9 +280,10 @@
 
         <div class="action-box">
 
-            <a href="<?= base_url('berita/detail/' . $b['id_berita']) ?>" class="icon-btn view-btn">
-                <i class="fas fa-search-plus"></i>
-            </a>
+            <a href="<?= base_url('admind/berita/detail/'.$b['id_berita']) ?>"
+   class="icon-btn view-btn">
+    🔍
+</a>
 
             <a href="<?= base_url('admind/berita/edit/' . $b['id_berita']) ?>" class="icon-btn edit-btn">
                 <i class="fas fa-pen"></i>

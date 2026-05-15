@@ -516,3 +516,6 @@ $routes->get('admind/berita/publish/(:num)', 'AdminD::publishBerita/$1');
 
 $routes->get('admind/berita/edit/(:num)', 'AdminD::editBerita/$1');
 $routes->post('admind/berita/update/(:num)', 'AdminD::updateBerita/$1');
+
+$routes->get('/berita/(:num)', 'Diare::detailBerita/$1');
+$routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
