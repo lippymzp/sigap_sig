@@ -68,6 +68,7 @@ body{
     padding-left:45px;
     border-radius:10px;
     height:45px;
+    border:1px solid #dbe2ea;
 }
 
 .search-box i{
@@ -88,50 +89,71 @@ body{
     border-radius:10px;
     height:45px;
     min-width:160px;
+    border:1px solid #dbe2ea;
 }
 
 /* TABLE */
 .table{
-    border-radius:20px;
+    border-radius:18px;
     overflow:hidden;
-    border:1px solid #d1d5db;
+    border:1px solid #e5e7eb;
     border-collapse:collapse;
+    background:white;
 }
 
 .table thead th{
-    background: linear-gradient(135deg, #00BBC2, #009aa0);
-    color:white;
-    border:none;
+    background:white;
+    color:#374151;
+    border-bottom:2px solid #e5e7eb;
     padding:18px;
     text-align:center;
-    font-weight:600;
+    font-weight:700;
+    font-size:14px;
+    white-space:nowrap;
+}
+
+.table tbody td{
+    padding:16px;
+    vertical-align:middle;
+    font-size:14px;
+    color:#374151;
 }
 
 .table th,
 .table td{
-    border:1px solid #d1d5db;
+    border:1px solid #eef1f5;
+}
+
+.table tbody tr:hover{
+    background:#f9fbfc;
+    transition:0.2s;
 }
 
 /* BADGE */
 .badge-custom{
     padding:10px 15px;
-    border-radius:20px;
+    border-radius:30px;
     font-size:13px;
+    font-weight:600;
+    display:inline-block;
 }
 
+/* BERISIKO */
 .badge-buruk{
-    background:#ffdddd;
-    color:#d60000;
+    background:#ffe3e3;
+    color:#d90429;
 }
 
+/* TIDAK BERISIKO */
 .badge-baik{
-    background:#d4f8e8;
-    color:#0f8b4c;
+    background:#dcfce7;
+    color:#15803d;
+    border:1px solid #bbf7d0;
 }
 
 /* PAGINATION */
 .pagination-custom{
-    margin-top:20px;
+    margin-top:25px;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -139,41 +161,79 @@ body{
     gap:15px;
 }
 
-.pagination-custom .pages{
-    display:flex;
+#infoData{
+    font-size:14px;
+    color:#6b7280;
+    font-weight:500;
+}
+
+/* STYLE PAGINATION CI4 */
+/* PAGINATION */
+.pagination{
+    margin:0;
     gap:6px;
     flex-wrap:wrap;
-    justify-content:center;
     align-items:center;
 }
 
-.pagination-custom .pages a,
-.pagination-custom .pages span{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-width:42px;
-    height:42px;
-    padding:0 14px;
-    border-radius:12px;
-    border:1px solid #d1d5db;
-    background:#fff;
-    color:#374151;
-    font-weight:500;
-    text-decoration:none;
-    transition:all 0.25s ease;
+.page-item{
+    list-style:none;
 }
 
-.pagination-custom .pages a:hover{
-    background:#00BBC2;
-    color:white;
-    border-color:#00BBC2;
+.page-item .page-link{
+    border:none !important;
+    background:transparent !important;
+    color:#6b7280;
+    font-weight:600;
+    min-width:auto;
+    height:auto;
+    padding:8px 14px;
+    border-radius:10px;
+    box-shadow:none !important;
+    transition:0.2s ease;
 }
 
-.pagination-custom .pages .active{
-    background: linear-gradient(135deg, #00BBC2, #009aa0);
+.page-item .page-link:hover{
+    background:#e6f9fa !important;
+    color:#00BBC2;
+}
+
+.page-item.active .page-link{
+    background:#00BBC2 !important;
     color:white !important;
-    border:none;
+}
+
+.page-item.disabled .page-link{
+    background:transparent !important;
+    color:#c0c4cc !important;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+
+    .topbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-box{
+        width:100%;
+    }
+
+    .filter-group{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .pagination-custom{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .overview-total{
+        font-size:28px;
+    }
+
 }
 
 </style>
@@ -198,7 +258,7 @@ body{
                 ● <?= $berisiko ?> Berisiko
             </div>
 
-            <div>
+            <div style="color:#d1fae5;">
                 ● <?= $tdkberisiko ?> Tidak Berisiko
             </div>
 
@@ -368,7 +428,7 @@ body{
 
                 <td>
 
-                    <?php if(strpos($row['hasil'],'Berisiko') !== false): ?>
+                    <?php if(strpos($row['hasil'],'Berisiko') !== false && strpos($row['hasil'],'Tidak') === false): ?>
 
                         <span class="badge-custom badge-buruk">
                             <?= $row['hasil'] ?>
@@ -398,8 +458,8 @@ body{
     <div class="pagination-custom">
 
         <div id="infoData">
-    Menampilkan <?= count($skrining ?? []) ?> data
-</div>
+            Menampilkan <?= count($skrining ?? []) ?> data
+        </div>
 
         <div class="pages">
             <?= $pagerLinks ?>
@@ -445,11 +505,28 @@ function applyFilter(){
         let filterRisiko = activeFilters.filter(f => risikoList.includes(f));
 
         if(filterRisiko.length > 0){
-            if(!filterRisiko.includes(risiko)){
+
+            let cocokRisiko = false;
+
+            if(
+                filterRisiko.includes('Berisiko') &&
+                risiko.includes('Berisiko') &&
+                !risiko.includes('Tidak')
+            ){
+                cocokRisiko = true;
+            }
+
+            if(
+                filterRisiko.includes('Tidak Berisiko') &&
+                risiko.includes('Tidak Berisiko')
+            ){
+                cocokRisiko = true;
+            }
+
+            if(!cocokRisiko){
                 show = false;
             }
         }
-
 
         // GENDER
         let genderFilter = activeFilters.filter(f =>
@@ -561,8 +638,6 @@ sortData.addEventListener("change", function(){
 
 });
 
-
-
 function updateInfoData() {
 
     let visibleRows = 0;
@@ -589,7 +664,9 @@ function updateInfoData() {
 
     }
 }
+
 updateInfoData();
+
 </script>
 
 <?= $this->endSection() ?>

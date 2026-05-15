@@ -93,26 +93,7 @@ body {
 }
 
 /* FOOTER */
-.footer {
-    background: #00BBC2;
-    color: white;
-    padding: 40px 0;
-    margin-top: 120px;
-}
-.footer a {
-    color: white;
-    text-decoration: none;
-}
-.logo-footer {
-    width: 60px;
-    height: 60px;
-    background: red;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
+
 .row {
     row-gap: 20px; /* jarak atas bawah */
     column-gap: 0px; /* jarak kiri kanan */
@@ -121,71 +102,9 @@ body {
 body {
     font-family: 'Poppins', sans-serif;
 }
-.footer{
-    background:#22c1c9;
-    color:#fff;
-    padding:55px 0 20px;
-    font-family:'Poppins', sans-serif;
-}
 
-.footer-container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-}
 
-.footer-content{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:40px;
-    flex-wrap:wrap;
-}
 
-.footer-box{
-    flex:1;
-    min-width:250px;
-}
-
-/* logo */
-.footer-brand{
-    text-align:center;
-}
-
-.footer-logo{
-    width:90px;
-    margin-bottom:10px;
-}
-
-.footer-brand p{
-    font-size:14px;
-    line-height:1.7;
-    margin:0;
-}
-
-/* judul */
-.footer-title{
-    font-weight:700;
-    margin-bottom:8px;
-}
-
-/* teks kecil */
-.footer-box p{
-    font-size:14px;
-}
-
-/* icon jarak */
-.footer-box i{
-    margin-right:8px;
-}
-
-/* copyright */
-.footer-bottom{
-    text-align:center;
-    margin-top:40px;
-    font-size:14px;
-    opacity:.9;
-}
 
 /* responsive */
 @media(max-width:768px){

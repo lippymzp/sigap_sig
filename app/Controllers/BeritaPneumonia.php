@@ -76,13 +76,13 @@ class BeritaPneumonia extends Controller
     // VIEW USER
     // =========================
     public function viewUser($id)
-    {
-        $model = new BeritaPneumoniaModel();
+{
+    $model = new BeritaPneumoniaModel();
 
-        $data['berita'] = $model->find($id);
+    $data['beritapneumonia'] = $model->find($id);
 
-        return view('gol_c/berita/view_user', $data);
-    }
+    return view('gol_c/berita/view_user', $data);
+}
 
     // =========================
     // TAMBAH
