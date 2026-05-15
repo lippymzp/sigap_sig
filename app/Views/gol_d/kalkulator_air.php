@@ -1,9 +1,29 @@
 <?= $this->include('layout/header') ?>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*,
+*::before,
+*::after{
+    font-family:'Poppins',sans-serif !important;
+}
+
 body{
     background:#f4f4f4;
-    font-family:'Poppins',sans-serif;
+    font-family:'Poppins',sans-serif !important;
+}
+
+input,
+select,
+button,
+textarea,
+label,
+option,
+.form-control,
+.form-select,
+.btn{
+    font-family:'Poppins',sans-serif !important;
 }
 
 .kalkulator-wrap{
