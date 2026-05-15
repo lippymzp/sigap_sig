@@ -163,22 +163,28 @@ B &nbsp; I &nbsp; U &nbsp; ☰ &nbsp; 🔗 &nbsp; 🖼
 <input type="hidden" name="isi" id="isiHidden">
 
 <label class="fw-bold">Ringkasan</label>
+
 <input type="text"
-name="ringkasan"
-value="<?= esc(strip_tags($funfact['deskripsi_funfact'] ?? '')) ?>"
-class="form-control">
+value="<?= esc(substr(strip_tags($funfact['deskripsi_funfact'] ?? ''), 0, 120)) ?>"
+class="form-control"
+readonly>
 
 <div class="row">
 
 <div class="col-md-6">
 <label class="fw-bold">Penulis</label>
-<input type="text" class="form-control" value="Admin">
+<input type="text"
+class="form-control"
+value="Admin"
+readonly>
 </div>
 
 <div class="col-md-6">
 <label class="fw-bold">Tanggal</label>
 <input type="date" name="tanggal"
-value="<?= esc($funfact['tanggal_funfact'] ?? '') ?>"
+value="<?= !empty($funfact['tanggal_funfact'])
+    ? date('Y-m-d', strtotime($funfact['tanggal_funfact']))
+    : '' ?>"
 class="form-control">
 </div>
 

@@ -156,7 +156,7 @@ style="width:120px;height:85px;object-fit:cover;border-radius:16px;">
 </h5>
 
 <p class="text-muted mb-2" style="font-size:12px;">
-<?= substr(strip_tags($row['deskripsi_funfact']),0,140) ?>...
+<?= esc(substr(strip_tags((string)($row['deskripsi_funfact'] ?? '')), 0, 120)) ?>...
 </p>
 
 <small style="font-size:11px;color:#9c9c9c;">

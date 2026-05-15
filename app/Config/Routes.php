@@ -260,6 +260,7 @@ $routes->post('tbc/berita/update/(:num)', 'AdminTbc\BeritaTbc::update/$1');
 $routes->get('tbc/berita/hapus/(:num)', 'AdminTbc\BeritaTbc::hapus/$1');
 $routes->get('tbc/berita/arsip/(:num)', 'AdminTbc\BeritaTbc::arsip/$1');
 $routes->get('tbc/berita/publish/(:num)', 'AdminTbc\BeritaTbc::publish/$1');
+$routes->get('tbc/berita/detail/(:num)', 'AdminTbc\BeritaTbc::detail/$1');
 
 /* ========================= */
 /* FUNFACT TBC */

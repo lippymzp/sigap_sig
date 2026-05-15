@@ -52,7 +52,7 @@
 </div>
 
 <!-- MAP -->
-<div class="section-card">
+<div class="section-block" id="peta-sebaran">
 
     <!-- MAP -->
     <div class="section-block">
@@ -87,6 +87,7 @@
 
         /* AMBIL DATA DARI PHP */
         var dataTbc = <?= json_encode($tbc ?? []) ?>;
+        console.log(dataTbc);
         var dataFinal = {};
 
         dataTbc.forEach(item => {
@@ -155,16 +156,136 @@
                     var namaAsli = feature.properties.NAMOBJ;
                     var item = dataFinal[fixNama(namaAsli)];
 
-                    var isi = "<b>Desa: " + namaAsli + "</b>";
+var isi = `
+<div style="
+    width:300px;
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    font-family:Poppins,sans-serif;
+    box-shadow:0 8px 25px rgba(0,0,0,0.15);
+">
 
-                    if(item){
-                        isi += "<br>Total Kasus: " + item.total;
-                        isi += "<br>Kategori: " + item.kategori;
-                    } else {
-                        isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                    }
+    <div style="
+        padding:14px 18px;
+        border-bottom:1px solid #ddd;
+        background:#f8f8f8;
+    ">
+        <div style="
+            font-size:22px;
+            font-weight:700;
+            color:#111;
+        ">
+            Informasi :
+        </div>
+    </div>
+
+    <div style="
+        padding:18px;
+        font-size:15px;
+        line-height:1.9;
+        color:#333;
+    ">
+`;
+
+if(item){
+
+    var tingkat = "";
+    var warna = "";
+
+    if(item.total >= 100){
+        tingkat = "Tinggi";
+        warna = "#e63946";
+    }
+    else if(item.total >= 50){
+        tingkat = "Sedang";
+        warna = "#ff9800";
+    }
+    else{
+        tingkat = "Rendah";
+        warna = "#2a9d8f";
+    }
+
+    isi += `
+
+    <table style="width:100%;">
+
+        <tr>
+            <td width="45%">Nama Daerah</td>
+            <td width="5%">:</td>
+            <td>${namaAsli}</td>
+        </tr>
+
+        <tr>
+            <td>Jumlah Kasus</td>
+            <td>:</td>
+            <td><b>${item.total}</b></td>
+        </tr>
+
+        <tr>
+            <td>Tingkat Kasus</td>
+            <td>:</td>
+            <td>
+                <span style="
+                    color:${warna};
+                    font-weight:700;
+                ">
+                    ${tingkat}
+                </span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding-top:10px;">
+                Rekomendasi
+            </td>
+
+            <td style="padding-top:10px;">:</td>
+
+            <td style="
+                padding-top:10px;
+                font-size:14px;
+                color:#666;
+            ">
+                ${tingkat == 'Tinggi'
+                    ? 'Perlu penanganan segera.'
+                    : tingkat == 'Sedang'
+                    ? 'Lakukan monitoring berkala.'
+                    : 'Wilayah masih terkendali.'
+                }
+            </td>
+        </tr>
+
+    </table>
+    `;
+}
+else{
+
+    isi += `
+        <div style="
+            text-align:center;
+            color:red;
+            font-weight:600;
+        ">
+            Data tidak ditemukan
+        </div>
+    `;
+}
+
+isi += `
+    </div>
+</div>
+`;
 
                     layer.bindPopup(isi);
+
+layer.on('mouseover', function () {
+    this.openPopup();
+});
+
+layer.on('mouseout', function () {
+    this.closePopup();
+});
 
                     layer.bindTooltip(namaAsli, {
                         permanent: true,
@@ -290,48 +411,72 @@ document.addEventListener("DOMContentLoaded", function(){
     </p>
 
     <?php if (!empty($berita)) : ?>
-        <div class="berita-slider">
+
+    <div class="carousel-wrapper">
+
+    <button class="nav-btn left" onclick="slide(-1)">‹</button>
+
+    <div class="berita-slider" id="slider">
+
         <?php foreach ($berita as $b) : ?>
 
             <?php
-$link = !empty($b['url_berita'])
-    ? $b['url_berita']
-    : base_url('tbc/berita/detail/' . $b['id_berita']);
-?>
+            $link = !empty($b['url_berita'])
+                ? $b['url_berita']
+                : base_url('tbc/berita/detail/' . $b['id_berita']);
+            ?>
 
-<a href="<?= $link ?>"
-   class="info-card berita-card" 
-   <?= !empty($b['url_berita']) ? 'target="_blank"' : '' ?>>
+            <a href="<?= $link ?>"
+            class="info-card berita-card"
+            <?= !empty($b['url_berita']) ? 'target="_blank"' : '' ?>>
 
                 <div class="info-text">
+
                     <h5><?= esc($b['judul_berita']) ?></h5>
 
-                <?php if ($b['deskripsi_berita'] != 'Kutip berita luar') : ?>
-
-    <p>
-        <?= word_limiter(strip_tags($b['deskripsi_berita']), 20) ?>
-    </p>
-
-<?php endif; ?>
+                    <?php if (!empty($b['deskripsi_berita'])) : ?>
+                        <p>
+                            <?= !empty($b['deskripsi_berita'])
+    ? substr(strip_tags($b['deskripsi_berita']), 0, 120) . '...'
+    : 'Tidak ada deskripsi' ?>
+                        </p>
+                    <?php endif; ?>
 
                     <small>
-                        <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                        <?= !empty($b['tanggal_berita']) && $b['tanggal_berita'] != '0000-00-00'
+    ? date('d M Y', strtotime($b['tanggal_berita']))
+    : '-' ?>
                     </small>
+
                 </div>
 
                 <div class="info-image">
+
                     <?php if (!empty($b['gambar_berita'])) : ?>
-                    <img src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>">
-                <?php else : ?>
-                    <img src="<?= base_url('img/default-news.png') ?>">
-                <?php endif; ?>
+
+                        <img src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>">
+
+                    <?php else : ?>
+
+                        <img src="<?= base_url('img/default-news.png') ?>">
+
+                    <?php endif; ?>
+
                 </div>
 
-                </a>
+            </a>
 
         <?php endforeach ?>
+
         </div>
-    <?php endif ?>
+
+    <button class="nav-btn right" onclick="slide(1)">›</button>
+
+    <div class="dots" id="dots"></div>
+
+</div>
+
+<?php endif ?>
 
 </div>
 
@@ -346,27 +491,45 @@ $link = !empty($b['url_berita'])
 
     <?php if (!empty($funfact)) : ?>
 
-        <div class="info-card small">
+    <div class="funfact-wrapper">
 
-            <div class="info-text">
+<button class="nav-btn left" onclick="slideFunfact(-1)">‹</button>
 
-                <h5>
-                    <?= esc($funfact['judul_funfact']) ?>
-                </h5>
+<div class="funfact-slider" id="funfactSlider">
 
-                <p>
-                    <?= esc($funfact['deskripsi_funfact']) ?>
-                </p>
+        <?php foreach ($funfact as $f) : ?>
+
+            <div class="funfact-card">
+
+                <div class="info-text">
+
+                    <h5>
+                        <?= esc($f['judul_funfact']) ?>
+                    </h5>
+
+                    <p>
+                        <?= esc($f['deskripsi_funfact']) ?>
+                    </p>
+
+                </div>
+
+                <div class="info-image">
+                    <img src="<?= base_url('uploads/funfact/' . $f['gambar_funfact']) ?>">
+                </div>
 
             </div>
 
-            <div class="info-image">
-                <img src="<?= base_url('uploads/funfact/' . $funfact['gambar_funfact']) ?>">
-            </div>
+        <?php endforeach; ?>
 
-        </div>
+    </div>
 
-    <?php endif; ?>
+<button class="nav-btn right" onclick="slideFunfact(1)">›</button>
+
+<div class="funfact-dots" id="funfactDots"></div>
+
+</div>
+
+<?php endif; ?>
 
 </div>
 
@@ -397,21 +560,31 @@ function confirmLogout(url) {
 <style>
 
 .berita-slider{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    overflow-x:auto !important;
+    display:flex;
     gap:25px;
+
+    overflow-x:auto;    
+    scroll-behavior:smooth;
+
     padding-bottom:15px;
 }
 
-.berita-slider .berita-card{
-    min-width:850px !important;
-    max-width:850px !important;
+.berita-slider::-webkit-scrollbar{
+    height:8px;
+}
 
-    flex:0 0 auto !important;
+.berita-slider::-webkit-scrollbar-thumb{
+    background:#14c7d4;
+    border-radius:20px;
+}
 
-    display:flex !important;
-    flex-direction:row !important;
+.berita-card{
+    min-width:850px;
+
+    flex:0 0 auto;
+
+    display:flex;
+    flex-direction:row;
 
     align-items:center;
     justify-content:space-between;
@@ -420,71 +593,32 @@ function confirmLogout(url) {
     padding:35px;
 
     text-decoration:none;
+
+    background:linear-gradient(135deg,#1ecad3,#14b8c4);
+
+    color:white;
 }
 
-.berita-slider .berita-card .info-text{
-    width:65%;
-}
-
-.berita-slider .berita-card .info-image{
-    width:30%;
-    display:flex;
-    justify-content:flex-end;
-}
-
-.berita-slider .berita-card .info-image img{
-    width:220px !important;
-    height:160px !important;
-    object-fit:cover;
-    border-radius:20px;
-}
-
-</style>
-
-<?= $this->endSection() ?>
-<style>
-
-.berita-slider{
-    display: flex;
-    gap: 25px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    scroll-behavior: smooth;
-}
-
-.berita-slider::-webkit-scrollbar{
-    height: 8px;
-}
-
-.berita-slider::-webkit-scrollbar-thumb{
-    background: #14c7d4;
-    border-radius: 20px;
-}
-
-.berita-card{
-    min-width: 850px;
-    flex-shrink: 0;
-}
-
-</style>
-.berita-slider{
-    display:flex !important;
-    flex-wrap:nowrap !important;
-    overflow-x:auto;
-}
-
-.berita-card{
-    min-width:850px;
-    max-width:850px;
-    flex:0 0 auto;
-
-    display:flex !important;
-    flex-direction:row !important;
-    align-items:center;
-    justify-content:space-between;
-}
 .berita-card .info-text{
     width:65%;
+}
+
+.berita-card .info-text h5{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:18px;
+    color:white;
+}
+
+.berita-card .info-text p{
+    font-size:16px;
+    line-height:1.8;
+    color:white;
+}
+
+.berita-card .info-text small{
+    font-size:15px;
+    color:#eafcff;
 }
 
 .berita-card .info-image{
@@ -495,7 +629,426 @@ function confirmLogout(url) {
 
 .berita-card .info-image img{
     width:220px;
-    height:150px;
+    height:160px;
+
     object-fit:cover;
+
     border-radius:20px;
 }
+
+.carousel-wrapper{
+    position:relative;
+}
+
+.nav-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+
+    width:45px;
+    height:45px;
+
+    border:none;
+    border-radius:50%;
+
+    background:white;
+    color:#14b8c4;
+
+    font-size:28px;
+    font-weight:bold;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.15);
+
+    cursor:pointer;
+    z-index:10;
+}
+
+.nav-btn.left{
+    left:-20px;
+}
+
+.nav-btn.right{
+    right:-20px;
+}
+
+.dots{
+    margin-top:15px;
+    text-align:center;
+}
+
+.dots span{
+    display:inline-block;
+
+    width:10px;
+    height:10px;
+
+    margin:0 5px;
+
+    border-radius:50%;
+
+    background:#cfd8dc;
+
+    cursor:pointer;
+}
+
+.dots span.active{
+    background:#14b8c4;
+}
+
+.funfact-card{
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:center !important;
+
+    background:linear-gradient(135deg,#1ecad3,#14b8c4) !important;
+
+    border-radius:28px !important;
+
+    padding:35px !important;
+
+    margin-bottom:25px !important;
+
+    color:white !important;
+}
+
+.funfact-card .info-text{
+    width:70% !important;
+}
+
+.funfact-card .info-text h5{
+    font-size:26px !important;
+    font-weight:700 !important;
+    margin-bottom:18px !important;
+    color:white !important;
+}
+
+.funfact-card .info-text p{
+    font-size:17px !important;
+    line-height:1.8 !important;
+    color:white !important;
+}
+
+.funfact-card .info-image{
+    width:25% !important;
+    display:flex !important;
+    justify-content:flex-end !important;
+}
+
+.funfact-card .info-image img{
+    width:230px !important;
+    height:160px !important;
+
+    object-fit:cover !important;
+
+    border-radius:22px !important;
+}
+
+.funfact-wrapper{
+    overflow:hidden;
+    position:relative;
+}
+
+.funfact-dots{
+    margin-top:15px;
+    text-align:center;
+}
+
+.funfact-dots span{
+    display:inline-block;
+
+    width:10px;
+    height:10px;
+
+    margin:0 5px;
+
+    border-radius:50%;
+
+    background:#cfd8dc;
+}
+
+.funfact-dots span.active{
+    background:#14b8c4;
+}
+
+.funfact-slider{
+    display:flex;
+    gap:25px;
+
+    overflow-x:auto;
+
+    padding-bottom:15px;
+}
+
+.funfact-slider::-webkit-scrollbar{
+    height:8px;
+}
+
+.funfact-slider::-webkit-scrollbar-thumb{
+    background:#14c7d4;
+    border-radius:20px;
+}
+
+.funfact-card{
+    min-width:850px;
+
+    flex:0 0 auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:linear-gradient(135deg,#1ecad3,#14b8c4);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    color:white;
+}
+
+.funfact-card .info-text{
+    width:70%;
+}
+
+.funfact-card .info-text h5{
+    font-size:26px;
+    font-weight:700;
+    margin-bottom:18px;
+    color:white;
+}
+
+.funfact-card .info-text p{
+    font-size:17px;
+    line-height:1.8;
+    color:white;
+}
+
+.funfact-card .info-image{
+    width:25%;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.funfact-card .info-image img{
+    width:230px;
+    height:160px;
+
+    object-fit:cover;
+
+    border-radius:22px;
+}
+
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    let index = 0;
+
+    const slider = document.getElementById('slider');
+
+    if(!slider) return;
+
+    const total = slider.children.length;
+
+    const dotsContainer = document.getElementById('dots');
+
+    // BUAT DOTS
+    for(let i = 0; i < total; i++){
+
+        let dot = document.createElement('span');
+
+        dot.onclick = () => goTo(i);
+
+        dotsContainer.appendChild(dot);
+    }
+
+    updateDots();
+
+    // BUTTON
+    window.slide = function(dir){
+
+        index += dir;
+
+        if(index >= total) index = 0;
+        if(index < 0) index = total - 1;
+
+        updateSlide();
+    }
+
+    // DOT CLICK
+    function goTo(i){
+
+        index = i;
+
+        updateSlide();
+    }
+
+    // UPDATE SLIDE
+    function updateSlide(){
+
+        slider.scrollTo({
+            left: index * 875,
+            behavior: 'smooth'
+        });
+
+        updateDots();
+    }
+
+    // UPDATE DOT
+    function updateDots(){
+
+        const dots = document.querySelectorAll('#dots span');
+
+        dots.forEach((d, i) => {
+            d.classList.toggle('active', i === index);
+        });
+    }
+
+    window.slideFunfact = function(dir){
+
+    indexFunfact += dir;
+
+    if(indexFunfact >= totalFunfact){
+        indexFunfact = 0;
+    }
+
+    if(indexFunfact < 0){
+        indexFunfact = totalFunfact - 1;
+    }
+
+    funfactSlider.scrollTo({
+        left: indexFunfact * 875,
+        behavior:'smooth'
+    });
+
+    dots.forEach((d,i)=>{
+        d.classList.toggle('active', i === indexFunfact);
+    });
+
+}
+
+    // AUTO SLIDE
+    setInterval(() => {
+
+        slide(1);
+
+    }, 4000);
+
+});
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const funfactSlider = document.getElementById('funfactSlider');
+
+    if(!funfactSlider) return;
+
+    let indexFunfact = 0;
+
+    const totalFunfact = funfactSlider.children.length;
+
+    const dotsContainer = document.getElementById('funfactDots');
+
+    for(let i = 0; i < totalFunfact; i++){
+
+        let dot = document.createElement('span');
+
+        if(i == 0){
+            dot.classList.add('active');
+        }
+
+        dotsContainer.appendChild(dot);
+    }
+
+    const dots = dotsContainer.querySelectorAll('span');
+
+    setInterval(() => {
+
+        indexFunfact++;
+
+        if(indexFunfact >= totalFunfact){
+            indexFunfact = 0;
+        }
+
+        funfactSlider.scrollTo({
+            left: indexFunfact * 875,
+            behavior: 'smooth'
+        });
+
+        dots.forEach((d,i)=>{
+            d.classList.toggle('active', i === indexFunfact);
+        });
+
+    }, 3500);
+
+});
+
+</script>
+
+<script>
+var map = L.map('map').setView([-8.1727, 113.7000], 12);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+<?php foreach($tbc as $row): ?>
+
+<?php if($row['latitude'] && $row['longitude']): ?>
+
+L.marker([<?= $row['latitude'] ?>, <?= $row['longitude'] ?>])
+    .addTo(map)
+.bindPopup(`
+    <div style="
+        width:260px;
+        border-radius:22px;
+        overflow:hidden;
+        font-family:Poppins;
+    ">
+
+        <div style="
+            background:#f5f5f5;
+            padding:14px 18px;
+            font-size:20px;
+            font-weight:700;
+            border-bottom:2px solid #999;
+        ">
+            Informasi :
+        </div>
+
+        <div style="
+            background:white;
+            padding:18px;
+            font-size:18px;
+            line-height:1.8;
+        ">
+
+            <b>Jumlah Kasus :</b>
+            <?= $row['kasus'] ?><br>
+
+            <b>Tingkat Kasus :</b>
+
+            <?php
+                if($row['kasus'] >= 100){
+                    echo "<span style='color:red;font-weight:700;'>Tinggi</span>";
+                } elseif($row['kasus'] >= 50){
+                    echo "<span style='color:orange;font-weight:700;'>Sedang</span>";
+                } else {
+                    echo "<span style='color:green;font-weight:700;'>Rendah</span>";
+                }
+            ?>
+
+        </div>
+
+    </div>
+`);
+
+<?php endif; ?>
+
+<?php endforeach; ?>
+</script>
+
+<?= $this->endSection() ?>

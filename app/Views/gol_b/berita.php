@@ -172,6 +172,28 @@ gap:6px;
 margin-bottom:8px;
 ">
 
+<?php if(!empty($row['url_berita'])): ?>
+
+<a href="<?= $row['url_berita'] ?>"
+target="_blank"
+class="btn btn-sm text-white"
+style="
+width:34px;
+height:34px;
+background:#2457ff;
+border:none;
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+">
+
+<img src="<?= base_url('assets/icon/lihat.png') ?>" width="16">
+
+</a>
+
+<?php else: ?>
+
 <a href="<?= base_url('tbc/berita/detail/'.$row['id_berita']) ?>"
 class="btn btn-sm text-white"
 style="
@@ -184,8 +206,12 @@ display:flex;
 align-items:center;
 justify-content:center;
 ">
+
 <img src="<?= base_url('assets/icon/lihat.png') ?>" width="16">
+
 </a>
+
+<?php endif; ?>
 
 <a href="<?= base_url('tbc/berita/edit/'.$row['id_berita']) ?>"
 class="btn btn-sm"

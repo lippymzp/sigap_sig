@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\BeritaTbcModel;
 use App\Models\FunfactTbcModel;
 use App\Models\profil_sistem;
+use App\Models\DataPasienModel;
+
 class Dashboard extends BaseController
 {
     public function index()
@@ -242,25 +244,53 @@ public function tentangkamiDBD()
         return view('gol_a/tentang', $data);
     }
 
-    public function tbc()
+public function tbc()
 {
     $beritaModel = new BeritaTbcModel();
     $funfactModel = new FunfactTbcModel();
 
+    $db = \Config\Database::connect();
+
+    // BERITA
     $berita = $beritaModel
         ->where('status_berita', 'Publish')
         ->orderBy('id_berita', 'DESC')
         ->findAll();
 
+    // FUNFACT
     $funfact = $funfactModel
         ->where('status_funfact', 'Publish')
         ->orderBy('id_funfact', 'DESC')
-        ->first();
+        ->findAll();
+
+    // DATA PETA
+    $builder = $db->table('pasien p');
+
+    $builder->select('
+    w.kelurahan as desa,
+    w.latitude,
+    w.longitude,
+    COUNT(*) as kasus
+');
+
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah',
+        'left'
+    );
+
+    $builder->where('w.latitude IS NOT NULL');
+    $builder->where('w.longitude IS NOT NULL');
+
+    $builder->groupBy('w.kelurahan, w.latitude, w.longitude');
+
+    $tbc = $builder->get()->getResultArray();
 
     return view('gol_b/dashboard_tbc', [
         'menu' => 'dashboard',
         'berita' => $berita,
-        'funfact' => $funfact
+        'funfact' => $funfact,
+        'tbc' => $tbc
     ]);
 }
 
