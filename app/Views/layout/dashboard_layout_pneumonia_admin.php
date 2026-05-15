@@ -137,20 +137,32 @@
 
                         <div class="footer-brand">
 
-                            <!-- GANTI medixa.png sesuai nama file logo -->
-                            <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
+                <div class="footer-brand-top">
 
-                            <h3 class="footer-title">SIGAP</h3>
+                    <img src="<?= base_url('img/medixa.png') ?>" 
+                    alt="Medixa Logo" 
+                    class="footer-logo">
 
-                            <p class="footer-desc">
-                                Sistem Informasi, Geografis Analisis & Pemantauan
-                            </p>
+                    <img src="<?= base_url('img/cynex.png') ?>"
+                    alt="Cynex Logo"
+                    class="footer-maskot">
 
-                        </div>
+                </div>
 
-                        <div class="footer-links mt-5">
-                            <a href="#">Bantuan</a>
-                            <a href="#">Tentang Kami</a>
+                <h3 class="footer-title">MEDIXA</h3>
+
+                <p class="footer-desc">
+                    Medical Innovation & Excellence Alliance
+                </p>
+
+                <h3 class="footer-title mt-4">CYNEX</h3>
+
+                <p class="footer-desc">
+                    Clinical System for Next Experience
+                </p>
+            </div>
+                            <div class="footer-links mt-5"> 
+                            <a href="/tentang-kami">Tentang Kami</a>
                         </div>
 
                     </div>
@@ -205,11 +217,6 @@
                 <!-- GARIS -->
                 <div class="footer-line"></div>
 
-                <!-- COPYRIGHT -->
-                <div class="footer-bottom">
-                    <p>Hak Cipta © 2026 SIGAP</p>
-                </div>
-
             </div>
 
         </footer>
@@ -228,10 +235,31 @@
     z-index:2;
 }
 
+.footer-brand-top{
+    display:flex;
+    align-items:center;
+    gap:40px;
+    margin-bottom:30px;
+}
+
+.footer-brand-item{
+    display:flex;
+    flex-direction:column;
+    width:260px;
+}
+
+/* CYNEX */
+.footer-maskot{
+    width:250px;
+    margin-top:10px;
+    margin-left:-20px;
+    filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
+}
+
 /* LOGO */
 .footer-logo{
-    width:150px;
-    margin-bottom:25px;
+    width:140px;
+    margin-bottom:-8px;
     filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
 }
 
@@ -249,6 +277,7 @@
     font-size:1.1rem;
     line-height:1.8;
     max-width:500px;
+    margin-bottom:40px;
 }
 
 /* HEADING */
@@ -337,7 +366,7 @@
     width:100%;
     height:2px;
     background:rgba(255,255,255,0.4);
-    margin:70px 0 25px;
+    margin:30px 0 25px;
 }
 
 /* COPYRIGHT */

@@ -160,10 +160,10 @@ $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
 $routes->post('pneumonia/simpan', 'pneumonia::simpan');
 $routes->get('pneumonia/export', 'pneumonia::export');
 
-$routes->get('diare/dashboard/', 'Dashboard::diare');
+$routes->get('diare/dashboardd/', 'Dashboard::diare');
 
-$routes->get('diare/input_data', 'Diare::inputData');
-$routes->get('diare/hasil', 'Diare::hasil_data');
+$routes->get('diare/input_d', 'Diare::inputData');
+$routes->get('diare/hasil_d', 'Diare::hasil_data');
 $routes->get('pneumonia/pegawai', 'Pegawai::index');
 $routes->get('pneumonia/pegawai/tambah', 'Pegawai::tambah');
 $routes->post('pneumonia/pegawai/simpan', 'Pegawai::simpan');
@@ -504,7 +504,7 @@ $routes->get('admind/skrining', 'AdminD::skrining');
 $routes->get('admind/funfact', 'AdminD::funfact');
 $routes->get('admind/profil', 'AdminD::profil');
 $routes->get('admind/export', 'AdminD::export');
-$routes->get('diare/dashboard/admin', 'Dashboard::diare');
+
 
 $routes->get('admind/berita', 'AdminD::berita');
 $routes->get('admind/berita/tambah', 'AdminD::tambahBerita');

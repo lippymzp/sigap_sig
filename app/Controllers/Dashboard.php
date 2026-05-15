@@ -296,14 +296,34 @@ public function tbc()
             'footer_maskot' => 'logo_tbc.png'
         ]);
 }
-
+    // DASHBOARD PNEUMONIA
     public function pneumonia()
-    {
-        return view('gol_c/dashboard_pneumonia', [
-            'menu' => 'dashboard',
-            'artikels' => []
-        ]);
-    }
+{
+    $db = \Config\Database::connect();
+
+    // TOTAL KASUS AKTIF
+    $totalKasus = $db->table('pasien')
+        ->countAllResults();
+
+    // KASUS BARU HARI INI
+    $kasusBaru = $db->table('pasien')
+        ->where('DATE(tgl_kunjungan)', date('Y-m-d'))
+        ->countAllResults();
+
+    // KELURAHAN TERDAMPAK
+    $kelurahanTerdampak = $db->table('wilayah')
+        ->select('kelurahan')
+        ->distinct()
+        ->countAllResults();
+    
+    return view('gol_c/dashboard_pneumonia', [
+        'menu' => 'dashboard',
+        'artikels' => [],
+        'totalKasus' => $totalKasus,
+        'kasusBaru' => $kasusBaru,
+        'kelurahanTerdampak' => $kelurahanTerdampak
+    ]);
+}
 
 
 public function diare()

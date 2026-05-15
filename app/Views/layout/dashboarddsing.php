@@ -23,24 +23,24 @@
     <div class="sidebar">
         
         <div class="logo text-center">
-            <img src="/assets/img/maskotdsing.png" alt="Logo dsing" style="max-width: 160px; height: auto;">
+            <img src="/img/logodsing.png" alt="Logo dsing" style="max-width: 160px; height: auto;">
         </div>
 
         <div class="menu-label">HOME</div>
 
-        <a href="<?= base_url('diare/dashboard') ?>"
+        <a href="<?= base_url('diare/dashboardd') ?>"
             class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
 
         <div class="menu-label">MENU UTAMA</div>
 
-        <a href="<?= base_url('diare/input_data') ?>"
+        <a href="<?= base_url('diare/input_d') ?>"
             class="<?= ($menu == 'inputdata') ? 'active' : '' ?>">
             <i class="fa-regular fa-clipboard me-2"></i> Input Data Pasien
         </a>
 
-        <a href="<?= base_url('diare/hasil') ?>"
+        <a href="<?= base_url('diare/hasil_d') ?>"
             class="<?= ($menu == 'hasil') ? 'active' : '' ?>">
             <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
         </a>

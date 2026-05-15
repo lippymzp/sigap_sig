@@ -7,6 +7,11 @@ use App\Models\SkriningModel;
 use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
+// use Dompdf\Dompdf;
+// use App\Models\SkriningModel;
+// use App\Libraries\DiareDecisionTree;
+// use App\Models\PasienSkriningModel;
+// use App\Models\BeritaModelDD;
 
 class Diare extends BaseController
 {
@@ -247,12 +252,12 @@ public function index()
     // INPUT DATA
     // =========================
     public function inputData()
-    {
-        return view('gol_d/input_data', [
-            'menu' => 'inputdata',
-            'penyakit' => 'diare'
-        ]);
-    }
+{
+    return view('gol_d/input_d', [
+        'menu' => 'inputdata',
+        'penyakit' => 'diare'
+    ]);
+}
 
     // =========================
     // HASIL DATA
@@ -261,7 +266,7 @@ public function index()
     {
         $pasien = session()->get('pasien') ?? [];
 
-        return view('gol_d/hasil_data', [
+        return view('gol_d/hasil_d', [
             'menu' => 'hasil',
             'penyakit' => 'diare',
             'pasien' => $pasien
@@ -285,7 +290,7 @@ public function index()
 
         session()->set('pasien', $pasien);
 
-        return redirect()->to('/diare/hasil');
+        return redirect()->to('/diare/hasil_d');
     }
 
     // =========================

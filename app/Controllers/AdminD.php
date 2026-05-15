@@ -13,24 +13,44 @@ public function berita()
     $model = new BeritaModelDD();
 
     $tab = $this->request->getGet('tab') ?? 'publish';
+    $keyword = $this->request->getGet('keyword');
+
+    $builder = $model->where('id_penyakit', 4);
 
     if ($tab == 'draft') {
-        $berita = $model
-            ->where('id_penyakit', 4)
-            ->where('status_berita', 'draft')
-            ->orderBy('id_berita', 'DESC')
-            ->findAll();
+        $builder->where('status_berita', 'draft');
     } else {
-        $berita = $model
-            ->where('id_penyakit', 4)
-            ->where('status_berita', 'publish')
-            ->orderBy('id_berita', 'DESC')
-            ->findAll();
+        $builder->where('status_berita', 'publish');
     }
+
+    if (!empty($keyword)) {
+        $builder->groupStart()
+            ->like('judul_berita', $keyword)
+            ->orLike('deskripsi_berita', $keyword)
+            ->orLike('penulis', $keyword)
+            ->groupEnd();
+    }
+
+    $berita = $builder
+        ->orderBy('id_berita', 'DESC')
+        ->findAll();
+
+    $totalPublish = $model
+        ->where('id_penyakit', 4)
+        ->where('status_berita', 'publish')
+        ->countAllResults();
+
+    $totalDraft = $model
+        ->where('id_penyakit', 4)
+        ->where('status_berita', 'draft')
+        ->countAllResults();
 
     return view('gol_d/berita/index', [
         'berita' => $berita,
-        'tab' => $tab
+        'tab' => $tab,
+        'keyword' => $keyword,
+        'totalPublish' => $totalPublish,
+        'totalDraft' => $totalDraft
     ]);
 }
     public function skrining()

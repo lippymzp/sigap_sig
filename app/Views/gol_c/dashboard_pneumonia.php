@@ -22,7 +22,7 @@
             <i class="fa-solid fa-chart-column"></i>
         </div>
         <div class="stat-info">
-            <h3 class="red">20</h3>
+           <h3 class="red"><?= $totalKasus ?></h3>
             <p>Total Kasus Aktif Hari Ini</p>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <i class="fa-solid fa-arrow-down"></i>
         </div>
         <div class="stat-info">
-            <h3 class="green">2</h3>
+            <h3 class="green"><?= $kasusBaru ?></h3>
             <p>Kasus Baru Hari Ini</p>
         </div>
     </div>
@@ -43,7 +43,7 @@
             <i class="fa-solid fa-map"></i>
         </div>
         <div class="stat-info">
-            <h3 class="blue">6</h3>
+            <h3 class="blue"><?= $kelurahanTerdampak ?></h3>
             <p>Kelurahan Terdampak</p>
         </div>
     </div>
@@ -126,29 +126,80 @@
                 </div>
 
                 <!-- MAP -->
-                <div class="map-wrapper">
-                    <div id="map"></div>
+ <div class="map-wrapper">
+    <div id="map"></div>
 
-                    <!-- KETERANGAN -->
-                    <div class="map-legend-box">
-                        <h6>Keterangan:</h6>
+    <!-- KETERANGAN -->
+    <div class="map-legend-box">
+        <h6>Keterangan:</h6>
 
-                        <div class="legend-item">
-                            <span class="legend-color legend-tinggi"></span>
-                            <b>Risiko Tinggi</b>
-                        </div>
+        <div class="legend-item">
+            <span class="legend-color legend-tinggi"></span>
+            <b>Risiko Tinggi</b>
+        </div>
 
-                        <div class="legend-item">
-                            <span class="legend-color legend-sedang"></span>
-                            <b>Risiko Sedang</b>
-                        </div>
+        <div class="legend-item">
+            <span class="legend-color legend-sedang"></span>
+            <b>Risiko Sedang</b>
+        </div>
 
-                        <div class="legend-item">
-                            <span class="legend-color legend-rendah"></span>
-                            <b>Risiko Rendah</b>
-                        </div>
-                    </div>
-                </div>
+        <div class="legend-item">
+            <span class="legend-color legend-rendah"></span>
+            <b>Risiko Rendah</b>
+        </div>
+    </div>
+
+    <!-- BOX MINI AIR QUALITY -->
+    <div class="aqi-mini-box" id="aqiMiniBox">
+        <div class="aqi-mini-main">
+            <span class="aqi-mini-icon">AQI</span> :
+            <span id="aqiMiniValue">...</span>
+        </div>
+
+        <div class="aqi-mini-status" id="aqiMiniStatus">
+            Memuat...
+        </div>
+    </div>
+
+    <!-- POPUP DETAIL AIR QUALITY -->
+    <div class="aqi-popup-box" id="aqiPopupBox">
+        <div class="aqi-popup-title" id="aqiPopupTitle">
+            Kualitas Udara Kecamatan Ajung
+        </div>
+
+        <div class="aqi-popup-card">
+
+            <div class="aqi-popup-main">
+                <span class="aqi-popup-icon">AQI</span> :
+                <span id="aqiPopupValue">...</span>
+            </div>
+
+            <span class="aqi-popup-status" id="aqiPopupStatus">
+                Memuat...
+            </span>
+
+            <div class="aqi-popup-info">
+                <p>📍 <span id="aqiLocation">Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia</span></p>
+                <p>🌡 Suhu : <span id="aqiTemp">-</span>°C</p>
+                <p>💧 Kelembaban : <span id="aqiHumidity">-</span>%</p>
+                <p>🌬 Tekanan : <span id="aqiPressure">-</span> hPa</p>
+                <p>⏱ Diperbarui : <span id="aqiUpdated">-</span></p>
+            </div>
+
+            <div class="aqi-index-list">
+                <b>Indeks Kualitas Udara (AQI)</b>
+
+                <p class="aqi-good">0 - 50 : Baik</p>
+                <p class="aqi-moderate">51 - 100 : Sedang</p>
+                <p class="aqi-sensitive">101 - 150 : Tidak Sehat (Sensitif)</p>
+                <p class="aqi-unhealthy">151 - 200 : Tidak Sehat</p>
+                <p class="aqi-very">201 - 300 : Sangat Tidak Sehat</p>
+                <p class="aqi-hazard">301+ : Berbahaya</p>
+            </div>
+
+        </div>
+    </div>
+</div>
 
             </div>
 
@@ -255,7 +306,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "pancakarya": "pancakarya",
             "sukamakmur": "sukamakmur",
             "wirowongso": "wirowongso",
-            "mangaran": "mangaran",
+            "mangaran": "manggaran",
             "ajung": "ajung"
         };
 
@@ -493,6 +544,193 @@ document.addEventListener("DOMContentLoaded", function () {
             || "Wilayah";
     }
 
+/* =======================
+   AIR QUALITY INDEX - IQAIR API
+======================= */
+
+var IQAIR_API_KEY = "d1160a02-9aa4-4404-86cd-4514f1e18d18";
+
+var AQI_LAT = -8.1739;
+var AQI_LON = 113.6473;
+
+var AQI_NAMA_LOKASI = "Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia";
+var AQI_JUDUL_POPUP = "Kualitas Udara Kecamatan Ajung";
+
+function getKategoriAQI(aqi){
+    aqi = parseInt(aqi || 0);
+
+    if(aqi <= 50){
+        return {
+            teks: "Baik",
+            className: "aqi-status-baik"
+        };
+    }
+
+    if(aqi <= 100){
+        return {
+            teks: "Sedang",
+            className: "aqi-status-sedang"
+        };
+    }
+
+    if(aqi <= 150){
+        return {
+            teks: "Tidak Sehat (Sensitif)",
+            className: "aqi-status-sensitif"
+        };
+    }
+
+    if(aqi <= 200){
+        return {
+            teks: "Tidak Sehat",
+            className: "aqi-status-tidak-sehat"
+        };
+    }
+
+    if(aqi <= 300){
+        return {
+            teks: "Sangat Tidak Sehat",
+            className: "aqi-status-sangat-tidak-sehat"
+        };
+    }
+
+    return {
+        teks: "Berbahaya",
+        className: "aqi-status-berbahaya"
+    };
+}
+
+function formatTanggalAQI(tanggalApi){
+    if(!tanggalApi){
+        return "-";
+    }
+
+    var tanggal = new Date(tanggalApi);
+
+    if(isNaN(tanggal.getTime())){
+        return tanggalApi;
+    }
+
+    return tanggal.toLocaleString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function setStatusClassAQI(element, className){
+    element.classList.remove(
+        "aqi-status-baik",
+        "aqi-status-sedang",
+        "aqi-status-sensitif",
+        "aqi-status-tidak-sehat",
+        "aqi-status-sangat-tidak-sehat",
+        "aqi-status-berbahaya"
+    );
+
+    element.classList.add(className);
+}
+
+function isiDataAQI(dataApi){
+
+    if(!dataApi || dataApi.status !== "success"){
+        document.getElementById("aqiMiniValue").innerText = "-";
+        document.getElementById("aqiMiniStatus").innerText = "Gagal";
+
+        document.getElementById("aqiPopupValue").innerText = "-";
+        document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
+
+        return;
+    }
+
+    var data = dataApi.data;
+
+    var pollution = data.current && data.current.pollution
+        ? data.current.pollution
+        : {};
+
+    var weather = data.current && data.current.weather
+        ? data.current.weather
+        : {};
+
+    var aqi = pollution.aqius || 0;
+    var kategori = getKategoriAQI(aqi);
+
+    document.getElementById("aqiMiniValue").innerText = aqi;
+    document.getElementById("aqiMiniStatus").innerText = kategori.teks;
+
+    document.getElementById("aqiPopupTitle").innerText = AQI_JUDUL_POPUP;
+    document.getElementById("aqiPopupValue").innerText = aqi;
+    document.getElementById("aqiPopupStatus").innerText = kategori.teks;
+
+    document.getElementById("aqiLocation").innerText = AQI_NAMA_LOKASI;
+    document.getElementById("aqiTemp").innerText = weather.tp ?? "-";
+    document.getElementById("aqiHumidity").innerText = weather.hu ?? "-";
+    document.getElementById("aqiPressure").innerText = weather.pr ?? "-";
+    document.getElementById("aqiUpdated").innerText = formatTanggalAQI(pollution.ts);
+
+    setStatusClassAQI(
+        document.getElementById("aqiMiniStatus"),
+        kategori.className
+    );
+
+    setStatusClassAQI(
+        document.getElementById("aqiPopupStatus"),
+        kategori.className
+    );
+}
+
+function ambilDataAQI(){
+
+    var url = "https://api.airvisual.com/v2/nearest_city" +
+              "?lat=" + AQI_LAT +
+              "&lon=" + AQI_LON +
+              "&key=" + IQAIR_API_KEY;
+
+    fetch(url)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            isiDataAQI(data);
+        })
+        .catch(function(error){
+            console.error("Gagal mengambil data AQI:", error);
+
+            document.getElementById("aqiMiniValue").innerText = "-";
+            document.getElementById("aqiMiniStatus").innerText = "Gagal";
+
+            document.getElementById("aqiPopupValue").innerText = "-";
+            document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
+        });
+}
+
+function aktifkanPopupAQI(){
+
+    var miniBox = document.getElementById("aqiMiniBox");
+    var popupBox = document.getElementById("aqiPopupBox");
+
+    if(!miniBox || !popupBox){
+        return;
+    }
+
+    miniBox.addEventListener("click", function(e){
+        e.stopPropagation();
+        popupBox.style.display = "block";
+    });
+
+    popupBox.addEventListener("click", function(e){
+        e.stopPropagation();
+        popupBox.style.display = "none";
+    });
+
+    document.addEventListener("click", function(){
+        popupBox.style.display = "none";
+    });
+}
+
     function initMap(){
         var mapElement = document.getElementById("map");
 
@@ -507,6 +745,9 @@ document.addEventListener("DOMContentLoaded", function () {
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: "Leaflet"
         }).addTo(map);
+
+aktifkanPopupAQI();
+ambilDataAQI();
 
         fetch("<?= base_url('assets/peta/pneumonia.geojson') ?>")
             .then(function(res){
@@ -880,12 +1121,14 @@ document.addEventListener("DOMContentLoaded", function () {
 ========================= */
 .map-legend-box{
     position:absolute;
-    left:0;
-    bottom:0;
+    left:14px;
+    bottom:14px;
     width:175px;
+
     background:#ffffff;
     padding:12px 14px 8px;
-    border-radius:0 8px 0 0;
+
+    border-radius:8px;
     box-shadow:0 2px 8px rgba(0,0,0,0.25);
     z-index:999;
 }
@@ -922,6 +1165,196 @@ document.addEventListener("DOMContentLoaded", function () {
 
 .legend-rendah{
     background:#00ff00;
+}
+
+/* =========================
+   AIR QUALITY INDEX
+========================= */
+.aqi-mini-box{
+    position:absolute;
+    left:203px;
+    bottom:14px;
+    width:125px;
+
+    background:#ffffff;
+    border-radius:10px;
+    padding:10px 12px;
+
+    box-shadow:0 4px 14px rgba(0,0,0,0.25);
+    z-index:1000;
+
+    cursor:pointer;
+    font-family:'Poppins', Arial, sans-serif;
+}
+
+.aqi-mini-main{
+    font-size:20px;
+    font-weight:800;
+    color:#111827;
+    line-height:1.1;
+}
+
+.aqi-mini-icon{
+    color:#1976d2;
+    font-weight:900;
+}
+
+.aqi-mini-status{
+    margin-top:5px;
+    display:inline-block;
+
+    padding:4px 8px;
+    border-radius:6px;
+
+    font-size:12px;
+    font-weight:700;
+
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.aqi-popup-box{
+    display:none;
+
+    position:absolute;
+    left:203px;
+    bottom:14px;
+    width:360px;
+
+    background:#ffffff;
+    border-radius:12px;
+    padding:12px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.28);
+    z-index:1002;
+
+    font-family:'Poppins', Arial, sans-serif;
+    cursor:pointer;
+}
+
+.aqi-popup-title{
+    font-size:13px;
+    font-weight:800;
+    color:#111827;
+    margin:0 0 8px 4px;
+}
+
+.aqi-popup-card{
+    background:#f8fafc;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    padding:14px 16px;
+
+    box-shadow:inset 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.aqi-popup-main{
+    font-size:24px;
+    font-weight:900;
+    color:#111827;
+    line-height:1.1;
+}
+
+.aqi-popup-icon{
+    color:#1976d2;
+    font-weight:900;
+}
+
+.aqi-popup-status{
+    display:inline-block;
+
+    margin-top:6px;
+    padding:5px 10px;
+    border-radius:6px;
+
+    font-size:12px;
+    font-weight:800;
+
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.aqi-popup-info{
+    margin-top:16px;
+}
+
+.aqi-popup-info p{
+    margin:0 0 9px;
+    font-size:12px;
+    color:#111827;
+    line-height:1.5;
+}
+
+.aqi-index-list{
+    margin-top:18px;
+}
+
+.aqi-index-list b{
+    display:block;
+    margin-bottom:9px;
+    font-size:12px;
+    color:#111827;
+}
+
+.aqi-index-list p{
+    margin:0 0 7px;
+    font-size:11px;
+    font-weight:600;
+}
+
+.aqi-good{
+    color:#16a34a;
+}
+
+.aqi-moderate{
+    color:#f59e0b;
+}
+
+.aqi-sensitive{
+    color:#f97316;
+}
+
+.aqi-unhealthy{
+    color:#dc2626;
+}
+
+.aqi-very{
+    color:#9333ea;
+}
+
+.aqi-hazard{
+    color:#4c1d95;
+}
+
+/* WARNA STATUS AQI */
+.aqi-status-baik{
+    background:#dcfce7 !important;
+    color:#16a34a !important;
+}
+
+.aqi-status-sedang{
+    background:#fef3c7 !important;
+    color:#f59e0b !important;
+}
+
+.aqi-status-sensitif{
+    background:#ffedd5 !important;
+    color:#f97316 !important;
+}
+
+.aqi-status-tidak-sehat{
+    background:#fee2e2 !important;
+    color:#dc2626 !important;
+}
+
+.aqi-status-sangat-tidak-sehat{
+    background:#f3e8ff !important;
+    color:#9333ea !important;
+}
+
+.aqi-status-berbahaya{
+    background:#ede9fe !important;
+    color:#4c1d95 !important;
 }
 
 /* =========================
@@ -1357,7 +1790,7 @@ document.addEventListener("DOMContentLoaded", function () {
 ========================= */
 .chart-frame{
     width:100%;
-    height:1450px;
+    height:1000px;
     overflow:hidden;
     border-radius:18px;
     background:#eaf9fb;
@@ -1371,16 +1804,30 @@ document.addEventListener("DOMContentLoaded", function () {
     border-radius:18px;
     background:transparent;
 }
+
 </style>
 
-   <!-- GRAFIK INTERAKTIF -->
-<!-- CHART -->
+   <!-- CHART -->
 <div class="section-block" id="grafik">
 
     <div class="section-header">
         <div>
             <h5>Grafik Interaktif Penyebaran</h5>
             <p class="sub">Visualisasi kepadatan kasus berdasarkan grafik</p>
+        </div>
+
+        <div class="filter-group">
+            <select>
+                <option>Semua Wilayah Desa</option>
+            </select>
+
+            <select>
+                <option>Semua Kategori</option>
+            </select>
+
+            <select>
+                <option>7 Hari Terbaru</option>
+            </select>
         </div>
     </div>
 
@@ -1389,7 +1836,7 @@ document.addEventListener("DOMContentLoaded", function () {
     src="<?= base_url('grafik_pneumonia?embed=1') ?>" 
     frameborder="0">
     </iframe>
-</div>
+        </div>
     </div>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
