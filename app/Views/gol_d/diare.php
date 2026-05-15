@@ -656,49 +656,34 @@ body{
 
 <div class="scroll-container" id="slider">
 
-    <!-- CARD 1 -->
+<?php foreach($berita as $b): ?>
     <div class="scroll-item card-gradient shadow">
         <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>Pengertian, penyebab, gejala, diagnosis, pengobatan, pencegahan, dan komplikasi Diare</h5>
-                <p>Informasi lengkap tentang diare</p>
-            </div>
-            <img src="<?= base_url('img/diare-artikel.png') ?>">
-        </div>
-    </div>
 
-    <!-- CARD 2 -->
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>ISPA dan Diare Penyakit Dominan Pasca Banjir Aceh Tamian</h5>
-                <p>Kasus dominan</p>
-            </div>
-            <img src="<?= base_url('img/dokter.png') ?>">
-        </div>
-    </div>
+            <div style="flex:1; padding-right:20px;">
+                <h5><?= esc($b['judul_berita']) ?></h5>
 
-    <!-- CARD 3 -->
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>DIARE, PANTI PERKUAT KOLABORASI HADAPI ANCAMAN KESEHATAN</h5>
-                <p>Panti berkolaborasi untuk menghadapi ancaman kesehatan.</p>
-            </div>
-            <img src="<?= base_url('img/seminar.png') ?>">
-        </div>
-    </div>
+                <p>
+                    <?= substr(strip_tags($b['deskripsi_berita']), 0, 100) ?>...
+                </p>
 
-    <!-- CARD 4 -->
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>Variasi Temporal dan Klaster Spasial Penyakit Diare di Provinsi Jakarta, Indonesia</h5>
-                <p>Penyakit diare</p>
+                <a href="<?= base_url('berita/' . $b['id_berita']) ?>"
+                   class="btn btn-light btn-sm mt-2">
+                    Baca Selengkapnya
+                </a>
             </div>
-            <img src="<?= base_url('img/riset.png') ?>">
+
+            <img
+                src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>"
+                style="
+                    width:220px;
+                    height:220px;
+                    object-fit:cover;
+                    border-radius:20px;
+                ">
         </div>
     </div>
+<?php endforeach; ?>
 
 </div>
 
@@ -1230,5 +1215,43 @@ async function sendMessage(){
 }
 
 </script>
+
 </div>
+<section class="container mt-5" data-aos="fade-up">
+
+    <h4 class="fw-bold text-center mb-4">
+        Berita Kesehatan Diare
+    </h4>
+
+    <div class="row">
+        <?php foreach($berita as $b): ?>
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+                <img src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>"
+                     style="height:220px; object-fit:cover;"
+                     class="card-img-top">
+
+                <div class="card-body">
+
+                    <h5><?= esc($b['judul_berita']) ?></h5>
+
+                    <p>
+                        <?= esc($b['deskripsi_berita']) ?>
+                    </p>
+
+                    <small class="text-muted">
+                        <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+        <?php endforeach; ?>
+    </div>
+
+</section>
 <?= $this->include('layout/footer') ?>

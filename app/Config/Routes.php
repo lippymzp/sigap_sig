@@ -15,7 +15,6 @@ $routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
 $routes->get('/tbc', 'Home::tbc');
-$routes->get('/diare', 'Home::diare');
 $routes->get('/skrining', 'Home::skrining');
 $routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');
 
@@ -50,7 +49,6 @@ $routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->post('uploadFoto_kepala', 'Profile::uploadFoto');
 $routes->post('updateProfil_kepala', 'Profile::updateProfil');
-$routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto_admin', 'Profile2::uploadFoto');
 $routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
@@ -161,9 +159,7 @@ $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
 $routes->post('pneumonia/simpan', 'pneumonia::simpan');
 $routes->get('pneumonia/export', 'pneumonia::export');
 
-$routes->get('diare/dashboard', 'Dashboard::diare');
-$routes->get('diare/dashboard', 'Dashboard::diare');
-$routes->get('diare/dashboard/admin', 'Dashboard::diare');
+$routes->get('diare/dashboard/', 'Dashboard::diare');
 
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
@@ -496,3 +492,20 @@ $routes->get('skrining-diare-pdf', 'Diare::pdf');
 $routes->get('pdf-diare', 'Diare::pdf');
 $routes->get('diare/kalkulator-air', 'Diare::kalkulatorAir');
 $routes->post('diare/hitung-air', 'Diare::hitungAir');
+$routes->get('admind/skrining', 'AdminD::skrining');
+
+$routes->get('admind/funfact', 'AdminD::funfact');
+$routes->get('admind/profil', 'AdminD::profil');
+$routes->get('admind/export', 'AdminD::export');
+$routes->get('diare/dashboard/admin', 'Dashboard::diare');
+
+$routes->get('admind/berita', 'AdminD::berita');
+$routes->get('admind/berita/tambah', 'AdminD::tambahBerita');
+$routes->post('admind/berita/simpan', 'AdminD::simpanBerita');
+$routes->get('admind/berita/edit/(:num)', 'AdminD::editBerita/$1');
+$routes->post('admind/berita/update/(:num)', 'AdminD::updateBerita/$1');
+$routes->get('admind/berita/hapus/(:num)', 'AdminD::hapusBerita/$1');
+$routes->get('admind/berita/publish/(:num)', 'AdminD::publishBerita/$1');
+
+$routes->get('admind/berita/edit/(:num)', 'AdminD::editBerita/$1');
+$routes->post('admind/berita/update/(:num)', 'AdminD::updateBerita/$1');

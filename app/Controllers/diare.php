@@ -5,6 +5,8 @@ namespace App\Controllers;
 use Dompdf\Dompdf;
 use App\Models\SkriningModel;
 use App\Libraries\DiareDecisionTree;
+use App\Models\PasienSkriningModel;
+use App\Models\BeritaModelDD;
 
 class Diare extends BaseController
 {
@@ -125,35 +127,55 @@ class Diare extends BaseController
             break;
     }
 
-    // =========================
-    // SIMPAN KE DATABASE
-    // =========================
-    $skriningModel = new SkriningModel();
+$pasienModel = new PasienSkriningModel();
+$skriningModel = new SkriningModel();
+/*
+|-----------------------------------
+| SIMPAN IDENTITAS PASIEN
+|-----------------------------------
+*/
+$pasienModel->insert([
+    'nik' => $identitas['nik'] ?? '',
+    'nama_pasien_skrining' => $identitas['nama'] ?? '',
+    'jenis_kelamin' => $identitas['jk'] ?? '',
+    'tanggal_lahir' => $identitas['tgl'] ?? '',
+    'usia' => $identitas['usia'] ?? '',
+    'no_hp' => $identitas['hp'] ?? '',
+    'id_wilayah' => 1
+]);
 
-    $skriningModel->insert([
-        'id_pasien_skrining' => null,
-        'id_penyakit'        => 4,
-        'tanggal'            => date('Y-m-d'),
+$idPasien = $pasienModel->getInsertID();
 
-        'var1'  => ($semuaJawaban['q0'] ?? 0) ? 'Iya' : 'Tidak',
-        'var2'  => ($semuaJawaban['q1'] ?? 0) ? 'Iya' : 'Tidak',
-        'var3'  => ($semuaJawaban['q2'] ?? 0) ? 'Iya' : 'Tidak',
-        'var4'  => ($semuaJawaban['q3'] ?? 0) ? 'Iya' : 'Tidak',
-        'var5'  => ($semuaJawaban['q4'] ?? 0) ? 'Iya' : 'Tidak',
-        'var6'  => ($semuaJawaban['q5'] ?? 0) ? 'Iya' : 'Tidak',
-        'var7'  => ($semuaJawaban['q6'] ?? 0) ? 'Iya' : 'Tidak',
-        'var8'  => ($semuaJawaban['q7'] ?? 0) ? 'Iya' : 'Tidak',
-        'var9'  => ($semuaJawaban['q8'] ?? 0) ? 'Iya' : 'Tidak',
-        'var10' => ($semuaJawaban['q9'] ?? 0) ? 'Iya' : 'Tidak',
-        'var11' => ($semuaJawaban['q10'] ?? 0) ? 'Iya' : 'Tidak',
-        'var12' => ($semuaJawaban['q11'] ?? 0) ? 'Iya' : 'Tidak',
-        'var13' => ($semuaJawaban['q12'] ?? 0) ? 'Iya' : 'Tidak',
-        'var14' => ($semuaJawaban['q13'] ?? 0) ? 'Iya' : 'Tidak',
-        'var15' => ($semuaJawaban['q14'] ?? 0) ? 'Iya' : 'Tidak',
 
-        'hasil' => $hasil,
-        'rekomendasi' => $rekomendasi
-    ]);
+/*
+|-----------------------------------
+| SIMPAN HASIL SKRINING
+|-----------------------------------
+*/
+$skriningModel->insert([
+    'id_pasien_skrining' => $idPasien,
+    'id_penyakit'        => 4,
+    'tanggal'            => date('Y-m-d'),
+
+    'var1'  => ($semuaJawaban['q0'] ?? 0) ? 'Iya' : 'Tidak',
+    'var2'  => ($semuaJawaban['q1'] ?? 0) ? 'Iya' : 'Tidak',
+    'var3'  => ($semuaJawaban['q2'] ?? 0) ? 'Iya' : 'Tidak',
+    'var4'  => ($semuaJawaban['q3'] ?? 0) ? 'Iya' : 'Tidak',
+    'var5'  => ($semuaJawaban['q4'] ?? 0) ? 'Iya' : 'Tidak',
+    'var6'  => ($semuaJawaban['q5'] ?? 0) ? 'Iya' : 'Tidak',
+    'var7'  => ($semuaJawaban['q6'] ?? 0) ? 'Iya' : 'Tidak',
+    'var8'  => ($semuaJawaban['q7'] ?? 0) ? 'Iya' : 'Tidak',
+    'var9'  => ($semuaJawaban['q8'] ?? 0) ? 'Iya' : 'Tidak',
+    'var10' => ($semuaJawaban['q9'] ?? 0) ? 'Iya' : 'Tidak',
+    'var11' => ($semuaJawaban['q10'] ?? 0) ? 'Iya' : 'Tidak',
+    'var12' => ($semuaJawaban['q11'] ?? 0) ? 'Iya' : 'Tidak',
+    'var13' => ($semuaJawaban['q12'] ?? 0) ? 'Iya' : 'Tidak',
+    'var14' => ($semuaJawaban['q13'] ?? 0) ? 'Iya' : 'Tidak',
+    'var15' => ($semuaJawaban['q14'] ?? 0) ? 'Iya' : 'Tidak',
+
+    'hasil' => $hasil,
+    'rekomendasi' => $rekomendasi
+]);
 
     // =========================
     // SESSION PDF
@@ -200,18 +222,26 @@ class Diare extends BaseController
         $dompdf->render();
         $dompdf->stream("hasil-diare.pdf", ["Attachment" => false]);
     }
+// =========================
+// LANDING PAGE DIARE
+// =========================
+public function index()
+{
+    helper('text');
 
-    // =========================
-    // LANDING PAGE DIARE
-    // =========================
-    public function index()
-    {
-        $model = new \App\Models\DiareModel();
+    $beritaModel = new BeritaModelDD();
 
-        $data['diare'] = $model->findAll();
+    $data['berita'] = $beritaModel
+        ->where('id_penyakit', 4)
+        ->where('status_berita', 'publish')
+        ->orderBy('tanggal_berita', 'DESC')
+        ->findAll();
 
-        return view('gol_d/diare', $data);
-    }
+    $data['diare'] = [];
+
+    return view('gol_d/diare', $data);
+}
+   
 
     // =========================
     // INPUT DATA
