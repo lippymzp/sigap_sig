@@ -18,11 +18,13 @@
 
 <!-- CHART -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
 
 <!-- CUSTOM CSS -->
 <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
 
 <style>
+    
 /* HEADER */
 .navbar-custom{
     background: #ffffff;
@@ -30,7 +32,83 @@
     padding: 10px 0;
     border-bottom: 1px solid #f2f2f2;
 }
+/* ===== HEADER KHUSUS DIARE ===== */
 
+.brand-diare{
+    gap:12px;
+}
+
+.diare-logo{
+    width:120px;
+    height:120px;
+    object-fit:contain;
+}
+
+.diare-title{
+    font-family:'Baloo 2', cursive !important;
+    font-size:56px;
+    font-weight:700;
+    margin:0;
+    line-height:0.8;
+    letter-spacing:-1px;
+
+    background: linear-gradient(
+        180deg,
+        #1d2b44 0%,
+        #243554 35%,
+        #18cdd5 36%,
+        #14b9c7 100%
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+
+    text-shadow:
+        0 2px 4px rgba(0,0,0,0.08);
+}
+
+
+
+.diare-subtitle{
+    font-size:19px;
+    font-weight:500;
+    color:#1e1e1e;
+    margin-top:-2px;
+    line-height:1.1;
+    letter-spacing:-0.2px;
+}
+.brand-diare{
+    gap:14px;
+    align-items:center;
+}
+
+
+/* navbar lebih figma */
+body .navbar-custom{
+    padding:12px 0;
+    border-top:4px solid #0d5b5b;
+}
+
+/* tombol login figma */
+body .btn-login{
+    background:#14c8d0;
+    border-radius:14px;
+    padding:12px 34px;
+    font-weight:700;
+    box-shadow:0 6px 14px rgba(0,0,0,0.12);
+}
+
+body .btn-login:hover{
+    background:#10b7bf;
+    transform:translateY(-2px);
+}
+
+/* menu spacing */
+body .nav-link{
+    font-size:16px;
+    font-weight:500;
+}
 /* BRAND */
 .brand-wrapper{
     display: flex;
@@ -185,14 +263,34 @@
 <?php 
 $uri = service('uri')->getSegment(1);
 
-// halaman yang BOLEH tampil login
+/*
+|--------------------------------------------------------------------------
+| DETEKSI HALAMAN DIARE
+|--------------------------------------------------------------------------
+*/
+$fullUrl = current_url();
+
+$isDiarePage = in_array($uri, [
+    'diare',
+    'skrining-diare',
+    'hasil-diare',
+    'diare-detail',
+    'berita'
+]) || strpos(current_url(), 'diare') !== false;
+
+/*
+|--------------------------------------------------------------------------
+| LOGIN PAGES
+|--------------------------------------------------------------------------
+*/
 $showLoginPages = [
     'dbd',
     'tbc',
     'skrining-tbc',
     'hasil',
     'pneumonia',
-    'diare'
+    'diare',
+    'skrining-diare'
 ];
 ?>
 
@@ -201,8 +299,22 @@ $showLoginPages = [
 
 <div class="container">
 
-    <!-- BRAND -->
-    <a href="<?= base_url('/') ?>" class="brand-wrapper">
+    <a href="<?= base_url('/') ?>" class="brand-wrapper <?= (($penyakit ?? '') == 'diare') ? 'brand-diare' : '' ?>">
+
+    <?php if ($isDiarePage): ?>
+
+        <img src="<?= base_url('img/logo_diare.png') ?>" 
+             alt="diagis"
+             class="brand-logo diare-logo">
+
+        <div class="brand-text">
+            <h1 class="brand-name diare-title">diagis</h1>
+            <p class="brand-subtitle diare-subtitle">
+                Diarrhea Geographic Information System
+            </p>
+        </div>
+
+    <?php else: ?>
 
         <img src="<?= base_url('img/logo_sigap.png') ?>" 
              alt="SIGAP"
@@ -215,7 +327,9 @@ $showLoginPages = [
             </p>
         </div>
 
-    </a>
+    <?php endif; ?>
+
+</a>
 
     <!-- TOGGLER -->
     <button class="navbar-toggler"

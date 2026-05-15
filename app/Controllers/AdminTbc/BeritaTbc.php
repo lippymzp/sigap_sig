@@ -206,7 +206,7 @@ public function simpan()
         return redirect()->to('/tbc/berita');
     }
 
-public function detail($id)
+public function detail(int $id)
 {
     $model = new BeritaTbcModel();
 
@@ -219,7 +219,7 @@ public function detail($id)
     // JIKA BERITA EKSTERNAL
     if (!empty($berita['url_berita'])) {
 
-        return redirect()->to($berita['url_berita']);
+        return redirect()->to((string)$berita['url_berita']);
 
     }
 
@@ -314,7 +314,7 @@ $data = [
     return redirect()->to('/tbc/berita');
 }
 
-private function getMetaData($url)
+private function getMetaData(int $url)
 {
     try {
 
@@ -355,7 +355,7 @@ $html = @file_get_contents($url, false, $context);
         $metaTags = $xpath->query("//meta");
 
         foreach ($metaTags as $meta) {
-
+           /** @var \DOMElement $meta */
             $property = strtolower($meta->getAttribute('property'));
             $name     = strtolower($meta->getAttribute('name'));
 

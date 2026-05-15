@@ -3,7 +3,7 @@ namespace App\Controllers\AdminTbc;
 use App\Controllers\BaseController;
 class Wilayah extends BaseController
 {
-    public function kabupaten($provId)
+    public function kabupaten(int $provId)
     {
         $db = \Config\Database::connect(); // atau 'default' kalau satu DB
         $data = $db->table('cities')
@@ -14,7 +14,7 @@ class Wilayah extends BaseController
         return $this->response->setJSON($data);
     }
 
-    public function kecamatan($cityId)
+    public function kecamatan(int $cityId)
     {
         $db = \Config\Database::connect();
         $data = $db->table('districts')
@@ -25,7 +25,7 @@ class Wilayah extends BaseController
         return $this->response->setJSON($data);
     }
 
-    public function kelurahan($disId)
+    public function kelurahan(int $disId)
     {
         $db = \Config\Database::connect();
         $data = $db->table('subdistricts')

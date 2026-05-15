@@ -265,7 +265,7 @@ class Dashboard extends BaseController
     // =========================
     // GET KABUPATEN
     // =========================
-    public function getKabupaten($provinsi)
+    public function getKabupaten(int $provinsi)
     {
         $db = \Config\Database::connect();
 
@@ -283,7 +283,7 @@ class Dashboard extends BaseController
     // =========================
     // GET KECAMATAN
     // =========================
-    public function getKecamatan($kabupaten)
+    public function getKecamatan(int $kabupaten)
     {
         $db = \Config\Database::connect();
 
@@ -301,7 +301,7 @@ class Dashboard extends BaseController
     // =========================
     // GET KELURAHAN
     // =========================
-    public function getKelurahan($kecamatan)
+    public function getKelurahan(int $kecamatan)
     {
         $db = \Config\Database::connect();
 

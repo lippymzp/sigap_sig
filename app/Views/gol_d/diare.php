@@ -95,14 +95,210 @@ body{
     color:var(--dark);
 }
 
-/* CARD INSIGHT */
-.card{
-    border:none !important;
+.insight-premium{
+    padding:70px 0;
 }
 
-.card-gradient{
-    background:linear-gradient(135deg,var(--dark),var(--primary));
+.section-head{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.section-head span{
+    color:#00c7d2;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:2px;
+}
+
+.section-head h2{
+    font-size:56px;
+    font-weight:800;
+    color:#20353d;
+    margin-top:10px;
+}
+
+.section-head p{
+    max-width:650px;
+    margin:14px auto 0;
+    color:#6f8188;
+    font-size:17px;
+    line-height:1.7;
+}
+
+.slider-shell{
+    position:relative;
+    max-width:1300px;
+    margin:auto;
+}
+
+.premium-slider{
+    display:flex;
+    overflow:hidden;
+    scroll-behavior:smooth;
+}
+
+.premium-slide{
+    min-width:100%;
+    padding:20px;
+}
+
+.premium-card{
+    background:linear-gradient(135deg,#08cdd1,#05b3bf);
+    border-radius:34px;
+    min-height:460px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:60px;
+    overflow:hidden;
+    box-shadow:0 25px 50px rgba(0,0,0,0.12);
+}
+
+.premium-left{
+    width:50%;
     color:white;
+    z-index:2;
+}
+
+.badge-artikel{
+    display:inline-block;
+    background:rgba(0,0,0,0.15);
+    padding:12px 22px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:28px;
+}
+
+.premium-left h3{
+    font-size:52px;
+    font-weight:800;
+    line-height:1.2;
+    margin-bottom:24px;
+}
+
+.premium-left p{
+    font-size:22px;
+    line-height:1.8;
+    opacity:0.95;
+    margin-bottom:28px;
+}
+
+.meta-row{
+    display:flex;
+    gap:25px;
+    margin-bottom:30px;
+    font-size:15px;
+}
+
+.btn-premium{
+    background:white;
+    color:#00b8c3;
+    text-decoration:none;
+    padding:18px 34px;
+    border-radius:18px;
+    font-weight:800;
+    display:inline-block;
+    transition:.3s;
+}
+
+.btn-premium:hover{
+    transform:translateY(-3px);
+    color:#00b8c3;
+}
+
+.premium-right{
+    width:42%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.premium-right img{
+    width:100%;
+    max-width:520px;
+    height:320px;
+    object-fit:cover;
+    border-radius:28px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.18);
+}
+
+.slider-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:68px;
+    height:68px;
+    border:none;
+    border-radius:50%;
+    background:white;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    color:#00bfc8;
+    font-size:22px;
+    z-index:99;
+}
+
+.slider-arrow.left{
+    left:-10px;
+}
+
+.slider-arrow.right{
+    right:-10px;
+}
+
+.premium-dots{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:25px;
+}
+
+.premium-dots span{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#d5d5d5;
+    cursor:pointer;
+}
+
+.premium-dots span.active{
+    background:#00bfc8;
+}
+
+@media(max-width:768px){
+
+    .premium-card{
+        flex-direction:column-reverse;
+        padding:30px;
+        min-height:auto;
+    }
+
+    .premium-left,
+    .premium-right{
+        width:100%;
+    }
+
+    .premium-left h3{
+        font-size:28px;
+    }
+
+    .premium-left p{
+        font-size:15px;
+    }
+
+    .premium-right img{
+        height:220px;
+        margin-bottom:25px;
+    }
+
+    .section-head h2{
+        font-size:34px;
+    }
+
+    .slider-arrow{
+        display:none;
+    }
 }
 
 /* CTA */
@@ -578,6 +774,7 @@ body{
     bottom: 20px;
     right: 20px;
 }
+
 }
 </style>
 
@@ -643,56 +840,74 @@ body{
 
 </div>
 </section>
+<section class="container mt-5 insight-premium" data-aos="fade-up">
 
-<!-- INSIGHT (TETAP ADA, HANYA DIPERCANTIK) -->
-<section class="container mt-5" data-aos="fade-up">
-
-<h6 class="text-center text-muted">Insights</h6>
-<h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
-
-<div class="carousel-wrapper">
-
-<button class="nav-btn left" onclick="slide(-1)">‹</button>
-
-<div class="scroll-container" id="slider">
-
-<?php foreach($berita as $b): ?>
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-
-            <div style="flex:1; padding-right:20px;">
-                <h5><?= esc($b['judul_berita']) ?></h5>
-
-                <p>
-                    <?= substr(strip_tags($b['deskripsi_berita']), 0, 100) ?>...
-                </p>
-
-                <a href="<?= base_url('berita/' . $b['id_berita']) ?>"
-                   class="btn btn-light btn-sm mt-2">
-                    Baca Selengkapnya
-                </a>
-            </div>
-
-            <img
-                src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>"
-                style="
-                    width:220px;
-                    height:220px;
-                    object-fit:cover;
-                    border-radius:20px;
-                ">
-        </div>
+    <div class="section-head">
+        <span>INSIGHTS</span>
+        <h2>Telusuri Informasi Kesehatan</h2>
+        <p>
+            Artikel dan informasi terpercaya seputar diare untuk edukasi kesehatan masyarakat.
+        </p>
     </div>
-<?php endforeach; ?>
 
-</div>
+    <div class="slider-shell">
 
-<button class="nav-btn right" onclick="slide(1)">›</button>
+        <button class="slider-arrow left" onclick="slide(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
 
-<!-- DOT -->
-<div class="dots" id="dots"></div>
+        <div class="premium-slider" id="slider">
 
-</div>
+            <?php foreach($berita as $b): ?>
+            <div class="premium-slide">
+
+                <div class="premium-card">
+
+                    <div class="premium-left">
+                        <div class="badge-artikel">
+                            ARTIKEL KESEHATAN
+                        </div>
+
+                        <h3><?= esc($b['judul_berita']) ?></h3>
+
+                        <p>
+                            <?= word_limiter(strip_tags($b['deskripsi_berita']), 24) ?>
+                        </p>
+
+                        <div class="meta-row">
+                            <span>
+                                <i class="fas fa-user"></i> dsync.id
+                            </span>
+
+                            <span>
+                                <i class="far fa-calendar"></i>
+                                <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                            </span>
+                        </div>
+
+                        <a href="<?= base_url('berita/' . $b['id_berita']) ?>" class="btn-premium">
+    Selengkapnya →
+</a>
+                    </div>
+
+                    <div class="premium-right">
+                        <img src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>">
+                    </div>
+
+                </div>
+
+            </div>
+            <?php endforeach; ?>
+
+        </div>
+
+        <button class="slider-arrow right" onclick="slide(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+    </div>
+
+    <div class="premium-dots" id="dots"></div>
 
 </section>
 

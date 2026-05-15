@@ -143,7 +143,7 @@
 }
 
 .footer-maskot {
-    width: 200px;
+    width: 115px;
     height: auto;
     object-fit: contain;
     display: block;

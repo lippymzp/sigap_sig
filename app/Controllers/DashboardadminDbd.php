@@ -246,7 +246,6 @@ $builder->groupBy('w.kelurahan');
     'show_footer_maskot' => true,
     'footer_maskot' => 'logo_denggis.png'
     
-
         ]);
     }
 
