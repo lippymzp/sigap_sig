@@ -1,6 +1,11 @@
 <?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?> 
 <?= $this->section('content') ?>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 .isi-funfact{
     width:100%;
@@ -18,6 +23,10 @@
 /* biar rapi */
 .isi-funfact p{
     margin-bottom:14px;
+}
+
+*{
+    font-family:'Poppins', sans-serif;
 }
 </style>
 

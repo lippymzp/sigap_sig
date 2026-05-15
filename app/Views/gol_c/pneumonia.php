@@ -1,5 +1,14 @@
 <?php $this->setVar('penyakit', 'pneumonia'); ?>
+<?php 
+$this->setVar('show_footer_maskot', true);
+$this->setVar('footer_maskot', 'cynex.png');
+?>
 <?= $this->include('layout/header') ?>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- HERO BANNER -->
 <section class="pneu-hero text-white mb-4">
@@ -71,7 +80,7 @@
     position: relative;
 }
 .pneu-hero h1{ font-size: 58px; font-weight: 700; margin-bottom: 18px;}
-.pneu-hero p{font-size: 19px; line-height: 1.8; max-width: 520px; }
+.pneu-hero p{font-size: 16px; line-height: 1.8; max-width: 520px; }
 .hero-btn{ background: #00a8cc; color: #fff; padding: 14px 30px; border-radius: 50px; font-weight: 600; border: none;}
 
 .hero-btn:hover{
@@ -2206,6 +2215,15 @@ document.addEventListener("DOMContentLoaded", function () {
         width:100%;
         padding:10px 20px;
     }
+    
+}
+
+.footer-maskot{
+    width:250px !important;
+}
+
+*{
+    font-family:'Poppins', sans-serif;
 }
 </style>
 
@@ -2220,4 +2238,42 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 </style>
 
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const footerDesc = document.querySelector(".footer-desc");
+
+    if(footerDesc){
+
+        footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    CYNEX
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Clinical System for Next Experience
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+});
+</script>
 <?= $this->include('layout/footer') ?>

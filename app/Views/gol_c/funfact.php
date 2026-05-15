@@ -1,6 +1,11 @@
 <?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 .popup-overlay{
 position:fixed;
@@ -54,6 +59,10 @@ padding:8px;
 border-radius:8px;
 margin-top:8px;
 width:100%;
+}
+
+*{
+    font-family:'Poppins', sans-serif;
 }
 </style>
 

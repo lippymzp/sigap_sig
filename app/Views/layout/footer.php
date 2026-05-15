@@ -22,14 +22,14 @@
 
     </div>
 
-    <h3 class="footer-title">SIGAP</h3>
+    <h3 class="footer-title">MEDIXA</h3>
 
     <p class="footer-desc">
-        Sistem Informasi, Geografis Analisis & Pemantauan
+        Medical Innovation & Excellence Alliance
     </p>
 </div>
                 <div class="footer-links mt-5"> 
-                <a href="#">Tentang Kami</a>
+                <a href="/tentang-kami">Tentang Kami</a>
             </div>
 
         </div>
