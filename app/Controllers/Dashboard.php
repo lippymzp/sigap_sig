@@ -286,15 +286,12 @@ public function tbc()
 
     $tbc = $builder->get()->getResultArray();
 
-        return view('gol_b/dashboard_tbc', [
-            'menu' => 'dashboard',
-            'berita' => $berita,
-            'funfact' => $funfact,
-            'tbc' => $tbc,
-
-            'show_footer_maskot' => true,
-            'footer_maskot' => 'logo_tbc.png'
-        ]);
+    return view('gol_b/dashboard_tbc', [
+        'menu' => 'dashboard',
+        'berita' => $berita,
+        'funfact' => $funfact,
+        'tbc' => $tbc
+    ]);
 }
   // DASHBOARD PNEUMONIA
 public function pneumonia()
@@ -392,19 +389,6 @@ if(!empty($bulan)){
         'MONTH(p.tgl_kunjungan)',
         $bulan
     );
-    // KELURAHAN TERDAMPAK
-    $kelurahanTerdampak = $db->table('wilayah')
-        ->select('kelurahan')
-        ->distinct()
-        ->countAllResults();
-    
-    return view('gol_c/dashboard_pneumonia', [
-        'menu' => 'dashboard',
-        'artikels' => [],
-        'totalKasus' => $totalKasus,
-        'kasusBaru' => $kasusBaru,
-        'kelurahanTerdampak' => $kelurahanTerdampak
-    ]);
 }
 
 // FILTER TAHUN
