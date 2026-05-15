@@ -16,7 +16,7 @@ $rt_rw = $rt_rw ?? '';
 $hasil = $hasil ?? '';
 $alasan = $alasan ?? '';
 $totalSkor = $totalSkor ?? 0;
-
+$kategori = ($kategori_usia <= 19) ? 'Anak-anak' : 'Dewasa';
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +25,7 @@ $totalSkor = $totalSkor ?? 0;
 <title>Hasil Skrining</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 body {
     background: #ffffff;
@@ -239,8 +240,78 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+/* ===== CARD MODERN ===== */
+.tips-card {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-top: 20px;
+    animation: fadeUp 0.6s ease-in-out;
+    transition: 0.3s;
+}
 
+/* animasi masuk */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* HEADER */
+.tips-header-modern {
+    padding: 18px 20px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+/* CONTENT */
+.tips-content-modern {
+    padding: 18px 22px;
+    background: #f9fcfc;
+}
+
+.tips-content-modern p {
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.tips-content-modern ul {
+    padding-left: 18px;
+}
+
+.tips-content-modern li {
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.tips-content-modern li:hover {
+    transform: translateX(5px);
+}
+
+/* VARIAN WARNA */
+.bg-danger-modern {
+    background: linear-gradient(135deg, #ff6b6b, #d64545);
+}
+
+.bg-warning-modern {
+    background: linear-gradient(135deg,  #ffd86b, #c9a227);
+}
+
+.bg-success-modern {
+    background: linear-gradient(135deg, #00BBC2, #007f6b);
+}
 </style>
+
+
 </head>
 
 <body>
@@ -272,9 +343,10 @@ body {
 
     <label class="mt-3">Tanggal Lahir</label>
     <input type="text" class="form-control" value="<?= $tanggal_lahir ?>" readonly>
-
-    <label class="mt-3">Kategori Usia</label>
-    <input type="text" class="form-control" value="<?= $kategori_usia ?>" readonly>
+<label class="mt-3">Usia</label>
+<label class="mt-3">Kategori Usia</label>
+<input type="text" class="form-control" value="<?= $kategori ?>" readonly>
+    
 </div>
 
 <div class="col-md-6">
@@ -344,7 +416,7 @@ $value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
 
 if ($value == 1):
 ?>
-    <span class="badge bg-success">Ya</span>
+    <span class="badge bg-success">Iya</span>
 <?php else: ?>
     <span class="badge bg-danger">Tidak</span>
 <?php endif; ?>
@@ -368,44 +440,67 @@ if ($value == 1):
     <?= $hasil ?>
 </div>
 
+<p class="text-center mt-2 text-muted">
+    <?= $alasan ?>
+</p>
 
 <!-- REKOMENDASI -->
 <div class="section-title">Rekomendasi</div>
 
-<!-- TIPS -->
+<?php if ($hasil == 'Berisiko Pneumonia'): ?>
 
-<div class="tips-box">
-    <div class="tips-header">
-        📚 Tips Kesehatan
+    <!-- HASIL BERISIKO -->
+    <div class="tips-card">
+
+        <div class="tips-header-modern bg-danger-modern">
+            Rekomendasi
+        </div>
+
+        <div class="tips-content-modern">
+
+            <ul>
+                <li>Segera periksa ke fasilitas kesehatan terdekat.</li>
+                <li>Gunakan masker dan pantau gejala.</li>
+                <li>Hubungi <b>CHATBOT</b> untuk informasi lebih lanjut.</li>
+            </ul>
+
+        </div>
+
     </div>
 
-    <div class="tips-content">
-        <ul>
-            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
-            <li>Rutin berolahraga minimal 30 menit</li>
-            <li>Istirahat yang cukup</li>
-            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
-        </ul>
+<?php else: ?>
+
+    <!-- HASIL TIDAK BERISIKO -->
+    <div class="tips-card">
+
+        <div class="tips-header-modern bg-success-modern">
+            Rekomendasi
+        </div>
+
+        <div class="tips-content-modern">
+
+            <ul>
+                <li>Jaga daya tahan tubuh dengan makan bergizi, istirahat cukup, dan minum air yang cukup.</li>
+                <li>Hindari asap rokok dan paparan polusi udara.</li>
+                <li>Waspadai bila muncul demam tinggi, sesak napas, atau batuk memburuk.</li>
+            </ul>
+
+        </div>
+
     </div>
-</div>
+
+<?php endif; ?>
 
 <!-- BUTTON -->
-
-<!-- CETAK (SENDIRI DI ATAS) -->
-<div class="cetak-wrapper">
-    <button onclick="window.print()" class="btn-cetak-full">
-        Cetak Hasil
-    </button>
-</div>
 
 <!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-    <a href="<?= base_url('skriningpneumonia') ?>" class="btn btn-kembali">
-        Kembali
+    <a onclick="window.print()" class="btn btn-kembali">
+        Cetak Hasil
     </a>
 
-   <a href="<?= base_url('pneumonia') ?>" class="btn btn-selesai">
+   <a href="/pneumonia" class="btn btn-selesai">
     Selesai
     </a>
 

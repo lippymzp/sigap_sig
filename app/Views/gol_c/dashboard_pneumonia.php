@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
 
 <!-- WELCOME -->
@@ -6,7 +6,7 @@
     <div class="welcome-text">
         <h5>Selamat datang kembali,</h5>
         <h3>Anda masuk sebagai ADMIN</h3>
-        <p>Puskesmas Kaliwates, Jember</p>
+        <p>Puskesmas Ajung, Jember</p>
     </div>
 
     <div class="welcome-icon">
@@ -53,191 +53,1343 @@
 <!-- MAP -->
 <div class="section-card">
 
-    <!-- MAP -->
-    <div class="section-block">
+    <!-- =========================
+        HALAMAN MAP
+    ========================== -->
+    <div id="mapPage">
 
-        <div class="section-header">
-            <div>
-                <h5>Peta Interaktif Penyebaran</h5>
-                <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
+        <div class="section-block">
+
+            <div class="section-header">
+                <div>
+                    <h5>Peta Interaktif Penyebaran</h5>
+                    <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
+                </div>
             </div>
 
-            <div class="filter">
-                <span>Periode:</span>
-                <select>
-                    <option>2025</option>
-                </select>
+            <div class="inner-card">
+
+                <!-- FILTER -->
+                <div class="filter-wrapper">
+
+                    <div class="filter-left">
+
+                        <div class="filter-group">
+                            <label>Pilih Bulan</label>
+                            <select id="filterBulan">
+                                <option value="">All</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Periode</label>
+                            <select id="filterTahun">
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Jenis Kelamin</label>
+                            <select id="filterJk">
+                                <option value="">All</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="filter-right">
+                        <button type="button" id="btnFilter" class="btn-filter">
+                            Filter
+                        </button>
+
+                        <button type="button" id="btnReset" class="btn-reset">
+                            Reset
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- MAP -->
+                <div class="map-wrapper">
+                    <div id="map"></div>
+
+                    <!-- KETERANGAN -->
+                    <div class="map-legend-box">
+                        <h6>Keterangan:</h6>
+
+                        <div class="legend-item">
+                            <span class="legend-color legend-tinggi"></span>
+                            <b>Risiko Tinggi</b>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-color legend-sedang"></span>
+                            <b>Risiko Sedang</b>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-color legend-rendah"></span>
+                            <b>Risiko Rendah</b>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-
-        <!-- 🔥 MAP HASIL PINDAHAN -->
-        <div class="inner-card">
-
-            <div id="map" style="height:400px; border-radius:15px;"></div>
-
-            <div class="map-legend mt-3">
-                <span style="background:#f4a261">Rendah</span>
-                <span style="background:#e76f51">Sedang</span>
-                <span style="background:#d62828">Tinggi</span>
-            </div>
-
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-
-                function fixNama(nama){
-                    return (nama || "")
-                        .toLowerCase()
-                        .trim()
-                        .replace(/\s+/g, " ")
-                        .replace(/[^a-z0-9 ]/g, "");
-                }
-
-                var dataPneu = <?= json_encode($pneumonia ?? []) ?>;
-                console.log("DATA PNEUMONIA:", dataPneu);
-
-                var dataFinal = {};
-
-                dataPneu.forEach(item => {
-
-                    var desa = fixNama(item.desa);
-
-                    if(!dataFinal[desa]){
-                        dataFinal[desa] = {
-                            total: 0,
-                            jumlah: 0
-                        };
-                    }
-
-                    dataFinal[desa].total += parseInt(item.kasus);
-                    dataFinal[desa].jumlah++;
-                });
-
-                for(var key in dataFinal){
-                    var rata = dataFinal[key].total / dataFinal[key].jumlah;
-
-                    if(rata >= 20) dataFinal[key].kategori = "tinggi";
-                    else if(rata >= 10) dataFinal[key].kategori = "sedang";
-                    else dataFinal[key].kategori = "rendah";
-                }
-
-                console.log("DATA FINAL:", dataFinal);
-
-                const mapElement = document.getElementById('map');
-
-                if (mapElement) {
-                    var map = L.map('map').setView([-7.9,112.6], 10);
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-                    .addTo(map);
-
-                    // marker lama tetap
-                    L.marker([-7.9,112.6]).addTo(map).bindPopup("Kasus Tinggi");
-                    L.marker([-7.8,112.7]).addTo(map).bindPopup("Kasus Sedang");
-
-                    fetch("<?= base_url('assets/peta/pneumonia.geojson') ?>")
-                    .then(res => res.json())
-                    .then(data => {
-
-                        var geo = L.geoJSON(data, {
-
-                            style: function(feature){
-
-                                var nama = fixNama(feature.properties.NAMOBJ);
-                                var item = dataFinal[nama];
-
-                                var warna = "#cccccc";
-
-                                if(item){
-                                    if(item.kategori == "tinggi") warna = "#d62828";
-                                    else if(item.kategori == "sedang") warna = "#e76f51";
-                                    else if(item.kategori == "rendah") warna = "#f4a261";
-                                }
-
-                                return {
-                                    color: "#2a9d8f",
-                                    weight: 2,
-                                    fillColor: warna,
-                                    fillOpacity: 0.7
-                                };
-                            },
-
-                            onEachFeature: function(feature, layer){
-
-                                var nama = feature.properties.NAMOBJ;
-                                var item = dataFinal[fixNama(nama)];
-
-                                var isi = "<b>Desa: " + nama + "</b>";
-
-                                if(item){
-                                    isi += "<br>Total Kasus: " + item.total;
-                                    isi += "<br>Kategori: " + item.kategori;
-                                } else {
-                                    isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                                }
-
-                                layer.bindPopup(isi);
-
-                                layer.bindTooltip(nama, {
-                                    permanent: true,
-                                    direction: "center",
-                                    className: "label-desa"
-                                });
-                            }
-
-                        }).addTo(map);
-
-                        map.fitBounds(geo.getBounds());
-                    });
-
-                    setTimeout(() => map.invalidateSize(), 300);
-                }
-
-            });
-            </script>
-
-            <style>
-            .label-desa{
-                background: rgba(0,0,0,0.6);
-                color: white;
-                border: none;
-                padding: 2px 6px;
-                font-size: 11px;
-                border-radius: 6px;
-            }
-            </style>
 
         </div>
 
     </div>
 
-   <!-- CHART -->
-<div class="section-block">
+
+    <!-- =========================
+        HALAMAN DETAIL
+    ========================== -->
+    <div id="detailPage" style="display:none;">
+
+        <div class="detail-card">
+
+            <div class="detail-header">
+                <h5 id="detailTitleHeader">Peta Sebaran Kasus 2025</h5>
+
+                <div class="detail-period">
+                    <span>Periode :</span>
+
+                    <button type="button" class="period-btn" onclick="changeDetailYear(-1)">
+                        ‹
+                    </button>
+
+                    <b id="detailYear">2025</b>
+
+                    <button type="button" class="period-btn" onclick="changeDetailYear(1)">
+                        ›
+                    </button>
+                </div>
+            </div>
+
+            <div class="detail-inner">
+
+                <div class="detail-top">
+                    <div>
+                        <h3 id="detailWilayah">Kecamatan Ajung</h3>
+
+                        <p class="detail-label">Total Kasus</p>
+                        <h4 id="detailTotal">0 kasus</h4>
+
+                        <p class="detail-label" id="detailBulanLabel">Kasus Baru (Juni 2025)</p>
+                        <h4 id="detailKasusBaru">0 kasus</h4>
+                    </div>
+
+                    <span id="detailKategori" class="badge-risk rendah">Rendah</span>
+                </div>
+
+                <h4 class="chart-title">10 Wilayah dengan Kasus Tertinggi</h4>
+
+                <div id="rankingChart" class="ranking-chart"></div>
+
+            </div>
+
+            <div class="detail-footer">
+                <button type="button" class="btn-kembali" onclick="backToMap()">
+                    Kembali
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    var dataPneu = <?= json_encode($pneumonia ?? []) ?>;
+
+    var map;
+    var geoLayer;
+    var geoJsonData;
+    var currentDataFinal = {};
+    var selectedDetailYear = 2025;
+
+    function fixNama(nama){
+        return (nama || "")
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/desa/g, "")
+            .replace(/kelurahan/g, "")
+            .replace(/kecamatan/g, "")
+            .replace(/\./g, "")
+            .replace(/-/g, " ")
+            .replace(/_/g, " ")
+            .replace(/\s+/g, " ")
+            .replace(/[^a-z0-9 ]/g, "")
+            .trim();
+    }
+
+    function fixKey(nama){
+        var key = fixNama(nama).replace(/\s+/g, "");
+
+        var alias = {
+            "klompongan": "klompangan",
+            "klomplangan": "klompangan",
+            "rowoindah": "rowoindah",
+            "pancakarya": "pancakarya",
+            "pancakarya": "pancakarya",
+            "sukamakmur": "sukamakmur",
+            "wirowongso": "wirowongso",
+            "mangaran": "mangaran",
+            "ajung": "ajung"
+        };
+
+        if(alias[key]){
+            return alias[key];
+        }
+
+        return key;
+    }
+
+    function getDesa(item){
+        return item.desa
+            || item.DESA
+            || item.kelurahan
+            || item.KELURAHAN
+            || item.wilayah
+            || item.WILAYAH
+            || item.nama_desa
+            || item.NAMA_DESA
+            || item.nama_kelurahan
+            || item.NAMA_KELURAHAN
+            || item.nama_wilayah
+            || item.NAMA_WILAYAH
+            || item.NAMOBJ
+            || item.namobj
+            || item.WADMKD
+            || item.wadmkd
+            || "";
+    }
+
+    function getKasus(item){
+        var nilai = item.kasus
+            || item.KASUS
+            || item.jumlah_kasus
+            || item.JUMLAH_KASUS
+            || item.total_kasus
+            || item.TOTAL_KASUS
+            || item.total
+            || item.TOTAL
+            || item.jumlah
+            || item.JUMLAH
+            || item.nilai
+            || item.NILAI
+            || 0;
+
+        nilai = nilai.toString().replace(/[^0-9]/g, "");
+
+        return parseInt(nilai || 0);
+    }
+
+    function getTahun(item){
+        var tahun = item.tahun
+            || item.TAHUN
+            || item.periode
+            || item.PERIODE
+            || item.year
+            || item.YEAR
+            || "";
+
+        if(!tahun){
+            var tanggal = item.tanggal
+                || item.TANGGAL
+                || item.tgl
+                || item.TGL
+                || item.created_at
+                || item.date
+                || "";
+
+            if(tanggal){
+                tahun = tanggal.toString().substring(0, 4);
+            }
+        }
+
+        return tahun;
+    }
+
+    function getBulan(item){
+        var bulan = item.bulan
+            || item.BULAN
+            || item.month
+            || item.MONTH
+            || "";
+
+        if(!bulan){
+            var tanggal = item.tanggal
+                || item.TANGGAL
+                || item.tgl
+                || item.TGL
+                || item.created_at
+                || item.date
+                || "";
+
+            if(tanggal){
+                bulan = parseInt(tanggal.toString().substring(5, 7));
+            }
+        }
+
+        return bulan;
+    }
+
+    function getJk(item){
+        return item.jenis_kelamin
+            || item.JENIS_KELAMIN
+            || item.jk
+            || item.JK
+            || item.gender
+            || item.GENDER
+            || item.kelamin
+            || item.KELAMIN
+            || "";
+    }
+
+    function namaBulan(angka){
+        var bulan = {
+            "1":"Januari",
+            "2":"Februari",
+            "3":"Maret",
+            "4":"April",
+            "5":"Mei",
+            "6":"Juni",
+            "7":"Juli",
+            "8":"Agustus",
+            "9":"September",
+            "10":"Oktober",
+            "11":"November",
+            "12":"Desember"
+        };
+
+        return bulan[angka] || "Juni";
+    }
+
+    function kategoriKasus(total){
+        if(total >= 45){
+            return "tinggi";
+        }else if(total >= 25){
+            return "sedang";
+        }else{
+            return "rendah";
+        }
+    }
+
+    function warnaKategori(kategori){
+        if(kategori === "tinggi"){
+            return "#ff3131";
+        }
+
+        if(kategori === "sedang"){
+            return "#ffff00";
+        }
+
+        return "#42a447";
+    }
+
+    function textKategori(kategori){
+        if(kategori === "tinggi"){
+            return "Tinggi";
+        }
+
+        if(kategori === "sedang"){
+            return "Sedang";
+        }
+
+        return "Rendah";
+    }
+
+    function buildDataFinal(){
+        var bulan = document.getElementById("filterBulan").value;
+        var tahun = document.getElementById("filterTahun").value;
+        var jk = document.getElementById("filterJk").value;
+
+        var hasil = {};
+
+        dataPneu.forEach(function(item){
+
+            var itemTahun = getTahun(item).toString();
+            var itemBulan = getBulan(item).toString();
+            var itemJk = getJk(item).toString().toLowerCase().trim();
+            var filterJk = jk.toString().toLowerCase().trim();
+
+            if(tahun && itemTahun && itemTahun !== tahun){
+                return;
+            }
+
+            if(bulan && itemBulan && itemBulan !== bulan){
+                return;
+            }
+
+            if(jk && itemJk && itemJk !== filterJk){
+                return;
+            }
+
+            var desaAsli = getDesa(item);
+            var desaKey = fixKey(desaAsli);
+
+            if(!desaKey){
+                return;
+            }
+
+            if(!hasil[desaKey]){
+                hasil[desaKey] = {
+                    nama: desaAsli,
+                    total: 0,
+                    kasusBaru: 0,
+                    kategori: "rendah"
+                };
+            }
+
+            var jumlahKasus = getKasus(item);
+
+            hasil[desaKey].total += jumlahKasus;
+            hasil[desaKey].kasusBaru += jumlahKasus;
+
+        });
+
+        for(var key in hasil){
+            hasil[key].kategori = kategoriKasus(hasil[key].total);
+        }
+
+        currentDataFinal = hasil;
+
+        return hasil;
+    }
+
+    function getNamaGeo(feature){
+        return feature.properties.NAMOBJ
+            || feature.properties.namobj
+            || feature.properties.nama
+            || feature.properties.name
+            || feature.properties.DESA
+            || feature.properties.desa
+            || feature.properties.WADMKD
+            || feature.properties.wadmkd
+            || feature.properties.KELURAHAN
+            || feature.properties.kelurahan
+            || "Wilayah";
+    }
+
+    function initMap(){
+        var mapElement = document.getElementById("map");
+
+        if(!mapElement){
+            return;
+        }
+
+        map = L.map("map", {
+            zoomControl: true
+        }).setView([-7.9, 112.6], 10);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "Leaflet"
+        }).addTo(map);
+
+        fetch("<?= base_url('assets/peta/pneumonia.geojson') ?>")
+            .then(function(res){
+                return res.json();
+            })
+            .then(function(data){
+                geoJsonData = data;
+                renderGeoJson();
+            });
+
+        setTimeout(function(){
+            map.invalidateSize();
+        }, 300);
+    }
+
+    function renderGeoJson(){
+        var dataFinal = buildDataFinal();
+
+        if(geoLayer){
+            map.removeLayer(geoLayer);
+        }
+
+        geoLayer = L.geoJSON(geoJsonData, {
+
+            style: function(feature){
+
+                var nama = getNamaGeo(feature);
+                var key = fixKey(nama);
+                var item = dataFinal[key];
+
+                var kategori = item ? item.kategori : "rendah";
+                var warna = item ? warnaKategori(kategori) : "#d9d9d9";
+
+                return {
+                    color: "#23a39a",
+                    weight: 2,
+                    fillColor: warna,
+                    fillOpacity: item ? 0.75 : 0.55
+                };
+            },
+
+            onEachFeature: function(feature, layer){
+
+                var nama = getNamaGeo(feature);
+                var key = fixKey(nama);
+                var item = dataFinal[key];
+
+                var total = item ? item.total : 0;
+                var kategori = item ? item.kategori : "rendah";
+                var statusData = item ? "" : `<br><span class="popup-empty">Data tidak ditemukan</span>`;
+
+                var isiPopup = `
+                    <div class="popup-informasi" onclick="showDetailWilayah('${key}', decodeURIComponent('${encodeURIComponent(nama)}'))">
+                        <b>Informasi :</b><br>
+                        <span>Desa : ${nama}</span><br>
+                        <span>Jumlah Kasus : ${total}</span><br>
+                        <span>
+                            Tingkat Kasus :
+                            <b class="popup-${kategori}">${textKategori(kategori)}</b>
+                        </span>
+                        ${statusData}
+                        <hr>
+                        <small>Klik untuk selengkapnya...</small>
+                    </div>
+                `;
+
+                layer.bindPopup(isiPopup, {
+                    closeButton: true,
+                    className: "popup-info-custom"
+                });
+
+                layer.bindTooltip(nama, {
+                    permanent: true,
+                    direction: "center",
+                    className: "label-desa"
+                });
+
+                layer.on("click", function(){
+                    layer.openPopup();
+                });
+
+                layer.on("mouseover", function(){
+                    layer.setStyle({
+                        weight: 4,
+                        fillOpacity: 0.85
+                    });
+                });
+
+                layer.on("mouseout", function(){
+                    geoLayer.resetStyle(layer);
+                });
+            }
+
+        }).addTo(map);
+
+        map.fitBounds(geoLayer.getBounds());
+    }
+
+    window.showDetailWilayah = function(key, namaWilayah){
+
+        var item = currentDataFinal[key];
+
+        if(!item){
+            item = {
+                nama: namaWilayah,
+                total: 0,
+                kasusBaru: 0,
+                kategori: "rendah"
+            };
+        }
+
+        var tahun = document.getElementById("filterTahun").value || "2025";
+        var bulan = document.getElementById("filterBulan").value || "6";
+
+        selectedDetailYear = parseInt(tahun);
+
+        document.getElementById("mapPage").style.display = "none";
+        document.getElementById("detailPage").style.display = "block";
+
+        document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
+        document.getElementById("detailYear").innerText = selectedDetailYear;
+        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailTotal").innerText = item.total + " kasus";
+        document.getElementById("detailBulanLabel").innerText = "Kasus Baru (" + namaBulan(bulan) + " " + selectedDetailYear + ")";
+        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+
+        var badge = document.getElementById("detailKategori");
+        badge.innerText = textKategori(item.kategori);
+        badge.className = "badge-risk " + item.kategori;
+
+        renderRankingChart();
+    }
+
+    window.backToMap = function(){
+        document.getElementById("detailPage").style.display = "none";
+        document.getElementById("mapPage").style.display = "block";
+
+        setTimeout(function(){
+            map.invalidateSize();
+        }, 300);
+    }
+
+    window.changeDetailYear = function(step){
+        selectedDetailYear += step;
+
+        document.getElementById("detailYear").innerText = selectedDetailYear;
+        document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
+    }
+
+    function renderRankingChart(){
+
+        var chart = document.getElementById("rankingChart");
+
+        var ranking = Object.values(currentDataFinal)
+            .sort(function(a, b){
+                return b.total - a.total;
+            })
+            .slice(0, 10);
+
+        if(ranking.length === 0){
+            chart.innerHTML = `
+                <div class="empty-chart">
+                    Tidak ada data yang sesuai filter
+                </div>
+            `;
+            return;
+        }
+
+        var max = ranking[0].total || 1;
+        var html = "";
+
+        ranking.forEach(function(item){
+
+            var width = (item.total / max) * 100;
+            var kategori = item.kategori;
+
+            html += `
+                <div class="rank-row">
+                    <div class="rank-name">${item.nama.toUpperCase()}</div>
+
+                    <div class="rank-bar-area">
+                        <div class="rank-bar ${kategori}" style="width:${width}%;">
+                            <span>${item.total}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        chart.innerHTML = html;
+    }
+
+    document.getElementById("filterTahun").addEventListener("change", function(){
+        renderGeoJson();
+    });
+
+    document.getElementById("btnFilter").addEventListener("click", function(){
+        renderGeoJson();
+    });
+
+    document.getElementById("btnReset").addEventListener("click", function(){
+        document.getElementById("filterBulan").value = "";
+        document.getElementById("filterTahun").value = "2025";
+        document.getElementById("filterJk").value = "";
+
+        renderGeoJson();
+    });
+
+    initMap();
+
+});
+</script>
+
+
+<style>
+/* =========================
+   CARD UTAMA
+========================= */
+.section-card{
+    background:#eaf9fb;
+    padding:18px;
+    border-radius:16px;
+    width:100%;
+    font-family:'Poppins', Arial, sans-serif;
+}
+
+.section-block{
+    background:#eaf9fb;
+    border-radius:16px;
+}
+
+/* =========================
+   HEADER MAP
+========================= */
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:22px;
+}
+
+.section-header h5{
+    font-size:24px;
+    font-weight:800;
+    color:#0d3440;
+    margin:0 0 8px;
+}
+
+.section-header .sub{
+    font-size:15px;
+    color:#60727d;
+    margin:0;
+}
+
+/* =========================
+   CARD MAP
+========================= */
+.inner-card{
+    background:#ffffff;
+    width:100%;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 2px 9px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   FILTER
+========================= */
+.filter-wrapper{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:12px;
+    padding:16px 20px 12px;
+    background:#ffffff;
+}
+
+.filter-left{
+    display:flex;
+    align-items:flex-end;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.filter-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.filter-group label{
+    font-size:14px;
+    color:#111;
+    margin-bottom:8px;
+}
+
+.filter-group select{
+    width:155px;
+    height:40px;
+    border:1px solid #b8d0df;
+    border-radius:10px;
+    padding:0 12px;
+    font-size:14px;
+    background:#fff;
+    outline:none;
+}
+
+.filter-right{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.btn-filter{
+    border:none;
+    background:#08b7c9;
+    color:#fff;
+    height:42px;
+    padding:0 22px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:800;
+    box-shadow:0 2px 7px rgba(0,0,0,0.22);
+    cursor:pointer;
+}
+
+.btn-reset{
+    border:none;
+    background:#ffffff;
+    color:#000;
+    height:42px;
+    padding:0 22px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:800;
+    box-shadow:0 2px 7px rgba(0,0,0,0.22);
+    cursor:pointer;
+}
+
+/* =========================
+   MAP
+========================= */
+.map-wrapper{
+    position:relative;
+    width:100%;
+    border-radius:0;
+    overflow:hidden;
+}
+
+#map{
+    width:100%;
+    height:510px !important;
+    border-radius:0;
+}
+
+/* =========================
+   LABEL WILAYAH
+========================= */
+.label-desa{
+    background:rgba(65,65,65,0.88);
+    color:white;
+    border:none;
+    padding:5px 9px;
+    font-size:12px;
+    font-weight:700;
+    border-radius:6px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.35);
+}
+
+/* =========================
+   KETERANGAN DI DALAM MAP
+========================= */
+.map-legend-box{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:175px;
+    background:#ffffff;
+    padding:12px 14px 8px;
+    border-radius:0 8px 0 0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);
+    z-index:999;
+}
+
+.map-legend-box h6{
+    font-size:14px;
+    font-weight:800;
+    color:#000;
+    margin:0 0 10px;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:10px;
+    font-size:11px;
+    color:#000;
+}
+
+.legend-color{
+    width:21px;
+    height:21px;
+    display:inline-block;
+}
+
+.legend-tinggi{
+    background:#ff0000;
+}
+
+.legend-sedang{
+    background:#ffff00;
+}
+
+.legend-rendah{
+    background:#00ff00;
+}
+
+/* =========================
+   POPUP
+========================= */
+.popup-informasi{
+    min-width:160px;
+    font-size:12px;
+    line-height:1.5;
+    cursor:pointer;
+}
+
+.popup-informasi b{
+    color:#000;
+}
+
+.popup-informasi hr{
+    margin:8px -8px 4px;
+    border:0;
+    border-top:1px solid #ddd;
+}
+
+.popup-informasi small{
+    display:block;
+    text-align:center;
+    color:#aaa;
+    font-size:10px;
+}
+
+.popup-tinggi{
+    color:red !important;
+}
+
+.popup-sedang{
+    color:#d77b00 !important;
+}
+
+.popup-rendah{
+    color:green !important;
+}
+
+.popup-empty{
+    color:#d62828;
+    font-weight:800;
+}
+
+.leaflet-popup-content-wrapper{
+    border-radius:8px;
+}
+
+.leaflet-popup-content{
+    margin:9px 11px;
+}
+
+/* =====================================================
+   DETAIL PAGE MODERN
+===================================================== */
+.detail-card{
+    background:#ffffff;
+    border:none;
+    border-radius:18px;
+    padding:24px;
+    box-shadow:none;
+    width:100%;
+    margin:0 auto;
+}
+
+.detail-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    padding:0 2px;
+}
+
+.detail-header h5{
+    font-size:20px;
+    font-weight:700;
+    margin:0;
+    color:#111827;
+}
+
+.detail-period{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:17px;
+    color:#111827;
+}
+
+.detail-period span{
+    font-weight:400;
+}
+
+.detail-period b{
+    font-size:18px;
+    font-weight:700;
+}
+
+.period-btn{
+    border:none;
+    background:transparent;
+    color:#0891a5;
+    font-size:24px;
+    line-height:1;
+    font-weight:800;
+    cursor:pointer;
+    padding:0 4px;
+}
+
+.detail-inner{
+    background:#f8fafc;
+    border-radius:18px;
+    padding:34px 42px 42px;
+    box-shadow:none;
+    border:1px solid #eef2f7;
+}
+
+.detail-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:30px;
+    margin-bottom:34px;
+}
+
+.detail-top h3{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 18px;
+    color:#111827;
+}
+
+.detail-label{
+    font-size:17px;
+    font-weight:400;
+    margin:12px 0 4px;
+    color:#374151;
+    line-height:1.3;
+}
+
+.detail-top h4{
+    font-size:18px;
+    font-weight:700;
+    margin:0 0 8px;
+    color:#111827;
+}
+
+.badge-risk{
+    padding:7px 16px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:600;
+    line-height:1;
+    white-space:nowrap;
+}
+
+.badge-risk.tinggi{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.badge-risk.sedang{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.badge-risk.rendah{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.chart-title{
+    margin-top:22px;
+    margin-bottom:22px;
+    font-size:22px;
+    font-weight:700;
+    color:#111827;
+}
+
+/* =========================
+   CHART BATANG DETAIL
+========================= */
+.ranking-chart{
+    width:72%;
+    min-width:560px;
+}
+
+.rank-row{
+    display:flex;
+    align-items:center;
+    margin-bottom:7px;
+}
+
+.rank-name{
+    width:165px;
+    text-align:right;
+    padding-right:18px;
+    letter-spacing:3px;
+    font-size:13px;
+    font-weight:700;
+    color:#6b7280;
+}
+
+.rank-bar-area{
+    flex:1;
+    height:32px;
+    border-top:1px solid #d9dee7;
+    position:relative;
+}
+
+.rank-bar{
+    height:23px;
+    margin-top:4px;
+    color:#ffffff;
+    font-weight:700;
+    text-align:center;
+    line-height:23px;
+    min-width:26px;
+    border-radius:0 3px 3px 0;
+}
+
+.rank-bar.tinggi{
+    background:#8b0000;
+}
+
+.rank-bar.sedang{
+    background:#e76f51;
+}
+
+.rank-bar.rendah{
+    background:#16a34a;
+}
+
+.rank-bar span{
+    font-size:13px;
+}
+
+.empty-chart{
+    padding:18px 30px;
+    font-size:16px;
+    font-weight:600;
+    color:#6b7280;
+}
+
+.detail-footer{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:14px;
+}
+
+.btn-kembali{
+    background:#08b7c9;
+    color:#ffffff;
+    border:none;
+    border-radius:10px;
+    padding:9px 42px;
+    font-size:16px;
+    font-weight:700;
+    box-shadow:none;
+    cursor:pointer;
+}
+
+.btn-kembali:hover{
+    background:#079bad;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:768px){
+
+    .section-card{
+        padding:12px;
+    }
+
+    .section-header{
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .section-header h5{
+        font-size:22px;
+    }
+
+    .section-header .sub{
+        font-size:14px;
+    }
+
+    .filter-wrapper{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .filter-left{
+        width:100%;
+        gap:8px;
+    }
+
+    .filter-group label{
+        font-size:13px;
+        margin-bottom:6px;
+    }
+
+    .filter-group select{
+        width:115px;
+        height:34px;
+        font-size:13px;
+    }
+
+    .filter-right{
+        width:100%;
+        justify-content:flex-end;
+    }
+
+    .btn-filter,
+    .btn-reset{
+        height:36px;
+        font-size:14px;
+        padding:0 16px;
+    }
+
+    #map{
+        height:330px !important;
+    }
+
+    .map-legend-box{
+        width:155px;
+        padding:10px 12px 6px;
+    }
+
+    .map-legend-box h6{
+        font-size:13px;
+    }
+
+    .legend-item{
+        font-size:10px;
+        margin-bottom:8px;
+    }
+
+    .legend-color{
+        width:19px;
+        height:19px;
+    }
+
+    .label-desa{
+        font-size:10px;
+        padding:3px 6px;
+    }
+
+    .popup-informasi{
+        min-width:150px;
+        font-size:12px;
+    }
+
+    .detail-card{
+        padding:14px;
+    }
+
+    .detail-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .detail-header h5{
+        font-size:18px;
+    }
+
+    .detail-period{
+        font-size:15px;
+    }
+
+    .detail-inner{
+        padding:24px 18px 32px;
+    }
+
+    .detail-top{
+        flex-direction:column;
+        gap:16px;
+        margin-bottom:26px;
+    }
+
+    .detail-top h3{
+        font-size:21px;
+    }
+
+    .detail-label{
+        font-size:15px;
+    }
+
+    .detail-top h4{
+        font-size:17px;
+    }
+
+    .badge-risk{
+        font-size:14px;
+        padding:7px 14px;
+    }
+
+    .chart-title{
+        font-size:19px;
+    }
+
+    .ranking-chart{
+        width:100%;
+        min-width:100%;
+    }
+
+    .rank-name{
+        width:115px;
+        font-size:11px;
+        letter-spacing:2px;
+        padding-right:10px;
+    }
+
+    .rank-bar-area{
+        height:30px;
+    }
+
+    .rank-bar{
+        height:22px;
+        line-height:22px;
+    }
+
+    .btn-kembali{
+        width:100%;
+        padding:10px 20px;
+    }
+}
+/* =========================
+   GRAFIK INTERAKTIF DETAIL
+========================= */
+.chart-frame{
+    width:100%;
+    height:1450px;
+    overflow:hidden;
+    border-radius:18px;
+    background:#eaf9fb;
+    padding:0;
+}
+
+.chart-frame iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    border-radius:18px;
+    background:transparent;
+}
+</style>
+
+   <!-- GRAFIK INTERAKTIF -->
+<!-- CHART -->
+<div class="section-block" id="grafik">
 
     <div class="section-header">
         <div>
             <h5>Grafik Interaktif Penyebaran</h5>
             <p class="sub">Visualisasi kepadatan kasus berdasarkan grafik</p>
         </div>
-
-        <div class="filter-group">
-            <select>
-                <option>Semua Wilayah Desa</option>
-            </select>
-
-            <select>
-                <option>Semua Kategori</option>
-            </select>
-
-            <select>
-                <option>7 Hari Terbaru</option>
-            </select>
-        </div>
     </div>
 
-    <div class="inner-card">
-        <div class="chart-box">
-            <canvas id="chartTbc"></canvas>
-        </div>
+    <div class="chart-frame">
+    <iframe 
+    src="<?= base_url('grafik_pneumonia?embed=1') ?>" 
+    frameborder="0">
+    </iframe>
+</div>
     </div>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>

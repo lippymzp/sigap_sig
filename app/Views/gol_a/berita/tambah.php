@@ -1,6 +1,11 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_admin') ?>
 
 <?= $this->section('content') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<?php
+$berita = $berita ?? [];
+$newId = session()->getFlashdata('new_id');
+?>
 
 <style>
 :root {
@@ -14,6 +19,8 @@
     background: var(--soft-bg);
     border-radius: 15px;
     padding: 25px;
+    position: relative;
+    z-index: 1;
 }
 
 /* INPUT */
@@ -115,15 +122,16 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
-
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: 0.25s ease;
 }
 
 .popup-success.show {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .popup-box {
@@ -164,13 +172,13 @@
 }
 
 /* TEXT */
-.popup-title {
+.modal-title {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
-.popup-desc {
+.modal-desc {
     font-size: 13px;
     color: #666;
     margin-bottom: 18px;
@@ -239,6 +247,58 @@
     height: 20px;
     background: #ccc;
 }
+.error-text{
+    color:#e74c3c;
+    font-size:12px;
+    margin-top:5px;
+    display:none;
+}
+.modal-box {
+    width: 360px;
+    background: white;
+    border-radius: 18px;
+    padding: 28px 22px;
+    text-align: center;
+    transform: scale(0.9);
+    transition: 0.3s ease;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.popup-success.show .modal-box {
+    transform: scale(1);
+}
+.modal-btn,
+.modal-link{
+    display:block;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#00BBC2;
+    color:white;
+    text-decoration:none;
+    text-align:center;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.modal-link{
+    background:#eee;
+    color:#333;
+}
+
+.modal-icon{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    margin:0 auto 15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    color:white;
+    background:#00c896;
+}
 </style>
 
 <div class="container py-4" style="max-width: 1100px;">
@@ -266,8 +326,8 @@
         </small>
 
         <form id="formBerita"
-        action="<?= isset($berita) 
-            ? base_url('/berita/update/'.$berita['id_berita']) 
+        action="<?= !empty($berita['id_berita'] ?? null) 
+            ? base_url('/berita/update/'.($berita['id_berita'] ?? '')) 
             : base_url('/berita/simpan') ?>"
             method="post"
             enctype="multipart/form-data">
@@ -286,12 +346,15 @@
                         <input type="text"
                                name="judul_berita"
                                class="form-control"
+                               placeholder="Masukkan judul berita utama..."
                                value="<?= $berita['judul_berita'] ?? '' ?>"
                                required>
-                    </div>
+                        <div class="error-text">
+                            Judul Berita wajib diisi
+                        </div>
+                        </div>
 
                     <!-- EDITOR -->
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
                     <div class="mb-3">
                         <label>Isi Berita</label>
 
@@ -316,6 +379,30 @@
                     <button type="button" onclick="formatText('bold')"><b>B</b></button>
                     <button type="button" onclick="formatText('italic')"><i>I</i></button>
                     <button type="button" onclick="formatText('underline')"><u>U</u></button>
+                    <button type="button"
+                                class="toolbar-btn"
+                                onclick="formatText('justifyLeft', this)">
+                            <i class="fa fa-align-left"></i>
+                        </button>
+
+                            <button type="button"
+                                    class="toolbar-btn"
+                                    onclick="formatText('justifyCenter', this)">
+                                <i class="fa fa-align-center"></i>
+                            </button>
+
+                            <button type="button"
+                                    class="toolbar-btn"
+                                    onclick="formatText('justifyRight', this)">
+                                <i class="fa fa-align-right"></i>
+                            </button>
+
+                            <button type="button"
+                                    class="toolbar-btn"
+                                    onclick="formatText('justifyFull', this)">
+                                <i class="fa fa-align-justify"></i>
+                            </button>
+
 
                     <div class="divider"></div>
 
@@ -326,31 +413,51 @@
                     <button type="button" onclick="formatText('insertUnorderedList')">
                         <i class="fa-solid fa-list-ul"></i>
                     </button>
+
                     <button type="button" onclick="triggerImageUpload()" title="Upload Gambar">
                     <i class="fa-solid fa-image"></i></button>
-                    <input type="file" id="uploadImageEditor" accept="image/*" hidden>
+                    <input type="file" id="uploadImageEditor" accept="image/*" multiple hidden>
 
                     <button type="button" onclick="insertLink()">🔗</button>
-
                     </div>
 
                         <div id="editor" contenteditable="true">
-                        <?= $berita['deskripsi_berita'] ?? '' ?>
+                        <?= $berita['isi_berita'] ?? '' ?>
                         </div>
 
-                        <textarea name="deskripsi_berita"
+                        <textarea name="isi_berita"
+                        placeholder="Masukkan isi berita..."
                         id="hiddenInput"
-                        hidden required><?= $berita['deskripsi_berita'] ?? '' ?></textarea>
+                        hidden required><?= $berita['isi_berita'] ?? '' ?></textarea>
                     </div>
+                    <div class="error-text" id="editorError">
+                            Isi berita wajib diisi
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Ringkasan / Deskripsi Berita</label>
+                        <input type="text"
+                               name="deskripsi_berita"
+                               class="form-control"
+                               placeholder="Masukkan deskripsi berita..."
+                               value="<?= $berita['deskripsi_berita'] ?? '' ?>"
+                               required>
+                        <div class="error-text">
+                            Judul Berita wajib diisi
+                        </div>
+                        </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <label>Penulis</label>
-                            <input type="number"
-                                name="id_petugas"
+                            <input type="text"
+                                name="penulis"
                                 class="form-control"
-                                value="<?= $berita['id_petugas'] ?? '' ?>"
+                                value="<?= $berita['penulis'] ?? '' ?>"
                                 required>
+                        <div class="error-text">
+                                Penulis wajib diisi
+                        </div>
                         </div>
 
                         <div class="col-md-6">
@@ -361,6 +468,9 @@
                                    value="<?= isset($berita['tanggal_berita']) 
                                     ? date('Y-m-d\TH:i', strtotime($berita['tanggal_berita'])) : '' ?>"
                                    required>
+                            <div class="error-text">
+                                Tanggal unggah wajib diisi
+                            </div>
                         </div>
                     </div>
 
@@ -374,13 +484,14 @@
                     <div class="bg-white p-3 rounded-3 mb-3 text-center">
                     <img id="previewImg"
                         src="<?= !empty($berita['gambar_berita']) 
-                            ? '/uploads/'.$berita['gambar_berita'] 
+                            ? '/uploads/berita/'.$berita['gambar_berita'] 
                             : 'https://via.placeholder.com/250x140' ?>"
                              class="img-fluid rounded mb-2"
                              style="max-height:150px; object-fit:cover;">
-
-                        <small class="text-muted">Preview Berita</small>
-                    </div>
+                        <div class="error-text">
+                                Gambar wajib diisi
+                        </div>
+                            </div>
 
                     <input type="file"
                         name="gambar_berita"
@@ -392,348 +503,494 @@
                     <input type="hidden" name="gambar_lama" value="<?= $berita['gambar_berita'] ?? '' ?>">
 
                     <?php if (!empty($berita['gambar_berita'])): ?>
-                        <img src="/uploads/<?= $berita['gambar_berita']; ?>" width="150" style="margin-top:10px;">
+                        <img src="/uploads/berita/<?= $berita['gambar_berita']; ?>" width="150" style="margin-top:10px;">
                     <?php endif; ?>
                     </div>
                 </div>
                 <!-- BUTTON -->
-            <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn-back"
-            onclick="window.location.href='<?= base_url('berita') ?>'">
-                Batal
-            </button>
+<div class="d-flex justify-content-between mt-4">
 
-                <div class="d-flex gap-2">
-                    <button type="button"
-                            name="status_berita"
-                            value="draft"
-                            onclick="submitWithStatus('draft')"
-                            class="btn-draft">
-                        Simpan Draft
-                    </button>
+<button type="button"
+        class="btn-back"
+        onclick="window.location.href='<?= base_url('berita') ?>'">
+    Batal
+</button>
 
-                    <button type="button"
-                            name="status_berita"
-                            value="publish"
-                            onclick="submitWithStatus('publish')"
-                            class="btn-main">
-                        Unggah
-                    </button>
-                </div>
-            </div>
-            </div>
-            </div>
+<div class="d-flex gap-2">
 
-            <!-- ===================== -->
-            <!-- MODE KUTIP BERITA -->
-            <!-- ===================== -->
-            <div id="formKutip" style="display:none;">
-            <div class="row mt-4">
-                <div class="d-flex justify-content-center">
-                    <div style="width: 700px;">
-                    <div class="mb-3">
-                        <label>Judul Berita</label>
-                        <input type="text"
-                               name="judul_berita1"
-                               class="form-control"
-                               value="<?= $berita['judul_berita'] ?? '' ?>"
-                               required>
-                    </div>
+    <button type="button"
+            onclick="submitWithStatus('draft')"
+            class="btn-draft">
+        Simpan Draft
+    </button>
 
-                <div class="mb-3">
-                    <label>Link Berita</label>
-                    <input type="url" name="url_berita" class="form-control" placeholder="https://..." required
-                        value="<?= $berita['url_berita'] ?? '' ?>">
-                </div>
-                </div>
-            </div>
-            </div>
+    <button type="button"
+            onclick="submitWithStatus('publish')"
+            class="btn-main">
+        Unggah
+    </button>
 
-            <!-- BUTTON -->
-            <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn-back"
-            onclick="window.location.href='<?= base_url('berita') ?>'">
-                Batal
-            </button>
-
-                <div class="d-flex gap-2">
-                    <button type="button"
-                            name="status_berita"
-                            value="draft"
-                            onclick="submitWithStatus('draft')"
-                            class="btn-draft">
-                        Simpan Draft
-                    </button>
-
-                    <button type="button"
-                            name="status_berita"
-                            value="publish"
-                            onclick="submitWithStatus('publish')"
-                            class="btn-main">
-                        Unggah
-                    </button>
-                </div>
-            </div>
-            </div>
-
-        </form>
-    </div>
 </div>
 
-<!-- POPUP NOTIFIKASI -->
-<div class="popup-success" id="popupSuccess">
-    <div class="popup-box" onclick="event.stopPropagation()">
+</div>
+</div> <!-- col-md-4 -->
 
-        <div id="popupIcon" class="popup-icon publish">
-            ✓
+</div> <!-- row -->
+</div> <!-- formTulis -->
+
+<!-- ===================== -->
+<!-- MODE KUTIP BERITA -->
+<!-- ===================== -->
+<div id="formKutip" style="display:none;">
+
+<div class="row mt-4">
+
+    <div class="d-flex justify-content-center">
+
+        <div style="width:700px;">
+
+            <div class="mb-3">
+                <label>Judul Berita</label>
+
+                <input type="text"
+                       name="judul_berita1"
+                       class="form-control"
+                       value="<?= $berita['judul_berita'] ?? '' ?>">
+
+                <div class="error-text">
+                    Judul berita wajib diisi
+                </div>
+            </div>
+
+            <div class="mb-3">
+
+                <label>Link Berita</label>
+
+                <input type="url"
+                       name="url_berita"
+                       class="form-control"
+                       placeholder="https://..."
+                       value="<?= $berita['url_berita'] ?? '' ?>">
+
+                <div class="error-text">
+                    Link berita wajib diisi
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="popup-title" id="popupTitle">
-            Berhasil
-        </div>
+    </div>
 
-        <div class="popup-desc" id="popupDesc">
-            Berita berhasil disimpan
-        </div>
+</div>
 
-        <button id="popupBtn" class="popup-btn" onclick="submitForm()">
-            Lanjutkan
+<!-- BUTTON -->
+<div class="d-flex justify-content-between mt-4">
+
+    <button type="button"
+            class="btn-back"
+            onclick="window.location.href='<?= base_url('berita') ?>'">
+        Batal
+    </button>
+
+    <div class="d-flex gap-2">
+
+        <button type="button"
+                onclick="submitWithStatus('draft')"
+                class="btn-draft">
+            Simpan Draft
+        </button>
+
+        <button type="button"
+                onclick="submitWithStatus('publish')"
+                class="btn-main">
+            Unggah
         </button>
 
     </div>
+
+</div>
+
+</div>
+
+        </form>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+
+<?php $isEditUpload = $isEditUpload ?? false; ?>
+<div class="popup-success" id="successModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon success-icon">
+            <i class="fa fa-check"></i>
+        </div>
+
+        <div class="modal-title" id="successTitle">
+            <?= $isEditUpload
+                ? 'Update berita Berhasil'
+                : 'Unggah berita Berhasil' ?>
+        </div>
+
+        <div class="modal-desc" id="successDesc">
+            <?= $isEditUpload
+                ? 'berita berhasil diperbarui'
+                : 'berita berhasil diunggah' ?>
+        </div>
+
+<button class="modal-btn lihat-btn"
+        data-id="<?= session()->getFlashdata('new_id') ?>">
+    Lihat Tampilan
+</button>
+
+<a href="#"
+   class="modal-link"
+   id="selesaiBtn">
+    Selesai
+</a>
+
+    </div>
+
+</div>
+
+<!-- DRAFT MODAL -->
+
+<div class="popup-success" id="draftModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon success-icon">
+            <i class="fa fa-check"></i>
+        </div>
+
+        <div class="modal-title">
+            Berhasil
+        </div>
+
+        <div class="modal-desc">
+            Data berhasil disimpan di draft
+        </div>
+
+        <button class="modal-btn"
+                id="draftOkBtn">
+            Oke
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ERROR MODAL -->
+
+<div class="popup-success" id="errorModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon error-icon">
+            <i class="fa fa-times"></i>
+        </div>
+
+        <div class="modal-title">
+            Data Belum Lengkap
+        </div>
+
+        <div class="modal-desc">
+            berita gagal diunggah, mohon lengkapi semua kolom
+        </div>
+
+        <button class="modal-btn"
+                id="closeErrorModal">
+            Lengkapi Data
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL SIMPAN PERUBAHAN -->
+
+<div class="popup-success" id="editConfirmModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon success-icon">
+            <i class="fa fa-pen"></i>
+        </div>
+
+        <div class="modal-title">
+            Edit berita
+        </div>
+
+        <div class="modal-desc">
+            Apakah Anda ingin mengubah berita ini?
+        </div>
+
+        <button type="button"
+                class="modal-btn"
+                id="confirmSubmitBtn">
+            Ya
+        </button>
+
+        <button type="button"
+                class="modal-link"
+                id="closeSubmitModal">
+            Tidak
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL BATAL -->
+<div class="popup-success" id="cancelConfirmModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon error-icon">
+            <i class="fa fa-exclamation"></i>
+        </div>
+
+        <div class="modal-title">
+            Konfirmasi
+        </div>
+
+        <div class="modal-desc">
+            Apakah Anda yakin ingin mengurungkan perubahan ini?
+        </div>
+
+        <button type="button"
+                class="modal-btn"
+                id="confirmCancelBtn">
+            Ya
+        </button>
+
+        <button type="button"
+                class="modal-link"
+                id="closeCancelModal">
+            Tidak
+        </button>
+
+    </div>
+
 </div>
 
 <script>
-    let savedRange = null;
+// Ambil Flashdata dari Session CodeIgniter
+// Ini adalah kunci agar popup muncul setelah halaman reload
+const showSuccess = <?= json_encode(session()->getFlashdata('success')) ?>;
+const showDraft = <?= json_encode(session()->getFlashdata('draft')) ?>;
+const newId = <?= json_encode(session()->getFlashdata('new_id')) ?>;
 
-function saveSelection() {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        savedRange = selection.getRangeAt(0);
+let savedRange = null;
+let pendingStatus = "";
+
+// =======================
+// DOM READY (Logika Utama)
+// =======================
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // 1. Cek apakah ada flashdata untuk menampilkan popup
+    if (showSuccess) {
+        showPopup("successModal");
+    } else if (showDraft) {
+        showPopup("draftModal");
     }
+
+    // 2. Event Listener untuk tombol "Lihat Tampilan"
+    document.querySelectorAll(".lihat-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            // Gunakan ID dari flashdata jika atribut data-id kosong
+            const id = this.getAttribute("data-id") || newId;
+
+            if (!id) {
+                alert("ID berita tidak tersedia");
+                return;
+            }
+            window.location.href = "<?= base_url('berita/view_berita/') ?>" + id;
+        });
+    });
+
+    // 3. Event Listener tombol tutup/selesai
+    document.getElementById("closeErrorModal")?.addEventListener("click", () => closePopup("errorModal"));
+    
+    document.getElementById("selesaiBtn")?.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "<?= base_url('berita') ?>";
+    });
+
+    document.getElementById("draftOkBtn")?.addEventListener("click", function () {
+        // Karena data sudah tersimpan (refresh), arahkan saja ke list
+        window.location.href = "<?= base_url('berita') ?>";
+    });
+
+    // 4. Inisialisasi Mode Tab (Kutip atau Tulis)
+    <?php if (!empty($berita['url_berita'])): ?>
+        switchTab("kutip");
+    <?php else: ?>
+        switchTab("tulis");
+    <?php endif; ?>
+});
+
+// =======================
+// FUNGSI POPUP
+// =======================
+function showPopup(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add("show");
 }
+
+function closePopup(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove("show");
+}
+
+// =======================
+// EDITOR LOGIC
+// =======================
 const editor = document.getElementById("editor");
 
-editor.addEventListener("mouseup", saveSelection);
-editor.addEventListener("keyup", saveSelection);
-editor.addEventListener("mouseout", saveSelection);
-// BIU
+if (editor) {
+    editor.addEventListener("mouseup", saveSelection);
+    editor.addEventListener("keyup", saveSelection);
+}
+
+function saveSelection() {
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+        savedRange = sel.getRangeAt(0);
+    }
+}
+
 function formatText(cmd, value = null) {
-    let editor = document.getElementById("editor");
+    if (!editor) return;
     editor.focus();
     document.execCommand(cmd, false, value);
 }
 
-// preview gambar
-document.getElementById("inputGambar").addEventListener("change", function(e) {
-    const file = e.target.files[0];
+function changeFont(font) { formatText("fontName", font); }
+function changeFontSize(size) { formatText("fontSize", size); }
 
-    if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function(ev) {
-            document.getElementById("previewImg").src = ev.target.result;
-        }
-
-        reader.readAsDataURL(file);
-    }
-});
-
-function switchTab(mode) {
-
-let tulis = document.getElementById("formTulis");
-let kutip = document.getElementById("formKutip");
-
-let inputTulis = document.querySelector("#formTulis input[name='judul_berita']");
-let inputKutip = document.querySelector("#formKutip input[name='judul_berita1']");
-
-if (mode === "tulis") {
-    tulis.style.display = "block";
-    kutip.style.display = "none";
-
-    if (inputTulis) inputTulis.disabled = false;
-    if (inputKutip) inputKutip.disabled = true;
-
-    document.getElementById("tabTulis").classList.add("active");
-    document.getElementById("tabKutip").classList.remove("active");
-
-} else {
-    tulis.style.display = "none";
-    kutip.style.display = "block";
-
-    if (inputTulis) inputTulis.disabled = true;
-    if (inputKutip) inputKutip.disabled = false;
-
-    document.getElementById("tabTulis").classList.remove("active");
-    document.getElementById("tabKutip").classList.add("active");
-}
-// disable semua input di mode tidak aktif
-document.querySelectorAll("#formTulis input, #formTulis textarea").forEach(el => el.disabled = mode !== "tulis");
-document.querySelectorAll("#formKutip input").forEach(el => el.disabled = mode !== "kutip");
-}
-
-// SUBMIT STATUS + SHOW POPUP
-document.getElementById("popupSuccess").addEventListener("click", function () {
-    this.classList.remove("show");
-});
-
-function submitWithStatus(status) {
-
-let form = document.getElementById("formBerita");
-
-// ambil isi editor
-let isi = document.getElementById("editor").innerHTML.trim();
-document.getElementById("hiddenInput").value = isi;
-
-// =========================
-// DETEKSI MODE (FIXED)
-// =========================
-let isTulis = document.getElementById("formTulis").offsetParent !== null;
-let isKutip = document.getElementById("formKutip").offsetParent !== null;
-
-// =========================
-// VALIDASI TULIS
-// =========================
-if (isTulis) {
-
-    let judul = form.querySelector("input[name='judul_berita']").value.trim();
-    let penulis = form.querySelector("input[name='id_petugas']").value.trim();
-    let tanggal = form.querySelector("input[name='tanggal_berita']").value.trim();
-    let gambar = document.getElementById("inputGambar").files.length;
-
-    let isEdit = <?= isset($berita) ? 'true' : 'false' ?>;
-
-    if (!judul || !isi || !penulis || !tanggal || (!isEdit && gambar === 0)) {
-        showError("Semua field wajib diisi!");
-        return;
-    }
-}
-
-// =========================
-// VALIDASI KUTIP
-// =========================
-if (isKutip) {
-
-    let judul = form.querySelector("#formKutip input[name='judul_berita1']").value.trim();
-    let url = form.querySelector("#formKutip input[name='url_berita']").value.trim();
-
-    if (!judul || !url) {
-        showError("Judul dan link wajib diisi!");
-        return;
-    }
-}
-
-// =========================
-// SET STATUS
-// =========================
-let old = document.querySelector("input[name='status_berita']");
-if (old) old.remove();
-
-let input = document.createElement("input");
-input.type = "hidden";
-input.name = "status_berita";
-input.value = status;
-form.appendChild(input);
-
-// =========================
-// POPUP
-// =========================
-let icon = document.getElementById("popupIcon");
-let title = document.getElementById("popupTitle");
-let desc = document.getElementById("popupDesc");
-let btn = document.getElementById("popupBtn");
-
-btn.onclick = function () {
-    form.submit();
-};
-
-if (status === "publish") {
-    icon.innerHTML = "🚀";
-    icon.className = "popup-icon publish";
-    title.innerText = "Berhasil Dipublish";
-    desc.innerText = "Berita berhasil ditayangkan";
-} else {
-    icon.innerHTML = "💾";
-    icon.className = "popup-icon draft";
-    title.innerText = "Draft Tersimpan";
-    desc.innerText = "Berita disimpan sebagai draft";
-}
-
-document.getElementById("popupSuccess").classList.add("show");
-}
-
-function changeFont(font) {
-    let editor = document.getElementById("editor");
-    editor.focus();
-    document.execCommand("fontName", false, font);
-}
-
-function changeFontSize(size) {
-    let editor = document.getElementById("editor");
-    editor.focus();
-    document.execCommand("fontSize", false, size);
-}
-function addQuote() {
-    let editor = document.getElementById("editor");
-    editor.focus();
-    document.execCommand("formatBlock", false, "blockquote");
-}
 function insertLink() {
-    let url = prompt("Masukkan URL:");
+    let url = prompt("Masukkan URL");
     if (url) formatText("createLink", url);
 }
-// klik button → buka file
-function triggerImageUpload() {
-    document.getElementById("uploadImageEditor").click();
+
+// =======================
+// SUBMIT LOGIC
+// =======================
+function submitWithStatus(status) {
+    const form = document.getElementById("formBerita");
+    const hidden = document.getElementById("hiddenInput");
+
+    if (!form) return;
+
+    // Sync isi editor ke hidden textarea
+    if (hidden && editor) {
+        hidden.value = editor.innerHTML;
+    }
+
+    // Validasi sederhana sebelum kirim
+    const isTulis = document.getElementById("formTulis")?.style.display !== "none";
+    if (isTulis) {
+        const judul = document.querySelector("input[name='judul_berita']")?.value.trim();
+        if (!judul || editor.innerHTML.trim() === "") {
+            showPopup("errorModal");
+            return;
+        }
+    }
+
+    // Tambah/Update input status_berita
+    let statusInput = form.querySelector("input[name='status_berita']");
+    if (!statusInput) {
+        statusInput = document.createElement("input");
+        statusInput.type = "hidden";
+        statusInput.name = "status_berita";
+        form.appendChild(statusInput);
+    }
+    statusInput.value = status;
+
+    // Kirim data (Halaman akan reload/refresh)
+    form.submit();
 }
 
-// ketika file dipilih
-// trigger klik file
-function triggerImageUpload() {
-    document.getElementById("uploadImageEditor").click();
+// =======================
+// TAB & IMAGE PREVIEW
+// =======================
+function switchTab(mode) {
+    const formTulis = document.getElementById("formTulis");
+    const formKutip = document.getElementById("formKutip");
+    const tabTulis = document.getElementById("tabTulis");
+    const tabKutip = document.getElementById("tabKutip");
+
+    if (mode === "tulis") {
+        formTulis.style.display = "block";
+        formKutip.style.display = "none";
+        tabTulis?.classList.add("active");
+        tabKutip?.classList.remove("active");
+    } else {
+        formTulis.style.display = "none";
+        formKutip.style.display = "block";
+        tabTulis?.classList.remove("active");
+        tabKutip?.classList.add("active");
+    }
 }
 
-// jalan saat file dipilih
-document.getElementById("uploadImageEditor").addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
+// Thumbnail Preview
+const inputGambar = document.getElementById("inputGambar");
+if (inputGambar) {
+    inputGambar.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => document.getElementById("previewImg").src = ev.target.result;
+            reader.readAsDataURL(file);
+        }
+    });
+}
 
-    const reader = new FileReader();
+// Upload Gambar Editor
+function triggerImageUpload() { document.getElementById("uploadImageEditor").click(); }
+const uploadInput = document.getElementById("uploadImageEditor");
+if (uploadInput) {
+    uploadInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
 
-    reader.onload = function (e) {
-        insertImageToEditor(e.target.result);
-    };
+        const formData = new FormData();
+        formData.append("image", file);
 
-    reader.readAsDataURL(file);
+        fetch("<?= base_url('berita/upload-editor-image') ?>", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.status === "success") {
+                insertImageToEditor(result.url);
+            } else {
+                alert(result.message || "Upload gagal");
+            }
+        })
+        .catch(() => alert("Upload error"));
+        this.value = "";
+    });
+}
 
-    // reset input biar bisa upload file yang sama lagi
-    this.value = "";
-});
-
-// masukin ke editor
 function insertImageToEditor(src) {
-    const editor = document.getElementById("editor");
+    if (!editor) return;
     editor.focus();
-
     const img = document.createElement("img");
     img.src = src;
-    img.style.maxWidth = "100%";
+    img.style.width = "50%";
     img.style.display = "block";
-    img.style.margin = "10px 0";
+    img.style.margin = "10px auto";
 
-    const selection = window.getSelection();
-
+    const sel = window.getSelection();
     if (savedRange) {
-        selection.removeAllRanges();
-        selection.addRange(savedRange);
-
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
         savedRange.insertNode(img);
-
-        // pindahin cursor
-        savedRange.setStartAfter(img);
-        savedRange.setEndAfter(img);
-        selection.removeAllRanges();
-        selection.addRange(savedRange);
     } else {
         editor.appendChild(img);
     }

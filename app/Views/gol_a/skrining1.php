@@ -5,6 +5,8 @@
 <title>Informasi Umum</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <style>
 body {
     background: #ffffff;
@@ -92,27 +94,6 @@ body {
     background: #00BBC2;
 }
 
-/* FOOTER */
-.footer {
-    background: #00BBC2;
-    color: white;
-    padding: 40px 0;
-    margin-top: 120px;
-}
-.footer a {
-    color: white;
-    text-decoration: none;
-}
-.logo-footer {
-    width: 60px;
-    height: 60px;
-    background: red;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
 .row {
     row-gap: 20px; /* jarak atas bawah */
     column-gap: 0px; /* jarak kiri kanan */
@@ -121,9 +102,82 @@ body {
 body {
     font-family: 'Poppins', sans-serif;
 }
+.footer{
+    background:#22c1c9;
+    color:#fff;
+    padding:55px 0 20px;
+    font-family:'Poppins', sans-serif;
+}
+
+.footer-container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.footer-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.footer-box{
+    flex:1;
+    min-width:250px;
+}
+
+/* logo */
+.footer-brand{
+    text-align:center;
+}
+
+.footer-logo{
+    width:90px;
+    margin-bottom:10px;
+}
+
+.footer-brand p{
+    font-size:14px;
+    line-height:1.7;
+    margin:0;
+}
+
+/* judul */
+.footer-title{
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+/* teks kecil */
+.footer-box p{
+    font-size:14px;
+}
+
+/* icon jarak */
+.footer-box i{
+    margin-right:8px;
+}
+
+/* copyright */
+.footer-bottom{
+    text-align:center;
+    margin-top:40px;
+    font-size:14px;
+    opacity:.9;
+}
+
+/* responsive */
+@media(max-width:768px){
+    .footer-content{
+        flex-direction:column;
+        text-align:center;
+    }
+}
 </style>
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <div class="container mt-5">
@@ -184,7 +238,10 @@ body {
 
 <div class="mb-3">
 <label>Kategori Usia</label>
-<input type="text" id="kategori_usia" name="kategori_usia" class="form-control" readonly>
+
+<input type="text" id="kategori_usia" class="form-control" readonly>
+
+<input type="hidden" id="usia" name="kategori_usia">
 </div>
 
 <div class="mb-3">
@@ -197,24 +254,27 @@ body {
 <!-- KANAN -->
 <div class="col-md-6">
 
-<label>Provinsi</label>
-<select name="provinsi" id="provinsi" class="form-select"></select>
-<div class="mb-3">
+    <label>Provinsi</label>
+    <select name="provinsi" id="provinsi" class="form-select" required></select>
 
-<label>Kabupaten</label>
-<select name="kabupaten" id="kabupaten" class="form-select"></select>
-</div>
+    <div class="mb-3">
+        <label>Kabupaten</label>
+        <select name="kabupaten" id="kabupaten" class="form-select" required></select>
+    </div>
 
-<div class="mb-3">
-<label>Kecamatan</label>
-<select name="kecamatan" id="kecamatan" class="form-select"></select>
-</div>
+    <div class="mb-3">
+        <label>Kecamatan</label>
+        <select name="kecamatan" id="kecamatan" class="form-select" required></select>
+    </div>
 
-<div class="mb-3">
-<label>Kelurahan</label>
-<select name="kelurahan" id="kelurahan" class="form-select"></select>
-</div>
+    <div class="mb-3">
+        <label>Kelurahan</label>
+        <select name="kelurahan" id="kelurahan" class="form-select" required></select>
+    </div>
 
+<input type="hidden" name="provinsi_nama" id="provinsi_nama">
+<input type="hidden" name="kabupaten_nama" id="kabupaten_nama">
+<input type="hidden" name="kecamatan_nama" id="kecamatan_nama">
 <div class="mb-3">
 <label>RT/RW</label>
 <input type="text" name="rt_rw" id="rt_rw" class="form-control">
@@ -236,32 +296,48 @@ body {
 </div>
 
 <!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
+<footer class="footer">
 
-<div class="col-md-4">
-<div class="logo-footer">LOGO</div>
-<p class="mt-3"><b>SIGAP</b><br>
-Sistem Informasi, Geografis Analisis & Pemantauan</p>
-<a href="#">Tentang Kami</a>
+<div class="footer-container">
+
+<div class="footer-content">
+
+    <!-- BRAND -->
+    <div class="footer-box footer-brand">
+        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
+        <p>
+            Dengue Geographic <br> Information System
+        </p>
+    </div>
+
+    <!-- SOSIAL -->
+    <div class="footer-box">
+        <h6 class="footer-title">Media Sosial</h6>
+
+        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
+        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
+        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
+    </div>
+
+    <!-- KONTAK -->
+    <div class="footer-box">
+        <h6 class="footer-title">Informasi Kontak</h6>
+
+        <p class="mb-0 small">📧 email@kampus.ac.id</p>
+        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
+        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
+        <p class="mb-0 small">📞 087851132933</p>
+    </div>
+
 </div>
 
-<div class="col-md-4">
-<h6>Media Sosial</h6>
-<p>@username</p>
-</div>
-
-<div class="col-md-4">
-<h6>Informasi Kontak</h6>
-<p>Email: email@company.com</p>
-<p>Lokasi: Jember, Jawa Timur</p>
+<div class="footer-bottom">
+    © 2026 SIGAP
 </div>
 
 </div>
-<hr>
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-</div>
+
+</footer>
 </div>
 
 <!-- SCRIPT -->
@@ -271,51 +347,83 @@ Sistem Informasi, Geografis Analisis & Pemantauan</p>
 const API = "https://www.emsifa.com/api-wilayah-indonesia/api";
 
 // LOAD PROVINSI
+// LOAD PROVINSI
 fetch(`${API}/provinces.json`)
 .then(res => res.json())
 .then(data => {
     let prov = document.getElementById('provinsi');
-    prov.innerHTML = `<option>Pilih Provinsi</option>`;
+
+    prov.innerHTML = `<option value="">Pilih Provinsi</option>`;
+
     data.forEach(d => {
-        prov.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+        prov.innerHTML += `
+            <option value="${d.id}" data-name="${d.name}">
+                ${d.name}
+            </option>
+        `;
     });
 });
 
 // LOAD KABUPATEN
 document.getElementById('provinsi').addEventListener('change', function(){
+
     fetch(`${API}/regencies/${this.value}.json`)
     .then(res => res.json())
     .then(data => {
+
         let kab = document.getElementById('kabupaten');
-        kab.innerHTML = `<option>Pilih Kabupaten</option>`;
+
+        kab.innerHTML = `<option value="">Pilih Kabupaten</option>`;
+
         data.forEach(d => {
-            kab.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            kab.innerHTML += `
+                <option value="${d.id}" data-name="${d.name}">
+                    ${d.name}
+                </option>
+            `;
         });
     });
 });
 
 // LOAD KECAMATAN
 document.getElementById('kabupaten').addEventListener('change', function(){
+
     fetch(`${API}/districts/${this.value}.json`)
     .then(res => res.json())
     .then(data => {
+
         let kec = document.getElementById('kecamatan');
-        kec.innerHTML = `<option>Pilih Kecamatan</option>`;
+
+        kec.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+
         data.forEach(d => {
-            kec.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            kec.innerHTML += `
+                <option value="${d.id}" data-name="${d.name}">
+                    ${d.name}
+                </option>
+            `;
         });
     });
 });
 
 // LOAD KELURAHAN
+// LOAD KELURAHAN
 document.getElementById('kecamatan').addEventListener('change', function(){
+
     fetch(`${API}/villages/${this.value}.json`)
     .then(res => res.json())
     .then(data => {
+
         let kel = document.getElementById('kelurahan');
-        kel.innerHTML = `<option>Pilih Kelurahan</option>`;
+
+        kel.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+
         data.forEach(d => {
-            kel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+            kel.innerHTML += `
+                <option value="${d.name}">
+                    ${d.name}
+                </option>
+            `;
         });
     });
 });
@@ -326,12 +434,30 @@ document.getElementById('kelurahan').addEventListener('change', function(){
 });
 
 // KATEGORI USIA
-document.getElementById('tgl_lahir').addEventListener('change', function(){
-    let umur = new Date().getFullYear() - new Date(this.value).getFullYear();
-    let kategori = umur <= 12 ? "Anak" :
-                   umur <= 17 ? "Remaja" :
-                   umur <= 59 ? "Dewasa" : "Lansia";
+document.getElementById('tgl_lahir').addEventListener('change', function () {
+
+    const tglLahir = new Date(this.value);
+    const hariIni = new Date();
+
+    let umur = hariIni.getFullYear() - tglLahir.getFullYear();
+
+    const bulan = hariIni.getMonth() - tglLahir.getMonth();
+
+    if (
+        bulan < 0 ||
+        (bulan === 0 && hariIni.getDate() < tglLahir.getDate())
+    ) {
+        umur--;
+    }
+
+    // kategori tampilan
+    let kategori = (umur <= 19) ? 'Anak-anak' : 'Dewasa';
+
+    // tampil di textbox
     document.getElementById('kategori_usia').value = kategori;
+
+    // simpan angka ke hidden input
+    document.getElementById('usia').value = umur;
 });
 
 // LIMIT NIK 16 DIGIT
@@ -358,15 +484,85 @@ document.getElementById('formSkrining').addEventListener('submit', function(e){
         let field = document.querySelector(`[name="${name}"]`);
 
         if (!field || field.value.trim() === "" || field.value === "-- Pilih --" || field.value.includes("Pilih")) {
-            alert("Semua data wajib diisi sebelum melanjutkan!");
+            document.getElementById('formSkrining').addEventListener('submit', function(e){
+
+    let requiredFields = [
+        'nik',
+        'nama',
+        'jenis_kelamin',
+        'tanggal_lahir',
+        'kategori_usia',
+        'telepon',
+        'provinsi',
+        'kabupaten',
+        'kecamatan',
+        'kelurahan',
+        'rt_rw'
+    ];
+
+    for (let name of requiredFields) {
+        let field = document.querySelector(`[name="${name}"]`);
+
+        if (!field || field.value.trim() === "" || field.value === "-- Pilih --" || field.value.includes("Pilih")) {
+
+            e.preventDefault();
+
+           Swal.fire({
+    icon: 'info',
+    title: 'Hampir selesai! 🌟',
+    text: 'Isi seluruh data dulu ya biar bisa lanjut skrining',
+    confirmButtonText: 'Baik',
+    confirmButtonColor: '#00BBC2',
+    background: '#f9feff',
+    color: '#2c3e50',
+    iconColor: '#00BBC2',
+    backdrop: 'rgba(0,187,194,0.15)',
+    customClass: {
+        popup: 'rounded-4 shadow-lg'
+    },
+    showClass: {
+        popup: 'animate__animated animate__zoomIn'
+    },
+    hideClass: {
+        popup: 'animate__animated animate__zoomOut'
+    }
+});
+
             field.focus();
+            return;
+        }
+    }
+
+});
             e.preventDefault();
             return;
         }
     }
 
 });
+// simpan nama provinsi
+document.getElementById('provinsi').addEventListener('change', function () {
 
+    let nama = this.options[this.selectedIndex].dataset.name;
+
+    document.getElementById('provinsi_nama').value = nama;
+});
+
+// simpan nama kabupaten
+document.getElementById('kabupaten').addEventListener('change', function () {
+
+    let nama = this.options[this.selectedIndex].dataset.name;
+
+    document.getElementById('kabupaten_nama').value = nama;
+});
+
+// simpan nama kecamatan
+document.getElementById('kecamatan').addEventListener('change', function () {
+
+    let nama = this.options[this.selectedIndex].dataset.name;
+
+    document.getElementById('kecamatan_nama').value = nama;
+});
 </script>
 
 </body>

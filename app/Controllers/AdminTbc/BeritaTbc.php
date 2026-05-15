@@ -90,16 +90,40 @@ class BeritaTbc extends BaseController
 
     // 🔥 TAMBAH INI
     $isi = $this->request->getPost('isi') ?? $this->request->getPost('link');
+    $meta = $this->getMetaData($isi);
+
+$judul = $meta['title'] ?? $this->request->getPost('judul');
+
+$deskripsi = $meta['description'] ?? 'Kutip berita luar';
+
+$namaGambar = 'default.jpg';
     $namaGambar = 'default.jpg';
+    if (!empty($meta['image'])) {
+
+    $imageContent = @file_get_contents($meta['image']);
+
+    if ($imageContent) {
+
+        $ext = pathinfo(parse_url($meta['image'], PHP_URL_PATH), PATHINFO_EXTENSION);
+
+        if (empty($ext)) {
+            $ext = 'jpg';
+        }
+
+        $namaGambar = uniqid() . '.' . $ext;
+
+        file_put_contents(
+            FCPATH . 'uploads/berita/' . $namaGambar,
+            $imageContent
+        );
+    }
+}
 
     $id = $model->insert([
         'id_petugas'        => session()->get('id_petugas') ?? 1,
         'id_penyakit'       => 1,
-        'judul_berita'      => $this->request->getPost('judul'),
-
-        'deskripsi_berita'  => filter_var($isi, FILTER_VALIDATE_URL)
-                                ? 'Kutip berita luar'
-                                : $isi,
+        'judul_berita'      => $judul, 
+        'deskripsi_berita'  => $deskripsi,
 
         'url_berita'        => filter_var($isi, FILTER_VALIDATE_URL) ? $isi : null,
         'gambar_berita'     => $namaGambar,
@@ -198,4 +222,67 @@ $data = [
             'berita' => $model->find($id)
         ]);
     }
+    private function getMetaData($url)
+{
+    $html = @file_get_contents($url);
+
+    if (!$html) {
+        return null;
+    }
+
+    libxml_use_internal_errors(true);
+
+    $doc = new \DOMDocument();
+    $doc->loadHTML($html);
+
+    $xpath = new \DOMXPath($doc);
+
+    $title = '';
+    $description = '';
+    $image = '';
+
+    $titleTag = $doc->getElementsByTagName('title');
+
+    if ($titleTag->length > 0) {
+        $title = $titleTag->item(0)->nodeValue;
+    }
+
+    $metaTags = $xpath->query("//meta");
+
+    foreach ($metaTags as $meta) {
+
+        $property = $meta->getAttribute('property');
+        $name = $meta->getAttribute('name');
+        $content = $meta->getAttribute('content');
+
+        if (
+            strtolower($name) == 'description' ||
+            strtolower($property) == 'og:description'
+        ) {
+            $description = $content;
+        }
+
+        if (
+    strtolower($property) == 'og:image' ||
+    strtolower($name) == 'og:image'
+) {
+    $image = $content;
+}
+    }
+
+    if (empty($image)) {
+
+    $images = $doc->getElementsByTagName('img');
+
+    if ($images->length > 0) {
+        $image = $images->item(0)->getAttribute('src');
+    }
+}
+
+    return [
+        'title' => $title,
+        'description' => $description,
+        'image' => $image
+    ];
+}
 }

@@ -175,7 +175,6 @@
 
 </style>
 
-<!-- HEADER -->
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div></div> 
 
@@ -194,7 +193,6 @@
 
 <div class="custom-card">
 
-    <!-- SEARCH + FILTER -->
     <div class="d-flex align-items-center gap-2 mb-3">
         <div class="search-icon">
             <i class="fa fa-search"></i>
@@ -205,20 +203,29 @@
         </button>
     </div>
 
-    <!-- TABLE -->
+    <div class="table-responsive">
     <table class="table text-center align-middle custom-table">
         <thead>
             <tr>
                 <th rowspan="2">No</th>
                 <th rowspan="2">Bulan</th>
                 <th rowspan="2">Kelurahan</th>
-                <th colspan="2">Rentang Usia Tertinggi</th>
-                <th colspan="2">Jenis Kelamin Tertinggi</th>
+
+                <th colspan="5">Rentang Usia</th>
+
+                <th colspan="2">Jenis Kelamin</th>
+
                 <th rowspan="2">Jumlah Kasus</th>
+                <th rowspan="2">Jumlah Kematian</th>
             </tr>
+
             <tr>
+                <th>Bayi & Balita</th>
                 <th>Anak-anak</th>
+                <th>Remaja</th>
                 <th>Dewasa</th>
+                <th>Lansia</th>
+
                 <th>Laki-laki</th>
                 <th>Perempuan</th>
             </tr>
@@ -231,22 +238,29 @@
                 <td><?= $no++ ?></td>
                 <td><?= $d['bulan'] ?></td>
                 <td><?= $d['kelurahan'] ?></td>
+
+                <td><?= $d['bayi'] ?? 0 ?></td>
                 <td><?= $d['anak'] ?? 0 ?></td>
+                <td><?= $d['remaja'] ?? 0 ?></td>
                 <td><?= $d['dewasa'] ?? 0 ?></td>
+                <td><?= $d['lansia'] ?? 0 ?></td>
+
                 <td><?= $d['laki'] ?? 0 ?></td>
                 <td><?= $d['perempuan'] ?? 0 ?></td>
+
                 <td><?= $d['jumlah'] ?></td>
+                <td><?= $d['meninggal'] ?? 0 ?></td>
             </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="8">Belum ada data</td>
+                <td colspan="12">Belum ada data</td>
             </tr>
         <?php endif; ?>
         </tbody>
     </table>
+    </div>
 
-    <!-- EXPORT BUTTON (DALAM CARD KANAN BAWAH) -->
     <div class="d-flex justify-content-end mt-3">
         <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>" class="btn-export">
             <i class="fa fa-download"></i> Export Data
@@ -255,7 +269,6 @@
 
 </div>
 
-<!-- MODAL FILTER -->
 <div id="filterModal" class="modal-filter">
     <div class="modal-content">
 
@@ -307,7 +320,6 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT -->
 <script>
 let currentTahun = <?= $tahun ?>;
 
@@ -387,7 +399,7 @@ function loadData(){
         tbody.innerHTML = "";
 
         if(data.length === 0){
-            tbody.innerHTML = `<tr><td colspan="8">Belum ada data</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="12">Belum ada data</td></tr>`;
             return;
         }
 
@@ -398,11 +410,15 @@ function loadData(){
                     <td>${no++}</td>
                     <td>${d.bulan}</td>
                     <td>${d.kelurahan}</td>
+                    <td>${d.bayi ?? 0}</td>
                     <td>${d.anak ?? 0}</td>
+                    <td>${d.remaja ?? 0}</td>
                     <td>${d.dewasa ?? 0}</td>
+                    <td>${d.lansia ?? 0}</td>
                     <td>${d.laki ?? 0}</td>
                     <td>${d.perempuan ?? 0}</td>
                     <td>${d.jumlah}</td>
+                    <td>${d.jumlah_kematian ?? 0}</td>
                 </tr>
             `;
         });

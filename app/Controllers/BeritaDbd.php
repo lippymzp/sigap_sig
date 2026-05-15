@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\BeritaDbdModel;
+use App\Models\PetugasModel;
 use CodeIgniter\Controller;
 
 class BeritaDbd extends Controller
@@ -12,8 +13,33 @@ class BeritaDbd extends Controller
     public function index()
     {
         $model = new BeritaDbdModel();
+
+    $status = $this->request->getGet('status') ?? '';
+    $keyword = $this->request->getGet('keyword');
+
+    $builder = $model;
         // ambil semua data
     $berita = $model->findAll();
+
+    // FILTER STATUS
+    if ($status == 'publish') {
+        $builder = $builder->where('status_berita', 'publish');
+    }
+
+    if ($status == 'draft') {
+        $builder = $builder->where('status_berita', 'draft');
+    }
+
+    // SEARCH
+    if (!empty($keyword)) {
+
+        $builder = $builder->groupStart()
+            ->like('judul_berita', $keyword)
+            ->orLike('deskripsi_berita', $keyword)
+            ->groupEnd();
+    }
+
+    $berita = $builder->findAll();
 
     // hitung manual (PALING AMAN & TIDAK ERROR CI4)
     $publish = 0;
@@ -29,10 +55,13 @@ class BeritaDbd extends Controller
     }
 
     $data = [
+        'menu' => 'berita',
+        'judul' => 'Kelola Berita', 
         'berita' => $berita,
         'total' => count($berita),
         'publish' => $publish,
-        'draft' => $draft
+        'draft' => $draft,
+        'status' => ''
     ];
 
     return view('gol_a/berita/kelola_berita', $data);
@@ -44,7 +73,14 @@ class BeritaDbd extends Controller
         $model = new BeritaDbdModel();
         $data['berita'] = $model->find($id);
 
-        return view('gol_a/berita/detail', $data);
+        return view('gol_a/berita/view_berita', $data);
+    }
+    public function viewUser(int $id)
+    {
+        $model = new BeritaDbdModel();
+        $data['berita'] = $model->find($id);
+
+        return view('gol_a/berita/view_user', $data);
     }
 
     // EDIT STATUS (PUBLISH / DRAFT)
@@ -75,8 +111,8 @@ class BeritaDbd extends Controller
     }
 
     // 🔥 hapus gambar juga (optional tapi bagus)
-    if (!empty($data['gambar_berita']) && file_exists('uploads/' . $data['gambar_berita'])) {
-        unlink('uploads/' . $data['gambar_berita']);
+    if (!empty($data['gambar_berita']) && file_exists('uploads/berita/' . $data['gambar_berita'])) {
+        unlink('uploads/berita/' . $data['gambar_berita']);
     }
 
     $model->delete($id);
@@ -91,7 +127,7 @@ class BeritaDbd extends Controller
             'title' => 'Tambah Berita'
         ]);
     }
-
+    
     private function cleanHtml(?string $text): ?string
 {
     if (!$text) return $text;
@@ -111,70 +147,70 @@ class BeritaDbd extends Controller
 
     // PROSES SIMPAN DATA
     public function simpan()
-    {
-        $db = \Config\Database::connect();
+{
+    $model = new BeritaDbdModel();
+    $petugasModel = new PetugasModel();
 
-        // 🔥 VALIDASI DULU (WAJIB DI AWAL)
-        $rules = [
-            'judul_berita'    => 'required',
-            'deskripsi_berita'=> 'required',
-            'tanggal_berita'  => 'required',
-        ];
+    // =====================
+    // AMBIL ID PETUGAS DARI SESSION
+    // =====================
+    $id_petugas = session()->get('id_petugas');
+    $petugas = $petugasModel->find($id_petugas);
+    $id_penyakit = $petugas['id_penyakit'] ?? null;
 
-        if (!$this->validate($rules)) {
-            return redirect()->back()
-                ->with('error', 'Semua data wajib diisi!')
-                ->withInput();
+    $file = $this->request->getFile('gambar_berita');
+    $namaFile = null;
+
+    // =====================
+    // UPLOAD GAMBAR
+    // =====================
+    $file = $this->request->getFile('gambar_berita');
+    $namaFile = null;
+
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+
+        $path = FCPATH . 'uploads/berita/';
+
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
         }
 
-        // 🔥 VALIDASI SESSION PETUGAS
-        if (!session()->get('id_petugas')) {
-            return redirect()->back()
-                ->with('error', 'Session petugas tidak ditemukan!')
-                ->withInput();
-        }
+        $namaFile = $file->getRandomName();
+        $file->move($path, $namaFile);
+    }
+    // =====================
+    // AMBIL JUDUL
+    // =====================
+    $judul = $this->request->getPost('judul_berita')
+        ?? $this->request->getPost('judul_berita1');
 
-        // ambil file
-        $file = $this->request->getFile('gambar_berita');
+    // =====================
+    // DATA INSERT
+    // =====================
+    $data = [
+        'id_petugas'       => $id_petugas,
+        'id_penyakit'      => $id_penyakit,
+        'penulis'          => $this->request->getPost('penulis'),
+        'judul_berita'     => $judul,
+        'isi_berita'       => $this->request->getPost('isi_berita'),
+        'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
+        'url_berita'       => $this->request->getPost('url_berita'),
+        'gambar_berita'    => $namaFile,
+        'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
+        'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
+    ];
 
-        $namaFile = null;
+    $model->insert($data);
+        // ambil ID hasil insert
+    $newId = $model->insertID();
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $namaFile = $file->getRandomName();
-            $file->move('uploads/', $namaFile);
-        }
+    // FLASHDATA (untuk popup & redirect)
+    session()->setFlashdata('success', 'Berita berhasil disimpan!');
+    session()->setFlashdata('new_id', $newId);
 
-        // ambil status (draft / publish dari tombol)
-        $status = $this->request->getPost('status_berita');
-
-        // kalau tidak ada (fallback)
-        if (!$status) {
-            $status = 'draft';
-        }
-
-        // ambil judul dulu
-        $judul = $this->request->getPost('judul_berita')
-            ?? $this->request->getPost('judul_berita1');
-        
-        // baru masuk ke array
-        $data = [
-            'id_petugas'        => session()->get('id_petugas'),
-            'judul_berita'      => $judul,
-            'deskripsi_berita'  => $this->cleanHtml($this->request->getPost('deskripsi_berita')),
-            'url_berita'        => $this->request->getPost('url_berita'),
-            'gambar_berita'     => $namaFile,
-            'tanggal_berita'    => $this->request->getPost('tanggal_berita'),
-            'status_berita'     => $status
-        ];
-
-        // insert ke database
-        $model = new BeritaDbdModel();
-        $model->insert($data);
-
-        // redirect balik + pesan
-        return redirect()->to('/berita/tambah')
-                         ->with('success', 'Berita berhasil disimpan!');
+    return redirect()->back();
 }
+
 
     // =========================
     // FILTER PUBLISH
@@ -189,7 +225,8 @@ class BeritaDbd extends Controller
         'berita' => $berita,
         'total' => count($berita),
         'publish' => count($berita),
-        'draft' => 0
+        'draft' => 0,
+        'status' => 'publish'
     ];
 
     return view('gol_a/berita/kelola_berita', $data);
@@ -208,7 +245,8 @@ class BeritaDbd extends Controller
         'berita' => $berita,
         'total' => count($berita),
         'publish' => 0,
-        'draft' => count($berita)
+        'draft' => count($berita),
+        'status' => 'draft'
     ];
 
     return view('gol_a/berita/kelola_berita', $data);
@@ -233,10 +271,11 @@ public function filter(int $type)
         $html .= '
         <div class="card-berita">
             <div class="card-left">
-                <img src="/uploads/'.$b['gambar_berita'].'">
+                <img src="/uploads/berita/'.$b['gambar_berita'].'">
 
                 <div class="card-info">
                     <h4>'.$b['judul_berita'].'</h4>
+                    <p>'.strip_tags($b['isi_berita']).'</p>
                     <p>'.strip_tags($b['deskripsi_berita']).'</p>
                     <small>'.$b['tanggal_berita'].'</small>
                 </div>
@@ -257,6 +296,26 @@ public function edit(int $id)
 public function update(int $id)
 {
     $model = new BeritaDbdModel();
+    $petugasModel = new PetugasModel();
+
+    // =====================
+    // AMBIL ID PETUGAS DARI SESSION
+    // =====================
+    $id_petugas = session()->get('id_petugas');
+
+    // =====================
+    // AMBIL DATA PETUGAS
+    // =====================
+    $petugas = $petugasModel->find($id_petugas);
+
+    // =====================
+    // AMBIL ID PENYAKIT
+    // =====================
+    $id_penyakit = $petugas['id_penyakit'] ?? null;
+
+    // =====================
+    // CEK DATA BERITA LAMA
+    // =====================
     $dataLama = $model->find($id);
 
     if (!$dataLama) {
@@ -265,34 +324,87 @@ public function update(int $id)
     }
 
     // ✔️ FIX JUDUL
-    $judul = $this->request->getPost('judul_berita')
-            ?? $this->request->getPost('judul_berita1');
+    $judul = $this->request->getPost('judul_berita');
+    if (!$judul) {
+        $judul = $this->request->getPost('judul_berita1');
+    }
     
 
     $file = $this->request->getFile('gambar_berita');
+    $namaFile = $dataLama['gambar_berita']; // default tetap gambar lama
+
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
 
-        if (!empty($dataLama['gambar_berita']) && file_exists('uploads/' . $dataLama['gambar_berita'])) {
-            unlink('uploads/' . $dataLama['gambar_berita']);
+        $path = FCPATH . 'uploads/berita/';
+
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        // hapus lama
+        if (!empty($dataLama['gambar_berita'])) {
+            $oldPath = $path . '/' . $dataLama['gambar_berita'];
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
         }
 
         $namaFile = $file->getRandomName();
-        $file->move('uploads/', $namaFile);
-    } else {
-        $namaFile = $dataLama['gambar_berita'];
+        $file->move($path, $namaFile);
     }
 
     $model->update($id, [
+        'id_petugas'       => $id_petugas,
+        'id_penyakit'      => $id_penyakit,
         'judul_berita'     => $judul,
-        'deskripsi_berita' => $this->cleanHtml($this->request->getPost('deskripsi_berita')),
+        'isi_berita'        => $this->request->getPost('isi_berita'),
+        'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
         'url_berita'       => $this->request->getPost('url_berita'),
         'gambar_berita'    => $namaFile,
         'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
         'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
     ]);
 
-    return redirect()->to('/berita')->with('success', 'Berita berhasil diupdate!');
+    return redirect()->to('/berita')
+    ->with('success', 'Berita berhasil diupdate!')
+    ->with('new_id', $id);
+}
+public function list_berita()
+{
+    $model = new BeritaDbdModel();
+
+    $data['berita'] = $model
+        ->where('status_berita', 'publish')
+        ->orderBy('tanggal_berita', 'DESC')
+        ->findAll();
+
+    return view('gol_a/berita/list_berita', $data);
+}
+public function uploadEditorImage()
+{
+    $file = $this->request->getFile('image');
+
+    if (!$file || !$file->isValid()) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Upload gagal'
+        ]);
+    }
+
+    $path = FCPATH . 'uploads/berita/';
+
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+
+    $newName = $file->getRandomName();
+    $file->move($path, $newName);
+
+    return $this->response->setJSON([
+        'status' => 'success',
+        'url' => base_url('uploads/berita/' . $newName)
+    ]);
 }
 }
 

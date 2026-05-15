@@ -10,12 +10,13 @@ class PasienPneumoniaModel extends Model
     protected $primaryKey = 'id_pasien_skrining';
 
     protected $allowedFields = [
-        'nama_pasien_skrining',
-        'jenis_kelamin',
-        'tanggal_lahir',
-        'usia',
-        'alamat',
-        'created_at',
-        'id_wilayah'
-    ];
+    'nik',
+    'nama_pasien_skrining',
+    'jenis_kelamin',
+    'tanggal_lahir',
+    'usia',
+    'no_hp',
+    'created_at',
+    'id_wilayah'
+];
 }

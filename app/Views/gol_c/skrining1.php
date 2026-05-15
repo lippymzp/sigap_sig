@@ -121,6 +121,79 @@ body {
 body {
     font-family: 'Poppins', sans-serif;
 }
+.footer{
+    background:#22c1c9;
+    color:#fff;
+    padding:55px 0 20px;
+    font-family:'Poppins', sans-serif;
+}
+
+.footer-container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.footer-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.footer-box{
+    flex:1;
+    min-width:250px;
+}
+
+/* logo */
+.footer-brand{
+    text-align:center;
+}
+
+.footer-logo{
+    width:90px;
+    margin-bottom:10px;
+}
+
+.footer-brand p{
+    font-size:14px;
+    line-height:1.7;
+    margin:0;
+}
+
+/* judul */
+.footer-title{
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+/* teks kecil */
+.footer-box p{
+    font-size:14px;
+}
+
+/* icon jarak */
+.footer-box i{
+    margin-right:8px;
+}
+
+/* copyright */
+.footer-bottom{
+    text-align:center;
+    margin-top:40px;
+    font-size:14px;
+    opacity:.9;
+}
+
+/* responsive */
+@media(max-width:768px){
+    .footer-content{
+        flex-direction:column;
+        text-align:center;
+    }
+}
 </style>
 </head>
 
@@ -215,6 +288,11 @@ body {
 <select name="kelurahan" id="kelurahan" class="form-select"></select>
 </div>
 
+<input type="hidden" name="provinsi_nama" id="provinsi_nama">
+<input type="hidden" name="kabupaten_nama" id="kabupaten_nama">
+<input type="hidden" name="kecamatan_nama" id="kecamatan_nama">
+<input type="hidden" name="kelurahan_nama" id="kelurahan_nama">
+
 <div class="mb-3">
 <label>RT/RW</label>
 <input type="text" name="rt_rw" id="rt_rw" class="form-control">
@@ -235,34 +313,7 @@ body {
 </div>
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
-
-<div class="col-md-4">
-<div class="logo-footer">LOGO</div>
-<p class="mt-3"><b>SIGAP</b><br>
-Sistem Informasi, Geografis Analisis & Pemantauan</p>
-<a href="#">Tentang Kami</a>
-</div>
-
-<div class="col-md-4">
-<h6>Media Sosial</h6>
-<p>@username</p>
-</div>
-
-<div class="col-md-4">
-<h6>Informasi Kontak</h6>
-<p>Email: email@company.com</p>
-<p>Lokasi: Jember, Jawa Timur</p>
-</div>
-
-</div>
-<hr>
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-</div>
-</div>
+<?= $this->include('layout/footer') ?>
 
 <!-- SCRIPT -->
 <script>
@@ -318,6 +369,42 @@ document.getElementById('kecamatan').addEventListener('change', function(){
             kel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
         });
     });
+});
+
+document.getElementById('provinsi').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('provinsi_nama').value =
+        nama;
+});
+
+document.getElementById('kabupaten').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kabupaten_nama').value =
+        nama;
+});
+
+document.getElementById('kecamatan').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kecamatan_nama').value =
+        nama;
+});
+
+document.getElementById('kelurahan').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kelurahan_nama').value =
+        nama;
 });
 
 // AUTO KODE POS (dummy)
