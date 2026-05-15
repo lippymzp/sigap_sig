@@ -49,6 +49,7 @@ $routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 $routes->get('/profil_kepala', 'Profile::profil_kepala');
 $routes->post('uploadFoto_kepala', 'Profile::uploadFoto');
 $routes->post('updateProfil_kepala', 'Profile::updateProfil');
+$routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto_admin', 'Profile2::uploadFoto');
 $routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
