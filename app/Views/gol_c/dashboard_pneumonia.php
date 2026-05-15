@@ -1877,7 +1877,7 @@ ambilDataAQI();
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
 
-</div>
+
 </div>
 
 <!-- ARTIKEL -->
