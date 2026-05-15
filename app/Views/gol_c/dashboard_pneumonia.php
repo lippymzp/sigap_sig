@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "pancakarya": "pancakarya",
             "sukamakmur": "sukamakmur",
             "wirowongso": "wirowongso",
-            "mangaran": "mangaran",
+            "mangaran": "manggaran",
             "ajung": "ajung"
         };
 
@@ -1357,7 +1357,7 @@ document.addEventListener("DOMContentLoaded", function () {
 ========================= */
 .chart-frame{
     width:100%;
-    height:1450px;
+    height:1000px;
     overflow:hidden;
     border-radius:18px;
     background:#eaf9fb;
@@ -1371,6 +1371,7 @@ document.addEventListener("DOMContentLoaded", function () {
     border-radius:18px;
     background:transparent;
 }
+
 </style>
 
    <!-- GRAFIK INTERAKTIF -->
@@ -1394,7 +1395,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
 
-</div>
 </div>
 
 <!-- ARTIKEL -->
