@@ -22,7 +22,7 @@
             <i class="fa-solid fa-chart-column"></i>
         </div>
         <div class="stat-info">
-            <h3 class="red">20</h3>
+           <h3 class="red"><?= $totalKasus ?></h3>
             <p>Total Kasus Aktif Hari Ini</p>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <i class="fa-solid fa-arrow-down"></i>
         </div>
         <div class="stat-info">
-            <h3 class="green">2</h3>
+            <h3 class="green"><?= $kasusBaru ?></h3>
             <p>Kasus Baru Hari Ini</p>
         </div>
     </div>
@@ -43,7 +43,7 @@
             <i class="fa-solid fa-map"></i>
         </div>
         <div class="stat-info">
-            <h3 class="blue">6</h3>
+            <h3 class="blue"><?= $kelurahanTerdampak ?></h3>
             <p>Kelurahan Terdampak</p>
         </div>
     </div>
