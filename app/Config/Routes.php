@@ -197,4 +197,5 @@ $routes->get('tbc/edit/(:num)', 'AdminTbc\Pasien::edit/$1');
 $routes->post('tbc/update/(:num)', 'AdminTbc\Pasien::update/$1');
 
 $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
-
+$routes->get('tbc/grafik', 'AdminTbc\Pasien::grafik');
+$routes->get('tbc/create', 'AdminTbc\Pasien::create');

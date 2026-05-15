@@ -35,14 +35,14 @@
 
         <div class="menu-label">MENU UTAMA</div>
 
-        <a href="<?= base_url('index.php/' . $penyakit . '/input_data') ?>"
-            class="<?= ($menu == 'inputdata') ? 'active' : '' ?>">
-            <i class="fa-regular fa-clipboard me-2"></i> Input Data Pasien
-        </a>
-
         <a href="<?= base_url('index.php/' . $penyakit . '/hasil') ?>"
             class="<?= ($menu == 'hasil') ? 'active' : '' ?>">
-            <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
+            <i class="fa-regular fa-folder me-2"></i> Data Pasien
+        </a>
+
+        <a href="<?= base_url('index.php/' . $penyakit . '/grafik') ?>"
+            class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
+            <i class="fa-regular fa-clipboard me-2"></i> Grafik
         </a>
 
         <a href="<?= base_url('index.php/' . $penyakit . '/skrining_1') ?>"

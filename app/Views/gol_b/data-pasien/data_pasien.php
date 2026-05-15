@@ -16,7 +16,7 @@
                     <h3 class="fw-bold mb-1"
                         style="color:#1F3A3A;">
 
-                        Hasil Data Pasien
+                        Data Pasien
 
                     </h3>
 
@@ -26,9 +26,9 @@
 
                 </div>
 
-                <a href="<?= base_url('tbc/input_data') ?>"
-                   class="btn text-white rounded-3 px-4"
-                   style="background:#2CCFC0;">
+                <a href="<?= base_url('tbc/create') ?>"
+                    class="btn text-white rounded-3 px-4"
+                    style="background:#2CCFC0;">
 
                     <i class="fa-solid fa-plus me-2"></i>
                     Tambah Pasien
@@ -80,13 +80,31 @@
                             </td>
 
                             <!-- JK -->
-                            <td>
+<td>
 
-                                <?= $p['jenis_kelamin'] == 1 
-                                    ? 'Perempuan' 
-                                    : 'Laki-laki'; ?>
+<?php
 
-                            </td>
+if($p['jenis_kelamin'] == '1'){
+
+    echo 'Perempuan';
+
+}
+
+elseif($p['jenis_kelamin'] == '2'){
+
+    echo 'Laki-laki';
+
+}
+
+else{
+
+    echo $p['jenis_kelamin'];
+
+}
+
+?>
+
+</td>
 
                             <!-- UMUR -->
                             <td>
