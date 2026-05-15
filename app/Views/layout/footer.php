@@ -151,6 +151,7 @@
     box-shadow: none;
     animation: none;
     transform: none;
+     filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
 }
 
 /* TITLE */
