@@ -61,14 +61,27 @@ body{
     border-radius:30px;
 }
 
-/* FITUR */
 .fitur-box{
-    background:var(--card);
-    padding:18px;
-    border-radius:12px;
-    font-weight:600;
-    color:var(--dark);
-    transition:0.3s;
+    background: var(--card);
+    border-radius: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    transition: 0.3s;
+
+    width: 100%;
+    height: 86px;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    padding: 12px 16px;
+    line-height: 1.4;
+
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+
+    text-decoration: none;
 }
 
 .fitur-box:hover{
@@ -594,25 +607,39 @@ body{
 
 <h4 class="text-teal mb-4 fw-bold">Fitur Menarik yang Bisa Dimanfaatkan</h4>
 
-<div class="row g-4">
+<div class="row g-4 justify-content-center">
 
-<div class="col-md-3">
-<div class="fitur-box shadow-sm">📊 Grafik Kesehatan</div>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <div class="fitur-box shadow-sm">
+            📊 Grafik Kesehatan
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="fitur-box shadow-sm">🗺️ Peta Persebaran</div>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <div class="fitur-box shadow-sm">
+            🗺️ Peta Persebaran
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="fitur-box shadow-sm">📄 Artikel Kesehatan</div>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <div class="fitur-box shadow-sm">
+            📄 Artikel Kesehatan
+        </div>
+    </div>
 
-<div class="col-md-3">
-<a href="<?= base_url('skrining-diare') ?>" class="fitur-box text-decoration-none shadow-sm d-block">
-    🩺 Skrining Kesehatan
-</a>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <a href="<?= base_url('skrining-diare') ?>"
+           class="fitur-box text-decoration-none shadow-sm d-block">
+            🩺 Skrining Kesehatan
+        </a>
+    </div>
+
+    <div class="col-lg col-md-4 col-6">
+        <a href="<?= base_url('diare/kalkulator-air') ?>"
+           class="fitur-box text-decoration-none shadow-sm d-block">
+            💧 Kalkulator Air
+        </a>
+    </div>
 
 </div>
 </section>

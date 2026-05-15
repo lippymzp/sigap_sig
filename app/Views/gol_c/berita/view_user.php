@@ -1,322 +1,377 @@
 <?= $this->include('layout/header') ?>
+
 <?php
-$title = 'Berita';
+
+$conn = mysqli_connect("localhost","root","","sigap_db");
+
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR BERITA
+|--------------------------------------------------------------------------
+*/
+
+$querySidebar = mysqli_query($conn, "
+    SELECT 
+        id_berita,
+        judul_berita,
+        tanggal_berita
+    FROM berita
+    WHERE status_berita = 'publish'
+    AND id_penyakit = 3
+    ORDER BY tanggal_berita DESC
+");
+
+$groupBerita = [];
+
+while($row = mysqli_fetch_assoc($querySidebar)){
+
+    $tahun = date('Y', strtotime($row['tanggal_berita']));
+    $bulan = date('F', strtotime($row['tanggal_berita']));
+
+    $groupBerita[$tahun][$bulan][] = $row;
+}
+
+/*
+|--------------------------------------------------------------------------
+| GAMBAR BERITA
+|--------------------------------------------------------------------------
+*/
+
+$gambar = trim((string)($beritapneumonia['gambar_berita'] ?? ''));
+
+$pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
+$gambarFix = base_url('uploads/berita/default.jpeg');
+
+if(
+    $gambar !== '' &&
+    strtolower($gambar) !== 'null' &&
+    file_exists($pathFile)
+){
+    $gambarFix = base_url('uploads/berita/' . $gambar);
+}
+
 ?>
-
-<title><?= $title; ?></title>
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-rel="stylesheet">
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* ========================= WRAPPER ========================= */
+
+.detail-wrapper{
+    max-width: 1300px;
+    margin: 50px auto;
 }
 
-body{
-    background:#f4f7f7;
-    font-family:'Poppins', sans-serif;
+/* ========================= LAYOUT ========================= */
+
+.detail-layout{
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
 }
 
-/* TITLE */
-.page-title{
-    font-size:34px;
-    font-weight:700;
-    margin-bottom:20px;
+.detail-main{
+    flex: 3;
 }
 
-/* CONTAINER */
-.berita-container{
-    background:#bfe3e5;
-    border-radius:28px;
-    padding:40px;
-    position:relative;
-    margin:20px;
+.detail-sidebar{
+    flex: 1;
+    position: sticky;
+    top: 20px;
 }
 
-/* FRAME */
-.berita-frame{
-    border:3px solid #009ea3;
-    border-radius:22px;
-    padding:35px 40px;
-}
+/* ========================= CARD ========================= */
 
-/* HEADER */
-.berita-header-wrapper{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
-    margin-bottom:30px;
-}
+.detail-card{
+    background: #ffffff;
+    border-radius: 24px;
+    overflow: hidden;
 
-/* JUDUL */
-.berita-header{
-    flex:1;
-    text-align:center;
-    font-size:30px;
-    font-weight:800;
-    color:#111;
-}
-
-/* BUTTON BACK */
-.back-btn{
-    width:48px;
-    height:48px;
-    border-radius:12px;
-    background:#009ea3;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-decoration:none;
-    font-size:20px;
-    transition:.2s;
-    flex-shrink:0;
-}
-
-.back-btn:hover{
-    background:#00848a;
-    color:white;
-    transform:scale(1.03);
-}
-
-/* TOP */
-.berita-top{
-    display:flex;
-    gap:40px;
-    align-items:stretch;
-    flex-wrap:wrap;
-}
-
-/* WRAPPER GAMBAR */
-.berita-img-wrapper{
-    width:300px;
-    height:180px;
-    background:#fff;
-    border-radius:14px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-    margin-left:25px;
-    flex-shrink:0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 /* GAMBAR */
-.berita-img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
+.detail-image img{
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
 }
 
-/* RIGHT */
-.berita-right{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    padding-right:20px;
-    min-width:250px;
+/* CONTENT */
+.detail-content{
+    padding: 40px;
 }
 
-/* RINGKASAN */
-.berita-highlight{
-    font-size:15px;
-    color:#333;
-    margin-bottom:15px;
-    line-height:1.8;
+/* BADGE */
+.detail-badge{
+    display: inline-block;
+
+    background: #dff7f8;
+    color: #11aeb7;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    margin-bottom: 18px;
+}
+
+/* JUDUL */
+.detail-title{
+    font-size: 42px;
+    font-weight: 800;
+
+    color: #16384c;
+
+    line-height: 1.3;
+
+    margin-bottom: 18px;
 }
 
 /* META */
-.berita-meta{
-    display:flex;
-    justify-content:space-between;
-    gap:20px;
-    flex-wrap:wrap;
-    font-size:13px;
-    color:#666;
-    padding-bottom:5px;
+.detail-meta{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    margin-bottom: 28px;
+
+    color: #7a7a7a;
+    font-size: 14px;
 }
 
-/* GARIS */
-.berita-divider{
-    height:2px;
-    background:#009ea3;
-    margin:25px 0;
+/* DESKRIPSI */
+.detail-deskripsi{
+    font-size: 18px;
+    line-height: 1.9;
+
+    color: #555;
+
+    margin-bottom: 30px;
 }
 
 /* ISI */
-.berita-content{
-    font-size:18px;
-    line-height:2;
-    text-align:justify;
-    color:#222;
+.detail-isi{
+    font-size: 17px;
+    line-height: 2;
+
+    color: #333;
 }
 
-/* SUMBER */
-.berita-sumber{
-    margin-top:40px;
-    font-size:14px;
-    line-height:1.8;
-    word-break:break-word;
+/* BUTTON */
+.btn-kembali{
+    display: inline-block;
+
+    margin-top: 40px;
+
+    background: linear-gradient(
+        135deg,
+        #14c7cf,
+        #18b7d3
+    );
+
+    color: white;
+    text-decoration: none;
+
+    padding: 14px 28px;
+
+    border-radius: 14px;
+
+    font-weight: 700;
+
+    transition: 0.3s;
 }
 
-.berita-sumber a{
-    color:#007bff;
-    text-decoration:none;
+.btn-kembali:hover{
+    transform: translateY(-2px);
+    color: white;
 }
 
-.berita-sumber a:hover{
-    text-decoration:underline;
+/* ========================= SIDEBAR ========================= */
+
+.sidebar-card{
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 24px;
+
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
-/* ICON */
-.icon-nyamuk{
-    position:absolute;
-    top:5px;
-    right:15px;
-    width:75px;
+.sidebar-title{
+    font-size: 24px;
+    font-weight: 800;
+
+    color: #173b4d;
+
+    margin-bottom: 24px;
 }
 
-.icon-air{
-    position:absolute;
-    bottom:5px;
-    right:15px;
-    width:120px;
+/* TAHUN */
+.sidebar-year{
+    margin-bottom: 24px;
+}
+
+.sidebar-year h5{
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #0ea5b7;
+
+    margin-bottom: 12px;
+}
+
+/* BULAN */
+.sidebar-month{
+    margin-bottom: 18px;
+}
+
+.sidebar-month h6{
+    font-size: 15px;
+    font-weight: 700;
+
+    color: #555;
+
+    margin-bottom: 10px;
+}
+
+/* LIST */
+.berita-list{
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.berita-list li{
+    margin-bottom: 10px;
+}
+
+.berita-list a{
+    text-decoration: none;
+
+    color: #333;
+
+    font-size: 14px;
+    line-height: 1.6;
+
+    transition: 0.3s;
+}
+
+.berita-list a:hover{
+    color: #10b7c5;
+    padding-left: 5px;
 }
 
 /* RESPONSIVE */
+@media(max-width:992px){
+
+    .detail-layout{
+        flex-direction: column;
+    }
+
+    .detail-sidebar{
+        width: 100%;
+        position: static;
+    }
+
+}
+
 @media(max-width:768px){
 
-    .berita-container{
-        padding:20px;
+    .detail-content{
+        padding: 24px;
     }
 
-    .berita-frame{
-        padding:25px 20px;
+    .detail-title{
+        font-size: 28px;
     }
 
-    .berita-header{
-        font-size:22px;
+    .detail-image img{
+        height: 250px;
     }
 
-    .berita-top{
-        flex-direction:column;
+    .detail-deskripsi,
+    .detail-isi{
+        font-size: 15px;
     }
 
-    .berita-img-wrapper{
-        width:100%;
-        height:220px;
-        margin-left:0;
-    }
-
-    .berita-right{
-        padding-right:0;
-    }
-
-    .berita-content{
-        font-size:16px;
-    }
-
-    .berita-meta{
-        flex-direction:column;
-        gap:8px;
-    }
 }
 
 </style>
 
-<div class="berita-container">
+<div class="container detail-wrapper">
 
-    <div class="berita-frame">
+    <div class="detail-layout">
 
-        <!-- HEADER -->
-        <div class="berita-header-wrapper">
+        <!-- MAIN -->
+        <div class="detail-main">
 
-            <!-- JUDUL -->
-            <div class="berita-header">
-                <?= !empty($beritapneumonia['judul_berita']) 
-                    ? esc($beritapneumonia['judul_berita']) 
-                    : '-' ?>
-            </div>
+            <div class="detail-card">
 
+                <!-- GAMBAR -->
+                <div class="detail-image">
 
-        </div>
-
-        <!-- TOP -->
-        <div class="berita-top">
-
-            <!-- GAMBAR -->
-            <?php if(!empty($beritapneumonia['gambar_berita'])): ?>
-
-                <div class="berita-img-wrapper">
-
-                    <img src="<?= base_url('uploads/berita/'.$beritapneumonia['gambar_berita']) ?>"
-                         class="berita-img">
+                    <img 
+                        src="<?= $gambarFix ?>" 
+                        alt="<?= $beritapneumonia['judul_berita'] ?>"
+                    >
 
                 </div>
 
-            <?php endif; ?>
+                <!-- CONTENT -->
+                <div class="detail-content">
 
-            <!-- TEKS -->
-            <div class="berita-right">
-
-                <!-- RINGKASAN -->
-                <div class="berita-highlight">
-
-                    <?= !empty($beritapneumonia['deskripsi_berita']) 
-                        ? esc($beritapneumonia['deskripsi_berita']) 
-                        : '-' ?>
-
-                </div>
-
-                <!-- META -->
-                <div class="berita-meta">
-
-                    <span>
-                        <b>Penulis:</b>
-                        <?= !empty($beritapneumonia['penulis']) 
-                            ? esc($beritapneumonia['penulis']) 
-                            : '-' ?>
+                    <span class="detail-badge">
+                        Pneumonia
                     </span>
 
-                    <span>
+                    <!-- JUDUL -->
+                    <h1 class="detail-title">
+                        <?= $beritapneumonia['judul_berita'] ?>
+                    </h1>
 
-<?php
-$bulan = [
-    1 => 'Januari','Februari','Maret','April','Mei','Juni',
-    'Juli','Agustus','September','Oktober','November','Desember'
-];
-?>
+                    <!-- META -->
+                    <div class="detail-meta">
 
-<b>Tanggal:</b>
+                        <span>
+                            📅 
+                            <?= date('d F Y', strtotime($beritapneumonia['tanggal_berita'])) ?>
+                        </span>
 
-<?php if(!empty($beritapneumonia['tanggal_berita'])) : ?>
+                        <span>
+                            ✍️ 
+                            <?= $beritapneumonia['penulis'] ?? 'Admin' ?>
+                        </span>
 
-    <?php
-        $tanggal = strtotime($beritapneumonia['tanggal_berita']);
+                    </div>
 
-        $hari  = date('d', $tanggal);
-        $bulanIndo = $bulan[(int)date('m', $tanggal)];
-        $tahun = date('Y', $tanggal);
+                    <!-- DESKRIPSI -->
+                    <div class="detail-deskripsi">
 
-        echo $hari . ' ' . $bulanIndo . ' ' . $tahun;
-    ?>
+                        <?= $beritapneumonia['deskripsi_berita'] ?>
 
-<?php else : ?>
+                    </div>
 
-    -
+                    <!-- ISI -->
+                    <div class="detail-isi">
 
-<?php endif; ?>
+                        <?= $beritapneumonia['isi_berita'] ?>
 
-                    </span>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div style="text-align:right;">
+                    <a 
+                        href="<?= base_url('pneumonia') ?>" 
+                        class="btn-kembali"
+                    >
+                        Kembali
+                    </a>
+                    </div>
 
                 </div>
 
@@ -324,42 +379,63 @@ $bulan = [
 
         </div>
 
-        <!-- GARIS -->
-        <div class="berita-divider"></div>
+        <!-- SIDEBAR -->
+        <div class="detail-sidebar">
 
-        <!-- ISI -->
-        <div class="berita-content">
+            <div class="sidebar-card">
 
-            <?= !empty($beritapneumonia['isi_berita']) 
-                ? $beritapneumonia['isi_berita'] 
-                : '-' ?>
+                <h4 class="sidebar-title">
+                    Berita Lainnya
+                </h4>
 
-        </div>
+                <?php foreach($groupBerita as $tahun => $bulanData): ?>
 
-        <!-- SUMBER -->
-        <?php $url = $beritapneumonia['url_berita'] ?? ''; ?>
+                    <div class="sidebar-year">
 
-        <?php if (!empty($url)) : ?>
-            <div class="berita-sumber">
+                        <h5>
+                            <?= $tahun ?>
+                        </h5>
 
-                <b>Sumber:</b><br>
+                        <?php foreach($bulanData as $bulan => $listBerita): ?>
 
-                <a href="<?= esc((string)$url) ?>" target="_blank">
-                    <?= esc((string)$url) ?>
-                </a>
+                            <div class="sidebar-month">
+
+                                <h6>
+                                    <?= $bulan ?>
+                                </h6>
+
+                                <ul class="berita-list">
+
+                                    <?php foreach($listBerita as $item): ?>
+
+                                        <li>
+
+                                            <a href="<?= base_url('beritapneumonia/viewUser/' . $item['id_berita']) ?>">
+
+                                                • <?= $item['judul_berita'] ?>
+
+                                            </a>
+
+                                        </li>
+
+                                    <?php endforeach; ?>
+
+                                </ul>
+
+                            </div>
+
+                        <?php endforeach; ?>
+
+                    </div>
+
+                <?php endforeach; ?>
 
             </div>
-        <?php endif; ?>
+
+        </div>
 
     </div>
 
 </div>
 
-<script>
-window.history.replaceState(
-    {},
-    '',
-    "<?= site_url('berita?status=upload') ?>"
-);
-
-</script>
+<?= $this->include('layout/footer') ?>

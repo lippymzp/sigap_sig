@@ -258,7 +258,7 @@
 </div>
 <!-- ARTIKEL FITUR-->
 <div class="col-md-3">
-<a href="#" class="fitur-box d-block" data-target="artikel">
+<a href="#artikelSection" class="fitur-box d-block" data-target="artikel">
     <div class="icon">
         <span></span><span></span><span></span>
     </div>
@@ -268,7 +268,7 @@
 <!-- SKRINING FITUR -->
 <div class="col-md-3">
 
-<a href="<?= base_url('skriningpneumonia') ?>" class="fitur-box d-block" data-target="skrining">
+<a href="#skriningSection" class="fitur-box d-block" data-target="skrining">
     <div class="icon">
         <span></span><span></span><span></span>
     </div>
@@ -325,7 +325,7 @@ fitur.forEach(btn => {
 
 
 <!-- INSIGHT -->
-<section class="container mt-5" data-aos="fade-up">
+<section id="artikelSection" class="container mt-5" data-aos="fade-up">
 
 <h6 class="text-center text-muted">Insights</h6>
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
@@ -752,7 +752,7 @@ prevBtn.addEventListener('click', () => {
 
 </section>
 <!-- CTA SKRINING -->
-<section class="container mt-5" data-aos="zoom-in">
+<section id="skriningSection" class="container mt-5" data-aos="zoom-in">
 
 <div class="cta-box shadow-sm">
 
@@ -769,7 +769,7 @@ prevBtn.addEventListener('click', () => {
     <a href="<?= base_url('skriningpneumonia') ?>"
        class="btn btn-teal px-4 py-2 shadow">
 
-        Mulai Skrining →
+        Mulai Skrining
 
     </a>
 </div>

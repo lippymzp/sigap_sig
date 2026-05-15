@@ -1568,4 +1568,4 @@ document.getElementById('videoTrack')
 }
 
 </script>
-<?= $this->include('layout/footer_a') ?>
+<?= $this->include('layout/footer') ?>

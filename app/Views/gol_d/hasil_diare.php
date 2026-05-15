@@ -1,147 +1,341 @@
 <?= $this->include('layout/header') ?>
 
-<section class="container mt-5">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-<h4 class="fw-bold mb-4">
-Hasil Skrining Diare Anda
-</h4>
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f6f8fb;
+}
 
-<div class="card shadow-lg p-4" style="border-radius:20px; border:2px solid #40EDD0;">
+.result-card{
+    background:#fff;
+    border:2px solid #10c4cf;
+    border-radius:24px;
+    padding:40px;
+    box-shadow:0 15px 40px rgba(0,0,0,.06);
+}
+
+.section-title{
+    font-size:24px;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:25px;
+}
+
+.form-box{
+    background:#f9fbfc;
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 5px 20px rgba(0,0,0,.04);
+}
+
+.form-label{
+    font-weight:500;
+    font-size:14px;
+    color:#111827;
+    margin-bottom:6px;
+}
+
+.form-control{
+    border-radius:12px;
+    height:46px;
+    border:1px solid #d8e1e8;
+    font-size:15px;
+}
+
+.date-highlight{
+    background:#10c4cf !important;
+    color:white !important;
+    font-weight:600;
+}
+
+.table-modern{
+    border-radius:18px;
+    overflow:hidden;
+    background:white;
+    box-shadow:0 6px 20px rgba(0,0,0,.05);
+}
+
+.table-modern thead{
+    background:#10c4cf;
+    color:white;
+}
+
+.table-modern th{
+    padding:14px;
+    font-weight:600;
+    border:none;
+}
+
+.table-modern td{
+    padding:14px;
+    vertical-align:middle;
+}
+
+.badge-modern{
+    padding:8px 18px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.badge-yes{
+    background:#16a34a;
+    color:white;
+}
+
+.badge-no{
+    background:#ef4444;
+    color:white;
+}
+
+.result-box{
+    background:linear-gradient(135deg,#10c4cf,#0ea5b2);
+    color:white;
+    padding:22px;
+    text-align:center;
+    border-radius:16px;
+    font-size:24px;
+    font-weight:700;
+    box-shadow:0 10px 20px rgba(16,196,207,.25);
+}
+
+.rekom-card{
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+
+.rekom-header{
+    background:linear-gradient(135deg,#f5c542,#d4a514);
+    color:white;
+    padding:18px 24px;
+    font-weight:700;
+    font-size:18px;
+}
+
+.rekom-body{
+    padding:24px;
+    font-size:17px;
+    line-height:1.8;
+    color:#374151;
+}
+
+.rekom-body ul{
+    padding-left:20px;
+}
+
+.btn-modern{
+    border:none;
+    padding:14px 28px;
+    border-radius:14px;
+    font-weight:600;
+    font-size:16px;
+    transition:.25s ease;
+    text-decoration:none;
+    display:inline-block;
+}
+
+.btn-print{
+    width:100%;
+    background:linear-gradient(135deg,#10c4cf,#0ea5b2);
+    color:white;
+}
+
+.btn-outline-modern{
+    background:white;
+    border:2px solid #10c4cf;
+    color:#10c4cf;
+}
+
+.btn-solid-modern{
+    background:linear-gradient(135deg,#10c4cf,#0ea5b2);
+    color:white;
+}
+
+.btn-modern:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 18px rgba(0,0,0,.10);
+}
+
+.footer-note{
+    text-align:center;
+    color:#6b7280;
+    font-size:15px;
+    margin-top:30px;
+}
+
+@media(max-width:768px){
+    .result-card{
+        padding:20px;
+    }
+
+    .section-title{
+        font-size:20px;
+    }
+
+    .result-box{
+        font-size:18px;
+    }
+}
+</style>
 
 <?php
 $identitas = $identitas ?? [];
 $jawaban   = $jawaban ?? [];
-?>
 
-<!-- =========================
-   INFORMASI UMUM
-========================= -->
-<h6 class="fw-bold mb-3">Informasi Umum</h6>
-
-<div class="row g-3 mb-4">
-
-<div class="col-md-6">
-<input class="form-control mb-2" value="<?= $identitas['nama'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['nik'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['jk'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['tgl'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['usia'] ?? '-' ?>" readonly>
-</div>
-
-<div class="col-md-6">
-<input class="form-control mb-2 bg-info text-white" value="<?= date('d-m-Y') ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['prov'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['kab'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['kec'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['kel'] ?? '-' ?>" readonly>
-<input class="form-control mb-2" value="<?= $identitas['kodepos'] ?? '-' ?>" readonly>
-</div>
-
-</div>
-
-<!-- =========================
-   RINCIAN JAWABAN
-========================= -->
-<h6 class="fw-bold mb-2">Rincian Jawaban</h6>
-
-<table class="table table-bordered text-center">
-<thead style="background:#2CCFC0; color:white;">
-<tr>
-<th>No</th>
-<th>Pertanyaan</th>
-<th>Jawaban</th>
-</tr>
-</thead>
-
-<tbody>
-
-<?php
 $pertanyaan = [
-"Frekuensi BAB > 3x?",
-"Tinja cair?",
-"Nyeri perut?",
-"Ada darah/lendir?",
-"Mual/muntah?",
-"Lemas/dehidrasi?",
-"Demam?",
-"Makan tidak higienis?",
-"Air tidak matang?",
-"Kontak penderita?"
+    "Apakah Anda BAB lebih dari 5 kali sehari?",
+    "Apakah konsistensi feses Anda cair?",
+    "Apakah konsistensi feses Anda lembek?",
+    "Apakah Anda merasa lemas?",
+    "Apakah ubun-ubun Anda cekung?",
+    "Apakah bibir Anda kering?",
+    "Apakah Tugor menurun?",
+    "Apakah Nadi Anda cepat?",
+    "Apakah Mata Anda cekung?",
+    "Apakah Nafas Anda terasa cepat?",
+    "Apakah Anda Oliguria?",
+    "Apakah feses Anda bercampur darah?",
+    "Apakah Anda merasa mual?",
+    "Apakah Anda muntah?",
+    "Apakah Anda demam > 37°C?"
 ];
-
-foreach($pertanyaan as $i => $p):
-$nilai = $jawaban["q".$i] ?? 0;
 ?>
 
-<tr>
-<td><?= $i+1 ?></td>
-<td class="text-start"><?= $p ?></td>
-<td>
-<span class="badge <?= $nilai ? 'bg-danger' : 'bg-success' ?>">
-<?= $nilai ? 'Ya' : 'Tidak' ?>
-</span>
-</td>
-</tr>
+<section class="container my-5">
 
-<?php endforeach; ?>
+<div class="result-card">
 
-</tbody>
-</table>
+    <h2 class="text-center fw-bold mb-5">Hasil Skrining Kesehatan Anda</h2>
 
-<!-- =========================
-   HASIL
-========================= -->
-<div class="mt-4">
+    <!-- INFORMASI UMUM -->
+    <h3 class="section-title">Informasi Umum</h3>
 
-<h6 class="fw-bold">Hasil</h6>
+    <div class="form-box mb-5">
+        <div class="row g-3">
 
-<div class="alert alert-<?= $warna ?> text-center fw-bold" style="border-radius:10px;">
-<?= $hasil ?>
-</div>
+            <div class="col-md-6">
+                <label class="form-label">Nama Lengkap</label>
+                <input class="form-control" value="<?= $identitas['nama'] ?? '-' ?>" readonly>
 
-</div>
+                <label class="form-label mt-3">Nomor Induk Kependudukan</label>
+                <input class="form-control" value="<?= $identitas['nik'] ?? '-' ?>" readonly>
 
-<!-- =========================
-   REKOMENDASI
-========================= -->
-<div class="mt-3">
+                <label class="form-label mt-3">Jenis Kelamin</label>
+                <input class="form-control" value="<?= $identitas['jk'] ?? '-' ?>" readonly>
 
-<h6 class="fw-bold">Rekomendasi</h6>
+                <label class="form-label mt-3">Tanggal Lahir</label>
+                <input class="form-control" value="<?= $identitas['tgl'] ?? '-' ?>" readonly>
 
-<div class="p-3" style="border:1px solid #ccc; border-radius:10px;">
-<?= $rekomendasi ?? '-' ?>
-</div>
+                <label class="form-label mt-3">Kategori Usia</label>
+                <input class="form-control" value="<?= $identitas['usia'] ?? '-' ?>" readonly>
+            </div>
 
-</div>
+            <div class="col-md-6">
+                <label class="form-label">Tanggal Skrining</label>
+                <input class="form-control date-highlight" value="<?= date('d-m-Y') ?>" readonly>
 
-<!-- =========================
-   TIPS KESEHATAN
-========================= -->
-<div class="mt-4">
+                <label class="form-label mt-3">Provinsi</label>
+                <input class="form-control" value="<?= $identitas['prov'] ?? '-' ?>" readonly>
 
-<div style="background:#2CCFC0; color:white; padding:10px; border-radius:10px 10px 0 0;">
-<b>Tips Kesehatan</b>
-</div>
+                <label class="form-label mt-3">Kabupaten</label>
+                <input class="form-control" value="<?= $identitas['kab'] ?? '-' ?>" readonly>
 
-<div style="background:#e9f5ff; padding:15px; border-radius:0 0 10px 10px;">
-<ul>
-<li>Konsumsi makanan bersih dan matang</li>
-<li>Minum air yang cukup</li>
-<li>Istirahat yang cukup</li>
-<li>Jaga kebersihan lingkungan</li>
-</ul>
-</div>
+                <label class="form-label mt-3">Kecamatan</label>
+                <input class="form-control" value="<?= $identitas['kec'] ?? '-' ?>" readonly>
 
-</div>
+                <label class="form-label mt-3">Kelurahan</label>
+                <input class="form-control" value="<?= $identitas['kel'] ?? '-' ?>" readonly>
 
-<!-- =========================
-   BUTTON
-========================= -->
-<div class="mt-4 text-center">
-<a href="<?= base_url('pdf-diare') ?>" class="btn btn-teal px-4 py-2">
-🖨 Cetak Hasil
-</a>
-</div>
+                <label class="form-label mt-3">Kode Pos</label>
+                <input class="form-control" value="<?= $identitas['kodepos'] ?? '-' ?>" readonly>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RINCIAN -->
+    <h3 class="section-title">Rincian Jawaban</h3>
+
+    <div class="table-responsive table-modern mb-5">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th width="70">No</th>
+                    <th>Pertanyaan</th>
+                    <th width="140">Jawaban</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php foreach($pertanyaan as $i => $p): ?>
+                <?php $nilai = $jawaban["q".$i] ?? 0; ?>
+
+                <tr>
+                    <td><?= $i+1 ?></td>
+                    <td><?= $p ?></td>
+                    <td>
+                        <span class="badge-modern <?= $nilai ? 'badge-yes' : 'badge-no' ?>">
+                            <?= $nilai ? 'Ya' : 'Tidak' ?>
+                        </span>
+                    </td>
+                </tr>
+
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- HASIL -->
+    <h3 class="section-title">Hasil</h3>
+
+    <div class="result-box mb-5">
+        <?= $hasil ?>
+    </div>
+
+    <!-- REKOMENDASI -->
+    <h3 class="section-title">Rekomendasi</h3>
+
+    <div class="rekom-card mb-4">
+        <div class="rekom-header">
+            ⚡ Rekomendasi Kesehatan
+        </div>
+
+        <div class="rekom-body">
+            <p><?= $rekomendasi ?></p>
+
+            <ul>
+                <li>Konsumsi oralit atau cairan rehidrasi</li>
+                <li>Minum air putih yang cukup</li>
+                <li>Hindari makanan pedas / tidak higienis</li>
+                <li>Istirahat cukup</li>
+                <li>Segera ke fasilitas kesehatan jika memburuk</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- BUTTON -->
+    <a href="<?= base_url('pdf-diare') ?>" class="btn-modern btn-print mb-4">
+        🖨 Cetak Hasil
+    </a>
+
+    <div class="text-center d-flex gap-3 justify-content-center flex-wrap">
+        <a href="<?= base_url('skrining-diare') ?>" class="btn-modern btn-outline-modern">
+            Kembali
+        </a>
+
+        <a href="<?= base_url('/') ?>" class="btn-modern btn-solid-modern">
+            Selesai
+        </a>
+    </div>
+
+    <div class="footer-note">
+        Halaman 1 dari 1<br>
+        Laporan ini dihasilkan otomatis dari SIGAP
+    </div>
 
 </div>
 

@@ -125,13 +125,8 @@ $routes->get('pneumonia-funfact', 'FunfactPneumoniaLanding::index');
 /* DIARE */
 /* ========================= */
 
-$routes->get('/skrining-diare', 'Home::skrining_diare');
 $routes->get('/diare-detail', 'Home::diare_detail');
 $routes->get('/diare', 'Diare::index');
-$routes->get('skrining-diare', 'Diare::skrining');
-$routes->post('hasil-diare', 'Diare::hasil');
-$routes->get('pdf-diare', 'Diare::pdf');
-$routes->post('skrining-diare-step2', 'Diare::step2');
 
 /* ========================= */
 /* LOGIN */
@@ -165,8 +160,11 @@ $routes->get('pneumonia/input_data', 'pneumonia::inputData');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
 $routes->post('pneumonia/simpan', 'pneumonia::simpan');
 $routes->get('pneumonia/export', 'pneumonia::export');
+
 $routes->get('diare/dashboard', 'Dashboard::diare');
 $routes->get('diare/dashboard', 'Dashboard::diare');
+$routes->get('diare/dashboard/admin', 'Dashboard::diare');
+
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->get('pneumonia/pegawai', 'Pegawai::index');
@@ -491,3 +489,12 @@ $routes->get('/manajemen_user/hapus/(:num)', 'ManajemenUser::hapus/$1');
 $routes->post('ai/chat', 'AI::chat');
 
 $routes->get('tentangkamiDBD', 'Dashboard::tentangkamiDBD');
+$routes->get('skrining-diare', 'Diare::skrining');
+$routes->post('skrining-diare-step2', 'Diare::step2');
+$routes->post('skrining-diare-step3', 'Diare::step3');
+$routes->post('skrining-diare-step4', 'Diare::step4');
+$routes->post('skrining-diare-hasil', 'Diare::hasil');
+$routes->get('skrining-diare-pdf', 'Diare::pdf');
+$routes->get('pdf-diare', 'Diare::pdf');
+$routes->get('diare/kalkulator-air', 'Diare::kalkulatorAir');
+$routes->post('diare/hitung-air', 'Diare::hitungAir');
