@@ -160,12 +160,11 @@ $routes->get('pneumonia/input_data', 'pneumonia::inputData');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
 $routes->post('pneumonia/simpan', 'pneumonia::simpan');
 $routes->get('pneumonia/export', 'pneumonia::export');
-<<<<<<< Updated upstream
+
 $routes->get('diare/dashboard', 'Dashboard::diare');
 $routes->get('diare/dashboard', 'Dashboard::diare');
-=======
 $routes->get('diare/dashboard/admin', 'Dashboard::diare');
->>>>>>> Stashed changes
+
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->get('pneumonia/pegawai', 'Pegawai::index');
