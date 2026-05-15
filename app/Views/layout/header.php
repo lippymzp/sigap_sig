@@ -30,7 +30,14 @@
 $uri = service('uri')->getSegment(1);
 
 // halaman yang BOLEH tampil login
-$showLoginPages = ['dbd','tbc','pneumonia','diare'];
+$showLoginPages = [
+    'dbd',
+    'tbc',
+    'skrining-tbc',
+    'hasil',
+    'pneumonia',
+    'diare'
+];
 ?>
 
 <!-- NAVBAR -->
@@ -103,4 +110,4 @@ $showLoginPages = ['dbd','tbc','pneumonia','diare'];
 </nav>
 
 <!-- SPACING NAVBAR -->
-<div style="margin-top:90px"></div>
+<div style="margin-top:55px"></div>

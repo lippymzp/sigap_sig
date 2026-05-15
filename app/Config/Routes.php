@@ -80,6 +80,7 @@ $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('pneumonia/dashboard', 'Dashboard::pneumonia');
 $routes->get('diare/dashboard', 'Dashboard::diare');
+$routes->get('diare/dashboard', 'Dashboard::diare');
 $routes->get('diare/input_data', 'Diare::inputData');
 $routes->get('diare/hasil', 'Diare::hasil_data');
 $routes->post('diare/simpan', 'diare::simpan');
@@ -197,4 +198,59 @@ $routes->get('tbc/edit/(:num)', 'AdminTbc\Pasien::edit/$1');
 $routes->post('tbc/update/(:num)', 'AdminTbc\Pasien::update/$1');
 
 $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
+
+
+/* ========================= */
+/* Landing Page TBC */
+/* ========================= */
+
+// ========================================
+// SKRINING TBC
+// ========================================
+
+$routes->get('/skrining-tbc', 'AdminTbc\Dashboard::step1');
+
+$routes->post('/skrining-tbc/step2', 'AdminTbc\Dashboard::step2');
+
+$routes->post('/skrining-tbc/proses', 'AdminTbc\Dashboard::proses');
+
+
+// ========================================
+// HASIL
+// ========================================
+
+$routes->get('/hasil', function () {
+    return view('gol_b/hasil');
+});
+
+
+// ========================================
+// CETAK PDF
+// ========================================
+
+$routes->get(
+    '/dashboard/cetak/(:num)',
+    'AdminTbc\Dashboard::cetak/$1'
+);
+
+
+// ========================================
+// UTILITY
+// ========================================
+
+$routes->get(
+    '/getKodePos',
+    'AdminTbc\Dashboard::getKodePos'
+);
+
+
+// ========================================
+// WILAYAH
+// ========================================
+
+$routes->get('wilayah/kabupaten/(:num)', 'AdminTbc\Wilayah::kabupaten/$1');
+
+$routes->get('wilayah/kecamatan/(:num)', 'AdminTbc\Wilayah::kecamatan/$1');
+
+$routes->get('wilayah/kelurahan/(:num)', 'AdminTbc\Wilayah::kelurahan/$1');
 
