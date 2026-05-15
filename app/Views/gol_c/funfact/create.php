@@ -155,11 +155,20 @@ class="form-control"
 placeholder="Masukkan ringkasan singkat...">
 
 <div class="row">
-<div class="col-md-4">
-<label class="fw-bold">Tanggal Unggah</label>
-<input type="date" name="tanggal"
-class="form-control">
-</div>
+    <div class="col-md-6">
+        <label class="fw-bold">Penulis</label>
+        <input type="text"
+            name="penulis"
+            class="form-control"
+            placeholder="Masukkan nama penulis..."
+            value="<?= $beritapneumonia['penulis'] ?? '' ?>"
+            required>
+    </div>
+    <div class="col-md-6">
+        <label class="fw-bold">Tanggal Unggah</label>
+        <input type="date" name="tanggal"
+            class="form-control">
+    </div>
 </div>
 
 <div class="bottom-btn">
@@ -281,18 +290,19 @@ transform:translate(-50%,-50%);">
 function validasiForm(){
 
 document.getElementById('isiHidden').value =
-document.getElementById('editor').innerHTML.trim();
+document.getElementById('editor').innerText.trim();
 
 let judul = document.querySelector('[name=judul]').value.trim();
 let isi = document.getElementById('isiHidden').value.trim();
 let ringkasan = document.querySelector('[name=ringkasan]').value.trim();
+let penulis = document.querySelector('[name=penulis]').value.trim();
 let tanggal = document.querySelector('[name=tanggal]').value.trim();
 
-if(judul=='' || isi=='' || ringkasan=='' || tanggal==''){
+if(judul=='' || isi=='' || ringkasan=='' || penulis=='' || tanggal==''){
 
 document.getElementById('popupBg').style.display='block';
-document.getElementById('popupTitle').innerHTML='Unggah Funfact Gagal';
-document.getElementById('popupText').innerHTML='Mohon lengkapi semua kolom';
+document.getElementById('popupTitle').innerText='Unggah Funfact Gagal';
+document.getElementById('popupText').innerText='Mohon lengkapi semua kolom';
 
 document.getElementById('popupButtons').innerHTML=`
 <button onclick="closePopup()" class="btn-main">
@@ -308,14 +318,14 @@ document.getElementById('formFunfact').submit();
 function simpanDraft(){
 
 let judul = document.querySelector('[name=judul]').value.trim();
-let isi = document.getElementById('editor').innerHTML.trim();
+let isi = document.getElementById('editor').innerText.trim();
 
 if(judul=='' || isi==''){
 
 document.getElementById('popupBg').style.display='block';
 
-document.getElementById('popupTitle').innerHTML='Draft Gagal';
-document.getElementById('popupText').innerHTML='Minimal isi Judul dan Isi Funfact';
+document.getElementById('popupTitle').innerText='Draft Gagal';
+document.getElementById('popupText').innerText='Minimal isi Judul dan Isi Funfact';
 
 document.getElementById('popupButtons').innerHTML=`
 <button onclick="closePopup()" class="btn-main">
@@ -418,7 +428,7 @@ document.execCommand("insertImage",false,url);
 /* Saat submit simpan isi editor ke input hidden */
 document.getElementById('formFunfact').onsubmit = function(){
 document.getElementById('isiHidden').value =
-document.getElementById('editor').innerHTML;
+document.getElementById('editor').innerText;
 }
 
 function batalForm(){

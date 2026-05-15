@@ -14,17 +14,22 @@ class funfactpneumonia extends BaseController
         $status = $this->request->getGet('status') ?? 'Publish';
         $keyword = $this->request->getGet('keyword');
 
-        $total = $model->countAll();
+        $total = (clone $model)
+            ->where('id_penyakit', 3)
+            ->countAllResults();
 
         $publish = (clone $model)
+            ->where('id_penyakit', 3)
             ->where('status_funfact', 'Publish')
             ->countAllResults();
 
         $draft = (clone $model)
+            ->where('id_penyakit', 3)
             ->where('status_funfact', 'Draft')
             ->countAllResults();
 
         $arsip = (clone $model)
+            ->where('id_penyakit', 3)
             ->where('status_funfact', 'Arsip')
             ->countAllResults();
 
@@ -67,7 +72,9 @@ class funfactpneumonia extends BaseController
     $isi   = $this->request->getPost('isi');
 
     // VALIDASI
-    if (!$judul || !$isi) {
+    $penulis = $this->request->getPost('penulis');
+
+    if (!$judul || !$isi || !$penulis) {
         session()->setFlashdata('error', 'gagal');
         return redirect()->back()->withInput();
     }
@@ -87,7 +94,7 @@ class funfactpneumonia extends BaseController
         'id_petugas'        => session()->get('id_petugas') ?? 1,
         'id_penyakit'       => 3,
         'judul_funfact'     => $judul,
-        'penulis_funfact'   => $this->request->getPost('penulis'),
+        'penulis'   => $this->request->getPost('penulis'),
         'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
                                 ? 'Kutip funfact luar'
                                 : $isi,
@@ -108,37 +115,6 @@ class funfactpneumonia extends BaseController
     return redirect()->to('pneumonia/funfact');
 }
     
-public function simpanKutip()
-{
-    $model = new FunfactPneumoniaModel();
-
-    $judul = $this->request->getPost('judul');
-    $link  = $this->request->getPost('link');
-
-    // VALIDASI
-    if (!$judul || !$link) {
-        session()->setFlashdata('error', 'gagal');
-        return redirect()->back()->withInput();
-    }
-
-    $status = $this->request->getPost('status');
-
-    $id = $model->insert([
-        'id_petugas'        => session()->get('id_petugas') ?? 1,
-        'id_penyakit'       => 3,
-        'judul_funfact'     => $judul,
-        'deskripsi_funfact' => 'Kutip funfact luar',
-        'gambar_funfact'    => 'default.jpg',
-        'tanggal_funfact'   => date('Y-m-d'),
-        'url'               => $link,
-        'status_funfact'    => $status ?: 'Publish'
-    ]);
-
-    session()->setFlashdata('last_id', $id);
-    session()->setFlashdata('success', 'unggah');
-
-    return redirect()->to('pneumonia/funfact');
-}
 
     public function hapus(int $id)
     {
@@ -190,7 +166,7 @@ public function simpanKutip()
 
     $data = [
         'judul_funfact'     => $this->request->getPost('judul'),
-        'penulis_funfact' => $this->request->getPost('penulis'),
+        'penulis' => $this->request->getPost('penulis'),
         'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
                                 ? 'Kutip funfact luar'
                                 : $isi,

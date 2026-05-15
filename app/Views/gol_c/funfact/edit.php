@@ -85,52 +85,12 @@ $mode = $_GET['mode'] ?? '';
 $isLink = ($mode == 'link');
 ?>
 
-<!-- TAB -->
-<div class="tab-box">
-
-<button type="button"
-class="tab-btn <?= !$isLink ? 'tab-active' : '' ?>"
-onclick="window.location.href='<?= base_url('pneumonia/funfact/edit/'.$funfact['id_funfact'].'?mode=tulis') ?>'">
-Tulis Funfact
-</button>
-
-<button type="button"
-class="tab-btn <?= $isLink ? 'tab-active' : '' ?>"
-onclick="window.location.href='<?= base_url('pneumonia/funfact/edit/'.$funfact['id_funfact'].'?mode=link') ?>'">
-Kutip Funfact Luar
-</button>
-
-</div>
-
 <form method="POST"
 action="<?= base_url('pneumonia/funfact/update/'.$funfact['id_funfact']) ?>"
 enctype="multipart/form-data">
 
 <div class="form-wrap">
 <?php if($isLink): ?>
-
-<!-- MODE KUTIP -->
-
-<div class="form-head">
-<h4>Edit Informasi Funfact</h4>
-<small>Perbarui data funfact SIG.</small>
-</div>
-
-<label class="fw-bold">Judul Funfact</label>
-<input type="text" name="judul"
-value="<?= esc($funfact['judul_funfact'] ?? '') ?>"
-class="form-control">
-
-<label class="fw-bold">Link Funfact</label>
-<input type="text" name="isi"
-value="<?= esc($funfact['url'] ?? '') ?>"
-class="form-control"
-placeholder="https://...">
-
-<div class="bottom-btn">
-<a href="<?= base_url('pneumonia/funfact') ?>" class="btn-cancel">Batal</a>
-<button type="submit" class="btn-main">💾 Simpan Perubahan</button>
-</div>
 
 <?php else: ?>
 
@@ -172,7 +132,10 @@ class="form-control">
 
 <div class="col-md-6">
 <label class="fw-bold">Penulis</label>
-<input type="text" class="form-control" value="Admin">
+<input type="text"
+name="penulis"
+class="form-control"
+value="<?= esc($funfact['penulis'] ?? '') ?>">
 </div>
 
 <div class="col-md-6">

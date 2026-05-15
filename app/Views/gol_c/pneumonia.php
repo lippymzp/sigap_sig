@@ -17,7 +17,7 @@
     </p>
    
 <!-- BUTTON -->
-<a href="#" class="btn-gradient">
+<a href="<?= base_url('pneumonia-funfact') ?>" class="btn-gradient">
     Pelajari selengkapnya →
 </a>
 

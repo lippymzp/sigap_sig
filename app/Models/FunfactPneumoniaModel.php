@@ -13,6 +13,7 @@ class FunfactPneumoniaModel extends Model
         'id_petugas',
         'id_penyakit',
         'judul_funfact',
+        'penulis',
         'deskripsi_funfact',
         'gambar_funfact',
         'tanggal_funfact',

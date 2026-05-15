@@ -45,9 +45,14 @@ style="width:100%;height:240px;object-fit:cover;border-radius:16px;">
 <?= esc((string)($funfact['judul_funfact'] ?? '')) ?>
 </h2>
 
-<p class="text-muted mb-0">
-<?= !empty($funfact['tanggal_funfact']) ? date('d F Y', strtotime($funfact['tanggal_funfact'])) : '-' ?> • 
-<?= esc($funfact['penulis_funfact'] ?? 'Admin') ?>
+<p class="text-muted mb-1">
+<?= !empty($funfact['tanggal_funfact']) 
+? date('d F Y', strtotime($funfact['tanggal_funfact'])) 
+: '-' ?>
+</p>
+
+<p class="text-muted mb-4">
+Penulis: <?= esc($funfact['penulis'] ?? '-') ?>
 </p>
 </div>
 

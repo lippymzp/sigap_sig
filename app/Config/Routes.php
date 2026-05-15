@@ -119,6 +119,8 @@ $routes->get('pneumonia/funfact/hapus/(:num)', 'FunfactPneumonia::hapus/$1');
 $routes->get('pneumonia/funfact/arsip/(:num)', 'FunfactPneumonia::arsip/$1');
 $routes->get('pneumonia/funfact/publish/(:num)', 'FunfactPneumonia::publish/$1');
 
+$routes->get('pneumonia-funfact', 'FunfactPneumoniaLanding::index');
+
 /* ========================= */
 /* DIARE */
 /* ========================= */
