@@ -357,10 +357,6 @@ $instansiList = [
             <a href="<?= base_url('index.php/pneumonia/pegawai') ?>" class="btn-tab active">
                 Pegawai
             </a>
-
-            <a href="#" class="btn-tab">
-                Admin
-            </a>
         </div>
 
         <a href="<?= base_url('index.php/pneumonia/pegawai/tambah') ?>" 
