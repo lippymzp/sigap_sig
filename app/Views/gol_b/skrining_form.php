@@ -1,6 +1,8 @@
 <?php $this->setVar('penyakit', 'tbc'); ?>
 <?= $this->include('layout/header') ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 <title>Skrining</title>
 
 <style>
@@ -22,7 +24,7 @@
 /* GLOBAL */
 body{
     margin:0;
-    font-family:'Poppins',sans-serif;
+        font-family: 'Poppins', sans-serif !important;
     background:var(--bg);
     color:var(--text-dark);
 }

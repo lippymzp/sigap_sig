@@ -50,8 +50,8 @@
             <i class="fa-regular fa-file-lines me-2"></i> Skrining
         </a>
 
-        <a href="#map"
-            class="<?= ($menu == 'peta') ? 'active' : '' ?>">
+<a href="<?= base_url('index.php/' . $penyakit . '/dashboard#peta-sebaran') ?>"
+    class="<?= ($menu == 'peta') ? 'active' : '' ?>">
             <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
         </a>
 

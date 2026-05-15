@@ -1,6 +1,8 @@
 <?php $this->setVar('penyakit', 'tbc'); ?>
 <?= $this->include('layout/header') ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
     html {
         scroll-behavior: smooth;
@@ -24,16 +26,30 @@
     body {
         background: var(--bg);
         color: var(--text-dark);
+        font-family: 'Poppins', sans-serif !important;
+
     }
 
     /* HERO FIGMA STYLE */
     .pneu-hero {
-        background: linear-gradient(135deg, rgba(0, 206, 209, 0.9), rgba(64, 237, 208, 0.9)),
-            url("<?= base_url('img/bg-hero.png') ?>");
+        position: relative;
+        min-height: 520px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+
+        background:
+            linear-gradient(to right,
+                rgba(0, 206, 209, 0.88) 0%,
+                rgba(0, 206, 209, 0.72) 25%,
+                rgba(0, 206, 209, 0.40) 50%,
+                rgba(0, 206, 209, 0.10) 75%,
+                rgba(0, 206, 209, 0.02) 100%),
+            url('<?= base_url("img/tbc-bg.png") ?>');
+
         background-size: cover;
         background-position: center;
-        padding: 100px 0;
-        border-radius: 0 0 40px 40px;
+        background-repeat: no-repeat;
     }
 
     .hero-content {
@@ -58,7 +74,7 @@
         padding: 18px;
         border-radius: 12px;
         font-weight: 600;
-        color: var(--dark);
+        color: #00BBC2;
         transition: 0.3s;
     }
 
@@ -70,7 +86,7 @@
 
     /* TITLE */
     .text-teal {
-        color: var(--dark);
+        color: #00BBC2;
     }
 
     /* CARD INSIGHT */
@@ -102,6 +118,72 @@
         font-size: 11px;
         border-radius: 6px;
     }
+
+    .carousel-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        padding: 20px 0;
+    }
+
+    .scroll-container {
+        display: flex;
+        overflow: hidden;
+        scroll-behavior: smooth;
+    }
+
+    .scroll-item {
+        min-width: 100%;
+        flex-shrink: 0;
+
+        padding: 35px;
+        border-radius: 24px;
+
+        background: linear-gradient(135deg,
+                #18d0d7,
+                #09bcc5);
+
+        color: white;
+    }
+
+    /* isi */
+    .scroll-item .d-flex {
+        gap: 40px;
+    }
+
+    .scroll-item img {
+        width: 260px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 18px;
+    }
+
+    /* tombol */
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 48px;
+        height: 48px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: #10c7cf;
+        color: white;
+
+        font-size: 28px;
+        z-index: 10;
+    }
+
+    .left {
+        left: -10px;
+    }
+
+    .right {
+        right: -10px;
+    }
 </style>
 
 <!-- HERO -->
@@ -112,9 +194,21 @@
             <!-- TEXT -->
             <div class="hero-content-box" data-aos="fade-right">
                 <h1>Tuberkulosis</h1>
-                <p>Tuberkulosis adalah penyakit infeksi yang disebabkan oleh bakteri Mycobacterium tuberculosis dan menyerang paru-paru.</p>
+
+                <p class="hero-sub">
+                    Tau ga sih, Apa Itu Tuberkulosis ?
+                </p>
+
+                <p class="hero-desc">
+                    Tuberkulosis adalah suatu penyakit menular yang
+                    disebabkan oleh kuman Mycobacterium tuberculosis.
+                    Kuman Mycobacterium tuberculosis menular melalui
+                    udara (airborne disease) dari penderita sakit
+                    tuberkulosis ke orang lain disekitarnya.
+                </p>
+
                 <a href="<?= base_url('tbc-detail') ?>" class="btn btn-hero">
-                    Pelajari selengkapnya
+                    Pelajari selengkapnya →
                 </a>
             </div>
 
@@ -130,6 +224,22 @@
     <div class="row g-4">
 
         <div class="col-md-3">
+            <a href="#grafik" class="text-decoration-none">
+                <div class="fitur-box shadow-sm">
+                    📊 Grafik Kesehatan
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="#peta" class="text-decoration-none">
+                <div class="fitur-box shadow-sm">
+                    🗺️ Peta Persebaran Penyakit
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3">
             <a href="#artikel" class="text-decoration-none">
                 <div class="fitur-box shadow-sm">
                     📄 Artikel Kesehatan
@@ -143,29 +253,18 @@
             </a>
         </div>
 
-        <div class="col-md-3">
-            <a href="#grafik" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">
-                    📊 Grafik Kesehatan
-                </div>
-            </a>
-        </div>
 
-        <div class="col-md-3">
-            <a href="#peta" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">
-                    🗺️ Peta Persebaran
-                </div>
-            </a>
-        </div>
     </div>
 </section>
 
 <!-- INSIGHT (TETAP ADA, HANYA DIPERCANTIK) -->
 <section id="artikel" class="container mt-5" data-aos="fade-up">
-    <h6 class="text-center text-muted">Insights</h6>
-    <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
-
+    <h6 class="text-center" style="color:#13616A;">
+        Insights
+    </h6>
+    <h4 class="text-center mb-4 fw-bold" style="color:#13616A;">
+        Telusuri Informasi Berikut
+    </h4>
     <div class="carousel-wrapper">
 
         <button class="nav-btn left" onclick="slide(-1)">‹</button>
@@ -263,10 +362,13 @@
     }
 
     function updateSlide() {
+        const cardWidth = document.querySelector('.scroll-item').offsetWidth;
+
         slider.scrollTo({
-            left: index * slider.clientWidth,
+            left: index * cardWidth,
             behavior: 'smooth'
         });
+
         updateDots();
     }
 
@@ -380,18 +482,6 @@
 <!-- PETA -->
 <section id="peta" class="container mt-5" data-aos="fade-up">
     <h4 class="text-teal mb-3 fw-bold">Peta Persebaran Penyakit</h4>
-
-
-<h4 class="text-success mb-3">Peta Persebaran TBC</h4>
-
-<div id="mapTbc" style="height:400px; border-radius:15px;"></div>
-
-<div class="map-legend mt-3">
-<span style="background:#95d5b2">Rendah</span>
-<span style="background:#40916c">Sedang</span>
-<span style="background:#1b4332">Tinggi</span>
-</div>
-=======
     <div id="mapTbc" style="height:400px; border-radius:15px;"></div>
 
 
@@ -404,161 +494,157 @@
 
 <!-- SCRIPT -->
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function() {
 
-/* ================= TAMBAHAN QGIS ================= */
-function fixNama(nama){
-    return (nama || "")
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, " ")
-        .replace(/[^a-z0-9 ]/g, "");
-}
-
-var dataTbc = <?= json_encode($tbc ?? []) ?>;
-console.log("DATA TBC:", dataTbc);
-
-var dataFinal = {};
-
-dataTbc.forEach(item => {
-
-    var desa = fixNama(item.desa);
-
-    if(!dataFinal[desa]){
-        dataFinal[desa] = {
-            total: 0,
-            jumlah: 0
-        };
-    }
-
-    dataFinal[desa].total += parseInt(item.kasus);
-    dataFinal[desa].jumlah++;
-});
-
-for(var key in dataFinal){
-    var rata = dataFinal[key].total / dataFinal[key].jumlah;
-
-    if(rata >= 20) dataFinal[key].kategori = "tinggi";
-    else if(rata >= 10) dataFinal[key].kategori = "sedang";
-    else dataFinal[key].kategori = "rendah";
-}
-
-console.log("DATA FINAL TBC:", dataFinal);
-
-
-
-/* CHART TBC */
-const ctx = document.getElementById('chartTbc');
-
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Januari','Februari','Maret','April','Mei'],
-        datasets: [
-            {
-                label: 'Sembuh',
-                data: [70,100,80,60,120],
-                backgroundColor: '#95d5b2'
-            },
-            {
-                label: 'Pengobatan',
-                data: [120,140,110,90,100],
-                backgroundColor: '#52b788'
-            },
-            {
-                label: 'Meninggal',
-                data: [15,25,20,15,30],
-                backgroundColor: '#1b4332'
-            }
-        ]
-    }
-});
-
-/* MAP */
-var map = L.map('mapTbc').setView([-8.1,113.5], 12);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-.addTo(map);
-
-/* 🔥 FIX BIAR LANGSUNG MUNCUL */
-setTimeout(() => {
-    map.invalidateSize();
-}, 200);
-
-/* 🔥 QGIS GEOJSON */
-fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
-.then(res => res.json())
-.then(data => {
-
-    var geo = L.geoJSON(data, {
-
-        style: function(feature){
-
-            var nama = fixNama(feature.properties.NAMOBJ);
-            var item = dataFinal[nama];
-
-            var warna = "#cccccc";
-
-            if(item){
-                if(item.kategori == "tinggi") warna = "#1b4332";
-                else if(item.kategori == "sedang") warna = "#40916c";
-                else if(item.kategori == "rendah") warna = "#95d5b2";
-            }
-
-            return {
-                color: "#2a9d8f",
-                weight: 2,
-                fillColor: warna,
-                fillOpacity: 0.7
-            };
-        },
-
-        onEachFeature: function(feature, layer){
-
-            var namaAsli = feature.properties.NAMOBJ;
-            var item = dataFinal[fixNama(namaAsli)];
-
-            var isi = "<b>Desa: " + namaAsli + "</b>";
-
-            if(item){
-                isi += "<br>Total Kasus: " + item.total;
-                isi += "<br>Kategori: " + item.kategori;
-            } else {
-                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-            }
-
-            layer.bindPopup(isi);
-
-            layer.bindTooltip(namaAsli, {
-                permanent: true,
-                direction: "center",
-                className: "label-desa"
-            });
-
+        /* ================= TAMBAHAN QGIS ================= */
+        function fixNama(nama) {
+            return (nama || "")
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, " ")
+                .replace(/[^a-z0-9 ]/g, "");
         }
 
-    }).addTo(map);
+        var dataTbc = <?= json_encode($tbc ?? []) ?>;
+        console.log("DATA TBC:", dataTbc);
 
-    map.fitBounds(geo.getBounds());
-});
+        var dataFinal = {};
 
-});
+        dataTbc.forEach(item => {
+
+            var desa = fixNama(item.desa);
+
+            if (!dataFinal[desa]) {
+                dataFinal[desa] = {
+                    total: 0,
+                    jumlah: 0
+                };
+            }
+
+            dataFinal[desa].total += parseInt(item.kasus);
+            dataFinal[desa].jumlah++;
+        });
+
+        for (var key in dataFinal) {
+            var rata = dataFinal[key].total / dataFinal[key].jumlah;
+
+            if (rata >= 20) dataFinal[key].kategori = "tinggi";
+            else if (rata >= 10) dataFinal[key].kategori = "sedang";
+            else dataFinal[key].kategori = "rendah";
+        }
+
+        console.log("DATA FINAL TBC:", dataFinal);
+
+
+
+        /* CHART TBC */
+        const ctx = document.getElementById('chartTbc');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei'],
+                datasets: [{
+                        label: 'Sembuh',
+                        data: [70, 100, 80, 60, 120],
+                        backgroundColor: '#95d5b2'
+                    },
+                    {
+                        label: 'Pengobatan',
+                        data: [120, 140, 110, 90, 100],
+                        backgroundColor: '#52b788'
+                    },
+                    {
+                        label: 'Meninggal',
+                        data: [15, 25, 20, 15, 30],
+                        backgroundColor: '#1b4332'
+                    }
+                ]
+            }
+        });
+
+        /* MAP */
+        var map = L.map('mapTbc').setView([-8.1, 113.5], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+            .addTo(map);
+
+        /* 🔥 FIX BIAR LANGSUNG MUNCUL */
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 200);
+
+        /* 🔥 QGIS GEOJSON */
+        fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
+            .then(res => res.json())
+            .then(data => {
+
+                var geo = L.geoJSON(data, {
+
+                    style: function(feature) {
+
+                        var nama = fixNama(feature.properties.NAMOBJ);
+                        var item = dataFinal[nama];
+
+                        var warna = "#cccccc";
+
+                        if (item) {
+                            if (item.kategori == "tinggi") warna = "#1b4332";
+                            else if (item.kategori == "sedang") warna = "#40916c";
+                            else if (item.kategori == "rendah") warna = "#95d5b2";
+                        }
+
+                        return {
+                            color: "#2a9d8f",
+                            weight: 2,
+                            fillColor: warna,
+                            fillOpacity: 0.7
+                        };
+                    },
+
+                    onEachFeature: function(feature, layer) {
+
+                        var namaAsli = feature.properties.NAMOBJ;
+                        var item = dataFinal[fixNama(namaAsli)];
+
+                        var isi = "<b>Desa: " + namaAsli + "</b>";
+
+                        if (item) {
+                            isi += "<br>Total Kasus: " + item.total;
+                            isi += "<br>Kategori: " + item.kategori;
+                        } else {
+                            isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
+                        }
+
+                        layer.bindPopup(isi);
+
+                        layer.bindTooltip(namaAsli, {
+                            permanent: true,
+                            direction: "center",
+                            className: "label-desa"
+                        });
+
+                    }
+
+                }).addTo(map);
+
+                map.fitBounds(geo.getBounds());
+            });
+
+    });
 </script>
 
-<<<<<<< Updated upstream
 <style>
-.label-desa{
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border: none;
-    padding: 2px 6px;
-    font-size: 11px;
-    border-radius: 6px;
-}
+    .label-desa {
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        padding: 2px 6px;
+        font-size: 11px;
+        border-radius: 6px;
+    }
 </style>
-
-=======
-=======
+<script>
     document.addEventListener("DOMContentLoaded", function() {
 
         /* ================= TAMBAHAN QGIS ================= */
@@ -735,6 +821,4 @@ fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
 
 </section>
 
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 <?= $this->include('layout/footer') ?>

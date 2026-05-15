@@ -155,7 +155,7 @@ value="<?= esc((string)($berita['judul_berita'] ?? '')) ?>">
 
 <label class="fw-bold">Link Berita</label>
 <input type="text"
-name="isi"
+name="link"
 class="form-control"
 value="<?= filter_var($url, FILTER_VALIDATE_URL) ? esc($url) : '' ?>">
 

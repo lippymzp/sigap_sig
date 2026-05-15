@@ -80,7 +80,6 @@ class FunfactTbc extends BaseController
         'id_petugas'        => session()->get('id_petugas') ?? 1,
         'id_penyakit'       => 1,
         'judul_funfact'     => $judul,
-        'penulis_funfact'   => $this->request->getPost('penulis'),
         'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
                                 ? 'Kutip funfact luar'
                                 : $isi,
@@ -183,11 +182,9 @@ public function simpanKutip()
 
     $data = [
         'judul_funfact'     => $this->request->getPost('judul'),
-        'penulis_funfact' => $this->request->getPost('penulis'),
         'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
-                                ? 'Kutip funfact luar'
-                                : $isi,
-
+                        ? 'Kutip funfact luar'
+                        : $isi,
         'url'               => filter_var($isi, FILTER_VALIDATE_URL)
                                 ? $isi
                                 : null,

@@ -98,13 +98,10 @@
 
 <!-- TAB -->
 <div class="tab-box">
-    <button type="button" onclick="showTab('tulis')" class="tab-btn tab-active">
+    <button type="button" class="tab-btn tab-active">
         Tulis Funfact
     </button>
 
-    <button type="button" onclick="showTab('kutip')" class="tab-btn">
-        Kutip Funfact Luar
-    </button>
 </div>
 
 <!-- FORM TULIS -->
@@ -272,6 +269,7 @@ style="display:none;">
 </form>
 </div>
 
+<<<<<<< Updated upstream
 <!-- FORM KUTIP -->
 <div id="formKutipFunfact" style="display:none;">
 
@@ -330,6 +328,8 @@ Batal
 </form>
 </div>
 
+=======
+>>>>>>> Stashed changes
 <!-- POPUP -->
 <div id="popupBg" style="
 display:none;
@@ -359,25 +359,6 @@ transform:translate(-50%,-50%);">
 </div>
 
 <script>
-function showTab(type){
-
-if(type=='tulis'){
-document.getElementById('formTulis').style.display='block';
-document.getElementById('formKutipFunfact').style.display='none';
-
-document.querySelectorAll('.tab-btn')[0].classList.add('tab-active');
-document.querySelectorAll('.tab-btn')[1].classList.remove('tab-active');
-
-}else{
-
-document.getElementById('formTulis').style.display='none';
-document.getElementById('formKutipFunfact').style.display='block';
-
-document.querySelectorAll('.tab-btn')[1].classList.add('tab-active');
-document.querySelectorAll('.tab-btn')[0].classList.remove('tab-active');
-}
-}
-
 
 function validasiForm(){
 
@@ -527,45 +508,5 @@ document.getElementById('editor').innerHTML;
 function batalForm(){
 window.location.href='<?= base_url('tbc/funfact') ?>';
 }
-
-function unggahKutip(){
-
-let judul = document.querySelector('#formKutipFunfact [name=judul]').value.trim();
-let link  = document.querySelector('#formKutipFunfact [name=link]').value.trim();
-
-if(judul=='' || link=='' || !link.startsWith('http')){
-    
-document.getElementById('popupBg').style.display='block';
-document.getElementById('popupTitle').innerHTML='Unggah Funfact Gagal';
-document.getElementById('popupText').innerHTML='Isi judul dan link funfact';
-
-document.getElementById('popupButtons').innerHTML=`
-<button onclick="closePopup()" class="btn-main">
-Lengkapi Data
-</button>`;
-
-return;
-}
-
-document.getElementById('statusKutip').value='Publish';
-
-document.getElementById('formKutipFunfact').submit();
-}
-
-function simpanDraftKutip(){
-
-let judul = document.querySelector('#formKutipFunfact [name=judul]').value.trim();
-
-if(judul==''){
-document.getElementById('popupBg').style.display='block';
-document.getElementById('popupTitle').innerHTML='Draft Gagal';
-document.getElementById('popupText').innerHTML='Minimal isi judul funfact';
-return;
-}
-
-document.getElementById('statusKutip').value='Draft';
-document.getElementById('formKutipFunfact').submit();
-}
-</script>
 
 <?= $this->endSection() ?>

@@ -194,7 +194,6 @@ $showLoginPages = [
     'pneumonia',
     'diare'
 ];
-$showLoginPages = ['dbd','tbc','pneumonia','diare'];
 ?>
 
 <!-- NAVBAR -->
