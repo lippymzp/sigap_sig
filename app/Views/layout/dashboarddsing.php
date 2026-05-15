@@ -23,7 +23,7 @@
     <div class="sidebar">
         
         <div class="logo text-center">
-            <img src="/assets/img/maskotdsing.png" alt="Logo dsing" style="max-width: 160px; height: auto;">
+            <img src="/img/logodsing.png" alt="Logo dsing" style="max-width: 160px; height: auto;">
         </div>
 
         <div class="menu-label">HOME</div>
