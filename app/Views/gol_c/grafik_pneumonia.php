@@ -23,7 +23,7 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 
 body{
     background:#dcdcdc;
-    font-family:Poppins,sans-serif;
+    font-family:Poppins;
 }
 
 /* NAVBAR */
@@ -283,7 +283,7 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
     <div class="card-box">
 
         <div class="card-header-custom">
-            Kasus Berdasarkan Wilayah dan Status Pengobatan
+            Kasus Berdasarkan Wilayah dan kategori Umur
         </div>
 
         <div class="filter-wrapper">

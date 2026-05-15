@@ -548,8 +548,6 @@ $totalBerita = mysqli_num_rows($queryBerita);
 }
 
 /* CARD */
-/* CARD */
-/* CARD */
 .news-card{
     min-width: 380px;
     max-width: 380px;
