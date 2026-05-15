@@ -72,7 +72,9 @@ class LandingpageDbd extends BaseController
     // FUNFACT
     'funfact'       => $funfact,
     'video'         => $video,
-    'banner'        => $banner
+    'banner'        => $banner,
+    'show_footer_maskot' => true,
+    'footer_maskot' => 'logo_denggis.png'
 ]);
     }
 
