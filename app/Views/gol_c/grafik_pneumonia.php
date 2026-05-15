@@ -125,7 +125,7 @@ body{
 .chart-wrapper{
     position:relative;
     width:100%;
-    height:420px;
+    height:620px;
 }
 
 </style>

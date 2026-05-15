@@ -89,6 +89,10 @@ $routes->get('beritapneumonia/admin/delete/(:num)', 'BeritaPneumonia::delete/$1'
 
 $routes->get('beritapneumonia/admin/view/(:num)', 'BeritaPneumonia::view/$1');
 
+$routes->get(
+    'beritapneumonia/viewUser/(:num)', 'BeritaPneumonia::viewUser/$1'
+);
+
 $routes->get('beritapneumonia/admin/publish', 'BeritaPneumonia::publish');
 $routes->get('beritapneumonia/admin/draft', 'BeritaPneumonia::draft');
 

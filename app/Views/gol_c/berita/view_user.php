@@ -235,10 +235,6 @@ body{
 
 <div class="berita-container">
 
-    <!-- ICON -->
-    <img src="<?= base_url('img/nyamuk.png') ?>" class="icon-nyamuk">
-    <img src="<?= base_url('img/air.png') ?>" class="icon-air">
-
     <div class="berita-frame">
 
         <!-- HEADER -->
