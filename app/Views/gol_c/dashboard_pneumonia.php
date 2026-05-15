@@ -1357,20 +1357,25 @@ document.addEventListener("DOMContentLoaded", function () {
 ========================= */
 .chart-frame{
     width:100%;
-    height:1150px;
+    height:1450px;
     overflow:hidden;
     border-radius:18px;
+    background:#eaf9fb;
+    padding:0;
 }
 
 .chart-frame iframe{
     width:100%;
     height:100%;
     border:none;
+    border-radius:18px;
+    background:transparent;
 }
 </style>
 
    <!-- GRAFIK INTERAKTIF -->
-<div class="section-block">
+<!-- CHART -->
+<div class="section-block" id="grafik">
 
     <div class="section-header">
         <div>
