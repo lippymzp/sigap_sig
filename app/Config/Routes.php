@@ -357,6 +357,8 @@ $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
 /* ========================= */
 /* Landing Page TBC */
 /* ========================= */
+$routes->get('/tbc-detail', 'Home::tbc_detail');
+
 
 // ========================================
 // SKRINING TBC

@@ -46,6 +46,11 @@ public function diare_detail()
     return view('gol_d/diare_detail');
 
 }
+public function tbc_detail()
+{
+    return view('gol_b/tbc_detail');
+
+}
 
 public function cekdb()
 {
