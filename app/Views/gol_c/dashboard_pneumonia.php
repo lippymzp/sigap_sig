@@ -1369,7 +1369,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 </style>
 
-   <!-- CHART -->
+   <!-- GRAFIK INTERAKTIF -->
 <div class="section-block">
 
     <div class="section-header">
@@ -1377,26 +1377,12 @@ document.addEventListener("DOMContentLoaded", function () {
             <h5>Grafik Interaktif Penyebaran</h5>
             <p class="sub">Visualisasi kepadatan kasus berdasarkan grafik</p>
         </div>
-
-        <div class="filter-group">
-            <select>
-                <option>Semua Wilayah Desa</option>
-            </select>
-
-            <select>
-                <option>Semua Kategori</option>
-            </select>
-
-            <select>
-                <option>7 Hari Terbaru</option>
-            </select>
-        </div>
     </div>
 
     <div class="chart-frame">
     <iframe 
-        src="<?= base_url('grafik_pneumonia') ?>" 
-        frameborder="0">
+    src="<?= base_url('grafik_pneumonia?embed=1') ?>" 
+    frameborder="0">
     </iframe>
 </div>
     </div>

@@ -1,5 +1,7 @@
 <?php
 
+$embed = isset($_GET['embed']);
+
 $conn = mysqli_connect("localhost","root","","sigap_db");
 
 ?>
@@ -135,6 +137,9 @@ body{
 <body>
 
 <!-- NAVBAR -->
+<?php if(!$embed): ?>
+
+<!-- NAVBAR -->
 <div class="navbar-custom">
 
     <div class="logo-title">
@@ -150,6 +155,7 @@ body{
     </a>
 
 </div>
+<?php endif; ?>
 
 <?php
 
