@@ -293,7 +293,7 @@ public function tbc()
         'tbc' => $tbc
     ]);
 }
-
+    // DASHBOARD PNEUMONIA
     public function pneumonia()
 {
     $db = \Config\Database::connect();
