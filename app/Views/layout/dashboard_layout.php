@@ -13,6 +13,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <?= $this->renderSection('style'); ?>
+
+    <?php
+    $this->setVar('show_footer_maskot', true);
+    $this->setVar('footer_maskot', 'logo_tbc.png');
+    ?>
 </head>
 
 <body>
@@ -23,7 +28,7 @@
     <div class="sidebar">
         
         <div class="logo text-center">
-            <img src="/assets/img/logo_nama.svg" alt="Logo SIGAP" style="max-width: 160px; height: auto;">
+            <img src="<?= base_url('img/logotbc_navbar.png') ?>"alt="Logo SIGAP" style="max-width: 160px; height: auto;">
         </div>
 
         <div class="menu-label">HOME</div>
@@ -123,44 +128,6 @@
             <?= $this->renderSection('content'); ?>
         </div>
 
-        <footer class="footer mt-5" style="width:100%;">
-
-            <div class="container text-white py-5">
-
-                <div class="row">
-
-                    <div class="col-md-4 mb-4">
-                        <h5 class="fw-bold">LOGO</h5>
-                        <p>
-                            SIGAP<br>
-                            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-                        </p>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Media Sosial</h6>
-                        <p>📷 Instagram</p>
-                        <p>📘 Facebook</p>
-                        <p>🐦 Twitter</p>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
-                        <p>📧 Email: email@kampus.ac.id</p>
-                        <p>📍 Jember, Jawa Timur</p>
-                    </div>
-
-                </div>
-
-                <hr style="border-color: rgba(255,255,255,0.3)">
-
-                <p class="text-center mb-0">
-                    Hak Cipta © 2026 SIGAP
-                </p>
-
-            </div>
-
-        </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -209,4 +176,45 @@ function confirmLogout(url) {
 }
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const footerDesc = document.querySelector(".footer-desc");
+
+    if(footerDesc){
+
+        footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="Bryne Company-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    Bryne Company
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Smart Future Tech For Precision Monitoring
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+});
+</script>
+<div class="footer-dashboard">
+<?= $this->include('layout/footer_b') ?>
+</div>
 </html>

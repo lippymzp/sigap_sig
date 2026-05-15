@@ -286,12 +286,15 @@ public function tbc()
 
     $tbc = $builder->get()->getResultArray();
 
-    return view('gol_b/dashboard_tbc', [
-        'menu' => 'dashboard',
-        'berita' => $berita,
-        'funfact' => $funfact,
-        'tbc' => $tbc
-    ]);
+        return view('gol_b/dashboard_tbc', [
+            'menu' => 'dashboard',
+            'berita' => $berita,
+            'funfact' => $funfact,
+            'tbc' => $tbc,
+
+            'show_footer_maskot' => true,
+            'footer_maskot' => 'logo_tbc.png'
+        ]);
 }
 
     public function pneumonia()
