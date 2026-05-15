@@ -1867,11 +1867,12 @@ ambilDataAQI();
     </div>
 
     <div class="chart-frame">
-    <iframe 
+
+<iframe 
     src="<?= base_url('grafik_pneumonia?embed=1') ?>" 
     frameborder="0">
     </iframe>
-        </div>
+</div>
     </div>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>

@@ -55,10 +55,10 @@
             <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
         </a>
 
-        <a href="<?= base_url('grafik_pneumonia') ?>"
-    class="<?= ($menu == 'export') ? 'active' : '' ?>">
-    <i class="fa-solid fa-chart-area me-2"></i> Grafik
-</a>
+        <a href="<?= base_url('index.php/pneumonia/grafik') ?>"
+        class="<?= ($menu == 'export') ? 'active' : '' ?>">
+        <i class="fa-solid fa-chart-area me-2"></i> Grafik
+        </a>
 
         <a href="<?= base_url('index.php/' . $penyakit . '/pegawai') ?>"
             class="<?= ($menu == 'pegawai') ? 'active' : '' ?>">

@@ -269,6 +269,10 @@ class Pneumonia extends BaseController
         }
     }
 
+public function grafik()
+{
+    return view('gol_c/grafik_admin');
+}
 
 public function skriningpneumonia()
 {
@@ -770,3 +774,4 @@ public function skriningpneumonia3()
         echo "</table>";
     }
 }
+

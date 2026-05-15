@@ -1,18 +1,16 @@
 <?php
-
 $embed = isset($_GET['embed']);
-
-$conn = mysqli_connect("localhost","root","","sigap_db");
-
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
+<?php if(!$embed): ?>
 
-<head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php endif; ?>
+
+<?php
+$conn = mysqli_connect("localhost","root","","sigap_db");
+?>
+
 
 <title>Grafik Pneumonia</title>
 
@@ -133,9 +131,6 @@ body{
 
 </style>
 
-</head>
-
-<body>
 
 <!-- NAVBAR -->
 <?php if(!$embed): ?>
@@ -601,6 +596,6 @@ filterGender2.addEventListener('change', updateChart2);
 updateChart2();
 
 </script>
+<?php if(!$embed): ?>
 
-</body>
-</html>
+<?php endif; ?>

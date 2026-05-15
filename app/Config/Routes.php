@@ -72,6 +72,11 @@ $routes->get('pneumonia/get-tahun-list', 'pneumonia::get_tahun_list');
 $routes->get('pneumonia/export-hasil-data-pasien/pdf', 'pneumonia::export_pdf_pasien');
 $routes->get('pneumonia/export-hasil-data-pasien/excel', 'pneumonia::export_excel_pasien');
 
+/* ========================= */
+/* ADMIN GRAFIK PNEUMONIA */
+/* ========================= */
+$routes->get('pneumonia/grafik', 'Pneumonia::grafik');
+
 // ===========================
 // BERITA PNEUMONIA ADMIN
 // ===========================
