@@ -15,7 +15,7 @@
         <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
 
         <?php if (!empty($show_footer_maskot)): ?>
-           <img src="<?= base_url('img/' . ($footer_maskot ?? 'maskotdsing.png')) ?>"
+           <img src="<?= base_url('img/' . ($footer_maskot ?? 'logodsing.png')) ?>"
      alt="Maskot AI"
      class="footer-maskot">
         <?php endif; ?>
