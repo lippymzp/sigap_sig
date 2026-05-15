@@ -47,21 +47,24 @@
 
 <h2>DATA PASIEN DBD</h2>
 <div class="sub">
-    Hasil Export Berdasarkan Filter
+    Hasil Export Data Pasien DBD <br>
+    Dicetak pada :
+    <?= date('d-m-Y') ?>
 </div>
 
 <table>
     <thead>
         <tr>
             <th>No</th>
-            <th>No RM</th>
+            <th>NIK</th>
             <th>Nama</th>
-            <th>Tanggal</th>
+            <th>Tgl Kunjungan</th>
             <th>JK</th>
             <th>Usia</th>
-            <th>Kelurahan</th>
-            <th>Kecamatan</th>
-            <th>Alamat</th>
+            <th>Catatan Klinis</th>
+            <th>Alamat Lengkap</th>
+            <th>Status Akhir</th>
+            <th>Tindak Lanjut</th>
         </tr>
     </thead>
 
@@ -71,14 +74,54 @@
             <?php foreach ($data as $d) : ?>
     <tr>
         <td class="center"><?= $no++ ?></td>
-        <td><?= esc((string) ($d['no_rm'] ?? '')) ?></td>
-        <td><?= esc((string) ($d['nama_pasien'] ?? '')) ?></td>
-        <td class="center"><?= esc((string) ($d['tgl_kunjungan'] ?? '')) ?></td>
-        <td class="center"><?= esc((string) ($d['jenis_kelamin'] ?? '')) ?></td>
-        <td class="center"><?= esc((string) ($d['umur'] ?? '')) ?></td>
-        <td><?= esc((string) ($d['kelurahan'] ?? '')) ?></td>
-        <td><?= esc((string) ($d['kecamatan'] ?? '')) ?></td>
-        <td><?= esc((string) ($d['alamat_lengkap'] ?? '')) ?></td>
+
+        <td>
+            <?= esc((string) ($d['nik'] ?? '')) ?>
+        </td>
+
+        <td>
+            <?= esc((string) ($d['nama_pasien'] ?? '')) ?>
+        </td>
+
+        <td class="center">
+            <?= esc((string) ($d['tgl_kunjungan'] ?? '')) ?>
+        </td>
+
+        <td class="center">
+            <?= esc((string) ($d['jenis_kelamin'] ?? '')) ?>
+        </td>
+
+        <td class="center">
+            <?= esc((string) ($d['umur'] ?? '')) ?>
+        </td>
+
+        <td>
+            <?= esc((string) ($d['ctt_klinis'] ?? '')) ?>
+        </td>
+
+        <td>
+            <?= esc(
+                ($d['alamat_lengkap'] ?? '') .
+
+                ', RT ' . ($d['rt'] ?? '-') .
+                '/RW ' . ($d['rw'] ?? '-') .
+
+                ', Kel. ' . ($d['kelurahan'] ?? '-') .
+
+                ', Kec. ' . ($d['kecamatan'] ?? '-') .
+
+                ', ' . ($d['kabupaten'] ?? '-') .
+
+                ', ' . ($d['provinsi'] ?? '-')
+            ) ?>
+        </td>
+
+        <td>
+            <?= esc((string) ($d['status_akhir'] ?? '')) ?>
+        </td>
+        <td>
+            <?= esc((string) ($d['tindak_lanjut'] ?? '')) ?>
+        </td>
     </tr>
 <?php endforeach; ?>
         <?php else : ?>

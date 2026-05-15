@@ -175,7 +175,7 @@ body {
     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background:#00BBC2;"></div>
 </div>
 
-<form method="post" action="<?= base_url('skriningpneumonia/skriningpneumonia3') ?>">
+<form method="post" action="/skriningpneumonia/skriningpneumonia3">
 
 <!-- DATA HIDDEN -->
 <input type="hidden" name="nik" value="<?= $nik ?? '' ?>">
@@ -188,6 +188,10 @@ body {
 <input type="hidden" name="kabupaten" value="<?= $kabupaten ?? '' ?>">
 <input type="hidden" name="kecamatan" value="<?= $kecamatan ?? '' ?>">
 <input type="hidden" name="kelurahan" value="<?= $kelurahan ?? '' ?>">
+<input type="hidden" name="provinsi_nama" value="<?= $provinsi_nama ?? '' ?>">
+<input type="hidden" name="kabupaten_nama" value="<?= $kabupaten_nama ?? '' ?>">
+<input type="hidden" name="kecamatan_nama" value="<?= $kecamatan_nama ?? '' ?>">
+<input type="hidden" name="kelurahan_nama" value="<?= $kelurahan_nama ?? '' ?>">
 <input type="hidden" name="rt_rw" value="<?= $rt_rw ?? '' ?>">
 
 <div class="container mt-4">
@@ -236,36 +240,7 @@ $pertanyaan = [
 </div>
 
 <!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
-
-<div class="col-md-4">
-    <div class="logo-footer">LOGO</div>
-    <p class="mt-3"><b>SIGAP</b><br>
-    Sistem Informasi, Geografis Analisis & Pemantauan</p>
-    <a href="#">Tentang Kami</a>
-</div>
-
-<div class="col-md-4 text-center">
-    <h6>Media Sosial</h6>
-    <p>@username</p>
-</div>
-
-<div class="col-md-4 text-end">
-    <h6>Informasi Kontak</h6>
-    <p>Email: email@company.com</p>
-    <p>Lokasi: Jember, Jawa Timur</p>
-</div>
-
-</div>
-
-<hr>
-
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-
-</div>
-</div>
+<?= $this->include('layout/footer') ?>
 
 <!-- SCRIPT OPSI -->
 <script>
@@ -286,7 +261,7 @@ document.querySelectorAll('.opsi-group').forEach(group => {
 <!-- SCRIPT STEP -->
 <script>
 let currentGroup = 1;
-const questionPerPage = 3;
+const questionPerPage = 2;
 
 const steps = document.querySelectorAll('.step-form');
 const totalGroup = Math.ceil(steps.length / questionPerPage);

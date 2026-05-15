@@ -7,7 +7,7 @@
 <style>
 
 /* ===== STEP HEADER ===== */
-/* ===== STEP FIGMA FIX ===== */
+
 /* ===== STEP FINAL FIX ===== */
 .step-progress{
     position:relative;
@@ -76,24 +76,130 @@
     border-radius:15px;
 }
 
-/* ===== POPUP ===== */
+/* =========================
+   POPUP STYLE
+========================= */
 .popup{
     position:fixed;
-    top:0;left:0;
+    top:0;
+    left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.45);
     display:none;
     justify-content:center;
     align-items:center;
+    z-index:9999;
+    animation:fadeIn 0.2s ease;
 }
+
 .popup-box{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    width:320px;
+    width:360px;
+    background:#fff;
+    border-radius:24px;
+    padding:35px 30px;
     text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+    animation:popupScale 0.25s ease;
 }
+
+/* ICON */
+.popup-icon{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 18px auto;
+    font-size:38px;
+    font-weight:bold;
+}
+
+/* BERHASIL */
+.popup-success .popup-icon{
+    background:#e9fff3;
+    color:#00b96b;
+}
+
+/* GAGAL */
+.popup-error .popup-icon{
+    background:#ffeaea;
+    color:#ff4d4f;
+}
+
+/* TITLE */
+.popup-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#1e293b;
+}
+
+/* TEXT */
+.popup-text{
+    color:#64748b;
+    font-size:15px;
+    margin-bottom:22px;
+    line-height:1.5;
+}
+
+/* BUTTON */
+.popup-btn{
+    border:none;
+    background:#00BBC2;
+    color:white;
+    padding:10px 28px;
+    border-radius:14px;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.popup-btn:hover{
+    background:#00a5ab;
+    transform:translateY(-1px);
+}
+
+/* ANIMATION */
+@keyframes popupScale{
+    from{
+        transform:scale(0.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+    }
+}
+
+/* ===== BUTTON UBAH DATA ===== */
+.btn-ubah-data{
+    border:none;
+    background:none;
+    color:#7c8db5;
+    font-weight:600;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:0.2s;
+}
+
+.btn-ubah-data:hover{
+    color:#00BBC2;
+    transform:translateX(-2px);
+}
+
+
 </style>
 
 <div class="section-card">
@@ -190,8 +296,12 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-                <button class="btn-next" onclick="nextStep(2)">Lanjut →</button>
+                <button type="button" class="btn-next" onclick="nextStep(2)">
+                    Lanjut →
+                </button>
             </div>
+
+            
 
         </div>
 
@@ -371,13 +481,23 @@
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <label>Nama Pasien</label>
-                    <input name="nama" type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama">
+                    <label>NIK</label>
+                    <input name="nik" type="text" pattern="\d*" maxlength="16" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control custom-input" placeholder="Masukkan 16 digit NIK" id="nik" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label>Tanggal Kunjungan</label>
-                    <input name="tanggal" type="date" class="form-control custom-input" id="tanggal">
+                    <label>Nama Pasien</label>
+                    <input name="nama" type="text" class="form-control custom-input" placeholder="Nama sesuai KTP" id="nama" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Tanggal Lahir</label>
+                    <input name="tgl_lahir" type="date" class="form-control custom-input" id="tgl_lahir" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Usia (Otomatis)</label>
+                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia" readonly>
                 </div>
 
                 <div class="col-md-6">
@@ -387,8 +507,27 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label>Usia</label>
-                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia">
+                    <label>Tanggal Pemeriksaan</label>
+                    <input name="tanggal_pemeriksaan" type="date" class="form-control custom-input" id="tanggal_pemeriksaan" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Status Akhir</label>
+                    <select name="status_akhir" class="form-control custom-input" id="status_akhir" required>
+                        <option value="">Pilih Status</option>
+                        <option value="Sembuh">Sembuh</option>
+                        <option value="Meninggal">Meninggal</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Tindak Lanjut</label>
+                    <select name="tindak_lanjut" class="form-control custom-input" id="tindak_lanjut" required>
+                        <option value="">Pilih Tindak Lanjut</option>
+                        <option value="Larvasidasi">Larvasidasi</option>
+                        <option value="Fogging">Fogging</option>
+                        <option value="3M">3M</option>
+                    </select>
                 </div>
 
                 <div class="col-md-12">
@@ -399,17 +538,19 @@
             </div>
 
             <div class="d-flex justify-content-between mt-4">
-                <button class="btn-next" onclick="prevStep(1)">← Kembali</button>
-                <button class="btn-next" onclick="nextStep(3)">Lanjut →</button>
-            </div>
+                <button type="button" class="btn-next" onclick="prevStep(1)">
+                    ← Kembali
+                </button>
+                <button type="button" class="btn-next" onclick="nextStep(3)">
+                    Lanjut →
+                </button>
 
-        </div>
+    </div> <!-- d-flex -->
+    </div> <!-- card-summary -->
+    </div> <!-- col-md-8 -->
 
-    </div>
-
-</div>
-
-</div>
+    </div> <!-- row -->
+    </div> <!-- step2 -->
 
 <!-- ================= STEP 3 ================= -->
 <!-- ================= STEP 3 ================= -->
@@ -440,13 +581,8 @@
 
         <!-- OPTIONAL CHART -->
         <div class="card-summary text-center mt-3">
-
             <h6 class="fw-bold mb-3">Kelompok Usia</h6>
-
-            <img src="<?= base_url('img/chart.png') ?>" 
-                 class="img-fluid rounded"
-                 style="height:180px; object-fit:cover;">
-
+            <canvas id="usiaChart" height="180"></canvas>
         </div>
 
     </div>
@@ -461,7 +597,19 @@
             <!-- DATA -->
             <div class="summary-box">
 
-    <div class="row mb-2 align-items-start">
+    <div class="row mb-2">
+    <div class="col-4 text-muted">NIK</div>
+    <div class="col-1 text-center">:</div>
+    <div class="col-7 fw-semibold" id="sumNIK">-</div>
+    </div>
+
+    <div class="row mb-2">
+    <div class="col-4 text-muted">Nama Pasien</div>
+    <div class="col-1 text-center">:</div>
+    <div class="col-7 fw-semibold" id="sumNama">-</div>
+    </div>
+
+            <div class="row mb-2 align-items-start">
         <div class="col-4 text-muted">Alamat</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumAlamat">-</div>
@@ -474,15 +622,33 @@
     </div>
 
     <div class="row mb-2">
+        <div class="col-4 text-muted">Tanggal Lahir</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTglLahir">-</div>
+    </div>
+
+    <div class="row mb-2">
         <div class="col-4 text-muted">Usia</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumUsia">-</div>
     </div>
 
     <div class="row mb-2">
-        <div class="col-4 text-muted">Tanggal</div>
+        <div class="col-4 text-muted">Tanggal Pemeriksaan</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumTanggal">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Status Akhir</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumStatus">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Tindak Lanjut</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTindak">-</div>
     </div>
 
     <div class="row mb-3">
@@ -492,19 +658,41 @@
     </div>
 
     <!-- CHECK -->
-    <div class="form-check mt-3">
-        <input class="form-check-input" type="checkbox" id="confirm">
-        <label class="form-check-label">
-            Saya mengonfirmasi data benar
-        </label>
-    </div>
-
+    <div class="form-check mt-3" style="padding-left: 2rem;">
+    <input 
+        class="form-check-input" 
+        type="checkbox" 
+        id="confirm"
+        style="
+            width: 22px;
+            height: 22px;
+            border: 2px solid #0d6efd;
+            cursor: pointer;
+            margin-top: 2px;
+        "
+    >
+    <label 
+        class="form-check-label fw-semibold" 
+        for="confirm"
+        style="
+            font-size: 15px;
+            margin-left: 8px;
+            cursor: pointer;
+        "
+    >
+        Saya mengonfirmasi data benar
+    </label>
 </div>
 
 </div>
+
+</div>
+
 
             <!-- FORM SUBMIT -->
-            <form action="<?= base_url('dbd/simpandatapasien') ?>" method="post" onsubmit="return submitData()">
+            <form action="<?= base_url('dbd/simpandatapasien') ?>" 
+                  method="post" 
+                  onsubmit="return submitData()">
 
                 <input type="hidden" name="provinsi" id="formProvinsi">
                 <input type="hidden" name="kabupaten" id="formKabupaten">
@@ -516,59 +704,158 @@
                 <input type="hidden" name="lat" id="formLat">
                 <input type="hidden" name="lng" id="formLng">
 
+                <input type="hidden" name="nik" id="formNIK">
                 <input type="hidden" name="nama" id="formNama">
-                <input type="hidden" name="tanggal" id="formTanggal">
+                <input type="hidden" name="tgl_lahir" id="formTglLahir">
+                <input type="hidden" name="tanggal_pemeriksaan" id="formTanggalPemeriksaan">
                 <input type="hidden" name="jenis_kelamin" id="formJK">
                 <input type="hidden" name="usia" id="formUsia">
+                <input type="hidden" name="status_akhir" id="formStatus">
+                <input type="hidden" name="tindak_lanjut" id="formTindak">
                 <input type="hidden" name="catatan" id="formCatatan">
-                <input type="hidden" name="no_rm" id="formRM">
 
-                <div class="d-flex justify-content-between align-items-center mt-4">
+                    
+                <div class="d-flex justify-content-end align-items-center gap-3 mt-4">
 
+                <button 
+                    type="button"
+                    class="btn-ubah-data"
+                    onclick="prevStep(1)"
+                >
+                    <i class="fa-regular fa-pen-to-square"></i>
+                    Ubah Data
+                </button>
 
-                    <div class="d-flex justify-content-end gap-3 mt-4 w-100">
-    <button type="button" class="btn-next" onclick="prevStep(2)">← Kembali</button>
-    <button type="submit" class="btn-next">Simpan</button>
-</div>
+                <button type="submit" class="btn-next">
+                    Simpan
+                </button>
+
+            </div>
 
             </form>
 
         </div>
-
     </div>
-
 </div>
 
-</div>
+</div> <!-- END STEP 3 -->
 
-<!-- POPUP -->
-<div class="popup" id="popupSuccess">
-<div class="popup-box">
-<h5>Berhasil</h5>
-<p>Data berhasil disimpan</p>
-<button class="btn-next" onclick="closePopup()">OK</button>
-</div>
-</div>
+</div> <!-- END FORM BOX -->
+
+</div> <!-- END SECTION CARD -->
 
 <script>
 
 function nextStep(step){
 
-    // pindah step
+    // =========================
+    // VALIDASI STEP 1
+    // =========================
+    if(step === 2){
+
+        let kosong = [];
+
+        if(document.getElementById('rt').value === ''){
+            kosong.push('RT');
+        }
+
+        if(document.getElementById('rw').value === ''){
+            kosong.push('RW');
+        }
+
+        if(document.getElementById('alamat').value === ''){
+            kosong.push('Alamat');
+        }
+
+        if(document.getElementById('lat').value === ''){
+            kosong.push('Latitude');
+        }
+
+        if(document.getElementById('lng').value === ''){
+            kosong.push('Longitude');
+        }
+
+        if(kosong.length > 0){
+
+            showPopupGagal(
+                'Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.'
+            );
+
+            return;
+        }
+    }
+
+    // =========================
+    // VALIDASI STEP 2
+    // =========================
+    if(step === 3){
+
+        let kosong = [];
+
+        if(document.getElementById('nik').value === '' || document.getElementById('nik').value.length !== 16){
+            kosong.push('NIK (harus 16 digit)');
+        }
+
+        if(document.getElementById('nama').value === ''){
+            kosong.push('Nama Pasien');
+        }
+
+        if(document.getElementById('tgl_lahir').value === ''){
+            kosong.push('Tanggal Lahir');
+        }
+
+        if(document.getElementById('tanggal_pemeriksaan').value === ''){
+            kosong.push('Tanggal Pemeriksaan');
+        }
+
+        if(!document.querySelector('input[name="jk"]:checked')){
+            kosong.push('Jenis Kelamin');
+        }
+
+        if(document.getElementById('usia').value === ''){
+            kosong.push('Usia');
+        }
+        
+        if(document.getElementById('status_akhir').value === ''){
+            kosong.push('Status Akhir');
+        }
+
+        if(document.getElementById('tindak_lanjut').value === ''){
+            kosong.push('Tindak Lanjut');
+        }
+
+        if(document.getElementById('catatan').value === ''){
+            kosong.push('Catatan Klinis');
+        }
+
+        if(kosong.length > 0){
+
+            showPopupGagal(
+                'Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.'
+            );
+
+            return;
+        }
+    }
+
+    // =========================
+    // PINDAH STEP
+    // =========================
     document.getElementById('step1').style.display='none';
     document.getElementById('step2').style.display='none';
     document.getElementById('step3').style.display='none';
 
     document.getElementById('step'+step).style.display='block';
 
-    // update nav
     document.getElementById('stepNav1').classList.remove('active');
     document.getElementById('stepNav2').classList.remove('active');
     document.getElementById('stepNav3').classList.remove('active');
 
     document.getElementById('stepNav'+step).classList.add('active');
 
-    // ===== AUTO ISI STEP 3 =====
+    // =========================
+    // RINGKASAN STEP 3
+    // =========================
     if(step === 3){
 
         let prov = document.getElementById('provinsi').value;
@@ -579,8 +866,13 @@ function nextStep(step){
         let rw = document.getElementById('rw').value;
         let alamat = document.getElementById('alamat').value;
 
-        let tanggal = document.getElementById('tanggal').value;
+        let nik = document.getElementById('nik').value;
+        let nama = document.getElementById('nama').value;
+        let tgl_lahir = document.getElementById('tgl_lahir').value;
+        let tanggal = document.getElementById('tanggal_pemeriksaan').value;
         let usia = document.getElementById('usia').value;
+        let status = document.getElementById('status_akhir').value;
+        let tindak = document.getElementById('tindak_lanjut').value;
         let catatan = document.getElementById('catatan').value;
 
         let jk = document.querySelector('input[name="jk"]:checked');
@@ -590,48 +882,247 @@ function nextStep(step){
             prov + ', ' + kab + ', ' + kec + ', ' + desa +
             ' RT ' + rt + ' RW ' + rw + ' - ' + alamat;
 
+        document.getElementById('sumNIK').innerText = nik;
+        document.getElementById('sumNama').innerText = nama;
+        document.getElementById('sumTglLahir').innerText = tgl_lahir;
         document.getElementById('sumJK').innerText = jk;
         document.getElementById('sumUsia').innerText = usia;
         document.getElementById('sumTanggal').innerText = tanggal;
+        document.getElementById('sumStatus').innerText = status;
+        document.getElementById('sumTindak').innerText = tindak;
         document.getElementById('sumCatatan').innerText = catatan;
     }
 }
 
+document.getElementById('tgl_lahir').addEventListener('change', function() {
+    let dob = new Date(this.value);
+    let today = new Date();
+    if (!isNaN(dob.getTime())) {
+        let age = today.getFullYear() - dob.getFullYear();
+        let m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        document.getElementById('usia').value = age;
+    }
+});
 
-// ===== SUBMIT =====
+function prevStep(step){
+
+    document.getElementById('step1').style.display='none';
+    document.getElementById('step2').style.display='none';
+    document.getElementById('step3').style.display='none';
+
+    document.getElementById('step'+step).style.display='block';
+
+    document.getElementById('stepNav1').classList.remove('active');
+    document.getElementById('stepNav2').classList.remove('active');
+    document.getElementById('stepNav3').classList.remove('active');
+
+    document.getElementById('stepNav'+step).classList.add('active');
+}
+
 function submitData(){
 
+    // VALIDASI CHECKBOX
+    if(!document.getElementById('confirm').checked){
+
+        showPopupGagal(
+            'Silahkan centang konfirmasi data terlebih dahulu'
+        );
+
+        return false;
+    }
+
     // STEP 1
-    document.getElementById('formProvinsi').value = document.getElementById('provinsi').value;
-    document.getElementById('formKabupaten').value = document.getElementById('kabupaten').value;
-    document.getElementById('formKecamatan').value = document.getElementById('kecamatan').value;
-    document.getElementById('formDesa').value = document.getElementById('desa').value;
-    document.getElementById('formRT').value = document.getElementById('rt').value;
-    document.getElementById('formRW').value = document.getElementById('rw').value;
-    document.getElementById('formAlamat').value = document.getElementById('alamat').value;
-    document.getElementById('formLat').value = document.getElementById('lat').value;
-    document.getElementById('formLng').value = document.getElementById('lng').value;
+    document.getElementById('formProvinsi').value =
+        document.getElementById('provinsi').value;
+
+    document.getElementById('formKabupaten').value =
+        document.getElementById('kabupaten').value;
+
+    document.getElementById('formKecamatan').value =
+        document.getElementById('kecamatan').value;
+
+    document.getElementById('formDesa').value =
+        document.getElementById('desa').value;
+
+    document.getElementById('formRT').value =
+        document.getElementById('rt').value;
+
+    document.getElementById('formRW').value =
+        document.getElementById('rw').value;
+
+    document.getElementById('formAlamat').value =
+        document.getElementById('alamat').value;
+
+    document.getElementById('formLat').value =
+        document.getElementById('lat').value;
+
+    document.getElementById('formLng').value =
+        document.getElementById('lng').value;
 
     // STEP 2
-    document.getElementById('formNama').value = document.getElementById('nama').value;
-    document.getElementById('formTanggal').value = document.getElementById('tanggal').value;
-    document.getElementById('formUsia').value = document.getElementById('usia').value;
-    document.getElementById('formCatatan').value = document.getElementById('catatan').value;
+    document.getElementById('formNIK').value =
+        document.getElementById('nik').value;
+
+    document.getElementById('formNama').value =
+        document.getElementById('nama').value;
+
+    document.getElementById('formTglLahir').value =
+        document.getElementById('tgl_lahir').value;
+
+    document.getElementById('formTanggalPemeriksaan').value =
+        document.getElementById('tanggal_pemeriksaan').value;
+
+    document.getElementById('formUsia').value =
+        document.getElementById('usia').value;
+
+    document.getElementById('formStatus').value =
+        document.getElementById('status_akhir').value;
+
+    document.getElementById('formTindak').value =
+        document.getElementById('tindak_lanjut').value;
+
+    document.getElementById('formCatatan').value =
+        document.getElementById('catatan').value;
 
     let jk = document.querySelector('input[name="jk"]:checked');
-    document.getElementById('formJK').value = jk ? jk.value : '';
 
-    // popup
-    document.getElementById('popupSuccess').style.display = 'flex';
+    document.getElementById('formJK').value =
+        jk ? jk.value : '';
 
-    setTimeout(() => {
-        document.querySelector('form').submit();
-    }, 1200);
-
-    return false;
+    return true;
 }
 
 </script>
 
+<!-- chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('usiaChart');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: <?= $labelChart ?>,
+
+        datasets: [{
+
+            label: 'Jumlah Pasien',
+
+            data: <?= $totalChart ?>,
+
+            borderRadius: 10,
+
+            backgroundColor: [
+                '#36A2EB',
+                '#4BC0C0',
+                '#0B4F6C',
+                '#9BC4E2',
+                '#00BCD4'
+            ]
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+</script>
+
+<!-- pesan suskes atau gagal -->
+
+<<div 
+    class="popup popup-success" 
+    id="popupSuccess"
+    style="<?= session()->getFlashdata('success') ? 'display:flex;' : 'display:none;' ?>"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icon">
+            ✓
+        </div>
+
+        <div class="popup-title">
+            Berhasil
+        </div>
+
+        <div class="popup-text">
+            Data pasien berhasil disimpan
+        </div>
+
+        <button class="popup-btn" onclick="closePopupSuccess()">
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+<div 
+    class="popup popup-error" 
+    id="popupGagal"
+    style="<?= session()->getFlashdata('error') ? 'display:flex;' : 'display:none;' ?>"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icon">
+            ✕
+        </div>
+
+        <div class="popup-title">
+            Gagal
+        </div>
+
+        <div class="popup-text" id="popupGagalText">
+            <?= session()->getFlashdata('error') ?? 'Data belum lengkap' ?>
+        </div>
+
+        <button class="popup-btn" onclick="closePopupGagal()">
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function showPopupGagal(pesan){
+    document.getElementById('popupGagalText').innerText = pesan;
+    document.getElementById('popupGagal').style.display = 'flex';
+}
+
+function closePopupGagal(){
+    document.getElementById('popupGagal').style.display = 'none';
+}
+
+function closePopupSuccess(){
+    document.getElementById('popupSuccess').style.display = 'none';
+}
+
+</script>
 
 <?= $this->endSection() ?>

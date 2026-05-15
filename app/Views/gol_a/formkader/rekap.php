@@ -81,8 +81,8 @@ body { background:#f8f9fa; }
 
 <!-- REKAP -->
 <div class="alert alert-info">
-<b>Diperiksa:</b> <span id="diperiksa"><?= $totalDiperiksa ?></span> |
-<b>Positif:</b> <span id="positif"><?= $totalPositif ?></span>
+<b>Diperiksa:</b> <span id="diperiksa"><?= $totalDiperiksa ?? 0 ?></span> |
+<b>Positif:</b> <span id="positif"><?= $totalPositif ?? 0 ?></span>
 </div>
 
 <!-- TABLE -->
@@ -108,7 +108,7 @@ body { background:#f8f9fa; }
 $no = 1;
 
 /* 🔥 INI FIX UTAMA */
-foreach($laporanpsn as $pos => $data):
+foreach(($laporanpsn ?? []) as $pos => $data):
 
 $status = $data ? 'sudah' : 'belum';
 ?>

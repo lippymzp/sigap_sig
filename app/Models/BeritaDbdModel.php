@@ -10,13 +10,15 @@ class BeritaDbdModel extends Model
     protected $primaryKey = 'id_berita';
 
     protected $allowedFields = [
-        'id_berita',
         'id_petugas',
+        'id_penyakit',
         'judul_berita',
+        'isi_berita',
         'deskripsi_berita',
         'gambar_berita',
         'tanggal_berita',
         'url_berita',
-        'status_berita'
+        'status_berita',
+        'penulis'
     ];
 }

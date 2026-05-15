@@ -1,49 +1,327 @@
-<footer class="footer mt-5">
 
-<div class="container text-white py-5">
+<footer class="footer-sigap mt-5">
 
-<div class="row">
+<div class="container">
 
-    <!-- LOGO -->
-    <div class="col-md-4 mb-4" data-aos="fade-up">
-        <h5 class="fw-bold">LOGO</h5>
-        <p>
-            SIGAP<br>
-            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-        </p>
+    <div class="row gy-5">
+
+        <!-- LOGO & DESKRIPSI -->
+        <div class="col-lg-6" data-aos="fade-up">
+
+            <div class="footer-brand">
+
+    <div class="footer-brand-top">
+
+        <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
+
+        <?php if (!empty($show_footer_maskot)): ?>
+           <img src="<?= base_url('img/' . ($footer_maskot ?? 'logodsing.png')) ?>"
+     alt="Maskot AI"
+     class="footer-maskot">
+        <?php endif; ?>
+
     </div>
 
-    <!-- SOSIAL -->
-    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
-        <h6 class="fw-bold mb-3">Media Sosial</h6>
+    <h3 class="footer-title">MEDIXA</h3>
 
-        <p>📷 Instagram</p>
-        <p>📘 Facebook</p>
-        <p>🐦 Twitter</p>
-    </div>
-
-    <!-- KONTAK -->
-    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
-        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
-
-        <p>📧 Email: email@kampus.ac.id</p>
-        <p>📍 Jember, Jawa Timur</p>
-    </div>
-
+    <p class="footer-desc">
+        Medical Innovation & Excellence Alliance
+    </p>
 </div>
+                <div class="footer-links mt-5"> 
+                <a href="/tentang-kami">Tentang Kami</a>
+            </div>
 
-<hr style="border-color: rgba(255,255,255,0.3)">
+        </div>
 
-<p class="text-center mb-0">
-    Hak Cipta © 2026 SIGAP
-</p>
+        <!-- SOSIAL -->
+        <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="100">
+
+            <h5 class="footer-heading">Media Sosial</h5>
+
+            <div class="social-item">
+                <i class="bi bi-instagram"></i>
+                <span>sigap.co.id</span>
+            </div>
+
+        </div>
+
+        <!-- KONTAK -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+
+            <h5 class="footer-heading">Informasi Kontak</h5>
+
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </div>
+
+                <div>
+                    <h6>Email</h6>
+                    <p>medixatechnology@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="contact-item mt-4">
+                <div class="contact-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+
+                <div>
+                    <h6>Lokasi</h6>
+                    <p>
+                        Jl. Mastrip, Krajan Timur, Sumbersari,
+                        Kec. Sumbersari, Kabupaten Jember,
+                        Jawa Timur 68121
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GARIS -->
+    <div class="footer-line"></div>
 
 </div>
 
 </footer>
 
+<style>
+
+/* =========================================
+   FOOTER SIGAP
+========================================= */
+
+.footer-sigap{
+    background:#014F4F;
+    padding:80px 0 30px;
+    position:relative;
+    overflow:hidden;
+}
+.footer-dashboard .footer-sigap{
+    margin-left:260px;
+    width:calc(100% - 260px);
+    transition: all 0.3s ease;
+}
+/* SAAT SIDEBAR DITUTUP */
+.wrapper.hide ~ .footer-dashboard .footer-sigap{
+    margin-left:0;
+    width:100%;
+}
+@media (max-width:768px){
+    .footer-dashboard .footer-sigap{
+        margin-left:0;
+        width:100%;
+    }
+}
+/* CONTAINER */
+.footer-sigap .container{
+    position:relative;
+    z-index:2;
+}
+
+/* LOGO */
+.footer-brand-top {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+}
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.footer-logo {
+    width: 140px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
+}
+
+.footer-maskot {
+    width: 115px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    filter: none;
+    box-shadow: none;
+    animation: none;
+    transform: none;
+     filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
+}
+
+/* TITLE */
+.footer-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+
+/* DESC */
+.footer-desc {
+    color: #E8FFFF;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 500px;
+    margin-bottom: 28px;
+}
+
+/* HEADING */
+.footer-heading{
+    color:#fff;
+    font-size:1.4rem;
+    font-weight:700;
+    margin-bottom:25px;
+}
+
+/* LINKS */
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: underline;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: 0.3s;
+    width: fit-content;
+}
+
+.footer-links a:hover{
+    color:#40EDD0;
+    transform:translateX(5px);
+}
+
+/* SOCIAL */
+.social-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#fff;
+    font-size:1.1rem;
+}
+
+.social-item i{
+    font-size:1.3rem;
+}
+
+/* CONTACT */
+.contact-item{
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+}
+
+/* ICON */
+.contact-icon{
+    width:55px;
+    height:55px;
+    background:#E8FFFF;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.contact-icon i{
+    color:#014F4F;
+    font-size:1.3rem;
+}
+
+/* CONTACT TEXT */
+.contact-item h6{
+    color:#fff;
+    font-weight:700;
+    margin-bottom:6px;
+    font-size:1.1rem;
+}
+
+.contact-item p{
+    color:#E8FFFF;
+    line-height:1.7;
+    margin:0;
+    font-size:1rem;
+}
+
+/* LINE */
+.footer-line{
+    width:100%;
+    height:1px;
+    background:rgba(255,255,255,0.4);
+    margin:30px 0 15px;
+}
+
+/* COPYRIGHT */
+.footer-bottom{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.footer-bottom p{
+    color:#fff;
+    margin:0;
+    font-size:1rem;
+}
+
+/* RESPONSIVE */
+@media(max-width:991px){
+
+    .footer-bottom{
+        justify-content:center;
+        text-align:center;
+    }
+
+    .footer-logo{
+        width:120px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .footer-sigap{
+        padding:60px 0 25px;
+    }
+
+    .footer-title{
+        font-size:1.7rem;
+    }
+
+    .footer-desc{
+        font-size:1rem;
+    }
+
+    .footer-heading{
+        margin-top:10px;
+    }
+.footer-brand-top{
+    justify-content:center;
+    flex-wrap:wrap;
+    text-align:center;
+}
+
+.footer-maskot{
+    width:90px;
+}
+}
+
+</style>
+
 <!-- BOOTSTRAP -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- BOOTSTRAP ICON -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <!-- LEAFLET -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -53,10 +331,12 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
+
     AOS.init({
-        duration: 1000,
-        once: true
+        duration:1000,
+        once:true
     });
+
 });
 </script>
 

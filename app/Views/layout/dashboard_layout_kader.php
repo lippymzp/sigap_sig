@@ -6,69 +6,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'SIGAP'; ?></title>
 
-    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <!-- FOOTER STYLE -->
     <style>
-    /* ===== FOOTER FINAL (SESUAI GAMBAR) ===== */
-.footer {
-    position: relative;
-    left: -260px; /* tarik ke kiri sebesar sidebar */
-    width: calc(100% + 260px); /* tambah lebar supaya full */
-    
-    background: #11b5b9;
-    color: white;
-    padding: 35px 0 15px;
-    margin-top: 40px;
-}
+        /* 1. Efek scroll mulus dan jarak batas atas */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 180px; 
+        }
 
-/* biar ngikut konten (bukan sidebar) */
-.main-content .footer {
+        /* 2. Pastikan Topbar dan Sidebar selalu berada di lapisan paling atas */
+        .topbar {
+            z-index: 9990 !important;
+            position: relative; 
+        }
+        .sidebar {
+            z-index: 9999 !important;
+        }
+
+        /* ===== FIX FOOTER FULL + TIDAK KETUTUP SIDEBAR ===== */
+        .footer {
+            background: #11b5b9;
+            color: white;
+            padding: 35px 0 15px;
+            margin-top: 40px;
+        }
+
+        .main-content .footer { width: 100%; }
+        .footer h6 { font-weight: 600; font-size: 15px; margin-bottom: 10px; }
+        .footer p { font-size: 13px; margin-bottom: 5px; }
+        .footer hr { border-color: rgba(255,255,255,0.2); margin: 15px 0; }
+
+        @media (max-width: 768px) {
+            .footer .col-md-4 { text-align: center !important; margin-bottom: 15px; }
+        }
+
+        /* =========================================
+           STYLE MODAL KONFIRMASI LOGOUT 
+           ========================================= */
+        .logout-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px);
+            z-index: 100000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .logout-overlay.show { opacity: 1; display: flex; }
+
+        .logout-card {
+            background: #FFFFFF; width: 100%; max-width: 360px;
+            border-radius: 20px; padding: 40px 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center; transform: scale(0.9); transition: transform 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        .logout-overlay.show .logout-card { transform: scale(1); }
+
+        .logout-icon-circle {
+            background-color: #F44336; 
+            width: 70px; height: 70px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px auto; color: white; font-size: 35px;
+        }
+
+        .logout-title {
+            font-weight: 700; font-size: 24px; color: #111; 
+            margin-bottom: 25px; line-height: 1.3;
+        }
+
+        .logout-btn-group {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .btn-logout-ya {
+            background-color: #00BBC2; color: white; border: none; border-radius: 30px;
+            padding: 12px; font-weight: 600; font-size: 18px; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 187, 194, 0.3); transition: 0.3s;
+        }
+        .btn-logout-ya:hover { background-color: #009ca2; color: white; }
+
+        .btn-logout-tidak {
+            background-color: #D5D5D5; color: white; border: none; border-radius: 30px;
+            padding: 12px; font-weight: 600; font-size: 18px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .btn-logout-tidak:hover { background-color: #C0C0C0; color: white; }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: white;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .contact-item i {
+            width: 20px;
+            min-width: 20px;
+            font-size: 16px;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+
+        .contact-item span {
+            flex: 1;
+        }
+.sidebar .logo {
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
-/* text */
-.footer h6 {
-    font-weight: 600;
-    font-size: 15px;
-    margin-bottom: 10px;
-}
-
-.footer p {
-    font-size: 13px;
-    margin-bottom: 5px;
-}
-
-/* garis */
-.footer hr {
-    border-color: rgba(255,255,255,0.2);
-    margin: 15px 0;
-}
-
-/* logo */
-.footer img {
-    margin-bottom: 8px;
-}
-
-/* responsive */
-@media (max-width: 768px) {
-    .footer .col-md-4 {
-        text-align: center !important;
-        margin-bottom: 15px;
-    }
+.sidebar .logo img {
+    max-width: 115px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
 }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <?= $this->renderSection('style'); ?>
 </head>
-
-<body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <?php
@@ -76,27 +142,42 @@ $penyakit = session('penyakit') ?? 'dbd';
 $menu = $menu ?? '';
 ?>
 
+<?php
+$db = \Config\Database::connect();
+
+$id_petugas = session()->get('id_petugas');
+
+$profil = $db->table('profil')
+    ->where('id_petugas', $id_petugas)
+    ->get()
+    ->getRowArray();
+
+$fotoNavbar = (!empty($profil['foto_profil']))
+    ? base_url('uploads/profil/' . $profil['foto_profil'])
+    : 'https://i.ibb.co.com/0jZ7Z7Z/male-avatar.png';
+?>
+
 <div class="wrapper" id="wrapper">
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo text-center">
-            <img src="/assets/img/logo_nama.svg" alt="Logo SIGAP" style="max-width: 160px;">
-        </div>
+    <img src="<?= base_url('img/logo_denggis.png') ?>" 
+         alt="Logo SIGAP">
+</div>
 
         <div class="menu-label">HOME</div>
 
-        <a href="<?= base_url('kader/dashboard') ?>" class="<?= ($menu == 'dashboard_kader') ? 'active' : '' ?>">
+        <a href="<?= base_url('dbd/dashboard/kader') ?>" id="nav-dashboard" class="<?= ($menu == 'dashboard') ? 'active' : '' ?>">
             <i class="fa-solid fa-house me-2"></i> Dashboard
         </a>
 
         <div class="menu-label">MENU UTAMA</div>
 
-        <a href="<?= base_url('peta_sebaran') ?>" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
+        <a href="<?= base_url('dbd/dashboard/kader#map') ?>" id="nav-map" class="<?= ($menu == 'peta_sebaran') ? 'active' : '' ?>">
             <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
         </a>
 
-        <a href="<?= base_url('kader/dashboard#grafik') ?>" class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
+        <a href="<?= base_url('dbd/dashboard/kader#grafik') ?>" id="nav-grafik" class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
             <i class="fa-solid fa-chart-column me-2"></i> Grafik
         </a>
 
@@ -111,10 +192,8 @@ $menu = $menu ?? '';
         </a>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content">
 
-        <!-- TOPBAR -->
         <div class="topbar d-flex justify-content-between align-items-center">
 
             <div class="d-flex align-items-center">
@@ -131,9 +210,24 @@ $menu = $menu ?? '';
                 </div>
 
                 <div class="dropdown avatar-dropdown">
-                    <div class="avatar-circle" data-bs-toggle="dropdown" style="cursor:pointer;">
-                        <i class="fa-regular fa-user text-white"></i>
-                    </div>
+                        <div class="avatar-circle"
+                            data-bs-toggle="dropdown"
+                            style="
+                                cursor:pointer;
+                                width:45px;
+                                height:45px;
+                                border-radius:50%;
+                                overflow:hidden;
+                            ">
+
+                            <img src="<?= $fotoNavbar; ?>"
+                                style="
+                                    width:100%;
+                                    height:100%;
+                                    object-fit:cover;
+                                ">
+
+                        </div>
 
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li>
@@ -142,93 +236,116 @@ $menu = $menu ?? '';
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="<?= base_url('/logout') ?>" onclick="return confirm('Yakin mau keluar?')">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-                            </a>
+                            <a class="dropdown-item"
+       href="javascript:void(0)"
+       onclick="confirmLogout('<?= base_url('logout') ?>')">
+       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+    </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- CONTENT -->
         <div class="content-body">
             <?= $this->renderSection('content'); ?>
         </div>
-
-        <!-- FOOTER -->
-        <footer class="footer mt-4">
-            <div class="container-fluid py-4 px-4">
-                <div class="row">
-
-                    <!-- LOGO -->
-    <div class="col-md-4 text-center mb-2">
-
-        <div class="logo mb-1">
-            <img src="<?= base_url('img/Logo_Sigap.png') ?>" 
-                 alt="Logo SIGAP" 
-                 style="max-width:55px;">
         </div>
-
-        <h6 class="fw-bold mb-1">SIGAP</h6>
-
-        <p class="small mb-0" style="line-height:1.3;">
-            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-        </p>
-
-    </div>
-
-                     <!-- SOSIAL -->
-    <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Media Sosial</h6>
-
-        <p class="mb-0 small"><i class="fab fa-instagram me-2"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook me-2"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter me-2"></i>Twitter</p>
-    </div>
-
-    <!-- KONTAK -->
-    <div class="col-md-4 mb-2">
-        <h6 class="fw-bold mb-1">Informasi Kontak</h6>
-
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
-    </div>
-
-</div>
-
-<hr class="my-2" style="border-color: rgba(255,255,255,0.2)">
-
-<p class="text-center small mb-0">
-    © 2026 SIGAP
-</p>
-
-</div>
-</footer>
-
-    </div>
-</div>
-
-<!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<?= base_url('js/script.js') ?>"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<?= $this->renderSection('script'); ?>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
+        </div>
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
     const toggle = document.getElementById("toggleSidebar");
     const wrapper = document.getElementById("wrapper");
 
     if (toggle && wrapper) {
-        toggle.addEventListener("click", function() {
+        toggle.addEventListener("click", function () {
             wrapper.classList.toggle("hide");
         });
     }
+    // ============================================================
+    // 2. LOGIKA ACTIVE MENU OTOMATIS BERDASARKAN URL HASH (#)
+    // ============================================================
+    function updateActiveSidebarMenu() {
+        const currentHash = window.location.hash;
+        const currentPath = window.location.pathname;
+
+        // Script ini hanya bekerja jika kita sedang berada di halaman dashboard
+        if (currentPath.includes('dashboard')) {
+            const navDashboard = document.getElementById('nav-dashboard');
+            const navMap = document.getElementById('nav-map');
+            const navGrafik = document.getElementById('nav-grafik');
+
+            // Jika elemen tidak ditemukan, hentikan fungsi
+            if(!navDashboard || !navMap || !navGrafik) return; 
+
+            // Hapus blok warna dari ketiga menu dashboard
+            navDashboard.classList.remove('active');
+            navMap.classList.remove('active');
+            navGrafik.classList.remove('active');
+
+            // Tambahkan blok warna sesuai tujuan Hash
+            if (currentHash === '#map') {
+                navMap.classList.add('active');
+            } else if (currentHash === '#grafik') {
+                navGrafik.classList.add('active');
+            } else {
+                // Jika tidak ada hash (standar), warnai Dashboard
+                navDashboard.classList.add('active');
+            }
+        }
+    }
+
+    // Jalankan pengecekan pertama kali saat halaman baru dimuat
+    updateActiveSidebarMenu();
+
+    // Jalankan kembali pengecekan setiap kali menu sidebar (yang ada # nya) diklik
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            // Cek apakah link yang diklik mengarah ke Hash (#)
+            if (href.includes('#')) {
+                // Berikan sedikit jeda agar URL di browser sempat terupdate
+                setTimeout(updateActiveSidebarMenu, 50);
+            }
+        });
+    });
+});
+
+/* --- FUNGSI MODAL LOGOUT --- */
+function showLogoutModal(e) {
+    e.preventDefault(); 
+    document.getElementById('modalLogoutOverlay').classList.add('show');
+}
+
+function closeLogoutModal() {
+    document.getElementById('modalLogoutOverlay').classList.remove('show');
+}
+
+document.getElementById('modalLogoutOverlay').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLogoutModal();
+    }
 });
 </script>
-
-</body>
-</html>
+  <div class="footer-dashboard">
+    <?= $this->include('layout/footer') ?>
+</div>
+<script>
+function confirmLogout(url) {
+    Swal.fire({
+        title: 'Yakin ingin keluar?',
+        text: "Sesi login akan diakhiri",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Keluar!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>

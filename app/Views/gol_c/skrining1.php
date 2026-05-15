@@ -93,26 +93,7 @@ body {
 }
 
 /* FOOTER */
-.footer {
-    background: #00BBC2;
-    color: white;
-    padding: 40px 0;
-    margin-top: 120px;
-}
-.footer a {
-    color: white;
-    text-decoration: none;
-}
-.logo-footer {
-    width: 60px;
-    height: 60px;
-    background: red;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
+
 .row {
     row-gap: 20px; /* jarak atas bawah */
     column-gap: 0px; /* jarak kiri kanan */
@@ -120,6 +101,17 @@ body {
 }
 body {
     font-family: 'Poppins', sans-serif;
+}
+
+
+
+
+/* responsive */
+@media(max-width:768px){
+    .footer-content{
+        flex-direction:column;
+        text-align:center;
+    }
 }
 </style>
 </head>
@@ -215,6 +207,11 @@ body {
 <select name="kelurahan" id="kelurahan" class="form-select"></select>
 </div>
 
+<input type="hidden" name="provinsi_nama" id="provinsi_nama">
+<input type="hidden" name="kabupaten_nama" id="kabupaten_nama">
+<input type="hidden" name="kecamatan_nama" id="kecamatan_nama">
+<input type="hidden" name="kelurahan_nama" id="kelurahan_nama">
+
 <div class="mb-3">
 <label>RT/RW</label>
 <input type="text" name="rt_rw" id="rt_rw" class="form-control">
@@ -235,34 +232,7 @@ body {
 </div>
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
-
-<div class="col-md-4">
-<div class="logo-footer">LOGO</div>
-<p class="mt-3"><b>SIGAP</b><br>
-Sistem Informasi, Geografis Analisis & Pemantauan</p>
-<a href="#">Tentang Kami</a>
-</div>
-
-<div class="col-md-4">
-<h6>Media Sosial</h6>
-<p>@username</p>
-</div>
-
-<div class="col-md-4">
-<h6>Informasi Kontak</h6>
-<p>Email: email@company.com</p>
-<p>Lokasi: Jember, Jawa Timur</p>
-</div>
-
-</div>
-<hr>
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-</div>
-</div>
+<?= $this->include('layout/footer') ?>
 
 <!-- SCRIPT -->
 <script>
@@ -318,6 +288,42 @@ document.getElementById('kecamatan').addEventListener('change', function(){
             kel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
         });
     });
+});
+
+document.getElementById('provinsi').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('provinsi_nama').value =
+        nama;
+});
+
+document.getElementById('kabupaten').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kabupaten_nama').value =
+        nama;
+});
+
+document.getElementById('kecamatan').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kecamatan_nama').value =
+        nama;
+});
+
+document.getElementById('kelurahan').addEventListener('change', function () {
+
+    let nama =
+        this.options[this.selectedIndex].text;
+
+    document.getElementById('kelurahan_nama').value =
+        nama;
 });
 
 // AUTO KODE POS (dummy)

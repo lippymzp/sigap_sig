@@ -1,7 +1,20 @@
 <?php $this->setVar('penyakit', 'diare'); ?>
+<?php 
+$this->setVar('penyakit', 'diare');
+$this->setVar('show_footer_maskot', true);
+?>
 <?= $this->include('layout/header') ?>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<div class="diare-page">
 <style>
+.diare-page,
+.diare-page *{
+    font-family:'Poppins', sans-serif !important;
+}
 :root{
     --primary:#40EDD0;
     --dark:#00CED1;
@@ -48,14 +61,27 @@ body{
     border-radius:30px;
 }
 
-/* FITUR */
 .fitur-box{
-    background:var(--card);
-    padding:18px;
-    border-radius:12px;
-    font-weight:600;
-    color:var(--dark);
-    transition:0.3s;
+    background: var(--card);
+    border-radius: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    transition: 0.3s;
+
+    width: 100%;
+    height: 86px;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    padding: 12px 16px;
+    line-height: 1.4;
+
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+
+    text-decoration: none;
 }
 
 .fitur-box:hover{
@@ -89,6 +115,470 @@ body{
 .btn-teal:hover{
     background:var(--accent);
 }
+/* ==================================
+   AI BUTTON
+================================== */
+
+/* ======================================
+   AI FLOATING MASCOT
+====================================== */
+
+/* ======================================
+   DOXY FLOATING AI
+====================================== */
+
+/* ======================================
+   DOXY FLOATING ASSISTANT
+====================================== */
+.ai-button{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    animation: floatDoxy 3s ease-in-out infinite;
+    transition: 0.3s ease;
+}
+
+/* WRAPPER */
+.ai-wrap{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MASKOT */
+.ai-mascot{
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(143, 76, 255, 0.25));
+    transition: 0.3s ease;
+}
+
+/* LABEL MENYATU */
+.ai-label{
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: linear-gradient(135deg, #ff6fd8, #c44dff);
+    color: white;
+
+    padding: 6px 16px;
+    border-radius: 999px;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: nowrap;
+
+    box-shadow:
+        0 8px 20px rgba(196,77,255,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+
+    border: 2px solid rgba(255,255,255,0.35);
+}
+
+/* HOVER */
+.ai-button:hover .ai-mascot{
+    transform: scale(1.08) rotate(3deg);
+}
+
+.ai-button:hover .ai-label{
+    transform: translateX(-50%) scale(1.05);
+}
+
+/* FLOAT */
+@keyframes floatDoxy{
+    0%,100%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-10px);
+    }
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .ai-mascot{
+        width: 100px;
+        height: 100px;
+    }
+
+    .ai-label{
+        font-size: 12px;
+        padding: 5px 13px;
+        top: -6px;
+    }
+
+    .ai-button{
+        bottom: 15px;
+        right: 10px;
+    }
+}
+
+/* ======================================
+   AI FLOATING BUTTON
+====================================== */
+
+
+.ai-button:hover{
+
+    transform: scale(1.1);
+
+}
+
+@keyframes pulseAI{
+
+    0%{
+        box-shadow: 0 0 0 0 rgba(64,237,208,0.5);
+    }
+
+    70%{
+        box-shadow: 0 0 0 20px rgba(64,237,208,0);
+    }
+
+    100%{
+        box-shadow: 0 0 0 0 rgba(64,237,208,0);
+    }
+
+}
+
+/* ======================================
+   CHAT BOX
+====================================== */
+
+.ai-chat-box{
+    position: fixed;
+    bottom: 130px;
+    right: 30px;
+    width: 380px;
+    height: 570px;
+
+    background: linear-gradient(
+        180deg,
+        #fff7ff 0%,
+        #f8f2ff 35%,
+        #f3f6ff 100%
+    );
+
+    border-radius: 28px;
+    overflow: hidden;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+
+    border: 2px solid rgba(255,255,255,0.7);
+
+    box-shadow:
+        0 25px 60px rgba(155, 81, 224, 0.25),
+        0 10px 25px rgba(255, 105, 180, 0.18);
+
+    animation: showChat 0.3s ease;
+}
+
+@keyframes showChat{
+
+    from{
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* HEADER */
+
+.ai-header{
+    background: linear-gradient(
+        135deg,
+        #ff6fd8 0%,
+        #d946ef 35%,
+        #8b5cf6 70%,
+        #6366f1 100%
+    );
+
+    color: white;
+    padding: 18px 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 6px 20px rgba(168,85,247,0.25);
+}
+
+.ai-header b{
+
+    font-size: 18px;
+
+}
+
+.ai-header small{
+
+    opacity: 0.9;
+
+}
+
+.ai-header button{
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(8px);
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+
+    color: white;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+.ai-header button:hover{
+    transform: rotate(90deg);
+    background: rgba(255,255,255,0.35);
+}
+
+/* BODY */
+
+.ai-body{
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+
+    background: linear-gradient(
+        180deg,
+        #fff8ff 0%,
+        #f9f3ff 50%,
+        #f3f8ff 100%
+    );
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* MESSAGE */
+
+.bot-message,
+.user-message{
+
+    padding: 14px 18px;
+
+    border-radius: 18px;
+
+    margin-bottom: 15px;
+
+    max-width: 80%;
+
+    line-height: 1.7;
+
+    font-size: 14px;
+
+    animation: fadeChat 0.3s ease;
+
+}
+
+@keyframes fadeChat{
+
+    from{
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* BOT */
+
+.bot-message{
+    background: linear-gradient(
+        135deg,
+        #ffe8ff 0%,
+        #f4d8ff 45%,
+        #e4e7ff 100%
+    );
+
+    color: #4b2d73;
+
+    padding: 15px 18px;
+    border-radius: 22px;
+    margin-bottom: 15px;
+    max-width: 82%;
+    line-height: 1.7;
+    font-size: 14px;
+
+    box-shadow:
+        0 8px 20px rgba(196,77,255,0.08);
+
+    align-self: flex-start;
+}
+
+/* USER */
+
+.user-message{
+    background: linear-gradient(
+        135deg,
+        #ff6fd8 0%,
+        #c44dff 45%,
+        #6366f1 100%
+    );
+
+    color: white;
+
+    padding: 14px 18px;
+    border-radius: 22px;
+    margin-bottom: 15px;
+    max-width: 82%;
+    line-height: 1.7;
+    font-size: 14px;
+
+    box-shadow:
+        0 10px 20px rgba(168,85,247,0.2);
+
+    align-self: flex-end;
+}
+
+/* INPUT */
+
+.ai-input{
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+
+    border-top: 1px solid rgba(220,200,255,0.6);
+}
+
+.ai-input input{
+    flex: 1;
+    border: none;
+
+    background: linear-gradient(
+        135deg,
+        #f7f1ff,
+        #eef3ff
+    );
+
+    border-radius: 18px;
+    padding: 14px 16px;
+    outline: none;
+    font-size: 14px;
+
+    color: #4b2d73;
+}
+
+.ai-input button{
+    border: none;
+
+    background: linear-gradient(
+        135deg,
+        #ff6fd8,
+        #c44dff,
+        #6366f1
+    );
+
+    color: white;
+    border-radius: 18px;
+    padding: 0 22px;
+    font-weight: 700;
+
+    box-shadow: 0 10px 20px rgba(168,85,247,0.2);
+}
+
+/* TYPING */
+
+.typing{
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px;
+
+    background: linear-gradient(
+        135deg,
+        #ffe8ff,
+        #eef2ff
+    );
+
+    border-radius: 18px;
+    width: fit-content;
+    margin-bottom: 15px;
+}
+
+.typing span{
+    width: 8px;
+    height: 8px;
+    background: #c44dff;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite;
+}
+
+.typing span:nth-child(2){
+
+    animation-delay: 0.2s;
+
+}
+
+.typing span:nth-child(3){
+
+    animation-delay: 0.4s;
+
+}
+
+@keyframes bounce{
+
+    0%,80%,100%{
+        transform: scale(0);
+    }
+
+    40%{
+        transform: scale(1);
+    }
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .ai-chat-box{
+
+        width: 92%;
+
+        right: 4%;
+
+        height: 80vh;
+
+    }
+.ai-button{
+    width: 80px;
+    height: 80px;
+    bottom: 20px;
+    right: 20px;
+}
+}
 </style>
 
 <!-- HERO (TIDAK DIHAPUS, HANYA DIPERBAIKI STYLE) -->
@@ -117,25 +607,39 @@ body{
 
 <h4 class="text-teal mb-4 fw-bold">Fitur Menarik yang Bisa Dimanfaatkan</h4>
 
-<div class="row g-4">
+<div class="row g-4 justify-content-center">
 
-<div class="col-md-3">
-<div class="fitur-box shadow-sm">📊 Grafik Kesehatan</div>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <div class="fitur-box shadow-sm">
+            📊 Grafik Kesehatan
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="fitur-box shadow-sm">🗺️ Peta Persebaran</div>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <div class="fitur-box shadow-sm">
+            🗺️ Peta Persebaran
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="fitur-box shadow-sm">📄 Artikel Kesehatan</div>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <div class="fitur-box shadow-sm">
+            📄 Artikel Kesehatan
+        </div>
+    </div>
 
-<div class="col-md-3">
-<a href="<?= base_url('skrining-diare') ?>" class="fitur-box text-decoration-none shadow-sm d-block">
-    🩺 Skrining Kesehatan
-</a>
-</div>
+    <div class="col-lg col-md-4 col-6">
+        <a href="<?= base_url('skrining-diare') ?>"
+           class="fitur-box text-decoration-none shadow-sm d-block">
+            🩺 Skrining Kesehatan
+        </a>
+    </div>
+
+    <div class="col-lg col-md-4 col-6">
+        <a href="<?= base_url('diare/kalkulator-air') ?>"
+           class="fitur-box text-decoration-none shadow-sm d-block">
+            💧 Kalkulator Air
+        </a>
+    </div>
 
 </div>
 </section>
@@ -152,49 +656,34 @@ body{
 
 <div class="scroll-container" id="slider">
 
-    <!-- CARD 1 -->
+<?php foreach($berita as $b): ?>
     <div class="scroll-item card-gradient shadow">
         <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>Pengertian, penyebab, gejala, diagnosis, pengobatan, pencegahan, dan komplikasi Diare</h5>
-                <p>Informasi lengkap tentang diare</p>
-            </div>
-            <img src="<?= base_url('img/diare-artikel.png') ?>">
-        </div>
-    </div>
 
-    <!-- CARD 2 -->
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>ISPA dan Diare Penyakit Dominan Pasca Banjir Aceh Tamian</h5>
-                <p>Kasus dominan</p>
-            </div>
-            <img src="<?= base_url('img/dokter.png') ?>">
-        </div>
-    </div>
+            <div style="flex:1; padding-right:20px;">
+                <h5><?= esc($b['judul_berita']) ?></h5>
 
-    <!-- CARD 3 -->
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>DIARE, PANTI PERKUAT KOLABORASI HADAPI ANCAMAN KESEHATAN</h5>
-                <p>Panti berkolaborasi untuk menghadapi ancaman kesehatan.</p>
-            </div>
-            <img src="<?= base_url('img/seminar.png') ?>">
-        </div>
-    </div>
+                <p>
+                    <?= substr(strip_tags($b['deskripsi_berita']), 0, 100) ?>...
+                </p>
 
-    <!-- CARD 4 -->
-    <div class="scroll-item card-gradient shadow">
-        <div class="d-flex justify-content-between align-items-center h-100">
-            <div>
-                <h5>Variasi Temporal dan Klaster Spasial Penyakit Diare di Provinsi Jakarta, Indonesia</h5>
-                <p>Penyakit diare</p>
+                <a href="<?= base_url('berita/' . $b['id_berita']) ?>"
+                   class="btn btn-light btn-sm mt-2">
+                    Baca Selengkapnya
+                </a>
             </div>
-            <img src="<?= base_url('img/riset.png') ?>">
+
+            <img
+                src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>"
+                style="
+                    width:220px;
+                    height:220px;
+                    object-fit:cover;
+                    border-radius:20px;
+                ">
         </div>
     </div>
+<?php endforeach; ?>
 
 </div>
 
@@ -520,12 +1009,249 @@ slider.addEventListener("touchend", e=>{
     </p>
 
 </div>
-
-<div class="text-center mt-4">
-    <a href="<?= base_url('home') ?>" class="btn-kembali">
-        Kembali
-    </a>
+</section>
+<!-- TOMBOL AI -->
+<!-- TOMBOL AI -->
+<div class="ai-button" onclick="toggleChat()">
+    <div class="ai-wrap">
+        <div class="ai-label">DOXY AI</div>
+        <img src="<?= base_url('img/maskotdsing.png') ?>" alt="DOXY AI" class="ai-mascot">
+    </div>
 </div>
+<!-- CHAT BOX -->
+<div class="ai-chat-box" id="aiChatBox">
+
+    <!-- HEADER -->
+    <div class="ai-header">
+
+        <div>
+            <b>DOXY AI</b><br>
+            <small>Asisten Diare</small>
+        </div>
+
+        <button onclick="toggleChat()">
+            ✖
+        </button>
+
+    </div>
+
+    <!-- ISI CHAT -->
+    <div class="ai-body" id="aiBody">
+
+        <div class="bot-message">
+            Halo 👋<br>
+            Saya DOXY AI.<br><br>
+
+            Silakan tanyakan tentang:
+            <br>• Penyakit Diare
+            <br>• Gejala Diare
+            <br>• Pencegahan Diare
+        </div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="ai-input">
+
+        <input 
+            type="text"
+            id="aiInput"
+            placeholder="Tulis pertanyaan..."
+        >
+
+        <button onclick="sendMessage()">
+            Kirim
+        </button>
+
+    </div>
+
+</div>
+<script>
+
+/* KLIK TOMBOL 🤖 */
+document.querySelector('.ai-button').onclick = toggleChat;
+
+/* BUKA TUTUP CHAT */
+function toggleChat(){
+
+    let chat = document.getElementById('aiChatBox');
+
+    if(chat.style.display == 'flex'){
+
+        chat.style.display = 'none';
+
+    }else{
+
+        chat.style.display = 'flex';
+
+    }
+
+}
+
+/* KLIK TOMBOL AI */
+document.querySelector('.ai-button').onclick = toggleChat;
+
+/* ENTER */
+document.getElementById('aiInput').addEventListener('keypress', function(e){
+
+    if(e.key === 'Enter'){
+
+        sendMessage();
+
+    }
+
+});
+
+async function sendMessage(){
+
+    let input = document.getElementById('aiInput');
+
+    let body = document.getElementById('aiBody');
+
+    let text = input.value.trim();
+
+    if(text == '') return;
+
+    /*
+    =====================================
+    USER MESSAGE
+    =====================================
+    */
+
+    body.innerHTML += `
+        <div class="user-message">
+            ${text}
+        </div>
+    `;
+
+    input.value = '';
+
+    body.scrollTop = body.scrollHeight;
+
+    /*
+    =====================================
+    TYPING
+    =====================================
+    */
+
+    body.innerHTML += `
+        <div class="typing" id="typingAI">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+
+    body.scrollTop = body.scrollHeight;
+
+    try {
+
+        /*
+        =====================================
+        FETCH API
+        =====================================
+        */
+
+        const response = await fetch("<?= base_url('ai/chat') ?>", {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+
+            body: new URLSearchParams({
+                message: text
+            })
+
+        });
+
+        /*
+        =====================================
+        GET RESULT
+        =====================================
+        */
+
+        const result = await response.text();
+
+        console.log(result);
+
+        const data = JSON.parse(result);
+
+        /*
+        =====================================
+        REMOVE TYPING
+        =====================================
+        */
+
+        document.getElementById('typingAI').remove();
+
+        /*
+        =====================================
+        BOT MESSAGE
+        =====================================
+        */
+
+        body.innerHTML += `
+            <div class="bot-message">
+                ${data.answer}
+            </div>
+        `;
+
+        body.scrollTop = body.scrollHeight;
+
+    } catch(error){
+
+        document.getElementById('typingAI').remove();
+
+        body.innerHTML += `
+            <div class="bot-message">
+                Error: ${error}
+            </div>
+        `;
+
+    }
+
+}
+
+</script>
+
+</div>
+<section class="container mt-5" data-aos="fade-up">
+
+    <h4 class="fw-bold text-center mb-4">
+        Berita Kesehatan Diare
+    </h4>
+
+    <div class="row">
+        <?php foreach($berita as $b): ?>
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+                <img src="<?= base_url('uploads/berita/' . $b['gambar_berita']) ?>"
+                     style="height:220px; object-fit:cover;"
+                     class="card-img-top">
+
+                <div class="card-body">
+
+                    <h5><?= esc($b['judul_berita']) ?></h5>
+
+                    <p>
+                        <?= esc($b['deskripsi_berita']) ?>
+                    </p>
+
+                    <small class="text-muted">
+                        <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+        <?php endforeach; ?>
+    </div>
 
 </section>
 <?= $this->include('layout/footer') ?>

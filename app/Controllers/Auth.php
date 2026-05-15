@@ -134,6 +134,15 @@ class Auth extends BaseController
             return redirect()->to('/login')->with('error', 'User tidak ditemukan!');
         }
 
+        // 🔥 TAMBAH DI SINI
+        $jabatanModel = new \App\Models\JabatanModel();
+        $jabatan = $jabatanModel->find($user['id_jabatan']);
+
+        if (!$jabatan) {
+            return redirect()->to('/login')
+                ->with('error', 'Jabatan tidak ditemukan!');
+        }
+
         // SET SESSION LOGIN FINAL
         session()->set([
             'logged_in' => true,
@@ -153,7 +162,10 @@ class Auth extends BaseController
             return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
         }
 
-        return redirect()->to('/' . strtolower($penyakit['nama_penyakit']) . '/dashboard');
+        return redirect()->to(
+            '/' . strtolower($penyakit['nama_penyakit']) .
+            '/dashboard/' . strtolower($jabatan['nama_jabatan'])
+        );
     }
 
     public function otpReset()

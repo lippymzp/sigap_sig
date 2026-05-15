@@ -43,15 +43,26 @@ class BeritaTbc extends BaseController
         ]);
     }
 
-  public function simpan()
+    public function kutip()
+{
+    return view('gol_b/admin/berita/kutip', [
+        'menu'  => 'berita',
+        'judul' => 'Kutip Berita'
+    ]);
+}
+
+public function simpan()
 {
     $model = new BeritaTbcModel();
 
     $file = $this->request->getFile('gambar');
+
     $namaGambar = 'default.jpg';
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
+
         $namaGambar = $file->getRandomName();
+
         $file->move('uploads/berita/', $namaGambar);
     }
 
@@ -61,25 +72,24 @@ class BeritaTbc extends BaseController
         $isi = implode('', $isi);
     }
 
-    // 🔥 SIMPAN & AMBIL ID
-    $id = $model->insert([
-        'id_petugas'        => session()->get('id_petugas') ?? 1,
-        'id_penyakit'       => 1,
-        'judul_berita'      => $this->request->getPost('judul'),
+    $model->insert([
 
-        'deskripsi_berita'  => filter_var($isi, FILTER_VALIDATE_URL)
-                                ? 'Kutip berita luar'
-                                : $isi,
+        'id_petugas'       => session()->get('id_petugas') ?? 1,
 
-        'url_berita'        => filter_var($isi, FILTER_VALIDATE_URL) ? $isi : null,
-        'gambar_berita'     => $namaGambar,
-        'tanggal_berita'    => $this->request->getPost('tanggal'),
-        'status_berita'     => $this->request->getPost('status') ?: 'Publish'
+        'id_penyakit'      => 1,
+
+        'judul_berita'     => $this->request->getPost('judul'),
+
+        'deskripsi_berita' => $isi,
+
+        'url_berita'       => null,
+
+        'gambar_berita'    => $namaGambar,
+
+        'tanggal_berita'   => $this->request->getPost('tanggal'),
+
+        'status_berita'    => $this->request->getPost('status') ?: 'Publish'
     ]);
-
-    // 🔥 INI YANG KAMU BELUM ADA
-    session()->setFlashdata('success', true);
-    session()->setFlashdata('last_id', $id);
 
     return redirect()->to('/tbc/berita');
 }
@@ -88,31 +98,83 @@ class BeritaTbc extends BaseController
 {
     $model = new BeritaTbcModel();
 
-    // 🔥 TAMBAH INI
-    $isi = $this->request->getPost('isi') ?? $this->request->getPost('link');
+    $link = $this->request->getPost('link');
+    $status = $this->request->getPost('status') ?? 'Draft';
+
+    $meta = $this->getMetaData($link);
+
+    if (!$meta) {
+        $meta = [
+            'title' => 'Berita Eksternal',
+            'description' => 'Kutip berita luar',
+            'image' => ''
+        ];
+    }
+
+    $judul = !empty($meta['title'])
+            ? trim($meta['title'])
+            : 'Berita Eksternal';
+    $deskripsi = !empty($meta['description'])
+                ? strip_tags(trim($meta['description']))
+                : 'Kutip berita luar';
+
     $namaGambar = 'default.jpg';
 
-    $id = $model->insert([
-        'id_petugas'        => session()->get('id_petugas') ?? 1,
-        'id_penyakit'       => 1,
-        'judul_berita'      => $this->request->getPost('judul'),
+    if (!empty($meta['image'])) {
 
-        'deskripsi_berita'  => filter_var($isi, FILTER_VALIDATE_URL)
-                                ? 'Kutip berita luar'
-                                : $isi,
+        try {
 
-        'url_berita'        => filter_var($isi, FILTER_VALIDATE_URL) ? $isi : null,
-        'gambar_berita'     => $namaGambar,
-        'tanggal_berita'    => date('Y-m-d'),
-        'status_berita'     => $this->request->getPost('status') ?: 'Publish'
-    ]);
+            $imageContent = @file_get_contents($meta['image']);
 
-    session()->setFlashdata('success', true);
-    session()->setFlashdata('last_id', $id);
+            if ($imageContent !== false) {
+
+                $ext = pathinfo(
+                    parse_url($meta['image'], PHP_URL_PATH),
+                    PATHINFO_EXTENSION
+                );
+
+                if (empty($ext)) {
+                    $ext = 'jpg';
+                }
+
+                $namaGambar = uniqid() . '.' . $ext;
+
+                @file_put_contents(
+                    FCPATH . 'uploads/berita/' . $namaGambar,
+                    $imageContent
+                );
+            }
+
+        } catch (\Throwable $e) {
+
+            $namaGambar = 'default.jpg';
+
+        }
+    }
+
+    $model->insert([
+    'id_petugas'       => session()->get('id_petugas') ?? 1,
+    'id_penyakit'      => 1,
+
+    'judul_berita'     => !empty($judul)
+                            ? $judul
+                            : 'Berita Eksternal',
+
+    'deskripsi_berita' => !empty($deskripsi)
+                            ? $deskripsi
+                            : 'Kutip berita luar',
+
+    'url_berita'       => $link,
+
+    'gambar_berita'    => $namaGambar,
+
+    'tanggal_berita'   => date('Y-m-d'),
+
+    'status_berita'    => $status
+]);
 
     return redirect()->to('/tbc/berita');
 }
-
 
     public function hapus(int $id)
     {
@@ -144,42 +206,106 @@ class BeritaTbc extends BaseController
         return redirect()->to('/tbc/berita');
     }
 
-    public function edit(int $id)
-    {
-        $model = new BeritaTbcModel();
-
-        return view('gol_b/admin/berita/edit', [
-            'menu'   => 'berita',
-            'judul'  => 'Edit Berita',
-            'berita' => $model->find($id)
-        ]);
-    }
-
-    public function update(int $id)
+public function detail($id)
 {
     $model = new BeritaTbcModel();
 
-    $isi = $this->request->getPost('isi');
+    $berita = $model->find($id);
 
-if (is_array($isi)) {
-    $isi = implode('', $isi);
+    if (!$berita) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
+
+    // JIKA BERITA EKSTERNAL
+    if (!empty($berita['url_berita'])) {
+
+        return redirect()->to($berita['url_berita']);
+
+    }
+
+    // JIKA BERITA INTERNAL
+    return view('gol_b/admin/berita/detail', [
+        'menu'   => 'berita',
+        'judul'  => $berita['judul_berita'],
+        'berita' => $berita
+    ]);
 }
 
-$isUrl = filter_var($isi, FILTER_VALIDATE_URL);
+public function edit(int $id)
+{
+    $model = new BeritaTbcModel();
+
+    $berita = $model->find($id);
+
+    // DETEKSI BERITA EKSTERNAL
+    if (
+        !empty($berita['url_berita']) &&
+        $this->request->getGet('mode') != 'link'
+    ) {
+
+        return redirect()->to(
+            base_url('tbc/berita/edit/'.$id.'?mode=link')
+        );
+    }
+
+    return view('gol_b/admin/berita/edit', [
+        'menu'   => 'berita',
+        'judul'  => 'Edit Berita',
+        'berita' => $berita
+    ]);
+}
+    public function update(int $id)
+{
+    $model = new BeritaTbcModel();
+    $lama = $model->find($id);
+
+    $link = $this->request->getPost('link');
+    $isi  = $this->request->getPost('isi');
+
+    // kalau berita luar
+    if (!empty($link)) {
+
+    $meta = $this->getMetaData($link);
 
 $data = [
-    'judul_berita'      => $this->request->getPost('judul'),
-    'deskripsi_berita'  => $isUrl ? 'Kutip berita luar' : $this->request->getPost('ringkasan'),
-    'isi_berita'        => $isUrl ? null : $isi,
-    'url_berita'        => $isUrl ? $isi : null,
-    'tanggal_berita'    => $this->request->getPost('tanggal')
+    'judul_berita' => !empty($this->request->getPost('judul'))
+                        ? $this->request->getPost('judul')
+                        : ($meta['title'] ?? 'Berita Eksternal'),
+
+    'deskripsi_berita' => !empty($lama['deskripsi_berita'])
+                            ? $lama['deskripsi_berita']
+                            : ($meta['description'] ?? 'Kutip berita luar'),
+
+    'url_berita' => $link,
+
+    'tanggal_berita' => !empty($lama['tanggal_berita'])
+                            ? $lama['tanggal_berita']
+                            : date('Y-m-d')
 ];
 
+    } else {
+
+        // kalau berita biasa
+        if (is_array($isi)) {
+            $isi = implode('', $isi);
+        }
+
+        $data = [
+            'judul_berita'     => $this->request->getPost('judul'),
+            'deskripsi_berita' => $isi,
+            'tanggal_berita'   => $this->request->getPost('tanggal')
+        ];
+    }
+
+    // upload gambar baru
     $file = $this->request->getFile('gambar');
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
+
         $nama = $file->getRandomName();
+
         $file->move('uploads/berita/', $nama);
+
         $data['gambar_berita'] = $nama;
     }
 
@@ -188,14 +314,86 @@ $data = [
     return redirect()->to('/tbc/berita');
 }
 
-    public function detail(int $id)
-    {
-        $model = new BeritaTbcModel();
+private function getMetaData($url)
+{
+    try {
 
-        return view('gol_b/admin/berita/detail', [
-            'menu'   => 'berita',
-            'judul'  => 'Detail Berita',
-            'berita' => $model->find($id)
-        ]);
+        $context = stream_context_create([
+    "http" => [
+        "header" => "User-Agent: Mozilla/5.0\r\n"
+    ]
+]);
+
+$html = @file_get_contents($url, false, $context);
+
+        if (!$html) {
+            return null;
+        }
+
+        libxml_use_internal_errors(true);
+
+        $doc = new \DOMDocument();
+
+        $doc->loadHTML($html);
+
+        $xpath = new \DOMXPath($doc);
+
+        $title = '';
+        $description = '';
+        $image = '';
+
+        // ambil title
+        $titleTag = $doc->getElementsByTagName('title');
+
+        if ($titleTag->length > 0) {
+
+    $title = trim($titleTag->item(0)->nodeValue);
+
+}
+
+        // ambil meta
+        $metaTags = $xpath->query("//meta");
+
+        foreach ($metaTags as $meta) {
+
+            $property = strtolower($meta->getAttribute('property'));
+            $name     = strtolower($meta->getAttribute('name'));
+
+            $content  = $meta->getAttribute('content');
+
+            if (
+                $name == 'description' ||
+                $property == 'og:description'
+            ) {
+                $description = $content;
+            }
+
+            if (
+    $property == 'og:title' ||
+    $name == 'og:title'
+) {
+    $title = trim($content);
+}
+
+            if (
+                $property == 'og:image' ||
+                $name == 'og:image'
+            ) {
+                $image = $content;
+            }
+        }
+
+        return [
+            'title'       => $title,
+            'description' => $description,
+            'image'       => $image
+        ];
+
+    } catch (\Throwable $e) {
+
+        return null;
+
     }
+}
+
 }

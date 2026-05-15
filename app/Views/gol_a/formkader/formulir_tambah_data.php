@@ -4,12 +4,30 @@
 <style>
     /* --- STYLE DASAR --- */
     .page-wrapper { background-color: #E6F4F1; padding: 20px; border-radius: 15px; min-height: 100vh; }
-    .banner-top { background-color: #51C2B8; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .banner-icon { background: rgba(255, 255, 255, 0.2); padding: 12px 15px; border-radius: 10px; margin-right: 20px; font-size: 24px; display: flex; align-items: center; justify-content: center; }
+    
+    /* DISAMAKAN DENGAN RIWAYAT LAPOR JENTIK */
+    .banner-top { background-color: #00BBC2; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    
+    /* Perbaikan Kotak Ikon agar persis dengan desain riwayat */
+    .banner-icon { 
+        background: rgba(255, 255, 255, 0.25); 
+        width: 60px; 
+        height: 60px; 
+        border-radius: 15px; 
+        margin-right: 20px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        flex-shrink: 0;
+    }
+    
     .banner-text h4 { margin: 0; font-weight: 700; font-size: 18px; }
     .banner-text p { margin: 0; font-size: 13px; opacity: 0.9; margin-top: 3px; }
+
     .form-card { background: #FFFFFF; border-radius: 15px; padding: 40px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    
     .form-label { font-weight: 700; color: #333; font-size: 14px; margin-bottom: 5px; display: block; }
+    .form-label .text-danger { color: #DC3545; } 
     .form-sublabel { font-size: 11px; color: #888; margin-bottom: 10px; display: block; font-weight: normal; }
     
     .form-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; padding: 12px 18px; width: 100%; font-size: 14px; color: #333; margin-bottom: 20px; outline: none; transition: all 0.3s; appearance: none; }
@@ -55,6 +73,7 @@
     /* --- STYLE UPLOAD AREA & PREVIEW --- */
     .upload-area { position: relative; border: 2px dashed #D0D0D0; border-radius: 15px; padding: 40px 20px; text-align: center; background-color: #FAFAFA; margin-bottom: 30px; transition: 0.3s; min-height: 250px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
     .upload-area.has-files { border-color: #D0D0D0; background-color: #FAFAFA; padding: 30px 20px; }
+    .upload-area.error-upload { border-color: #DC3545; background-color: #FFF0F1; } 
     .upload-default { cursor: pointer; }
     .upload-default h5 { font-weight: bold; color: #000; margin-bottom: 20px; }
     .upload-icon-circle { width: 80px; height: 80px; background: linear-gradient(135deg, #E0F7F6, #C1F0ED); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 8px 15px rgba(0, 206, 209, 0.2); transition: 0.3s; }
@@ -89,7 +108,7 @@
 
     /* --- ACTION BUTTONS --- */
     .action-buttons { display: flex; gap: 15px; }
-    .btn-batal { flex: 1; background: #FFF; border: 1px solid #D0D0D0; color: #333; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; }
+    .btn-batal { flex: 1; background: #FFF; border: 1px solid #D0D0D0; color: #333; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; text-decoration: none; text-align: center; }
     .btn-batal:hover { background: #F5F5F5; border-color: #B0B0B0; }
     .btn-kirim { flex: 1; background: #00CED1; border: 1px solid #00CED1; color: #FFF; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; cursor: pointer; }
     .btn-kirim:hover { background: #00B3B5; }
@@ -98,17 +117,23 @@
 
 <div class="page-wrapper">
     <div class="banner-top">
-        <div class="banner-icon"><i class="fa-solid fa-shield-medical"></i></div>
+        <div class="banner-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="34" height="34">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+        </div>
         <div class="banner-text">
-            <h4>Pelaporan Kader</h4>
-            <p>Silahkan isi data dengan benar</p>
+            <h4>Tambah Pelaporan Kader</h4>
+            <p>Silahkan isi data dengan lengkap dan benar</p>
         </div>
     </div>
 
     <div class="form-card">
-        <form action="<?= base_url('dbd/simpanpsn') ?>" method="POST" enctype="multipart/form-data">
+        <form id="formTambahData" action="<?= base_url('dbd/simpanpsn') ?>" method="POST" enctype="multipart/form-data">
             
-            <label class="form-label">Periode Pemeriksaan Jentik</label>
+            <label class="form-label">Periode Pemeriksaan Jentik <span class="text-danger">*</span></label>
             <div class="input-icon-wrap" id="periodeContainer">
                 <input type="text" name="periode" id="periode_input" class="form-input" placeholder="Pilih periode pemeriksaan jentik" readonly style="cursor: pointer;" required>
                 <i class="fa-regular fa-calendar" style="cursor: pointer;"></i>
@@ -116,8 +141,8 @@
                     <div class="calendar-header">
                         <button type="button" id="prevMonth">&#10094;</button>
                         <div class="calendar-title">
-                            <span id="monthSelectBtn" class="header-clickable">April</span>
-                            <span id="yearSelectBtn" class="header-clickable" style="color: #333;">2026</span>
+                            <span id="monthSelectBtn" class="header-clickable"></span>
+                            <span id="yearSelectBtn" class="header-clickable" style="color: #333;"></span>
                         </div>
                         <button type="button" id="nextMonth">&#10095;</button>
                     </div>
@@ -130,8 +155,7 @@
                 </div>
             </div>
 
-            <!-- PERHATIKAN NAMA ATRIBUT id_puskesmas -->
-            <label class="form-label">Wilayah Kerja Puskesmas</label>
+            <label class="form-label">Wilayah Kerja Puskesmas <span class="text-danger">*</span></label>
             <div class="input-icon-wrap">
                 <select name="id_puskesmas" class="form-input" required>
                     <option value="" disabled selected>Pilih puskesmas</option>
@@ -140,8 +164,7 @@
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
 
-            <!-- PERHATIKAN NAMA ATRIBUT id_kelurahan DAN VALUE ANGKA -->
-            <label class="form-label">Kelurahan</label>
+            <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
             <div class="input-icon-wrap">
                 <select name="id_kelurahan" id="kelurahanSelect" class="form-input" required>
                     <option value="" disabled selected>Pilih kelurahan</option>
@@ -154,11 +177,11 @@
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
 
-            <!-- PERHATIKAN NAMA ATRIBUT id_posyandu -->
-            <label class="form-label">Pos Posyandu</label>
+            <input type="hidden" name="kelurahan" id="hiddenKelurahan">
+
+            <label class="form-label">Pos Posyandu <span class="text-danger">*</span></label>
             <div class="input-icon-wrap">
                 <select name="id_posyandu" id="posyanduSelect" class="form-input" required>
-                    <!-- Default saat belum ada kelurahan yang dipilih -->
                     <option value="" disabled selected>Pilih kelurahan terlebih dahulu</option>
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
@@ -166,7 +189,7 @@
 
             <div class="row mt-4">
                 <div class="col-md-6">
-                    <label class="form-label">Jumlah Rumah/KK yang Diperiksa</label>
+                    <label class="form-label">Jumlah Rumah/KK yang Diperiksa <span class="text-danger">*</span></label>
                     <span class="form-sublabel">Sebutkan Jumlah Rumah / KK yang diperiksa</span>
                     <div class="counter-container mb-3">
                         <button type="button" class="btn-counter" onclick="decrement('diperiksa')"><i class="fa-solid fa-minus"></i></button>
@@ -175,7 +198,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Jumlah Rumah/KK yang Positif Jentik</label>
+                    <label class="form-label">Jumlah Rumah/KK yang Positif Jentik <span class="text-danger">*</span></label>
                     <span class="form-sublabel">Sebutkan Jumlah Rumah / KK yang positif jentik</span>
                     <div class="counter-container">
                         <button type="button" class="btn-counter" onclick="decrement('positif')"><i class="fa-solid fa-minus"></i></button>
@@ -189,15 +212,15 @@
                 </div>
             </div>
 
-            <label class="form-label mt-2">Bagian yang Positif</label>
-            <input type="text" name="bagian" class="form-input" placeholder="(Sebutkan, contoh : kamar mandi, vas bunga, dll)">
+            <label class="form-label mt-2">Bagian yang Positif <span class="text-danger">*</span></label>
+            <input type="text" name="bagian" class="form-input" placeholder="(Wajib diisi. Ketik strip '-' jika tidak ada yang positif)" required>
 
-            <label class="form-label mt-2">Upload Gambar saat Pemeriksaan Jentik</label>
+            <label class="form-label mt-2">Upload Gambar saat Pemeriksaan Jentik <span class="text-danger">*</span></label>
             <div class="upload-area" id="uploadArea">
                 <div id="uploadDefault" class="upload-default" onclick="showUploadOverlay()">
                     <h5>Unggah foto di sini</h5>
                     <div class="upload-icon-circle"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                    <p>Format yang didukung: JPG, JPEG, PNG.</p>
+                    <p>Format yang didukung: JPG, JPEG, PNG. Wajib melampirkan minimal 1 foto.</p>
                 </div>
                 <div class="upload-overlay" id="uploadOverlay">
                     <div class="upload-options-box">
@@ -221,14 +244,13 @@
             <input type="file" name="foto[]" id="realSubmitInput" multiple style="display: none;">
 
             <div class="action-buttons">
-                <a href="<?= base_url('dbd/pelaporan') ?>" class="btn btn-batal text-center text-decoration-none">Batal</a>
-                <button type="submit" id="btnKirim" class="btn btn-kirim">Kirim</button>
+                <a href="<?= base_url('dbd/pelaporan') ?>" class="btn-batal">Batal</a>
+                <button type="submit" id="btnKirim" class="btn-kirim">Kirim Data</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ================= MODAL KAMERA ================= -->
 <div id="cameraModal" class="camera-modal">
     <div class="camera-container">
         <video id="liveCamera" autoplay playsinline></video>
@@ -241,58 +263,43 @@
 <canvas id="cameraCanvas" style="display:none;"></canvas>
 
 <script>
-    /* ----- 1. LOGIKA DINAMIS POS POSYANDU BERDASARKAN ID_KELURAHAN ----- */
+    /* ----- VALIDASI WAJIB ISI (FOTO) SEBELUM SUBMIT ----- */
+    document.getElementById('formTambahData').addEventListener('submit', function(e) {
+        if (selectedFilesArray.length === 0) {
+            e.preventDefault(); 
+            document.getElementById('uploadArea').classList.add('error-upload');
+            alert('PERINGATAN: Anda belum melampirkan foto! Mohon unggah minimal 1 foto bukti pemeriksaan jentik sebelum mengirim data.');
+            document.getElementById('uploadArea').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        } else {
+            document.getElementById('uploadArea').classList.remove('error-upload');
+        }
+    });
+
+    /* ----- 1. LOGIKA DINAMIS POS POSYANDU & NAMA KELURAHAN ----- */
     const posyanduData = {
-        "1": [ // ID 1 = Sumbersari
-            "CATLEYA 01", "CATLEYA 02", "CATLEYA 03", "CATLEYA 04", "CATLEYA 05",
-            "CATLEYA 06", "CATLEYA 07", "CATLEYA 08", "CATLEYA 09", "CATLEYA 10",
-            "CATLEYA 11", "CATLEYA 12", "CATLEYA 13", "CATLEYA 14", "CATLEYA 15",
-            "CATLEYA 16", "CATLEYA 17", "CATLEYA 18", "CATLEYA 19", "CATLEYA 20",
-            "CATLEYA 21", "CATLEYA 22", "CATLEYA 23", "CATLEYA 24", "CATLEYA 25",
-            "CATLEYA 26", "CATLEYA 27", "CATLEYA 28", "CATLEYA 29", "CATLEYA 30",
-            "CATLEYA 31", "CATLEYA 32", "CATLEYA 33", "CATLEYA 34", "CATLEYA 35"
-        ],
-        "2": [ // ID 2 = Wirolegi
-            "CATLEYA 36", "CATLEYA 36A (BAYANGAN)", "CATLEYA 37", "CATLEYA 38", "CATLEYA 39",
-            "CATLEYA 40", "CATLEYA 41", "CATLEYA 42", "CATLEYA 43", "CATLEYA 44",
-            "CATLEYA 44A", "CATLEYA 45", "CATLEYA 46", "CATLEYA 47", "CATLEYA 48",
-            "CATLEYA 49", "CATLEYA 50", "CATLEYA 51", "CATLEYA 52", "CATLEYA 53",
-            "CATLEYA 54"
-        ],
-        "3": [ // ID 3 = Antirogo
-            "CATLEYA 55", "CATLEYA 56", "CATLEYA 57", "CATLEYA 58", "CATLEYA 58A (BAYANGAN)",
-            "CATLEYA 59", "CATLEYA 60", "CATLEYA 61", "CATLEYA 62", "CATLEYA 63",
-            "CATLEYA 64", "CATLEYA 65", "CATLEYA 65A (BAYANGAN)", "CATLEYA 66", "CATLEYA 67"
-        ],
-        "4": [ // ID 4 = Tegal Gede
-            "CATLEYA 68", "CATLEYA 69", "CATLEYA 70", "CATLEYA 71", "CATLEYA 72",
-            "CATLEYA 73", "CATLEYA 74", "CATLEYA 74A", "CATLEYA 74B"
-        ],
-        "5": [ // ID 5 = Karangrejo
-            "CATLEYA 75", "CATLEYA 76", "CATLEYA 77", "CATLEYA 78", "CATLEYA 78A (BAYANGAN)",
-            "CATLEYA 79", "CATLEYA 80", "CATLEYA 81", "CATLEYA 82", "CATLEYA 83",
-            "CATLEYA 84", "CATLEYA 85", "CATLEYA 86", "CATLEYA 87", "CATLEYA 88",
-            "CATLEYA 88A (BAYANGAN)", "CATLEYA 89", "CATLEYA 90", "CATLEYA 91", "CATLEYA 92",
-            "CATLEYA 92A (BAYANGAN)", "CATLEYA 93", "CATLEYA 94", "CATLEYA 95", "CATLEYA 95A",
-            "CATLEYA 95B (BAYANGAN)"
-        ]
+        "1": ["CATLEYA 01", "CATLEYA 02", "CATLEYA 03", "CATLEYA 04", "CATLEYA 05", "CATLEYA 06", "CATLEYA 07", "CATLEYA 08", "CATLEYA 09", "CATLEYA 10", "CATLEYA 11", "CATLEYA 12", "CATLEYA 13", "CATLEYA 14", "CATLEYA 15", "CATLEYA 16", "CATLEYA 17", "CATLEYA 18", "CATLEYA 19", "CATLEYA 20", "CATLEYA 21", "CATLEYA 22", "CATLEYA 23", "CATLEYA 24", "CATLEYA 25", "CATLEYA 26", "CATLEYA 27", "CATLEYA 28", "CATLEYA 29", "CATLEYA 30", "CATLEYA 31", "CATLEYA 32", "CATLEYA 33", "CATLEYA 34", "CATLEYA 35"],
+        "2": ["CATLEYA 36", "CATLEYA 36A (BAYANGAN)", "CATLEYA 37", "CATLEYA 38", "CATLEYA 39", "CATLEYA 40", "CATLEYA 41", "CATLEYA 42", "CATLEYA 43", "CATLEYA 44", "CATLEYA 44A", "CATLEYA 45", "CATLEYA 46", "CATLEYA 47", "CATLEYA 48", "CATLEYA 49", "CATLEYA 50", "CATLEYA 51", "CATLEYA 52", "CATLEYA 53", "CATLEYA 54"],
+        "3": ["CATLEYA 55", "CATLEYA 56", "CATLEYA 57", "CATLEYA 58", "CATLEYA 58A (BAYANGAN)", "CATLEYA 59", "CATLEYA 60", "CATLEYA 61", "CATLEYA 62", "CATLEYA 63", "CATLEYA 64", "CATLEYA 65", "CATLEYA 65A (BAYANGAN)", "CATLEYA 66", "CATLEYA 67"],
+        "4": ["CATLEYA 68", "CATLEYA 69", "CATLEYA 70", "CATLEYA 71", "CATLEYA 72", "CATLEYA 73", "CATLEYA 74", "CATLEYA 74A", "CATLEYA 74B"],
+        "5": ["CATLEYA 75", "CATLEYA 76", "CATLEYA 77", "CATLEYA 78", "CATLEYA 78A (BAYANGAN)", "CATLEYA 79", "CATLEYA 80", "CATLEYA 81", "CATLEYA 82", "CATLEYA 83", "CATLEYA 84", "CATLEYA 85", "CATLEYA 86", "CATLEYA 87", "CATLEYA 88", "CATLEYA 88A (BAYANGAN)", "CATLEYA 89", "CATLEYA 90", "CATLEYA 91", "CATLEYA 92", "CATLEYA 92A (BAYANGAN)", "CATLEYA 93", "CATLEYA 94", "CATLEYA 95", "CATLEYA 95A", "CATLEYA 95B (BAYANGAN)"]
     };
 
     document.getElementById('kelurahanSelect').addEventListener('change', function() {
         const selectedKelurahan = this.value;
         const posyanduSelect = document.getElementById('posyanduSelect');
 
+        // MENGAMBIL TEKS (NAMA) KELURAHAN DAN MEMASUKKANNYA KE HIDDEN INPUT 'kelurahan'
+        const kelurahanText = this.options[this.selectedIndex].text;
+        document.getElementById('hiddenKelurahan').value = kelurahanText;
+
         posyanduSelect.innerHTML = '<option value="" disabled selected>Pilih pos posyandu</option>';
 
         if (posyanduData[selectedKelurahan]) {
-            const list = posyanduData[selectedKelurahan];
-            list.forEach(function(posyanduName) {
+            posyanduData[selectedKelurahan].forEach(function(posyanduName) {
                 let option = document.createElement('option');
-                
-                // Ambil ID dari teks (cth: "CATLEYA 36A (BAYANGAN)" -> "36A")
                 let idMatch = posyanduName.match(/CATLEYA\s([0-9A-Z]+)/);
                 let posyanduId = idMatch ? idMatch[1] : posyanduName;
-
                 option.value = posyanduId; 
                 option.text = posyanduName; 
                 posyanduSelect.appendChild(option);
@@ -310,11 +317,8 @@
     function triggerFileInput(type, e) {
         e.stopPropagation();
         document.getElementById('uploadOverlay').style.display = 'none';
-        if (type === 'file') {
-            document.getElementById('inputFile').click();
-        } else {
-            openCamera(); 
-        }
+        if (type === 'file') { document.getElementById('inputFile').click(); } 
+        else { openCamera(); }
     }
 
     function handleFileSelect(inputElement) {
@@ -358,9 +362,13 @@
     }
 
     function renderPreviewGallery() {
-        const defaultState = document.getElementById('uploadDefault'); const previewState = document.getElementById('previewContainer');
-        const previewGrid = document.getElementById('previewGrid'); const previewTitle = document.getElementById('previewTitle');
+        const defaultState = document.getElementById('uploadDefault'); 
+        const previewState = document.getElementById('previewContainer');
+        const previewGrid = document.getElementById('previewGrid'); 
+        const previewTitle = document.getElementById('previewTitle');
         const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.classList.remove('error-upload');
 
         if (selectedFilesArray.length === 0) {
             defaultState.style.display = 'block'; previewState.style.display = 'none'; uploadArea.classList.remove('has-files');
@@ -385,7 +393,6 @@
         let dt = new DataTransfer(); selectedFilesArray.forEach(file => dt.items.add(file));
         document.getElementById('realSubmitInput').files = dt.files;
     }
-
 
     /* ----- 3. LOGIKA COUNTER & VALIDASI JENTIK ----- */
     function validateJentik() {
@@ -493,7 +500,6 @@
         let container = document.getElementById('periodeContainer');
         if (!container.contains(e.target)) { document.getElementById('calendarPopup').style.display = 'none'; }
     });
-
 </script>
 
 <?= $this->endSection() ?>

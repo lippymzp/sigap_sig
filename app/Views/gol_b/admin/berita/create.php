@@ -193,7 +193,11 @@ Batal
 <button type="button"
 class="btn-main"
 onclick="simpanDraft()">
+<<<<<<< Updated upstream
 💾 Simpan Drive
+=======
+💾 Simpan Draft
+>>>>>>> Stashed changes
 </button>
 
 <button type="button"
@@ -284,15 +288,16 @@ style="display:none;">
 
 <label class="fw-bold">Judul Berita</label>
 <input type="text"
-       name="judul"
-       class="form-control"
-       placeholder="Masukkan judul berita utama...">
+name="judul"
+class="form-control mb-3"
+placeholder="Masukkan judul berita">
 
 <label class="fw-bold">Link Berita</label>
+
 <input type="text"
-       name="link"
-       class="form-control"
-       placeholder="https://...">
+name="link"
+class="form-control mb-3"
+placeholder="https://contoh.com/berita">
 
 <input type="hidden" name="status" id="statusKutip">
 
@@ -307,7 +312,11 @@ Batal
 <button type="button"
         class="btn-main"
         onclick="simpanDraftKutip()">
+<<<<<<< Updated upstream
 💾 Simpan Drive
+=======
+💾 Simpan Draft
+>>>>>>> Stashed changes
 </button>
 
 <button type="button"

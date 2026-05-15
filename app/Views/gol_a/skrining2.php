@@ -5,6 +5,9 @@
 <title>Pertanyaan Skrining</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 body {
     background: #ffffff;
@@ -114,34 +117,85 @@ body {
     font-weight: 500;
     margin-bottom: 15px;
 }
-
-/* FOOTER */
-.footer {
-    background: #00BBC2;
-    color: white;
-    padding: 40px 0;
-    margin-top: 120px;
-}
-.footer a {
-    color: white;
-    text-decoration: none;
-}
-.logo-footer {
-    width: 60px;
-    height: 60px;
-    background: red;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
 .pertanyaan label {
     display: block;
     text-align: center;
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 15px;
+}
+.footer{
+    background:#22c1c9;
+    color:#fff;
+    padding:55px 0 20px;
+    font-family:'Poppins', sans-serif;
+}
+
+.footer-container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.footer-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.footer-box{
+    flex:1;
+    min-width:250px;
+}
+
+/* logo */
+.footer-brand{
+    text-align:center;
+}
+
+.footer-logo{
+    width:90px;
+    margin-bottom:10px;
+}
+
+.footer-brand p{
+    font-size:14px;
+    line-height:1.7;
+    margin:0;
+}
+
+/* judul */
+.footer-title{
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+/* teks kecil */
+.footer-box p{
+    font-size:14px;
+}
+
+/* icon jarak */
+.footer-box i{
+    margin-right:8px;
+}
+
+/* copyright */
+.footer-bottom{
+    text-align:center;
+    margin-top:40px;
+    font-size:14px;
+    opacity:.9;
+}
+
+/* responsive */
+@media(max-width:768px){
+    .footer-content{
+        flex-direction:column;
+        text-align:center;
+    }
 }
 </style>
 </head>
@@ -188,6 +242,9 @@ body {
 <input type="hidden" name="kabupaten" value="<?= $kabupaten ?? '' ?>">
 <input type="hidden" name="kecamatan" value="<?= $kecamatan ?? '' ?>">
 <input type="hidden" name="kelurahan" value="<?= $kelurahan ?? '' ?>">
+<input type="hidden" name="provinsi_nama"  value="<?= $provinsi_nama ?? '' ?>">
+<input type="hidden" name="kabupaten_nama" value="<?= $kabupaten_nama ?? '' ?>">
+<input type="hidden" name="kecamatan_nama" value="<?= $kecamatan_nama ?? '' ?>">
 <input type="hidden" name="rt_rw" value="<?= $rt_rw ?? '' ?>">
 
 <div class="container mt-4">
@@ -195,8 +252,8 @@ body {
 <?php
 
 $pertanyaan = [
-    "Apakah Anda menguras TPA?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda menguras Tempat Penampungan Air?",
+    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di dalam rumah?",
     "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
     "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
     "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
@@ -206,31 +263,42 @@ $pertanyaan = [
     "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
     "Apakah Anda menanam tanaman pengusir nyamuk?",
     "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
-    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
-    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus?",
-    "Apakah di rumah Anda banyak genangan air?",
-    "Apakah Anda memiliki kebiasaan menggantungkan baju di rumah?",
-    "Apakah semua anggota keluarga Anda sering menggantungkan baju di rumah?",
-    "Apakah saat pagi hari di rumah Anda banyak nyamuk?",
-    "Apakah akhir-akhir ini Anda pernah kontak dekat dengan seseorang yang sedang demam atau diduga menderita DBD?",
-    "Apakah baru-baru ini Anda melakukan perjalanan ke daerah lain atau wilayah dengan kasus DBD?",
-    "Apakah belakangan ini Anda sering berkunjung ke tempat umum atau lokasi ramai?",
-    "Apakah talang air, selokan, atau saluran pembuangan di sekitar rumah Anda rutin dibersihkan agar tidak menjadi tempat genangan air?"
+    "Apakah Anda rutin mengecek jentik di rumah?",
+    "Apakah talang air dan saluran pembuangan rutin dibersihkan?",
+    "Apakah hanya orang tertentu dalam keluarga yang melakukan 3M?",
+    "Apakah Anda menggantungkan baju di rumah?"
 ];
 
 ?>
 
 <?php foreach($pertanyaan as $index => $text): ?>
 <div class="pertanyaan step-form" data-step="<?= $index+1 ?>" style="display:none;">
-    
+
     <label class="text-center w-100 d-block">
         <b><?= $text ?></b>
     </label>
 
+    <?php
+    $nomor = $index + 1;
+    $reverse = [14, 15];
+    ?>
+
     <div class="opsi-group">
-        <button type="button" class="opsi" data-value="1">Iya</button>
-        <button type="button" class="opsi" data-value="0">Tidak</button>
-        <input type="hidden" name="p<?= $index+1 ?>" value="">
+
+        <?php if(in_array($nomor, $reverse)): ?>
+
+            <button type="button" class="opsi" data-value="0">Iya</button>
+            <button type="button" class="opsi" data-value="1">Tidak</button>
+
+        <?php else: ?>
+
+            <button type="button" class="opsi" data-value="1">Iya</button>
+            <button type="button" class="opsi" data-value="0">Tidak</button>
+
+        <?php endif; ?>
+
+        <input type="hidden" name="p<?= $nomor ?>" value="">
+
     </div>
 
 </div>
@@ -246,35 +314,48 @@ $pertanyaan = [
 </div>
 
 <!-- FOOTER -->
-<div class="footer">
-<div class="container">
-<div class="row">
+<footer class="footer">
 
-<div class="col-md-4">
-    <div class="logo-footer">LOGO</div>
-    <p class="mt-3"><b>SIGAP</b><br>
-    Sistem Informasi, Geografis Analisis & Pemantauan</p>
-    <a href="#">Tentang Kami</a>
+<div class="footer-container">
+
+<div class="footer-content">
+
+    <!-- BRAND -->
+    <div class="footer-box footer-brand">
+        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
+        <p>
+            Dengue Geographic <br> Information System
+        </p>
+    </div>
+
+    <!-- SOSIAL -->
+    <div class="footer-box">
+        <h6 class="footer-title">Media Sosial</h6>
+
+        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
+        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
+        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
+    </div>
+
+    <!-- KONTAK -->
+    <div class="footer-box">
+        <h6 class="footer-title">Informasi Kontak</h6>
+
+        <p class="mb-0 small">📧 email@kampus.ac.id</p>
+        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
+        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
+        <p class="mb-0 small">📞 087851132933</p>
+    </div>
+
 </div>
 
-<div class="col-md-4 text-center">
-    <h6>Media Sosial</h6>
-    <p>@username</p>
-</div>
-
-<div class="col-md-4 text-end">
-    <h6>Informasi Kontak</h6>
-    <p>Email: email@company.com</p>
-    <p>Lokasi: Jember, Jawa Timur</p>
+<div class="footer-bottom">
+    © 2026 SIGAP
 </div>
 
 </div>
 
-<hr>
-
-<p class="text-center">Hak Cipta © 2026 SIGAP</p>
-
-</div>
+</footer>
 </div>
 
 <!-- SCRIPT OPSI -->
@@ -296,7 +377,7 @@ document.querySelectorAll('.opsi-group').forEach(group => {
 <!-- SCRIPT STEP -->
 <script>
 let currentGroup = 1;
-const questionPerPage = 4;
+const questionPerPage = 3;
 
 const steps = document.querySelectorAll('.step-form');
 const totalGroup = Math.ceil(steps.length / questionPerPage);
@@ -343,16 +424,62 @@ btnNext.addEventListener('click', function () {
     }
 
     if (!valid) {
-        alert("Masih ada pertanyaan yang belum dijawab!");
-        return;
+        Swal.fire({
+    icon: 'warning',
+    title: 'Yah, belum lengkap 🚀✨',
+    text: 'Jawab semua pertanyaan dulu ya sebelum lanjut',
+    confirmButtonText: 'Oke siap!',
+    confirmButtonColor: '#00BBC2',
+    background: '#ffffff',
+    color: '#2c3e50',
+    iconColor: '#00BBC2',
+    backdrop: 'rgba(0,187,194,0.15)',
+    customClass: {
+        popup: 'rounded-4 shadow-lg'
+    },
+    showClass: {
+        popup: 'animate__animated animate__fadeInUp animate__faster'
+    },
+    hideClass: {
+        popup: 'animate__animated animate__fadeOutDown animate__faster'
+    }
+});
     }
 
     if (currentGroup < totalGroup) {
         currentGroup++;
         showGroup(currentGroup);
     } else {
-        document.querySelector('form').submit();
-    }
+
+    Swal.fire({
+        icon: 'question',
+        title: 'Yakin sudah sesuai? 🤔🌿',
+        text: 'Pastikan jawaban kamu sesuai kondisi lingkungan saat ini yaa 🚀✨',
+        showCancelButton: true,
+        confirmButtonText: 'Iya, kirim 👍',
+        cancelButtonText: 'Cek lagi 👀',
+        confirmButtonColor: '#00BBC2',
+        cancelButtonColor: '#6c757d',
+        background: '#ffffff',
+        color: '#2c3e50',
+        iconColor: '#00BBC2',
+        backdrop: 'rgba(0,187,194,0.15)',
+        customClass: {
+            popup: 'rounded-4 shadow-lg'
+        },
+        showClass: {
+            popup: 'animate__animated animate__zoomIn'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__zoomOut'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.querySelector('form').submit();
+        }
+    });
+
+}
 });
 
 btnPrev.addEventListener('click', function () {
