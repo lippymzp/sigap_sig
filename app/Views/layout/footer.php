@@ -1,9 +1,8 @@
-
 <footer class="footer-sigap mt-5">
 
 <div class="container">
 
-    <div class="row gy-3">
+    <div class="row gy-5">
 
         <!-- LOGO & DESKRIPSI -->
         <div class="col-lg-6" data-aos="fade-up">
@@ -15,9 +14,7 @@
         <img src="<?= base_url('img/medixa.png') ?>" alt="SIGAP Logo" class="footer-logo">
 
         <?php if (!empty($show_footer_maskot)): ?>
-           <img src="<?= base_url('img/' . ($footer_maskot ?? 'maskotdsing.png')) ?>"
-     alt="Maskot AI"
-     class="footer-maskot">
+            <img src="<?= base_url('img/logodsing.png') ?>" alt="Maskot AI" class="footer-maskot">
         <?php endif; ?>
 
     </div>
@@ -27,14 +24,10 @@
     <p class="footer-desc">
         Sistem Informasi, Geografis Analisis & Pemantauan
     </p>
-  <div class="footer-links mt-2">
-                <a href="#">Bantuan</a>
-                <a href="#">Tentang Kami</a>
-            </div>
+
 </div>
 
-            <div class="footer-links mt-2">
-                <a href="#">Bantuan</a>
+            <div class="footer-links mt-5">
                 <a href="#">Tentang Kami</a>
             </div>
 
@@ -92,7 +85,7 @@
 
     <!-- COPYRIGHT -->
     <div class="footer-bottom">
-        <p>Hak Cipta © 2026 SIGAP</p>
+       
     </div>
 
 </div>
@@ -107,26 +100,11 @@
 
 .footer-sigap{
     background:#014F4F;
-    padding:25px 0 15px;
+    padding:80px 0 30px;
     position:relative;
     overflow:hidden;
 }
-.footer-dashboard .footer-sigap{
-    margin-left:260px;
-    width:calc(100% - 260px);
-    transition: all 0.3s ease;
-}
-/* SAAT SIDEBAR DITUTUP */
-.wrapper.hide ~ .footer-dashboard .footer-sigap{
-    margin-left:0;
-    width:100%;
-}
-@media (max-width:768px){
-    .footer-dashboard .footer-sigap{
-        margin-left:0;
-        width:100%;
-    }
-}
+
 /* CONTAINER */
 .footer-sigap .container{
     position:relative;
@@ -134,51 +112,51 @@
 }
 
 /* LOGO */
-.footer-brand-top {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    margin-bottom: 28px;
+.footer-logo{
+    width:200px;
+    margin-bottom:25px;
+    filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
 }
-.footer-brand {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-.footer-logo {
-    width: 140px;
-    height: auto;
-    object-fit: contain;
-    display: block;
+.footer-brand-top{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+    margin-bottom:25px;
 }
 
-.footer-maskot {
-    width: 95px;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    filter: none;
-    box-shadow: none;
-    animation: none;
-    transform: none;
+.footer-maskot{
+    width:200px;
+    height:auto;
+    object-fit:contain;
+    animation: floatMaskot 3s ease-in-out infinite;
+    filter: drop-shadow(0 10px 20px rgba(64,237,208,0.25));
 }
 
+@keyframes floatMaskot{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-10px);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
 /* TITLE */
-.footer-title {
-    color: #fff;
-    font-weight: 700;
-    font-size: 3.2rem;
-    margin-bottom: 14px;
-    line-height: 1;
+.footer-title{
+    color:#fff;
+    font-weight:700;
+    font-size:2rem;
+    margin-bottom:12px;
 }
 
 /* DESC */
-.footer-desc {
-    color: #E8FFFF;
-    font-size: 1.2rem;
-    line-height: 1.8;
-    max-width: 520px;
-    margin-bottom: 28px;
+.footer-desc{
+    color:#E8FFFF;
+    font-size:1.1rem;
+    line-height:1.8;
+    max-width:500px;
 }
 
 /* HEADING */
@@ -190,19 +168,19 @@
 }
 
 /* LINKS */
-.footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+.footer-links{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
 }
 
-.footer-links a {
-    color: #fff;
-    text-decoration: underline;
-    font-size: 1.3rem;
-    font-weight: 600;
-    transition: 0.3s;
-    width: fit-content;
+.footer-links a{
+    color:#fff;
+    text-decoration:underline;
+    font-size:1.2rem;
+    font-weight:600;
+    transition:0.3s;
+    width:fit-content;
 }
 
 .footer-links a:hover{
@@ -265,9 +243,9 @@
 /* LINE */
 .footer-line{
     width:100%;
-    height:1px;
+    height:2px;
     background:rgba(255,255,255,0.4);
-    margin:30px 0 15px;
+    margin:70px 0 25px;
 }
 
 /* COPYRIGHT */

@@ -1,7 +1,13 @@
 <?= $this->include('layout/header') ?>
-
+<div class="tentang-page">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-
+.tentang-page,
+.tentang-page *{
+    font-family:'Poppins', sans-serif !important;
+}
 /* =========================================
    ROOT
 ========================================= */
@@ -107,57 +113,119 @@ body{
     margin:90px 0 60px;
 }
 
-.filosofi-card{
-    background:white;
-    border-radius:25px;
-    padding:35px;
-    height:100%;
-    position:relative;
-    overflow:hidden;
-    transition:0.4s;
-    box-shadow:0 10px 30px rgba(0,0,0,0.06);
-}
-
-.filosofi-card::before{
-    content:'';
-    position:absolute;
-    left:0;
-    top:0;
-    width:8px;
-    height:100%;
-    background:var(--primary);
-}
-
 .filosofi-card:hover{
     transform:translateY(-10px);
 }
 
-.icon-box{
-    width:55px;
-    height:55px;
-    background:rgba(18,214,210,0.12);
-    border-radius:15px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin-bottom:20px;
+
+
+/* =========================================
+   FILOSOFI LOGO FIGMA FIX
+========================================= */
+
+.section-title{
+    text-align:center;
+    color:#10C4C8;
+    font-size:42px;
+    font-weight:700;
+    margin:70px 0 45px;
+}
+/* FILOSOFI FIGMA */
+.filosofi-section{
+    padding:40px 0 90px;
 }
 
-.icon-box i{
-    color:var(--primary);
-    font-size:22px;
+.section-title{
+    text-align:center;
+    color:#11C5C8;
+    font-size:42px;
+    font-weight:700;
+    margin-bottom:55px;
+}
+
+.filosofi-card{
+    background:#fff;
+    border-radius:14px;
+    padding:18px 20px;
+    border-left:6px solid #14CACA;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    min-height:160px;
+}
+
+.filosofi-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.icon-box{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#EAF9F9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.icon-box img{
+    width:18px;
+    height:18px;
 }
 
 .filosofi-card h4{
-    font-size:1.3rem;
+    font-size:16px;
     font-weight:700;
-    margin-bottom:15px;
-    color:#222;
+    color:#111;
+    margin:0;
 }
 
 .filosofi-card p{
-    color:#555;
-    line-height:1.9;
+    font-size:13px;
+    line-height:1.7;
+    color:#333;
+    margin:0;
+}
+
+/* CARD WARNA */
+.warna-card{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    position:relative;
+}
+
+.warna-kiri{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#63D7E9;
+    border:2px solid #1A98C9;
+    flex-shrink:0;
+}
+
+.warna-kanan{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#0896C7;
+    flex-shrink:0;
+}
+
+.warna-content{
+    flex:1;
+}
+
+@media(max-width:991px){
+    .warna-card{
+        flex-direction:column;
+    }
+
+    .warna-kanan{
+        display:none;
+    }
 }
 
 /* =========================================
@@ -308,119 +376,108 @@ body{
 </section>
 
 <!-- FILOSOFI -->
-<section class="container">
+<section class="filosofi-section">
+<div class="container">
 
-<h2 class="section-title" data-aos="fade-up">
-    Filosofi Logo
-</h2>
+    <h2 class="section-title">Filosofi Logo</h2>
 
-<div class="row g-4">
+    <!-- ROW ATAS -->
+    <div class="row g-4 mb-4">
 
-    <!-- CARD 1 -->
-    <div class="col-lg-4 col-md-6" data-aos="fade-up">
+        <div class="col-lg-4 col-md-6">
+            <div class="filosofi-card">
+                <div class="filosofi-header">
+                    <div class="icon-box">
+                        <img src="<?= base_url('img/perisai.png') ?>">
+                    </div>
+                    <h4>Bentuk Perisai</h4>
+                </div>
 
-        <div class="filosofi-card">
-
-            <div class="icon-box">
-                <i class="bi bi-geo-alt-fill"></i>
+                <p>
+                    Melambangkan perlindungan SIGAP hadir untuk melindungi
+                    dan menjaga kesehatan masyarakat
+                </p>
             </div>
+        </div>
 
-            <h4>Bentuk Pin Lokasi</h4>
+        <div class="col-lg-4 col-md-6">
+            <div class="filosofi-card">
+                <div class="filosofi-header">
+                    <div class="icon-box">
+                        <img src="<?= base_url('img/pin.png') ?>">
+                    </div>
+                    <h4>Bentuk Pin Lokasi</h4>
+                </div>
 
-            <p>
-                Melambangkan ketepatan lokasi, SIGAP bekerja tepat sasaran
-                dalam memantau persebaran penyakit di kecamatan.
-            </p>
+                <p>
+                    Melambangkan ketepatan lokasi, SIGAP bekerja tepat
+                    sasaran dalam memantau persebaran penyakit di kecamatan
+                </p>
+            </div>
+        </div>
 
+        <div class="col-lg-4 col-md-6">
+            <div class="filosofi-card">
+                <div class="filosofi-header">
+                    <div class="icon-box">
+                        <img src="<?= base_url('img/plus.png') ?>">
+                    </div>
+                    <h4>Simbol Plus (Kesehatan)</h4>
+                </div>
+
+                <p>
+                    Melambangkan dunia kesehatan, SIGAP berfokus
+                    pada penanganan dan pelayanan kesehatan
+                </p>
+            </div>
         </div>
 
     </div>
 
-    <!-- CARD 2 -->
-    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+    <!-- ROW BAWAH -->
+    <div class="row g-4">
 
-        <div class="filosofi-card">
+        <div class="col-lg-4 col-md-6">
+            <div class="filosofi-card">
+                <div class="filosofi-header">
+                    <div class="icon-box">
+                        <img src="<?= base_url('img/melingkar.png') ?>">
+                    </div>
+                    <h4>Garis Melingkar</h4>
+                </div>
 
-            <div class="icon-box">
-                <i class="bi bi-shield-fill-check"></i>
+                <p>
+                    Melambangkan pemantauan yang terus berjalan,
+                    SIGAP melakukan monitoring secara terus-menerus
+                    (real-time) dan sigap
+                </p>
             </div>
-
-            <h4>Bentuk Perisai</h4>
-
-            <p>
-                Melambangkan perlindungan, SIGAP hadir untuk melindungi
-                dan menjaga kesehatan masyarakat.
-            </p>
-
         </div>
 
-    </div>
+        <div class="col-lg-8">
+            <div class="filosofi-card warna-card">
 
-    <!-- CARD 3 -->
-    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="warna-kiri"></div>
 
-        <div class="filosofi-card">
+                <div class="warna-content">
+                    <h4>Warna Biru Tosca Pada Logo SIGAP</h4>
 
-            <div class="icon-box">
-                <i class="bi bi-plus-circle-fill"></i>
+                    <p>
+                        Melambangkan perpaduan antara kepercayaan dan kesehatan.
+                        Warna biru menunjukkan sistem yang stabil dan dapat diandalkan,
+                        sedangkan sentuhan hijau mencerminkan kepedulian terhadap kesehatan.
+                    </p>
+                </div>
+
+                <div class="warna-kanan"></div>
+
             </div>
-
-            <h4>Simbol Plus</h4>
-
-            <p>
-                Melambangkan dunia kesehatan, SIGAP berfokus pada
-                penanganan dan pelayanan kesehatan.
-            </p>
-
-        </div>
-
-    </div>
-
-    <!-- CARD 4 -->
-    <div class="col-lg-6 col-md-6" data-aos="fade-up">
-
-        <div class="filosofi-card">
-
-            <div class="icon-box">
-                <i class="bi bi-arrow-repeat"></i>
-            </div>
-
-            <h4>Garis Melingkar</h4>
-
-            <p>
-                Melambangkan pemantauan yang terus berjalan secara
-                real-time dan sigap terhadap kondisi kesehatan.
-            </p>
-
-        </div>
-
-    </div>
-
-    <!-- CARD 5 -->
-    <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="filosofi-card">
-
-            <div class="icon-box">
-                <i class="bi bi-palette-fill"></i>
-            </div>
-
-            <h4>Warna Biru Tosca</h4>
-
-            <p>
-                Perpaduan antara kepercayaan dan kesehatan. Biru
-                menunjukkan sistem yang stabil dan dapat diandalkan,
-                sedangkan hijau melambangkan kepedulian kesehatan.
-            </p>
-
         </div>
 
     </div>
 
 </div>
-
 </section>
-
 <!-- VISI MISI -->
 <section class="visi-misi">
 
@@ -509,5 +566,5 @@ body{
 </div>
 
 </section>
-
+</div>
 <?= $this->include('layout/footer') ?>

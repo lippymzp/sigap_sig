@@ -5,7 +5,16 @@ $this->setVar('show_footer_maskot', true);
 ?>
 <?= $this->include('layout/header') ?>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<div class="diare-page">
 <style>
+.diare-page,
+.diare-page *{
+    font-family:'Poppins', sans-serif !important;
+}
 :root{
     --primary:#40EDD0;
     --dark:#00CED1;
@@ -1019,7 +1028,7 @@ slider.addEventListener("touchend", e=>{
 
         <div class="bot-message">
             Halo 👋<br>
-            Saya DOXYP AI.<br><br>
+            Saya DOXY AI.<br><br>
 
             Silakan tanyakan tentang:
             <br>• Penyakit Diare
@@ -1194,4 +1203,5 @@ async function sendMessage(){
 }
 
 </script>
+</div>
 <?= $this->include('layout/footer') ?>

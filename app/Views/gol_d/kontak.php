@@ -1,6 +1,15 @@
 <?= $this->include('layout/header') ?>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<div class="kontak-page">
 <style>
+
+.kontak-page,
+.kontak-page *{
+    font-family:'Poppins', sans-serif !important;
+}
 :root{
     --primary:#11D6D2;
     --primary-dark:#00BFC6;
@@ -258,5 +267,5 @@ body{
     </div>
 
 </section>
-
+</div>
 <?= $this->include('layout/footer') ?>
