@@ -94,14 +94,49 @@
                         </div>
 
                         <div class="filter-group">
-                            <label>Periode</label>
-                            <select id="filterTahun">
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                        </div>
+    <label>Periode</label>
 
+    <select id="filterTahun">
+
+        <option value="">
+            Semua Tahun
+        </option>
+
+        <?php
+        $tahunList = [];
+
+        foreach($pneumonia as $item){
+
+            if(!empty($item['tgl_kunjungan'])){
+
+                $tahun =
+                    date(
+                        'Y',
+                        strtotime(
+                            $item['tgl_kunjungan']
+                        )
+                    );
+
+                $tahunList[] = $tahun;
+            }
+        }
+
+        $tahunList =
+            array_unique($tahunList);
+
+        rsort($tahunList);
+
+        foreach($tahunList as $tahun):
+        ?>
+
+            <option value="<?= $tahun ?>">
+                <?= $tahun ?>
+            </option>
+
+        <?php endforeach; ?>
+
+    </select>
+</div>
                         <div class="filter-group">
                             <label>Jenis Kelamin</label>
                             <select id="filterJk">
