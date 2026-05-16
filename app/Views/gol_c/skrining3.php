@@ -28,543 +28,421 @@ $kategori = ($kategori_usia <= 19) ? 'Anak-anak' : 'Dewasa';
 <html>
 <head>
 <title>Hasil Skrining</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
-body {
-    background: #ffffff;
+
+*{
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#ffffff;
 }
 
 /* CARD */
-.card-custom {
-    border-radius: 15px;
-    border: 2px solid #00BBC2;
-    background: #f1f3f5;
-    padding: 40px;
-    max-width: 1000px;
-    margin: 40px auto;
+.card-custom{
+    border-radius:20px;
+    border:2px solid #00BBC2;
+    background:#f8fbfc;
+    padding:40px;
+    max-width:1000px;
+    margin:40px auto;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 /* TITLE */
-.section-title {
-    font-weight: bold;
-    margin: 25px 0 15px;
+.section-title{
+    font-weight:700;
+    font-size:20px;
+    margin:35px 0 18px;
+    color:#222;
 }
 
 /* BOX */
-.data-box {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+.data-box{
+    background:white;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.05);
 }
 
-/* HASIL */
-.hasil-box {
-    background: #00BBC2;
-    color: white;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
+/* INPUT */
+.form-control[readonly]{
+    background:#f8f9fa;
+    border-radius:10px;
+    border:1px solid #dee2e6;
 }
 
 /* TABLE */
-.table th {
-    background: #00BBC2;
-    color: white;
-}
-.badge {
-    padding: 8px 15px;
-    font-size: 14px;
+.table{
+    border-radius:15px;
+    overflow:hidden;
+    margin-bottom:25px;
 }
 
-/* TIPS */
-.tips-box {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 10px;
+.table th{
+    background:#00BBC2;
+    color:white;
+    border:none;
 }
 
-.tips-header {
-    background: #00BBC2;
-    color: white;
-    padding: 10px 15px;
-    font-weight: bold;
+.table td{
+    vertical-align:middle;
 }
 
-.tips-content {
-    background: #cfe8f3;
-    padding: 15px;
+/* BADGE */
+.badge{
+    padding:8px 15px;
+    font-size:14px;
+    border-radius:8px;
 }
 
-.tips-content ul {
-    margin: 0;
-    padding-left: 20px;
+/* HASIL */
+.hasil-box{
+    color:white;
+    border-radius:18px;
+    padding:28px;
+    text-align:center;
+    font-weight:700;
+    font-size:22px;
+    margin-bottom:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
-.form-control[readonly] {
-    background-color: #f8f9fa;
-    border-radius: 10px;
+.hasil-danger{
+    background:#dc3545;
+}
+
+.hasil-success{
+    background:#198754;
+}
+
+/* REKOMENDASI */
+.tips-card{
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    margin-top:20px;
+}
+
+.tips-header-modern{
+    padding:18px 20px;
+    font-weight:600;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:16px;
+}
+
+/* WARNA TOSCA */
+.bg-info-modern{
+    background:#00BBC2;
+}
+
+.tips-content-modern{
+    padding:22px;
+    background:#f9fcfc;
+}
+
+.tips-content-modern ul{
+    padding-left:20px;
+}
+
+.tips-content-modern li{
+    margin-bottom:10px;
+    color:#444;
+}
+
+/* BUTTON CHATBOT */
+.btn-chatbot{
+    width:100%;
+    background:#00BBC2;
+    color:white;
+    border-radius:12px;
+    padding:14px 20px;
+    font-weight:600;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition:0.3s ease;
+    border:none;
+}
+
+.btn-chatbot:hover{
+    background:#00a7ad;
+    color:white;
+}
+
+/* BUTTON */
+.btn-wrapper{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:40px;
+}
+
+.btn-kembali,
+.btn-selesai{
+    width:180px;
+    height:52px;
+    border-radius:12px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+}
+
+.btn-kembali{
+    background:white;
+    border:2px solid #00BBC2;
+    color:#00BBC2;
+}
+
+.btn-selesai{
+    background:#00BBC2;
+    color:white;
 }
 
 /* FOOTER */
-.footer-text {
-    text-align: center;
-    margin-top: 30px;
-    color: gray;
-    font-size: 14px;
-}
-.btn-custom {
-    height: 55px;
-    border-radius: 12px;
-    font-weight: 600;
-}
-
-
-.btn-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 40px;
-}
-
-.btn-kembali, .btn-selesai, .btn-cetak {
-    width: 160px;
-    height: 50px;
-    border-radius: 10px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-}
-
-/* warna */
-.btn-kembali {
-    background: white;
-    border: 2px solid #00BBC2;
-    color: #00BBC2;
-}
-
-.btn-selesai {
-    background: #00BBC2;
-    color: white;
-}
-
-.btn-cetak {
-    width: 200px;
-    height: 50px;
-    background: #555;
-    color: white;
-    border-radius: 10px;
-    font-weight: 600;
-    
-}
-@media print {
-    .btn-wrapper, .btn-cetak {
-        display: none;
-    }
-}
-.btn-cetak-full {
-    width: 100%;                 /* full lebar */
-    height: 50px;
-    background: #00BBC2;         /* warna tosca */
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.btn-cetak-full:hover {
-    opacity: 0.9;
-}
-/* TABLE ROUNDED */
-.table {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* HEADER */
-.table thead tr th:first-child {
-    border-top-left-radius: 12px;
-}
-
-.table thead tr th:last-child {
-    border-top-right-radius: 12px;
-}
-
-/* FOOTER (baris terakhir) */
-.table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 12px;
-}
-
-.table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 12px;
-}
-/* BUTTON STYLE */ 
-.btn-kembali { 
-    background: white; 
-    color: #00BBC2; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); } 
-
-.btn-selesai { 
-    background: #00BBC2; 
-    color: white; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-/* SPACING BIAR NGGAK RAPET */
-.section-title {
-    margin-top: 35px;
-}
-
-.data-box {
-    margin-bottom: 25px;
-}
-
-.table {
-    margin-bottom: 25px;
-}
-
-.hasil-box {
-    margin-bottom: 15px;
-}
-
-.tips-box {
-    margin-top: 20px;
-    margin-bottom: 30px;
-}
-
-.cetak-wrapper {
-    margin-top: 20px;
-}
-* {
-    font-family: 'Poppins', sans-serif;
-}
-
-/* ===== CARD MODERN ===== */
-.tips-card {
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin-top: 20px;
-    animation: fadeUp 0.6s ease-in-out;
-    transition: 0.3s;
-}
-
-/* animasi masuk */
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* HEADER */
-.tips-header-modern {
-    padding: 18px 20px;
-    font-weight: 600;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-}
-
-/* CONTENT */
-.tips-content-modern {
-    padding: 18px 22px;
-    background: #f9fcfc;
-}
-
-.tips-content-modern p {
-    margin-bottom: 10px;
-    color: #444;
-}
-
-.tips-content-modern ul {
-    padding-left: 18px;
-}
-
-.tips-content-modern li {
-    margin-bottom: 8px;
-    transition: 0.2s;
-}
-
-.tips-content-modern li:hover {
-    transform: translateX(5px);
-}
-
-/* VARIAN WARNA */
-.bg-danger-modern {
-    background: linear-gradient(135deg, #ff6b6b, #d64545);
-}
-
-.bg-warning-modern {
-    background: linear-gradient(135deg,  #ffd86b, #c9a227);
-}
-
-.bg-success-modern {
-    background: linear-gradient(135deg, #00BBC2, #007f6b);
+.footer-text{
+    text-align:center;
+    margin-top:35px;
+    color:gray;
+    font-size:14px;
 }
 
 .footer-maskot{
     width:250px !important;
 }
+
+@media print{
+    .btn-wrapper,
+    .btn-chatbot{
+        display:none;
+    }
+}
+
 </style>
-
-
 </head>
 
 <body>
 
-
 <div class="card-custom">
 
-<!-- JUDUL -->
-<h4 class="text-center mb-4">
-    <b>Hasil Skrining Kesehatan Anda</b>
-</h4>
+    <!-- JUDUL -->
+    <h4 class="text-center mb-4">
+        <b>Hasil Skrining Kesehatan Anda</b>
+    </h4>
 
-<!-- INFORMASI UMUM -->
-<div class="section-title">Informasi Umum</div>
+    <!-- INFORMASI UMUM -->
+    <div class="section-title">Informasi Umum</div>
 
+    <div class="data-box">
 
-<div class="data-box">
-<div class="row g-3">
+        <div class="row g-3">
 
-<div class="col-md-6">
-    <label>Nama Lengkap</label>
-    <input type="text" class="form-control" value="<?= $nama ?>" readonly>
+            <div class="col-md-6">
 
-    <label class="mt-3">Nomor Induk Kependudukan</label>
-    <input type="text" class="form-control" value="<?= $nik ?>" readonly>
+                <label>Nama Lengkap</label>
+                <input type="text" class="form-control" value="<?= $nama ?>" readonly>
 
-    <label class="mt-3">Jenis Kelamin</label>
-    <input type="text" class="form-control" value="<?= $jenis_kelamin ?>" readonly>
+                <label class="mt-3">Nomor Induk Kependudukan</label>
+                <input type="text" class="form-control" value="<?= $nik ?>" readonly>
 
-    <label class="mt-3">Tanggal Lahir</label>
-    <input type="text" class="form-control" value="<?= $tanggal_lahir ?>" readonly>
-<label class="mt-3">Usia</label>
-<label class="mt-3">Kategori Usia</label>
-<input type="text" class="form-control" value="<?= $kategori ?>" readonly>
-    
-</div>
+                <label class="mt-3">Jenis Kelamin</label>
+                <input type="text" class="form-control" value="<?= $jenis_kelamin ?>" readonly>
 
-<div class="col-md-6">
-    <label>Tanggal Skrining</label>
-    <input type="text" 
-       class="form-control text-white" 
-       style="background:#00BBC2;" 
-       value="<?= date('d-m-Y') ?>" 
-       readonly>
+                <label class="mt-3">Tanggal Lahir</label>
+                <input type="text" class="form-control" value="<?= $tanggal_lahir ?>" readonly>
 
-    <label class="mt-3">Provinsi</label>
-    <input type="text" class="form-control" value="<?= $provinsi ?>" readonly>
+                <label class="mt-3">Kategori Usia</label>
+                <input type="text" class="form-control" value="<?= $kategori ?>" readonly>
 
-    <label class="mt-3">Kabupaten</label>
-    <input type="text" class="form-control" value="<?= $kabupaten ?>" readonly>
+            </div>
 
-    <label class="mt-3">Kecamatan</label>
-    <input type="text" class="form-control" value="<?= $kecamatan ?>" readonly>
+            <div class="col-md-6">
 
-    <label class="mt-3">Kelurahan</label>
-    <input type="text" class="form-control" value="<?= $kelurahan ?>" readonly>
+                <label>Tanggal Skrining</label>
+                <input type="text"
+                    class="form-control text-white"
+                    style="background:#00BBC2;"
+                    value="<?= date('d-m-Y') ?>"
+                    readonly>
 
-    <label class="mt-3">RT/RW</label>
-    <input type="text" class="form-control" value="<?= $rt_rw ?>" readonly>
-</div>
+                <label class="mt-3">Provinsi</label>
+                <input type="text" class="form-control" value="<?= $provinsi ?>" readonly>
 
-</div>
-</div>
+                <label class="mt-3">Kabupaten</label>
+                <input type="text" class="form-control" value="<?= $kabupaten ?>" readonly>
 
-<!-- RINCIAN JAWABAN -->
-<div class="section-title">Rincian Jawaban</div>
+                <label class="mt-3">Kecamatan</label>
+                <input type="text" class="form-control" value="<?= $kecamatan ?>" readonly>
 
-<table class="table table-bordered">
-<thead>
-<tr>
-    <th class="text-center">No</th>
-    <th class="text-start">Pertanyaan</th>
-    <th class="text-center">Jawaban</th>
-</tr>
-</thead>
-<tbody>
+                <label class="mt-3">Kelurahan</label>
+                <input type="text" class="form-control" value="<?= $kelurahan ?>" readonly>
 
-<?php 
-$pertanyaan = [
-    "Apakah Anda mengalami batuk dalam 7 hari terakhir?",
-    "Apakah Anda mengeluarkan dahak (sputum) saat batuk?",
-    "Apakah Anda mengalami sesak napas?",
-    "Apakah Anda merasakan nyeri dada saat bernapas atau batuk?",
-    "Apakah Anda mengalami mual atau muntah?",
-    "Apakah Anda merasa lemas?",
-    "Apakah nafsu makan Anda menurun?",
-    "Apakah Anda mengalami demam (≥38 derajat celcius)?",
-    "Apakah napas Anda terasa lebih cepat dari biasanya?",
-    "Apakah saat bernapas terdengar bunyi seperti mendengkur atau seperti ada dahak di dada?",
-    "Apakah saat Anda bernapas terdengar bunyi mengi (seperti siulan)?"
-];
-?>
+                <label class="mt-3">RT/RW</label>
+                <input type="text" class="form-control" value="<?= $rt_rw ?>" readonly>
 
-<?php foreach($pertanyaan as $i => $text): ?>
-<tr>
-    <td class="text-center"><?= $i+1 ?></td>
-    <td class="text-start"><?= $text ?></td>
-    <td class="text-center">
-
-<?php
-$value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
-
-if ($value == 1):
-?>
-    <span class="badge bg-success">Iya</span>
-<?php else: ?>
-    <span class="badge bg-danger">Tidak</span>
-<?php endif; ?>
-
-</td>
-</tr>
-<?php endforeach; ?>
-
-
-
-</tbody>
-</table>
-
-<!-- HASIL -->
-<div class="section-title">Hasil</div>
-<p class="text-muted">
-
-
-
-<div class="hasil-box">
-    <?= $hasil ?>
-</div>
-
-<p class="text-center mt-2 text-muted">
-    <?= $alasan ?>
-</p>
-
-<!-- REKOMENDASI -->
-<div class="section-title">Rekomendasi</div>
-
-<?php if ($hasil == 'Berisiko Pneumonia'): ?>
-
-    <!-- HASIL BERISIKO -->
-    <div class="tips-card">
-
-        <div class="tips-header-modern bg-danger-modern">
-            Rekomendasi
-        </div>
-
-        <div class="tips-content-modern">
-
-            <ul>
-                <li>Segera periksa ke fasilitas kesehatan terdekat.</li>
-                <li>Gunakan masker dan pantau gejala.</li>
-                <li>Hubungi <b>CHATBOT</b> untuk informasi lebih lanjut.</li>
-            </ul>
+            </div>
 
         </div>
 
     </div>
 
-<?php else: ?>
+    <!-- RINCIAN -->
+    <div class="section-title">Rincian Jawaban</div>
 
-    <!-- HASIL TIDAK BERISIKO -->
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                <th>Pertanyaan</th>
+                <th class="text-center">Jawaban</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        <?php 
+        $pertanyaan = [
+            "Apakah Anda mengalami batuk dalam 7 hari terakhir?",
+            "Apakah Anda mengeluarkan dahak (sputum) saat batuk?",
+            "Apakah Anda mengalami sesak napas?",
+            "Apakah Anda merasakan nyeri dada saat bernapas atau batuk?",
+            "Apakah Anda mengalami mual atau muntah?",
+            "Apakah Anda merasa lemas?",
+            "Apakah nafsu makan Anda menurun?",
+            "Apakah Anda mengalami demam (≥38 derajat celcius)?",
+            "Apakah napas Anda terasa lebih cepat dari biasanya?",
+            "Apakah saat bernapas terdengar bunyi seperti mendengkur atau seperti ada dahak di dada?",
+            "Apakah saat Anda bernapas terdengar bunyi mengi (seperti siulan)?"
+        ];
+        ?>
+
+        <?php foreach($pertanyaan as $i => $text): ?>
+
+        <tr>
+
+            <td class="text-center"><?= $i+1 ?></td>
+
+            <td><?= $text ?></td>
+
+            <td class="text-center">
+
+                <?php
+                $value = isset(${"p".($i+1)}) ? ${"p".($i+1)} : 0;
+                ?>
+
+                <?php if($value == 1): ?>
+
+                    <span class="badge bg-success">Iya</span>
+
+                <?php else: ?>
+
+                    <span class="badge bg-danger">Tidak</span>
+
+                <?php endif; ?>
+
+            </td>
+
+        </tr>
+
+        <?php endforeach; ?>
+
+        </tbody>
+
+    </table>
+
+    <!-- HASIL -->
+    <div class="section-title">Hasil</div>
+
+    <div class="hasil-box <?= ($hasil == 'Berisiko Pneumonia') ? 'hasil-danger' : 'hasil-success' ?>">
+        <?= $hasil ?>
+    </div>
+
+    <p class="text-center mt-2 text-muted">
+        <?= $alasan ?>
+    </p>
+
+    <!-- REKOMENDASI -->
+    <div class="section-title">Rekomendasi</div>
+
     <div class="tips-card">
 
-        <div class="tips-header-modern bg-success-modern">
+        <div class="tips-header-modern bg-info-modern">
+            <i class="fa-solid fa-notes-medical"></i>
             Rekomendasi
         </div>
 
         <div class="tips-content-modern">
 
-            <ul>
-                <li>Jaga daya tahan tubuh dengan makan bergizi, istirahat cukup, dan minum air yang cukup.</li>
-                <li>Hindari asap rokok dan paparan polusi udara.</li>
-                <li>Waspadai bila muncul demam tinggi, sesak napas, atau batuk memburuk.</li>
-            </ul>
+            <?php if ($hasil == 'Berisiko Pneumonia'): ?>
+
+                <ul>
+                    <li>Segera periksa ke fasilitas kesehatan terdekat.</li>
+                    <li>Gunakan masker dan pantau gejala secara berkala.</li>
+                    <li>Kurangi aktivitas berat dan perbanyak istirahat.</li>
+                    <li>Perbanyak minum air putih dan konsumsi makanan bergizi.</li>
+                    <li>Segera konsultasikan kondisi Anda melalui chatbot kesehatan.</li>
+                </ul>
+
+                <div class="mt-4">
+
+                    <a href="http://localhost:8080/chat-pneumonia" class="btn-chatbot">
+                        <i class="fa-solid fa-robot"></i>
+                        Menuju Chatbot Pneumonia
+                    </a>
+
+                </div>
+
+            <?php else: ?>
+
+                <ul>
+                    <li>Jaga daya tahan tubuh dengan pola hidup sehat.</li>
+                    <li>Hindari asap rokok dan paparan polusi udara.</li>
+                    <li>Istirahat yang cukup dan konsumsi makanan bergizi.</li>
+                    <li>Perbanyak minum air putih dan olahraga ringan.</li>
+                    <li>Tetap waspada bila muncul demam, sesak napas, atau batuk berat.</li>
+                </ul>
+
+            <?php endif; ?>
 
         </div>
 
     </div>
 
-<?php endif; ?>
+    <!-- BUTTON -->
+    <div class="btn-wrapper">
 
-<!-- BUTTON -->
+        <a onclick="window.print()" class="btn btn-kembali">
+            Cetak Hasil
+        </a>
 
-<!-- KEMBALI & SELESAI (DI BAWAH) -->
-<div class="btn-wrapper">
+        <a href="/pneumonia" class="btn btn-selesai">
+            Selesai
+        </a>
 
-    <a onclick="window.print()" class="btn btn-kembali">
-        Cetak Hasil
-    </a>
+    </div>
 
-   <a href="/pneumonia" class="btn btn-selesai">
-    Selesai
-    </a>
-
-</div>
-<!-- FOOTER -->
-<div class="footer-text">
-    Halaman 1 dari 1 <br>
-    Laporan ini dihasilkan otomatis dari SIGAP
-</div>
-
-</div>
-
-</div>
+    <!-- FOOTER -->
+    <div class="footer-text">
+        Halaman 1 dari 1 <br>
+        Laporan ini dihasilkan otomatis dari SIGAP
+    </div>
 
 </div>
 
 </body>
 </html>
 
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-
-    const footerDesc = document.querySelector(".footer-desc");
-
-    if(footerDesc){
-
-        footerDesc.insertAdjacentHTML("afterend", `
-        
-            <div class="cynex-info mt-4">
-
-                <h3 style="
-                    color:#fff;
-                    font-weight:700;
-                    font-size:2rem;
-                    margin-bottom:12px;
-                    line-height:1;
-                ">
-                    CYNEX
-                </h3>
-
-                <p style="
-                    color:#E8FFFF;
-                    font-size:1.1rem;
-                    line-height:1.8;
-                    margin-bottom:0;
-                ">
-                    Clinical System for Next Experience
-                </p>
-
-            </div>
-
-        `);
-
-    }
-
-});
-</script>
 <?= $this->include('layout/footer') ?>
