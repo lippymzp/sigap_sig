@@ -278,14 +278,14 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
     <div class="card-box">
 
         <div class="card-header-custom">
-            Kasus Berdasarkan Wilayah dan kategori Umur
+            Kasus Berdasarkan Wilayah dan Kategori Umur
         </div>
 
         <div class="filter-wrapper">
 
             <select id="filterBulan2" class="dropdown-btn">
 
-                <option value="All">All Bulan</option>
+                <option value="All">Semua Bulan</option>
 
                 <option value="1">Januari</option>
                 <option value="2">Februari</option>
@@ -304,7 +304,7 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
 
             <select id="filterTahun2" class="dropdown-btn">
 
-                <option value="All">All Tahun</option>
+                <option value="All">Semua Tahun</option>
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
@@ -312,7 +312,7 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
             </select>
             <select id="filterUmur2" class="dropdown-btn">
 
-    <option value="All">All Usia</option>
+    <option value="All">Semua Usia</option>
 
     <option value="Bayi">< 1 tahun</option>
 
@@ -326,15 +326,13 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
 
     <option value="Lansia">≥ 60 tahun</option>
 
-    <option value="Semua">Semua usia</option>
-
-    <option value="All">All Usia</option>
+    <option value="All">Semua Usia</option>
 
 </select>
 
             <select id="filterGender2" class="dropdown-btn">
 
-                <option value="All">All Gender</option>
+                <option value="All">Semua Gender</option>
 
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
