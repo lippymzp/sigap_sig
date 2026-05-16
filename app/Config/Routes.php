@@ -163,7 +163,7 @@ $routes->get('tbc/dashboard/admin', 'Dashboard::tbc');
 $routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
 $routes->get('pneumonia/input_data', 'pneumonia::inputData');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
-$routes->post('pneumonia/simpan', 'pneumonia::simpan');
+$routes->post('pneumonia/simpandatapasien', 'pneumonia::simpandatapasien');
 $routes->get('pneumonia/export', 'pneumonia::export');
 
 $routes->get('diare/dashboardd/', 'Dashboard::diare');

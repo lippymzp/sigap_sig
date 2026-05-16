@@ -248,25 +248,27 @@ class Pneumonia extends BaseController
 
             'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
 
+            'diagnosa' => $this->request->getPost('diagnosa'),
+            
+            'antibiotik' => $this->request->getPost('antibiotik'),
+
             'usia' => $this->request->getPost('usia'),
 
             'catatan' => $this->request->getPost('catatan'),
         ];
 
-        $simpan = $model->simpanSemua($data);
+try {
 
-        if ($simpan) {
+    $model->simpanSemua($data);
 
-            return redirect()
-                ->back()
-                ->with('success', 'Data pasien berhasil disimpan');
+    return redirect()
+        ->to(base_url('pneumonia/input_data?success=1'));
 
-        } else {
+} catch (\Throwable $e) {
 
-            return redirect()
-                ->back()
-                ->with('error', 'Data gagal disimpan');
-        }
+    return redirect()
+        ->to(base_url('pneumonia/input_data?error=1'));
+}
     }
 
 public function grafik()

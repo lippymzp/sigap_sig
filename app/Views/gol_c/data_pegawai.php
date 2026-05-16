@@ -157,14 +157,29 @@
     text-align: center;
 }
 
+/* kolom aksi */
 .table-pegawai .col-aksi{
-    width: 100px;
+    width: 110px;
+    min-width: 110px;
     text-align: center;
+    white-space: nowrap;
 }
 
+/* isi tombol aksi */
+.aksi-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+/* tombol aksi */
 .aksi-btn{
     width: 30px;
     height: 30px;
+    min-width: 30px;
+    min-height: 30px;
     border-radius: 5px;
     display: inline-flex;
     align-items: center;
@@ -172,7 +187,8 @@
     color: #fff;
     text-decoration: none;
     font-size: 13px;
-    margin: 0 3px;
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .aksi-edit{
@@ -372,7 +388,7 @@ $instansiList = [
                     <th class="col-no">No</th>
                     <th class="col-nama">Nama</th>
                     <th class="col-nip">NIP</th>
-                    <th class="col-jabatan">Jabatan</th>
+                    <th class="col-jabatan">Role</th>
                     <th class="col-instansi">Instansi</th>
                     <th class="col-email">Email</th>
                     <th class="col-telepon">No Telepon</th>
@@ -413,15 +429,17 @@ $instansiList = [
                 </td>
 
                 <td class="col-aksi">
-                    <a href="<?= base_url('index.php/pneumonia/pegawai/edit/' . $row['id_petugas']) ?>" 
-                       class="aksi-btn aksi-edit btn-edit-confirm">
-                        <i class="fa-solid fa-pen"></i>
-                    </a>
+                    <div class="aksi-wrapper">
+                        <a href="<?= base_url('index.php/pneumonia/pegawai/edit/' . $row['id_petugas']) ?>" 
+                        class="aksi-btn aksi-edit btn-edit-confirm">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
 
-                    <a href="<?= base_url('index.php/pneumonia/pegawai/hapus/' . $row['id_petugas']) ?>"
-                       class="aksi-btn aksi-hapus btn-hapus-confirm">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
+                        <a href="<?= base_url('index.php/pneumonia/pegawai/hapus/' . $row['id_petugas']) ?>"
+                        class="aksi-btn aksi-hapus btn-hapus-confirm">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         <?php endforeach; ?>
