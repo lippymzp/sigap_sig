@@ -532,3 +532,23 @@ $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->get('/superadmin/admin', 'SuperAdmin::admin');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
 $routes->get('/superadmin/profil', 'SuperAdmin::profil');
+
+$routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
+$routes->post('/superadmin/iklan/simpan', 'SuperAdmin::simpanIklan');
+$routes->get('/superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
+$routes->post('/superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
+
+
+$routes->get('/superadmin/iklan/edit/(:num)', 'SuperAdmin::formEditIklan/$1');
+
+$routes->get('/superadmin/iklan/tambah', 'SuperAdmin::formTambahIklan');
+
+$routes->get('superadmin', 'SuperAdmin::dashboard');
+$routes->get('superadmin/manajemen-iklan', 'SuperAdmin::manajemenIklan');
+$routes->get('superadmin/iklan/tambah', 'SuperAdmin::formTambahIklan');
+$routes->post('superadmin/iklan/simpan', 'SuperAdmin::simpanIklan');
+$routes->get('superadmin/iklan/edit/(:num)', 'SuperAdmin::editIklan/$1');
+
+$routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
+
+$routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
