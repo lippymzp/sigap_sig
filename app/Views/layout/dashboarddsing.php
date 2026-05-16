@@ -122,45 +122,19 @@
         <div class="content-body">
             <?= $this->renderSection('content'); ?>
         </div>
+</div>
+        <div class="footer-dashboard">
+    <?php 
+        $show_footer_maskot = true;
+        $footer_maskot = 'logodsing.png';
+        echo view('layout/footer', [
+            'penyakit' => 'diare',
+            'show_footer_maskot' => $show_footer_maskot,
+            'footer_maskot' => $footer_maskot
+        ]);
+    ?>
+</div>
 
-        <footer class="footer mt-5" style="width:100%;">
-
-            <div class="container text-white py-5">
-
-                <div class="row">
-
-                    <div class="col-md-4 mb-4">
-                        <h5 class="fw-bold">LOGO</h5>
-                        <p>
-                            SIGAP<br>
-                            Sistem Informasi Geografis Analisis & Pemantauan Penyakit
-                        </p>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Media Sosial</h6>
-                        <p>📷 Instagram</p>
-                        <p>📘 Facebook</p>
-                        <p>🐦 Twitter</p>
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                        <h6 class="fw-bold mb-3">Informasi Kontak</h6>
-                        <p>📧 Email: email@kampus.ac.id</p>
-                        <p>📍 Jember, Jawa Timur</p>
-                    </div>
-
-                </div>
-
-                <hr style="border-color: rgba(255,255,255,0.3)">
-
-                <p class="text-center mb-0">
-                    Hak Cipta © 2026 SIGAP
-                </p>
-
-            </div>
-
-        </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -525,3 +525,10 @@ $routes->post('admind/berita/update/(:num)', 'AdminD::updateBerita/$1');
 
 $routes->get('/berita/(:num)', 'Diare::detailBerita/$1');
 $routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
+
+//super admin iki
+$routes->get('/superadmin', 'SuperAdmin::dashboard');
+$routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
+$routes->get('/superadmin/admin', 'SuperAdmin::admin');
+$routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
+$routes->get('/superadmin/profil', 'SuperAdmin::profil');
