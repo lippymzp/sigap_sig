@@ -371,6 +371,30 @@ if(
                         <?= $beritapneumonia['isi_berita'] ?>
 
                     </div>
+                  <div style="margin-top:20px;">
+
+<?php if(!empty($beritapneumonia['url_berita'])): ?>
+
+    <a 
+        href="<?= $beritapneumonia['url_berita'] ?>" 
+        target="_blank"
+        class="btn btn-info"
+        style="
+            background:#11b7c4;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:600;
+            display:inline-block;
+        "
+    >
+        Buka Sumber Berita
+    </a>
+
+<?php endif; ?>
+
+</div>
 
                     <!-- BUTTON -->
                     <div style="text-align:right;">
