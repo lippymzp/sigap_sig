@@ -2136,7 +2136,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
                         </p>
 
                         <?php
-                        $urlBerita = base_url('beritapneumonia/viewUser/' . $berita['id_berita']);
+                        $urlBerita = base_url('beritapneumonia/viewUser/' . $berita['id_berita'] . '?from=admin');
                         ?>
 
                         <a 
