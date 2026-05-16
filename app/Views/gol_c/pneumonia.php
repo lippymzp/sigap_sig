@@ -1011,30 +1011,43 @@ new Chart(ctx, {
 
     options: {
 
-        responsive: true,
-        maintainAspectRatio: false,
+    responsive: true,
+    maintainAspectRatio: false,
 
-        plugins: {
+    plugins: {
 
-            legend: {
-                position: 'top'
-            }
+        legend: {
+            position: 'top'
+        }
 
-        },
+    },
 
-        scales: {
+    scales: {
+        y: {
 
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 10
+            beginAtZero: true,
+
+            title: {
+                display: true,
+                text: 'Jumlah',
+
+                color: '#333',
+
+                font: {
+                    size: 16,
+                    family: 'Poppins'
                 }
+            },
+
+            ticks: {
+                stepSize: 10
             }
 
         }
 
     }
 
+}
 });
 </script>
 
