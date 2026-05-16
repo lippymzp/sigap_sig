@@ -414,9 +414,9 @@ $kelurahanTerdampak = $builderKel
     ->total;
 
 
-// =====================
-// FUNFACT PNEUMONIA
-// =====================
+    // =====================
+    // FUNFACT PNEUMONIA
+    // =====================
     $funfactModel = new \App\Models\FunfactPneumoniaModel();
 
     $funfact = $funfactModel
@@ -425,6 +425,36 @@ $kelurahanTerdampak = $builderKel
         ->orderBy('tanggal_funfact', 'DESC')
         ->first();
 
+        // =====================
+// NOTIFIKASI RISIKO
+// =====================
+
+$notif = $db->table('skrining s')
+
+    ->select('
+        p.nama_pasien_skrining,
+        p.jenis_kelamin,
+        p.usia,
+        s.tanggal,
+        s.hasil
+    ')
+
+    ->join(
+        'pasien_skrining p',
+        'p.id_pasien_skrining = s.id_pasien_skrining'
+    )
+
+    ->where('s.id_penyakit', 3)
+
+    ->where('s.hasil', 'Berisiko')
+
+    ->orderBy('s.id_skrining', 'DESC')
+
+    ->limit(3)
+
+    ->get()
+
+    ->getResultArray();
     return view(
         'gol_c/dashboard_pneumonia',
         [
@@ -438,7 +468,8 @@ $kelurahanTerdampak = $builderKel
 
         'pneumonia'=>$pneumonia,
 
-        'funfact'=>$funfact
+        'funfact'=>$funfact,
+        'notif'=>$notif
 
         ]
     );
