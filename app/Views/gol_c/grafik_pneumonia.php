@@ -361,6 +361,45 @@ const chart1 = new Chart(document.getElementById('chart1'), {
         ]
     }
 
+    ,
+    options:{
+
+        responsive:true,
+        maintainAspectRatio:false,
+
+        plugins:{
+            legend:{
+                position:'top'
+            }
+        },
+
+        scales:{
+
+            y:{
+
+                beginAtZero:true,
+
+                title:{
+                    display:true,
+                    text:'Jumlah',
+
+                    color:'#333',
+
+                    font:{
+                        size:16,
+                        family:'Poppins'
+                    }
+                },
+
+                ticks:{
+                    stepSize:10
+                }
+
+            }
+
+        }
+
+    }
 });
 
 function updateChart1(){
