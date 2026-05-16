@@ -13,21 +13,27 @@ class FunfactTbc extends BaseController
 
         $status = $this->request->getGet('status') ?? 'Publish';
 
-        $total = $model->countAll();
+        $total = (clone $model)
+    ->where('id_penyakit', 2)
+    ->countAllResults();
 
         $publish = (clone $model)
+            ->where('id_penyakit', 2)
             ->where('status_funfact', 'Publish')
             ->countAllResults();
 
         $draft = (clone $model)
+            ->where('id_penyakit', 2)
             ->where('status_funfact', 'Draft')
             ->countAllResults();
 
         $arsip = (clone $model)
+            ->where('id_penyakit', 2)
             ->where('status_funfact', 'Arsip')
             ->countAllResults();
 
         $funfact = (clone $model)
+            ->where('id_penyakit', 2)
             ->where('status_funfact', $status)
             ->orderBy('id_funfact', 'DESC')
             ->findAll();
@@ -78,7 +84,7 @@ class FunfactTbc extends BaseController
     // ✅ SIMPAN & AMBIL ID
     $id = $model->insert([
         'id_petugas'        => session()->get('id_petugas') ?? 1,
-        'id_penyakit'       => 1,
+        'id_penyakit'       => 2,
         'judul_funfact'     => $judul,
         'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
                                 ? 'Kutip funfact luar'
@@ -117,7 +123,7 @@ public function simpanKutip()
 
     $id = $model->insert([
         'id_petugas'        => session()->get('id_petugas') ?? 1,
-        'id_penyakit'       => 1,
+        'id_penyakit'       => 2,
         'judul_funfact'     => $judul,
         'deskripsi_funfact' => 'Kutip funfact luar',
         'gambar_funfact'    => 'default.jpg',
@@ -135,7 +141,13 @@ public function simpanKutip()
     public function hapus(int $id)
     {
         $model = new FunfactTbcModel();
-        $model->delete($id);
+        $cek = $model
+    ->where('id_penyakit', 2)
+    ->find($id);
+
+if ($cek) {
+    $model->delete($id);
+}
 
         return redirect()->to('/tbc/funfact');
     }
@@ -169,41 +181,61 @@ public function simpanKutip()
         return view('gol_b/admin/funfact/edit', [
             'menu'    => 'funfact',
             'judul'   => 'Edit Funfact',
-            'funfact' => $model->find($id)
+            'funfact' => $model
+    ->where('id_penyakit', 2)
+    ->find($id)
         ]);
     }
 
-    public function update(int $id)
+public function update(int $id)
 {
     $model = new FunfactTbcModel();
+
+    // ✅ ambil data khusus TBC
+    $lama = $model
+        ->where('id_penyakit', 2)
+        ->find($id);
+
+    if (!$lama) {
+        return redirect()->to('/tbc/funfact');
+    }
 
     $isi = $this->request->getPost('isi');
     $status = $this->request->getPost('status');
 
     $data = [
         'judul_funfact'     => $this->request->getPost('judul'),
-        'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
-                        ? 'Kutip funfact luar'
-                        : $isi,
-        'url'               => filter_var($isi, FILTER_VALIDATE_URL)
-                                ? $isi
-                                : null,
 
-        'tanggal_funfact'   => $this->request->getPost('tanggal'),
-        'status_funfact'    => $status ?: 'Publish'
+        'deskripsi_funfact' => filter_var($isi, FILTER_VALIDATE_URL)
+            ? 'Kutip funfact luar'
+            : $isi,
+
+        'url' => filter_var($isi, FILTER_VALIDATE_URL)
+            ? $isi
+            : null,
+
+        'tanggal_funfact' => $this->request->getPost('tanggal'),
+
+        'status_funfact' => $status ?: 'Publish'
     ];
 
+    // ✅ upload gambar baru
     $file = $this->request->getFile('gambar');
 
     if ($file && $file->isValid() && !$file->hasMoved()) {
+
         $nama = $file->getRandomName();
+
         $file->move(FCPATH . 'uploads/funfact/', $nama);
+
         $data['gambar_funfact'] = $nama;
     }
 
-    $model->update($id, $data);
+    // ✅ update hanya data TBC
+    $model
+        ->where('id_penyakit', 2)
+        ->update($id, $data);
 
-    // ✅ TAMBAH NOTIF EDIT
     session()->setFlashdata('success', 'edit');
 
     return redirect()->to('/tbc/funfact');
@@ -216,7 +248,9 @@ public function simpanKutip()
         return view('gol_b/admin/funfact/detail', [
             'menu'    => 'funfact',
             'judul'   => 'Detail Funfact',
-            'funfact' => $model->find($id)
+            'funfact' => $model
+    ->where('id_penyakit', 2)
+    ->find($id)
         ]);
     }
 }
