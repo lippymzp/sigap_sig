@@ -1,3 +1,5 @@
+<?php helper('text'); ?>
+
 <?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
 
@@ -1820,6 +1822,142 @@ ambilDataAQI();
         padding:10px 20px;
     }
 }
+
+/* =========================
+   FUNFACT
+========================= */
+
+.funfact-section{
+    margin-top:60px;
+    margin-bottom:80px;
+
+    margin-left:60px;
+}
+
+.funfact-header h2{
+    font-size:30px;
+    font-weight:800;
+    color:#111;
+    margin-bottom:5px;
+}
+
+.funfact-header p{
+    color:#7d7d7d;
+    font-size:17px;
+    line-height:1.7;
+    max-width:720px;
+}
+
+.funfact-link{
+    text-decoration:none;
+}
+
+.funfact-card{
+    position:relative;
+
+    margin:70px auto 0;
+
+    max-width:700px;
+
+    background:linear-gradient(
+        90deg,
+        #12c7d3,
+        #007b84
+    );
+
+    border-radius:30px;
+
+    padding:55px 40px 35px;
+
+    transition:.3s ease;
+
+    box-shadow:0 12px 30px rgba(0,0,0,0.12);
+}
+
+.funfact-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.16);
+}
+
+/* ICON */
+.funfact-icon{
+    position:absolute;
+
+    top:-55px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:110px;
+    height:110px;
+
+    background:#12bcc8;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+
+    font-size:48px;
+
+    box-shadow:0 10px 24px rgba(0,0,0,0.14);
+}
+
+.funfact-content{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+}
+
+.funfact-text{
+    flex:1;
+}
+
+.funfact-text h3{
+    color:white;
+    font-size:32px;
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.funfact-text p{
+    color:white;
+    font-size:20px;
+    line-height:1.8;
+}
+
+.funfact-image img{
+    width:220px;
+    border-radius:18px;
+    object-fit:cover;
+}
+
+/* =========================
+   HEADER BERITA
+========================= */
+
+.berita-header{
+    margin-bottom:40px;
+}
+
+.berita-header h2{
+    font-size:30px;
+    font-weight:800;
+    color:#111;
+    margin-bottom:5px;
+}
+
+.berita-header p{
+    color:#7d7d7d;
+    font-size:17px;
+    line-height:1.7;
+    max-width:720px;
+}
+
 /* =========================
    GRAFIK INTERAKTIF DETAIL
 ========================= */
@@ -1838,6 +1976,11 @@ ambilDataAQI();
     border:none;
     border-radius:18px;
     background:transparent;
+}
+
+#artikelSection{
+    margin-left:60px;
+    margin-right:60px;
 }
 
 </style>
@@ -1868,9 +2011,6 @@ ambilDataAQI();
 
 <!-- ARTIKEL -->
 <section id="artikel" class="mt-4">
-    <div class="artikel-header">
-        <h2 class="section-title">Berita, Artikel & Majalah Kesehatan</h2>
-    </div>
 
     <div id="artikel-scroll" class="artikel-scroll">
         <?php if (!empty($artikels)): ?>
@@ -1914,11 +2054,18 @@ ambilDataAQI();
         <?php endif; ?>
     </div>
 </section>
-<section id="artikelSection" class="container mt-5" data-aos="fade-up">
+<section id="artikelSection" class="mt-5" data-aos="fade-up">
 
-<h3 class="fw-bold mb-4">
-    Berita Pneumonia
-</h3>
+<div class="berita-header">
+
+    <h2>Berita Pneumonia</h2>
+
+    <p>
+        Informasi dan Edukasi tentang Pencegahan serta Penanganan pneumonia di Masyarakat
+    </p>
+
+</div>
+
 <?php
 $conn = mysqli_connect("localhost","root","","sigap_db");
 
@@ -2246,5 +2393,71 @@ $totalBerita = mysqli_num_rows($queryBerita);
 }
 
 </style>
+
+<!-- FUNFACT -->
+<?php if(!empty($funfact)): ?>
+
+<?php if(!empty($funfact)): ?>
+
+<section class="funfact-section">
+
+    <div class="funfact-header">
+
+        <h2>Funfact</h2>
+
+        <p>
+            Informasi dan Edukasi tentang Pencegahan serta Penanganan pneumonia di Masyarakat berdasarkan sumber terpercaya
+        </p>
+
+    </div>
+
+    <a
+        href="<?= base_url('pneumonia/funfact/detail/' . $funfact['id_funfact']) ?>"
+        class="funfact-link"
+    >
+
+        <div class="funfact-card">
+
+            <!-- ICON -->
+            <div class="funfact-icon">
+                <i class="bi bi-lungs-fill"></i>
+            </div>
+
+            <div class="funfact-content">
+
+                <!-- TEXT -->
+                <div class="funfact-text">
+
+                    <h3>
+                        <?= esc($funfact['judul_funfact']) ?>
+                    </h3>
+
+                    <p>
+                        <?= character_limiter(strip_tags($funfact['deskripsi_funfact']), 120) ?>
+                    </p>
+
+                </div>
+
+                <!-- IMAGE -->
+                <div class="funfact-image">
+
+                    <img
+                        src="<?= base_url('uploads/funfact/' . $funfact['gambar_funfact']) ?>"
+                        alt="Funfact"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </a>
+
+</section>
+
+<?php endif; ?>
+
+<?php endif; ?>
 
 <?= $this->endSection() ?>

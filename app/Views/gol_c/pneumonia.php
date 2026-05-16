@@ -1,5 +1,6 @@
 <?php $this->setVar('penyakit', 'pneumonia'); ?>
 <?php 
+$this->setVar('custom_logo', 'pulmora.png');
 $this->setVar('show_footer_maskot', true);
 $this->setVar('footer_maskot', 'cynex.png');
 ?>

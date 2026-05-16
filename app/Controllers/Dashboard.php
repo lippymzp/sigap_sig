@@ -371,7 +371,7 @@ public function pneumonia()
         )
         ->countAllResults();
 
-    // =====================
+// =====================
 // JUMLAH KELURAHAN
 // =====================
 
@@ -413,21 +413,35 @@ $kelurahanTerdampak = $builderKel
     ->getRow()
     ->total;
 
-return view(
-    'gol_c/dashboard_pneumonia',
-    [
 
-    'menu'=>'dashboard',
-    'artikels'=>[],
+// =====================
+// FUNFACT PNEUMONIA
+// =====================
+    $funfactModel = new \App\Models\FunfactPneumoniaModel();
 
-    'totalKasus'=>$totalKasus,
-    'kasusBaru'=>$kasusBaru,
-    'kelurahanTerdampak'=>$kelurahanTerdampak,
+    $funfact = $funfactModel
+        ->where('id_penyakit', 3)
+        ->where('status_funfact', 'Publish')
+        ->orderBy('tanggal_funfact', 'DESC')
+        ->first();
 
-    'pneumonia'=>$pneumonia
+    return view(
+        'gol_c/dashboard_pneumonia',
+        [
 
-    ]
-);
+        'menu'=>'dashboard',
+        'artikels'=>[],
+
+        'totalKasus'=>$totalKasus,
+        'kasusBaru'=>$kasusBaru,
+        'kelurahanTerdampak'=>$kelurahanTerdampak,
+
+        'pneumonia'=>$pneumonia,
+
+        'funfact'=>$funfact
+
+        ]
+    );
 }
 
 public function diare()
