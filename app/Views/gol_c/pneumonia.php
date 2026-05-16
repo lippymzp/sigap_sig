@@ -320,7 +320,6 @@ const fitur = document.querySelectorAll('.fitur-box');
 fitur.forEach(btn => {
     btn.addEventListener('click', function(e) {
 
-        // biar yg # gak reload
         if(this.getAttribute("href") === "#"){
             e.preventDefault();
         }
@@ -725,7 +724,105 @@ $totalBerita = mysqli_num_rows($queryBerita);
     }
 
 }
+ /* CSS GRAFIK */
+#grafik{
+    margin-top:40px;
+}
 
+.judul-grafik{
+    color:#00a8b5;
+    font-weight:700;
+    font-size:42px;
+    margin-bottom:15px;
+}
+ 
+.card-grafik{
+    background:#f8f8f8;
+    border:4px solid #1e88e5;
+    border-radius:25px;
+    padding:25px;
+}
+
+.chart-container{
+    position:relative;
+    width:100%;
+    height:500px;
+}
+
+.btn-wrapper{
+    margin-top:20px;
+    text-align:right;
+}
+
+.btn-selengkapnya{
+    background:linear-gradient(to right,#00bcd4,#4dd0e1);
+    color:white;
+    padding:14px 28px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:600;
+    display:inline-block;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-selengkapnya:hover{
+    color:white;
+    transform:scale(1.03);
+}
+ /* CSS RINGKASAN DATA PNEUMONIA */
+.ringkasan-box{
+    background: linear-gradient(135deg,#c9f5f7,#e8ffff);
+    border:2px solid #12c4d3;
+    border-radius:20px;
+    padding:35px;
+}
+
+.ringkasan-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:30px;
+}
+
+.ringkasan-text h2{
+    color:#0aa9b5;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.ringkasan-text p{
+    font-size:16px;
+    color:#555;
+    margin-bottom:12px;
+}
+
+.highlight-red{
+    color:red;
+    font-weight:700;
+}
+
+.highlight-blue{
+    color:#11b7c4;
+    font-weight:700;
+}
+
+.ringkasan-image img{
+    width:220px;
+    opacity:0.9;
+}
+
+@media(max-width:768px){
+
+    .ringkasan-content{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .ringkasan-image img{
+        width:160px;
+    }
+
+}
 </style>
 
 <script>
@@ -850,54 +947,6 @@ while($row = mysqli_fetch_assoc($query)){
 
 ?>
 
-<style>
-
-#grafik{
-    margin-top:40px;
-}
-
-.judul-grafik{
-    color:#00a8b5;
-    font-weight:700;
-    font-size:42px;
-    margin-bottom:15px;
-}
-
-.card-grafik{
-    background:#f8f8f8;
-    border:4px solid #1e88e5;
-    border-radius:25px;
-    padding:25px;
-}
-
-.chart-container{
-    position:relative;
-    width:100%;
-    height:500px;
-}
-
-.btn-wrapper{
-    margin-top:20px;
-    text-align:right;
-}
-
-.btn-selengkapnya{
-    background:linear-gradient(to right,#00bcd4,#4dd0e1);
-    color:white;
-    padding:14px 28px;
-    border-radius:14px;
-    text-decoration:none;
-    font-weight:600;
-    display:inline-block;
-    box-shadow:0 4px 10px rgba(0,0,0,0.15);
-}
-
-.btn-selengkapnya:hover{
-    color:white;
-    transform:scale(1.03);
-}
-
-</style>
 
 <div id="grafik" class="container">
 
@@ -1887,6 +1936,124 @@ function aktifkanPopupAQI(){
 });
 </script>
 
+
+<?php
+/* RINGKASAN DATA PNEUMONIA  */
+$conn = mysqli_connect("localhost","root","","sigap_db");
+
+$dataRingkasan = [];
+
+$tertinggi = [
+    'kelurahan' => '-',
+    'total' => 0
+];
+
+$rataRata = 0;
+$diAtasRata = 0;
+
+$queryRingkasan = mysqli_query($conn, "
+
+    SELECT 
+        wilayah.kelurahan,
+        COUNT(pasien.id_pasien) as total
+
+    FROM pasien
+
+    JOIN wilayah 
+        ON wilayah.id_wilayah = pasien.id_wilayah
+
+    GROUP BY wilayah.id_wilayah
+
+    ORDER BY total DESC
+
+");
+
+if($queryRingkasan){
+
+    while($r = mysqli_fetch_assoc($queryRingkasan)){
+        $dataRingkasan[] = $r;
+    }
+
+    if(count($dataRingkasan) > 0){
+
+        $totalKasus = array_sum(
+            array_column($dataRingkasan, 'total')
+        );
+
+        $rataRata = round(
+            $totalKasus / count($dataRingkasan)
+        );
+
+        $tertinggi = $dataRingkasan[0];
+
+        foreach($dataRingkasan as $d){
+
+            if($d['total'] > $rataRata){
+                $diAtasRata++;
+            }
+
+        }
+
+    }
+
+}
+?>
+
+<section class="container mt-5 mb-5">
+
+    <div class="ringkasan-box">
+
+        <div class="ringkasan-content">
+
+            <div class="ringkasan-text">
+
+                <h2>Ringkasan Data</h2>
+
+                <p>
+                    Kasus pneumonia tertinggi terjadi di Desa 
+                    <span class="highlight-red">
+                        <?= $tertinggi['kelurahan'] ?>
+                    </span>
+
+                    dengan total
+
+                    <span class="highlight-red">
+                        <?= $tertinggi['total'] ?> kasus
+                    </span>
+                </p>
+
+                <p>
+                    Terdapat 
+                    <span class="highlight-blue">
+                        <?= $diAtasRata ?>
+                    </span>
+
+                    desa dengan kasus di atas rata-rata
+                </p>
+
+                <p>
+                    Rata-rata kasus pneumonia tiap desa adalah 
+                    <span class="highlight-red">
+                        <?= $rataRata ?> kasus
+                    </span>
+                </p>
+
+            </div>
+
+            <div class="ringkasan-image">
+
+                <img 
+                    src="<?= base_url('img/city.png') ?>" 
+                    alt=""
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 <style>
 /* ========================= CARD UTAMA ========================= */
