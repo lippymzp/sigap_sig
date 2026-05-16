@@ -2,8 +2,12 @@
 $embed = isset($_GET['embed']);
 ?>
 
+<?php if(!$embed): ?>
+
 <?php $this->setVar('penyakit', 'pneumonia'); ?>
 <?= $this->include('layout/header') ?>
+
+<?php endif; ?>
 
 <?php
 $conn = mysqli_connect("localhost","root","","sigap_db");
