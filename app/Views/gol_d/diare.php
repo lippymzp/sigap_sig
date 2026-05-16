@@ -146,19 +146,27 @@ body{
 .premium-card{
     background:linear-gradient(135deg,#08cdd1,#05b3bf);
     border-radius:34px;
-    min-height:460px;
+
+    min-height:420px;
+    max-height:420px;
+
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:60px;
+
+    padding:45px 50px;
     overflow:hidden;
     box-shadow:0 25px 50px rgba(0,0,0,0.12);
 }
 
 .premium-left{
-    width:50%;
+    width:48%;
     color:white;
     z-index:2;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
 
 .badge-artikel{
@@ -172,17 +180,23 @@ body{
 }
 
 .premium-left h3{
-    font-size:52px;
+    font-size:34px;
     font-weight:800;
-    line-height:1.2;
-    margin-bottom:24px;
+    line-height:1.25;
+    margin-bottom:18px;
+
+    max-height:170px;
+    overflow:hidden;
 }
 
 .premium-left p{
-    font-size:22px;
+    font-size:16px;
     line-height:1.8;
     opacity:0.95;
-    margin-bottom:28px;
+    margin-bottom:20px;
+
+    max-height:120px;
+    overflow:hidden;
 }
 
 .meta-row{
@@ -196,11 +210,13 @@ body{
     background:white;
     color:#00b8c3;
     text-decoration:none;
-    padding:18px 34px;
-    border-radius:18px;
+    padding:14px 28px;
+    border-radius:16px;
     font-weight:800;
-    display:inline-block;
-    transition:.3s;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:220px;
 }
 
 .btn-premium:hover{
@@ -209,7 +225,8 @@ body{
 }
 
 .premium-right{
-    width:42%;
+    width:44%;
+    height:100%;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -217,11 +234,10 @@ body{
 
 .premium-right img{
     width:100%;
-    max-width:520px;
-    height:320px;
+    max-width:420px;
+    height:250px;
     object-fit:cover;
-    border-radius:28px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.18);
+    border-radius:24px;
 }
 
 .slider-arrow{
@@ -871,7 +887,7 @@ body{
                         <h3><?= esc($b['judul_berita']) ?></h3>
 
                         <p>
-                            <?= word_limiter(strip_tags($b['deskripsi_berita']), 24) ?>
+                            <?= word_limiter(strip_tags($b['deskripsi_berita'] ?? ''), 18) ?>
                         </p>
 
                         <div class="meta-row">
@@ -881,7 +897,9 @@ body{
 
                             <span>
                                 <i class="far fa-calendar"></i>
-                                <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                                <?= !empty($b['tanggal_berita']) 
+    ? date('d M Y', strtotime($b['tanggal_berita'])) 
+    : '-' ?>
                             </span>
                         </div>
 
