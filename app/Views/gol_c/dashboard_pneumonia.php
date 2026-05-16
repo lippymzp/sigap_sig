@@ -1850,20 +1850,6 @@ ambilDataAQI();
             <h5>Grafik Interaktif Penyebaran</h5>
             <p class="sub">Visualisasi kepadatan kasus berdasarkan grafik</p>
         </div>
-
-        <div class="filter-group">
-            <select>
-                <option>Semua Wilayah Desa</option>
-            </select>
-
-            <select>
-                <option>Semua Kategori</option>
-            </select>
-
-            <select>
-                <option>7 Hari Terbaru</option>
-            </select>
-        </div>
     </div>
 
     <div class="chart-frame">
