@@ -538,18 +538,6 @@ $backUrl = ($from == 'admin')
 
 </div>
 
-<<<<<<< HEAD
-            </div>
-
-
-    </div>
-
-</div>
- <div>
-
-=======
-
-<script>
 document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
@@ -586,6 +574,5 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
 });
-</script>
->>>>>>> 85719b887cbdafd47dc7ad7ab5cf9eba7efbdc9f
+
 <?= $this->include('layout/footer') ?>
