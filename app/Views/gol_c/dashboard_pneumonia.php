@@ -95,7 +95,7 @@
                             </select>
                         </div>
 
-                        <div class="filter-group">
+                       <div class="filter-group">
     <label>Periode</label>
 
     <select id="filterTahun">
@@ -104,32 +104,7 @@
             Semua Tahun
         </option>
 
-        <?php
-        $tahunList = [];
-
-        foreach($pneumonia as $item){
-
-            if(!empty($item['tgl_kunjungan'])){
-
-                $tahun =
-                    date(
-                        'Y',
-                        strtotime(
-                            $item['tgl_kunjungan']
-                        )
-                    );
-
-                $tahunList[] = $tahun;
-            }
-        }
-
-        $tahunList =
-            array_unique($tahunList);
-
-        rsort($tahunList);
-
-        foreach($tahunList as $tahun):
-        ?>
+        <?php foreach($tahunList as $tahun): ?>
 
             <option value="<?= $tahun ?>">
                 <?= $tahun ?>
@@ -256,19 +231,28 @@
                 <h5 id="detailTitleHeader">Peta Sebaran Kasus 2025</h5>
 
                 <div class="detail-period">
-                    <span>Periode :</span>
+    <span>Periode :</span>
 
-                    <button type="button" class="period-btn" onclick="changeDetailYear(-1)">
-                        ‹
-                    </button>
+    <button
+        type="button"
+        class="period-btn"
+        onclick="changeDetailYear(-1)"
+    >
+        ‹
+    </button>
 
-                    <b id="detailYear">2025</b>
+    <b id="detailYear">
+        <?= !empty($tahunList[0]) ? $tahunList[0] : '2025' ?>
+    </b>
 
-                    <button type="button" class="period-btn" onclick="changeDetailYear(1)">
-                        ›
-                    </button>
-                </div>
-            </div>
+    <button
+        type="button"
+        class="period-btn"
+        onclick="changeDetailYear(1)"
+    >
+        ›
+    </button>
+</div>            </div>
 
             <div class="detail-inner">
 
@@ -314,7 +298,17 @@ document.addEventListener("DOMContentLoaded", function () {
     var geoLayer;
     var geoJsonData;
     var currentDataFinal = {};
-    var selectedDetailYear = 2025;
+    var availableYears = <?= json_encode(array_values($tahunList)) ?>;
+
+var selectedYearIndex = 0;
+
+var selectedDetailYear =
+    availableYears.length > 0
+    ? parseInt(availableYears[0])
+    : 2025;
+
+    var selectedDetailKey = "";
+var selectedDetailNama = "";
 
     function fixNama(nama){
         return (nama || "")
@@ -395,54 +389,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getTahun(item){
-        var tahun = item.tahun
-            || item.TAHUN
-            || item.periode
-            || item.PERIODE
-            || item.year
-            || item.YEAR
-            || "";
 
-        if(!tahun){
-            var tanggal = item.tanggal
-                || item.TANGGAL
-                || item.tgl
-                || item.TGL
-                || item.created_at
-                || item.date
-                || "";
-
-            if(tanggal){
-                tahun = tanggal.toString().substring(0, 4);
-            }
-        }
-
-        return tahun;
+    if(item.tgl_kunjungan){
+        return item.tgl_kunjungan.toString().substring(0,4);
     }
+
+    return "";
+}
 
     function getBulan(item){
-        var bulan = item.bulan
-            || item.BULAN
-            || item.month
-            || item.MONTH
-            || "";
 
-        if(!bulan){
-            var tanggal = item.tanggal
-                || item.TANGGAL
-                || item.tgl
-                || item.TGL
-                || item.created_at
-                || item.date
-                || "";
-
-            if(tanggal){
-                bulan = parseInt(tanggal.toString().substring(5, 7));
-            }
-        }
-
-        return bulan;
+    if(item.tgl_kunjungan){
+        return parseInt(
+            item.tgl_kunjungan.toString().substring(5,7)
+        );
     }
+
+    return "";
+}
 
     function getJk(item){
         return item.jenis_kelamin
@@ -883,10 +847,12 @@ ambilDataAQI();
         map.fitBounds(geoLayer.getBounds());
     }
 
-    window.showDetailWilayah = function(key, namaWilayah){
+   window.showDetailWilayah = function(key, namaWilayah){
 
-        var item = currentDataFinal[key];
+    var selectedDetailKey = "";
+    var selectedDetailNama = "";
 
+    var item = currentDataFinal[key];
         if(!item){
             item = {
                 nama: namaWilayah,
@@ -900,11 +866,21 @@ ambilDataAQI();
         var bulan = document.getElementById("filterBulan").value || "6";
 
         selectedDetailYear = parseInt(tahun);
+        selectedYearIndex =
+    availableYears.indexOf(
+        selectedDetailYear.toString()
+    );
+
+if(selectedYearIndex < 0){
+    selectedYearIndex = 0;
+}
 
         document.getElementById("mapPage").style.display = "none";
         document.getElementById("detailPage").style.display = "block";
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
+        document.getElementById("detailWilayah").innerText =
+    "Kecamatan " + selectedDetailNama;
         document.getElementById("detailYear").innerText = selectedDetailYear;
         document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
@@ -928,11 +904,113 @@ ambilDataAQI();
     }
 
     window.changeDetailYear = function(step){
-        selectedDetailYear += step;
 
-        document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
+    selectedYearIndex += step;
+
+    // batas minimum
+    if(selectedYearIndex < 0){
+        selectedYearIndex = 0;
     }
+
+    // batas maksimum
+    if(selectedYearIndex >= availableYears.length){
+        selectedYearIndex = availableYears.length - 1;
+    }
+
+    selectedDetailYear =
+        parseInt(
+            availableYears[selectedYearIndex]
+        );
+
+    document.getElementById("detailYear").innerText =
+        selectedDetailYear;
+
+    document.getElementById("detailTitleHeader").innerText =
+        "Peta Sebaran Kasus " + selectedDetailYear;
+
+    // FILTER DATA BERDASARKAN TAHUN DETAIL
+    var bulan = document.getElementById("filterBulan").value;
+    var jk = document.getElementById("filterJk").value;
+
+    var hasil = {};
+
+    dataPneu.forEach(function(item){
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+        var filterJk = jk.toString().toLowerCase().trim();
+
+        // FILTER TAHUN
+        if(itemTahun !== selectedDetailYear.toString()){
+            return;
+        }
+
+        // FILTER BULAN
+        if(bulan && itemBulan !== bulan){
+            return;
+        }
+
+        // FILTER JK
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        if(!hasil[desaKey]){
+            hasil[desaKey] = {
+                nama: desaAsli,
+                total: 0,
+                kasusBaru: 0,
+                kategori: "rendah"
+            };
+        }
+
+        var jumlahKasus = getKasus(item);
+
+        hasil[desaKey].total += jumlahKasus;
+        hasil[desaKey].kasusBaru += jumlahKasus;
+    });
+
+    // UPDATE currentDataFinal
+    currentDataFinal = hasil;
+
+    // AMBIL DATA WILAYAH
+    var item = currentDataFinal[selectedDetailKey];
+
+    if(!item){
+        item = {
+            nama: wilayah,
+            total: 0,
+            kasusBaru: 0,
+            kategori: "rendah"
+        };
+    }
+
+    item.kategori = kategoriKasus(item.total);
+
+    // UPDATE TEXT
+    document.getElementById("detailTotal").innerText =
+        item.total + " kasus";
+
+    document.getElementById("detailKasusBaru").innerText =
+        item.kasusBaru + " kasus";
+
+    // UPDATE BADGE
+    var badge =
+        document.getElementById("detailKategori");
+
+    badge.innerText =
+        textKategori(item.kategori);
+
+    badge.className =
+        "badge-risk " + item.kategori;
+
+    // UPDATE CHART
+    renderRankingChart();
+}
 
     function renderRankingChart(){
 
@@ -987,7 +1065,7 @@ ambilDataAQI();
 
     document.getElementById("btnReset").addEventListener("click", function(){
         document.getElementById("filterBulan").value = "";
-        document.getElementById("filterTahun").value = "2025";
+        document.getElementById("filterTahun").value = "";
         document.getElementById("filterJk").value = "";
 
         renderGeoJson();
@@ -1958,23 +2036,65 @@ ambilDataAQI();
     max-width:720px;
 }
 
+
+/* =========================
+   JARAK MAP KE GRAFIK
+========================= */
+#grafik{
+    margin-top:40px;
+}
+
+
 /* =========================
    GRAFIK INTERAKTIF DETAIL
 ========================= */
+#grafik{
+    margin-top:40px;
+
+    background:#eaf9fb;
+    border-radius:18px;
+
+    padding:24px;
+}
+
+#grafik .section-header{
+    margin-bottom:18px;
+}
+
+#grafik .section-header h5{
+    font-size:28px;
+    font-weight:800;
+    color:#0d3440;
+    margin-bottom:6px;
+}
+
+#grafik .section-header .sub{
+    font-size:14px;
+    color:#60727d;
+}
+
 .chart-frame{
     width:100%;
-    height:1000px;
+    height:720px;
+
     overflow:hidden;
+
     border-radius:18px;
-    background:#eaf9fb;
-    padding:0;
+
+    background:#ffffff;
+
+    padding:18px;
+
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
 }
 
 .chart-frame iframe{
     width:100%;
     height:100%;
+
     border:none;
-    border-radius:18px;
+    border-radius:14px;
+
     background:transparent;
 }
 

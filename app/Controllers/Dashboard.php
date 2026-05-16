@@ -303,7 +303,6 @@ public function pneumonia()
     $tahun = $this->request->getGet('tahun');
     $jk    = $this->request->getGet('jk');
 
-
     // =====================
     // DATA PETA
     // =====================
@@ -314,7 +313,7 @@ public function pneumonia()
     p.jenis_kelamin,
     p.umur,
     p.tgl_kunjungan,
-    1 as kasus
+    COUNT(p.id_pasien) as kasus
 ");
 
     $builder->join(
@@ -347,12 +346,48 @@ public function pneumonia()
         );
     }
 
-    
+$builder->groupBy("
+    w.kelurahan,
+    p.jenis_kelamin,
+    MONTH(p.tgl_kunjungan),
+    YEAR(p.tgl_kunjungan)
+");
 
     $pneumonia =
         $builder->get()
         ->getResultArray();
 
+    // =====================
+    // LIST TAHUN PERIODE
+    // =====================
+
+    $tahunList = [];
+
+    foreach ($pneumonia as $item) {
+
+        if (!empty($item['tgl_kunjungan'])) {
+
+            $tahunData = date(
+                'Y',
+                strtotime($item['tgl_kunjungan'])
+            );
+
+            // hanya tampil 2025 dan 2026
+            if (
+                $tahunData == '2025' ||
+                $tahunData == '2026'
+            ) {
+
+                $tahunList[] = $tahunData;
+            }
+        }
+    }
+
+    // hapus duplikat
+    $tahunList = array_unique($tahunList);
+
+    // urut terbaru
+    rsort($tahunList);
 
     // TOTAL KASUS
     $totalKasus =
@@ -371,52 +406,52 @@ public function pneumonia()
         )
         ->countAllResults();
 
-// =====================
-// JUMLAH KELURAHAN
-// =====================
+    // =====================
+    // JUMLAH KELURAHAN
+    // =====================
 
-$builderKel = $db->table('pasien p');
+    $builderKel = $db->table('pasien p');
 
-$builderKel->join(
-    'wilayah w',
-    'w.id_wilayah = p.id_wilayah',
-    'left'
-);
-
-// FILTER BULAN
-if(!empty($bulan)){
-    $builderKel->where(
-        'MONTH(p.tgl_kunjungan)',
-        $bulan
+    $builderKel->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah',
+        'left'
     );
-}
 
-// FILTER TAHUN
-if(!empty($tahun)){
-    $builderKel->where(
-        'YEAR(p.tgl_kunjungan)',
-        $tahun
-    );
-}
+    // FILTER BULAN
+    if(!empty($bulan)){
+        $builderKel->where(
+            'MONTH(p.tgl_kunjungan)',
+            $bulan
+        );
+    }
 
-// FILTER JK
-if(!empty($jk)){
-    $builderKel->where(
-        'p.jenis_kelamin',
-        $jk
-    );
-}
+    // FILTER TAHUN
+    if(!empty($tahun)){
+        $builderKel->where(
+            'YEAR(p.tgl_kunjungan)',
+            $tahun
+        );
+    }
 
-$kelurahanTerdampak = $builderKel
-    ->select('COUNT(DISTINCT w.kelurahan) as total')
-    ->get()
-    ->getRow()
-    ->total;
+    // FILTER JK
+    if(!empty($jk)){
+        $builderKel->where(
+            'p.jenis_kelamin',
+            $jk
+        );
+    }
 
+    $kelurahanTerdampak = $builderKel
+        ->select('COUNT(DISTINCT w.kelurahan) as total')
+        ->get()
+        ->getRow()
+        ->total;
 
     // =====================
     // FUNFACT PNEUMONIA
     // =====================
+
     $funfactModel = new \App\Models\FunfactPneumoniaModel();
 
     $funfact = $funfactModel
@@ -425,56 +460,59 @@ $kelurahanTerdampak = $builderKel
         ->orderBy('tanggal_funfact', 'DESC')
         ->first();
 
-        // =====================
-// NOTIFIKASI RISIKO
-// =====================
+    // =====================
+    // NOTIFIKASI RISIKO
+    // =====================
 
-$notif = $db->table('skrining s')
+    $notif = $db->table('skrining s')
 
-    ->select('
-        p.nama_pasien_skrining,
-        p.jenis_kelamin,
-        p.usia,
-        s.tanggal,
-        s.hasil
-    ')
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
 
-    ->join(
-        'pasien_skrining p',
-        'p.id_pasien_skrining = s.id_pasien_skrining'
-    )
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
 
-    ->where('s.id_penyakit', 3)
+        ->where('s.id_penyakit', 3)
 
-    ->where('s.hasil', 'Berisiko')
+        ->where('s.hasil', 'Berisiko')
 
-    ->orderBy('s.id_skrining', 'DESC')
+        ->orderBy('s.id_skrining', 'DESC')
 
-    ->limit(3)
+        ->limit(3)
 
-    ->get()
+        ->get()
 
-    ->getResultArray();
+        ->getResultArray();
+
     return view(
         'gol_c/dashboard_pneumonia',
         [
 
-        'menu'=>'dashboard',
-        'artikels'=>[],
+            'menu' => 'dashboard',
+            'artikels' => [],
 
-        'totalKasus'=>$totalKasus,
-        'kasusBaru'=>$kasusBaru,
-        'kelurahanTerdampak'=>$kelurahanTerdampak,
+            'totalKasus' => $totalKasus,
+            'kasusBaru' => $kasusBaru,
+            'kelurahanTerdampak' => $kelurahanTerdampak,
 
-        'pneumonia'=>$pneumonia,
+            'pneumonia' => $pneumonia,
 
-        'funfact'=>$funfact,
-        'notif'=>$notif
+            // INI YANG BARU
+            'tahunList' => $tahunList,
+
+            'funfact' => $funfact,
+            'notif' => $notif
 
         ]
     );
 }
-
 public function diare()
 {
     return view('gol_d/dashboard_diare', [
