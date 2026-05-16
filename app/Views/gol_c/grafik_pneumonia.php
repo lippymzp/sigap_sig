@@ -3,11 +3,13 @@ $embed = isset($_GET['embed']);
 ?>
 
 <?php if(!$embed): ?>
-
-<?php $this->setVar('penyakit', 'pneumonia'); ?>
+<?php $this->setVar('penyakit', 'pneumonia'); 
+$this->setVar('custom_logo', 'pulmora.png');
+$this->setVar('show_footer_maskot', true);
+$this->setVar('footer_maskot', 'cynex.png');?>
 <?= $this->include('layout/header') ?>
-
 <?php endif; ?>
+
 
 <?php
 $conn = mysqli_connect("localhost","root","","sigap_db");
@@ -16,7 +18,7 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 
 <title>Grafik Pneumonia</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +28,7 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 <style>
 
 body{
-    background:#dcdcdc;
+    background:#f5f7fa;
     font-family:Poppins, sans-serif;
 }
 
@@ -44,7 +46,7 @@ body{
 
 /* CARD */
 .card-box{
-    background:#eef4f4;
+    background:white;
     border-radius:25px;
     padding:30px;
     margin-top:40px;
@@ -561,7 +563,8 @@ filterGender2.addEventListener('change', updateChart2);
 updateChart2();
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<?php if(!$embed): ?>
 
+<?php if(!$embed): ?>
+<?= $this->include('layout/footer') ?>
 <?php endif; ?>
+
