@@ -188,7 +188,7 @@
 
                         <div class="social-item">
                             <i class="bi bi-instagram"></i>
-                            <span>sigap.co.id</span>
+                            <span>@sigap.co.id</span>
                         </div>
 
                         <div class="social-item">
