@@ -7,7 +7,7 @@ $this->setVar('footer_maskot', 'cynex.png');
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- HERO BANNER -->
@@ -1039,10 +1039,6 @@ new Chart(ctx, {
 
 
 </script>
-
-</body>
-</html>
-
 
 <!-- PETA -->
 <section id="mapSection" class="container mt-5" data-aos="fade-up">
@@ -2904,6 +2900,142 @@ document.addEventListener("DOMContentLoaded", function(){
         `);
 
     }
+
+});
+</script>
+<!-- FLOATING CHAT BUTTON -->
+<div id="chatbot-toggle">
+    <i class="fa-solid fa-comment-medical"></i>
+</div>
+
+<!-- CHAT POPUP -->
+<div id="chatbot-popup">
+    <div class="chat-popup-header">
+        <span>CYBOT</span>
+        <button id="close-chatbot">
+            ✕
+        </button>
+    </div>
+    <iframe
+        src="<?= base_url('chat-pneumonia') ?>"
+        frameborder="0">
+    </iframe>
+</div>
+
+<style>
+/* =========================
+   FLOATING CHATBOT
+========================= */
+/* FLOATING BUTTON */
+#chatbot-toggle{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#0B5B61,#14919B);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    cursor:pointer;
+    z-index:99999;
+    box-shadow:0 5px 20px rgba(0,0,0,0.25);
+    animation:pulse 1.8s infinite;
+    transition:0.3s;
+}
+/* HOVER */
+#chatbot-toggle:hover{
+    transform:scale(1.08);
+}
+@keyframes pulse {
+    0%{
+        transform:scale(1);
+        box-shadow:0 0 0 0 rgba(20,145,155,0.6);
+    }
+    70%{
+        transform:scale(1.05);
+        box-shadow:0 0 0 18px rgba(20,145,155,0);
+    }
+    100%{
+        transform:scale(1);
+        box-shadow:0 0 0 0 rgba(20,145,155,0);
+    }
+}
+/* POPUP */
+#chatbot-popup{
+    position:fixed;
+    bottom:95px;
+    right:20px;
+    width:420px;
+    height:650px;
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    display:none;
+    flex-direction:column;
+    z-index:99999;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    animation:fadeInUp 0.3s ease;
+}
+
+/* HEADER */
+.chat-popup-header{
+    background:linear-gradient(135deg,#0B5B61,#14919B);
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+}
+
+/* CLOSE BUTTON */
+#close-chatbot{
+    border:none;
+    background:none;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+/* IFRAME */
+#chatbot-popup iframe{
+    width:100%;
+    height:100%;
+}
+@keyframes fadeInUp{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+</style>
+<script>
+const chatbotToggle =
+document.getElementById('chatbot-toggle');
+const chatbotPopup =
+document.getElementById('chatbot-popup');
+const closeChatbot =
+document.getElementById('close-chatbot');
+// OPEN
+chatbotToggle.addEventListener('click', () => {
+
+    chatbotPopup.style.display = 'flex';
+
+});
+// CLOSE
+closeChatbot.addEventListener('click', () => {
+
+    chatbotPopup.style.display = 'none';
 
 });
 </script>

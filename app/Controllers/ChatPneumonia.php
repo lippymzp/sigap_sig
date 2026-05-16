@@ -39,14 +39,18 @@ class ChatPneumonia extends BaseController
             str_contains($msg, 'bibir biru') ||
             str_contains($msg, 'kejang') ||
             str_contains($msg, 'tidak sadar') ||
-            str_contains($msg, 'sulit bernapas')
+            str_contains($msg, 'sulit bernapas') ||
+            str_contains($msg, 'kesulitan bernapas') ||
+            str_contains($msg, 'susah napas') ||
+            str_contains($msg, 'sulit bernafas')||
+            str_contains($msg, 'susah nafas')||
+            str_contains($msg, 'Kesusahan bernapas')
+
         ) {
 
             return "
 ⚠️ Gejala yang Anda sebutkan memerlukan perhatian medis segera.
-
 Segera periksa ke fasilitas pelayanan kesehatan (Puskesmas, Klinik, atau Rumah Sakit) terdekat terutama bila terdapat:
-
 • Sesak napas berat
 • Napas sangat cepat
 • Bibir/kuku kebiruan
@@ -54,15 +58,36 @@ Segera periksa ke fasilitas pelayanan kesehatan (Puskesmas, Klinik, atau Rumah S
 • Kejang
 • Anak tampak lemas atau sulit minum
 
-Pemeriksaan langsung oleh tenaga kesehatan diperlukan untuk mengetahui kondisi sebenarnya.
-
-Sementara itu:
-• Pastikan pasien cukup istirahat
-• Berikan cairan yang cukup
-• Hindari asap rokok
-• Gunakan masker bila batuk
-";
+Pemeriksaan langsung oleh tenaga kesehatan diperlukan untuk mengetahui kondisi sebenarnya.";
         }
+        if (
+    str_contains($msg, 'halo') ||
+    str_contains($msg, 'hai') ||
+    str_contains($msg, 'hi') ||
+    str_contains($msg, 'oi') ||
+    str_contains($msg, 'apa kabar') 
+) { 
+
+    return "Halo 👋 Ada yang bisa saya bantu mengenai pneumonia?";
+}
+if (
+    $msg == 'iya' ||
+    $msg == 'oke' ||
+    $msg == 'yaudah' ||
+    $msg == 'ya'
+) {
+
+    return "Baik 😊 Silakan lanjutkan pertanyaannya.";
+}
+if (
+    $msg == 'tidak' ||
+    $msg == 'gak' ||
+    $msg == 'nggak'
+) {
+
+    return "Baik 😊 Jika ada pertanyaan lain silakan tanyakan.";
+}
+
 
         // ==================================================
         // PNEUMONIA
@@ -276,27 +301,82 @@ Yang dapat dilakukan:
 • Hindari pembakaran sampah
 ";
         }
+if (
+    str_contains($msg, 'tentang cybot') ||
+    str_contains($msg, 'apa itu cybot') ||
+    str_contains($msg, 'siapa cybot')
+) {
 
+    return " Saya adalah Cybot, chatbot edukasi kesehatan yang dirancang untuk membantu memberikan informasi mengenai pneumonia dan kesehatan pernapasan.
+CYBOT dapat membantu memberikan edukasi mengenai:
+• Pneumonia
+• Gejala umum
+• Batuk
+• Demam
+• Sesak napas
+• Vaksinasi
+• Pencegahan penyakit paru
+
+⚠️ Informasi yang diberikan bersifat edukatif dan tidak menggantikan pemeriksaan langsung oleh tenaga kesehatan.
+";
+}
+
+if (
+    str_contains($msg, 'pencegahan') ||
+    str_contains($msg, 'menjaga kesehatan paru') ||
+    str_contains($msg, 'mencegah') ||
+    str_contains($msg, 'kesehatan paru')
+) {
+
+    return "Menjaga kesehatan paru sangat penting untuk membantu sistem pernapasan bekerja dengan baik.
+
+Beberapa langkah pencegahan penyakit paru yang dapat dilakukan:
+• Hindari asap rokok dan vape
+• Gunakan masker saat berada di lingkungan berpolusi
+• Rutin olahraga ringan
+• Konsumsi makanan bergizi
+• Minum air putih yang cukup
+• Jaga ventilasi rumah agar sirkulasi udara baik
+• Hindari paparan debu dan asap pembakaran
+• Cuci tangan secara rutin
+• Lakukan vaksinasi sesuai anjuran tenaga kesehatan
+
+Segera periksa ke fasilitas kesehatan bila mengalami:
+• Batuk berkepanjangan
+• Sesak napas
+• Nyeri dada
+• Napas berbunyi
+• Mudah lelah saat bernapas
+";
+}
+
+if (
+    str_contains($msg, 'terima kasih') ||
+    str_contains($msg, 'thanks') ||
+    str_contains($msg, 'thank you') ||
+    str_contains($msg, 'makasih')
+) {
+
+    return "Sama-sama 😊 Semoga sehat selalu.
+    Jika ada pertanyaan silahkan tanyakan saja";
+}
         // ==================================================
         // DEFAULT
         // ==================================================
 
-        return "
-Saya adalah chatbot edukasi pneumonia.
-
-Saya dapat membantu memberikan informasi mengenai:
+        return 
+"Mohon maaf, saya tidak mengerti apa yang anda katakan
+Saya hanya dapat membantu memberikan informasi mengenai:
 • Pencegahan pneumonia
 • Gejala umum
-• PHBS
 • Vaksinasi
-• Pola hidup sehat
 • Batuk
 • Demam
 • Sesak napas
 • Kesehatan paru
 • Pencegahan infeksi saluran napas
 
-Silakan tanyakan hal terkait pneumonia atau kesehatan pernapasan 😊
+Silakan tanyakan hal terkait pneumonia atau kesehatan pernapasan ya😊
 ";
     }
 }
