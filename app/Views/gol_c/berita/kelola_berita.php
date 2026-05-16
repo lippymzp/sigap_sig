@@ -8,7 +8,14 @@ $status = $_GET ['status'] ?? '';
 $keyword = $keyword ?? '';
 ?>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+
+*{
+    font-family:'Poppins', sans-serif;
+}
+
 /* WRAPPER */
 .berita-wrapper {
     padding: 20px;
