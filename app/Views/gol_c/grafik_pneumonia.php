@@ -2,10 +2,8 @@
 $embed = isset($_GET['embed']);
 ?>
 
-<?php if(!$embed): ?>
-
-
-<?php endif; ?>
+<?php $this->setVar('penyakit', 'pneumonia'); ?>
+<?= $this->include('layout/header') ?>
 
 <?php
 $conn = mysqli_connect("localhost","root","","sigap_db");
@@ -17,6 +15,10 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 
 body{
@@ -34,27 +36,6 @@ body{
     align-items:center;
 
     box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
-
-.logo-title{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.logo-title h2{
-    color:#12bec8;
-    font-weight:700;
-    margin:0;
-}
-
-.login-btn{
-    background:#12bec8;
-    color:white;
-    padding:10px 24px;
-    border-radius:12px;
-    text-decoration:none;
-    font-weight:600;
 }
 
 /* CARD */
@@ -133,25 +114,7 @@ body{
 
 
 <!-- NAVBAR -->
-<?php if(!$embed): ?>
 
-<!-- NAVBAR -->
-<div class="navbar-custom">
-
-    <div class="logo-title">
-
-        <img src="<?= base_url('img/logo_sigap.png') ?>" width="60">
-
-        <h2>Grafik Pneumonia</h2>
-
-    </div>
-
-    <a href="<?= base_url('login') ?>" class="login-btn">
-        Login
-    </a>
-
-</div>
-<?php endif; ?>
 
 <?php
 
@@ -594,6 +557,7 @@ filterGender2.addEventListener('change', updateChart2);
 updateChart2();
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <?php if(!$embed): ?>
 
 <?php endif; ?>
