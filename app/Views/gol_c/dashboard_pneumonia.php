@@ -1831,7 +1831,7 @@ ambilDataAQI();
     margin-top:60px;
     margin-bottom:80px;
 
-    margin-left:60px;
+    margin-left:0px;
 }
 
 .funfact-header h2{
@@ -1979,8 +1979,8 @@ ambilDataAQI();
 }
 
 #artikelSection{
-    margin-left:60px;
-    margin-right:60px;
+    margin-left:0px;
+    margin-right:0px;
 }
 
 </style>
@@ -2005,9 +2005,6 @@ ambilDataAQI();
     </div>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
-
-
-</div>
 
 <!-- ARTIKEL -->
 <section id="artikel" class="mt-4">

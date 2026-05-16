@@ -23,7 +23,21 @@
     <div class="sidebar">
         
         <div class="logo text-center">
-            <img src="/assets/img/logo_nama.svg" alt="Logo SIGAP" style="max-width: 160px; height: auto;">
+
+        <?php if (($penyakit ?? '') == 'pneumonia') : ?>
+
+            <img src="<?= base_url('img/pulmora.png') ?>"
+                alt="Pulmora"
+                style="max-width:200px; height:auto;">
+
+        <?php else : ?>
+
+            <img src="<?= base_url('assets/img/logo_nama.svg') ?>"
+                alt="Logo SIGAP"
+                style="max-width:160px; height:auto;">
+
+        <?php endif; ?>
+
         </div>
 
         <div class="menu-label">HOME</div>
@@ -177,6 +191,11 @@
                             <span>sigap.co.id</span>
                         </div>
 
+                        <div class="social-item">
+                            <i class="bi bi-instagram"></i>
+                            <span>@cynex.tech</span>
+                        </div>
+
                     </div>
 
                     <!-- KONTAK -->
@@ -192,6 +211,10 @@
                             <div>
                                 <h6>Email</h6>
                                 <p>medixatechnology@gmail.com</p>
+
+                                <p>
+                                    cynextechnology.c@gmail.com
+                                </p>
                             </div>
                         </div>
 
@@ -250,7 +273,7 @@
 
 /* CYNEX */
 .footer-maskot{
-    width:250px;
+    width:230px;
     margin-top:10px;
     margin-left:-20px;
     filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
@@ -258,7 +281,7 @@
 
 /* LOGO */
 .footer-logo{
-    width:140px;
+    width:116px;
     margin-bottom:-8px;
     filter: drop-shadow(0 0 10px rgba(64,237,208,0.35));
 }
