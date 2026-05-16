@@ -16,9 +16,9 @@
     <iframe 
         src="<?= base_url('grafik_pneumonia?embed=1') ?>" 
         width="100%"
-        height="3000"
+        height="1200"
         frameborder="0"
-        scrolling="no">
+        scrolling="yes">
     </iframe>
 
 </div>

@@ -273,7 +273,8 @@ try {
 
 public function grafik()
 {
-    return view('gol_c/grafik_admin');
+    $data['judul'] = 'Grafik';
+    return view('gol_c/grafik_admin', $data);
 }
 
 public function skriningpneumonia()
