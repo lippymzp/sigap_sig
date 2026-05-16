@@ -48,7 +48,7 @@
 
 <!-- MENU -->
 <section class="container text-center mt-5">
-    <h4 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Data</h4>
+    <h3 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Data</h3>
 
     <div class="disease-menu">
 
@@ -118,14 +118,117 @@
 
 <!-- MAP -->
 <section class="container mt-5">
-<h4 class="text-teal">Peta Interaktif Puskesmas</h4>
+<h3 class="text-teal">Peta Sebaran Penyakit</h3>
 
 <div class="map-box">
     <div id="map"></div>
 
+    <div class="map-dropdown">
+
+        <button id="menuToggle" class="menu-btn">
+            ☰
+        </button>
+
+        <div id="dropdownMenu" class="dropdown-menu-map">
+
+            <div class="dropdown-item" data-value="">
+                Semua Penyakit
+            </div>
+
+            <div class="dropdown-item" data-value="ajung">
+                Pneumonia
+            </div>
+
+            <div class="dropdown-item" data-value="panti">
+                Diare
+            </div>
+
+            <div class="dropdown-item" data-value="sumbersari">
+                DBD
+            </div>
+
+            <div class="dropdown-item" data-value="kaliwates">
+                TBC
+            </div>
+
+        </div>
+
+    </div>
+
     <div class="map-info">
-        <span>Lat: <b id="lat">-</b></span>
-        <span>Lng: <b id="lng">-</b></span>
+        <div>Longitude : <b id="lng">-</b></div>
+        <div>Latitude : <b id="lat">-</b></div>
+    </div>
+
+    <img src="<?= base_url('img/compass.png') ?>" class="map-compass">
+
+    <div class="map-legend">
+
+        <div class="legend-title">
+            Keterangan<br>
+            Penyakit
+        </div>
+
+        <div class="legend-items">
+
+            <div class="legend-item">
+                <span class="legend-color c1"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        Pneumonia
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Ajung
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color c2"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        Diare
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Panti
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color c3"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        DBD
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Sumbersari
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color c4"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        TBC
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Kaliwates
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </div>
 </section>
@@ -286,7 +389,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const map = L.map('map').setView([-8.17, 113.70], 10.5);
+    const map = L.map('map').setView([-8.181767836963857, 113.67592325093854], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -304,16 +407,34 @@ document.addEventListener("DOMContentLoaded", function () {
                    "gray";
         }
 
-        const geojson = L.geoJSON(data, {
-            style: function(feature){
-                const nama = feature.properties?.KECAMATAN || "";
+        let geojson = L.geoJSON(data, {
+            style:function(feature){
 
-                return {
-                    color: "black",
-                    weight: 2,
-                    fillColor: getColor(nama),
-                    fillOpacity: 0.6
+                const nama =
+                (feature.properties?.KECAMATAN || '')
+                .toLowerCase();
+
+                let warna = '#4BB8C7';
+
+                if(nama.includes('ajung')){
+                    warna = '#4BB8C7';
                 }
+                else if(nama.includes('panti')){
+                    warna = '#2AA7B8';
+                }
+                else if(nama.includes('sumbersari')){
+                    warna = '#177C89';
+                }
+                else if(nama.includes('kaliwates')){
+                    warna = '#6CCDD9';
+                }
+
+                return{
+                    color:'#ffffff',
+                    weight:1.5,
+                    fillColor:warna,
+                    fillOpacity:0.85
+                };
             },
 
             onEachFeature: function(feature, layer){
@@ -324,21 +445,145 @@ document.addEventListener("DOMContentLoaded", function () {
                 // KLIK KECAMATAN
                 layer.on('click', function(){
 
-                    // 1. Zoom ke kecamatan
+                    // RESET SEMUA DULU
+                    geojson.eachLayer(function(l){
+
+                        l.setStyle({
+                            fillOpacity:0.15,
+                            opacity:0.2,
+                            weight:1.5
+                        });
+
+                    });
+
+                    // YANG DIKLIK
+                    layer.setStyle({
+                        fillOpacity:1,
+                        opacity:1,
+                        weight:3
+                    });
+
+                    // ZOOM
                     map.fitBounds(layer.getBounds());
 
-                    // 2. Ambil titik tengah
-                    const center = layer.getBounds().getCenter();
+                    // CENTER
+                    const center =
+                    layer.getBounds().getCenter();
 
-                    // 3. Tampilkan Lat Lng
-                    document.getElementById('lat').innerText = center.lat.toFixed(6);
-                    document.getElementById('lng').innerText = center.lng.toFixed(6);
+                    // LAT LNG
+                    document.getElementById('lat')
+                    .innerText =
+                    center.lat.toFixed(6);
+
+                    document.getElementById('lng')
+                    .innerText =
+                    center.lng.toFixed(6);
 
                 });
 
             }
 
         }).addTo(map);
+
+        // TOGGLE MENU
+        document
+        .getElementById('menuToggle')
+        .addEventListener('click', function(){
+
+            const menu =
+            document.getElementById('dropdownMenu');
+
+            menu.style.display =
+            menu.style.display === 'block'
+            ? 'none'
+            : 'block';
+
+        });
+
+
+        // FILTER
+        document
+        .querySelectorAll('.dropdown-item')
+        .forEach(item => {
+
+            item.addEventListener('click', function(){
+
+                const value =
+                this.dataset.value;
+
+                geojson.eachLayer(function(layer){
+
+                    const nama = (
+                        layer.feature.properties?.KECAMATAN || ''
+                    ).toLowerCase();
+
+                    // RESET
+                    if(value === ''){
+
+                        layer.closePopup();
+
+                        const namaLayer =
+                        (layer.feature.properties?.KECAMATAN || '')
+                        .toLowerCase();
+
+                        let warna = '#4BB8C7';
+
+                        if(namaLayer.includes('ajung')){
+                            warna = '#4BB8C7';
+                        }
+                        else if(namaLayer.includes('panti')){
+                            warna = '#2AA7B8';
+                        }
+                        else if(namaLayer.includes('sumbersari')){
+                            warna = '#177C89';
+                        }
+                        else if(namaLayer.includes('kaliwates')){
+                            warna = '#6CCDD9';
+                        }
+
+                        layer.setStyle({
+                            fillColor:warna,
+                            fillOpacity:0.85,
+                            opacity:1,
+                            weight:1.5
+                        });
+
+                        map.setView(
+                            [-8.181767836963857, 113.67592325093854],
+                            12
+                        );
+
+                    }else{
+
+                        if(nama.includes(value)){
+
+                            layer.setStyle({
+                                fillOpacity:1,
+                                opacity:1,
+                                weight:3
+                            });
+
+                            map.fitBounds(layer.getBounds());
+
+                            layer.openPopup();
+
+                        }else{
+
+                            layer.setStyle({
+                                fillOpacity:0.15,
+                                opacity:0.2
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        });
+        
 
     });
 
@@ -547,7 +792,7 @@ function scrollCardRight() {
 
 .about-heading{
     text-align:center;
-    font-size:56px;
+    font-size:46px;
     font-weight:800;
     color:#11B7C7;
     margin-bottom:70px;
@@ -597,14 +842,14 @@ function scrollCardRight() {
 
 .sigap-title{
     color:#11B7C7;
-    font-size:54px;
+    font-size:40px;
     font-weight:900;
     margin-bottom:8px;
 }
 
 .sigap-subtitle{
     color:#111;
-    font-size:28px;
+    font-size:26px;
     font-weight:700;
     margin-bottom:22px;
 }
@@ -638,7 +883,7 @@ function scrollCardRight() {
 
 /* BOTTOM */
 .about-bottom-text h3{
-    font-size:46px;
+    font-size:40px;
     font-weight:800;
     color:#0B2141;
     line-height:1.3;
@@ -718,7 +963,7 @@ function scrollCardRight() {
 .penyakit-heading{
     text-align:center;
     color:white;
-    font-size:48px;
+    font-size:40px;
     font-weight:800;
     margin-bottom:65px;
 }
@@ -770,7 +1015,7 @@ function scrollCardRight() {
 /* TITLE */
 .penyakit-figma-card h3{
     color:#08B7C5;
-    font-size:34px;
+    font-size:28px;
     font-weight:800;
     line-height:1.2;
     margin-bottom:22px;
@@ -779,7 +1024,7 @@ function scrollCardRight() {
 /* DESC */
 .penyakit-figma-card p{
     color:#4C4C4C;
-    font-size:19px;
+    font-size:16px;
     line-height:1.9;
     font-weight:500;
     text-align:justify;
@@ -790,6 +1035,191 @@ function scrollCardRight() {
     .penyakit-grid{
         grid-template-columns: repeat(2,1fr);
     }
+}
+
+#map{
+    height:520px;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.map-box{
+    position:relative;
+}
+
+.map-info{
+    position:absolute;
+    bottom:18px;
+    left:18px;
+
+    background:white;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    z-index:400;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+
+    font-size:14px;
+    font-weight:600;
+}
+
+.map-legend{
+    position:absolute;
+
+    bottom:18px;
+    right:18px;
+
+    display:flex;
+    align-items:center;
+
+    background:#D8F5F7;
+
+    border:2px solid #047981;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    z-index:400;
+}
+
+.legend-title{
+    background:linear-gradient(135deg,#14B8C8,#5FD7DE);
+
+    color:white;
+
+    padding:10px 16px;
+
+    font-weight:700;
+
+    font-size:14px;
+}
+
+.legend-items{
+    display:flex;
+    align-items:center;
+
+    gap:18px;
+
+    padding:0 16px;
+
+    height:42px;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+
+    gap:6px;
+
+    font-size:14px;
+    font-weight:600;
+
+    white-space:nowrap;
+}
+
+.legend-color{
+    width:15px;
+    height:15px;
+    border-radius:3px;
+}
+
+.c1{ background:#4BB8C7; }
+.c2{ background:#2AA7B8; }
+.c3{ background:#177C89; }
+.c4{ background:#6CCDD9; }
+
+.map-compass{
+    position:absolute;
+
+    bottom:90px;
+    right:1px;
+
+    width:100px;
+
+    z-index:500;
+}
+
+.legend-text{
+    display:flex;
+    flex-direction:column;
+    line-height:1.2;
+}
+
+.legend-main{
+    font-size:14px;
+    font-weight:700;
+}
+
+.legend-sub{
+    font-size:11px;
+    color:#666;
+}
+
+.map-dropdown{
+    position:absolute;
+
+    top:18px;
+    right:18px;
+
+    z-index:400;
+}
+
+.menu-btn{
+    width:46px;
+    height:46px;
+
+    border:none;
+    border-radius:12px;
+
+    background:white;
+
+    font-size:22px;
+    font-weight:700;
+
+    color:#177C89;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.dropdown-menu-map{
+    position:absolute;
+
+    top:55px;
+    right:0;
+
+    width:180px;
+
+    background:white;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    display:none;
+
+    box-shadow:0 6px 16px rgba(0,0,0,0.15);
+}
+
+.dropdown-item{
+    padding:12px 16px;
+
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.dropdown-item:hover{
+    background:#E7F7F9;
+    color:#177C89;
 }
 
 @media(max-width:768px){
