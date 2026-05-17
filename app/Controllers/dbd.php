@@ -624,66 +624,90 @@ class Dbd extends BaseController
    public function dashboard()
     {
         $db = \Config\Database::connect();
-      // 🔥 DATA GRAFIK
-    // ======================
-    $bulan = $this->request->getGet('bulan');
-    $tahun = $this->request->getGet('tahun');
-    $usia  = $this->request->getGet('usia');
-    $jk    = $this->request->getGet('jk');
+      // ======================
+        // 🔥 DATA GRAFIK
+        // ======================
+        
+        // 1. TAMBAH PENANGKAP PARAMETER WILAYAH DI SINI
+        $wilayah = $this->request->getGet('wilayah');
+        
+        $bulan = $this->request->getGet('bulan');
+        $tahun = $this->request->getGet('tahun');
+        $usia  = $this->request->getGet('usia');
+        $jk    = $this->request->getGet('jk');
 
 
-    $builder = $db->table('pasien p');
-    $builder->select('w.kelurahan, COUNT(*) as total');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        $builder = $db->table('pasien p');
+        $builder->select('w.kelurahan, COUNT(*) as total');
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-    if (!empty($bulan)) {
-    $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
-}
-
-    if (!empty($tahun)) {
-        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-    }
-
-    if (!empty($jk)) {
-        if ($jk == 'L') {
-            $builder->where('p.jenis_kelamin', 'Laki-laki');
-        } elseif ($jk == 'P') {
-            $builder->where('p.jenis_kelamin', 'Perempuan');
+        // 2. TAMBAH LOGIKA FILTER WILAYAH (DAN FIX SPASI TEGAL GEDE)
+        if (!empty($wilayah)) {
+            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+            $builder->where('w.kelurahan', $namaWilayah);
+        } else {
+            // Tampilkan 5 kelurahan utama jika 'All' dipilih
+            $builder->whereIn('w.kelurahan', [
+                'Sumbersari',
+                'Wirolegi',
+                'Antirogo',
+                'Tegal Gede',
+                'Karangrejo'
+            ]);
         }
-    }
 
-    if (!empty($usia)) {
-        if ($usia == 'anak') {
-            $builder->where('p.umur <=', 14);
-        } elseif ($usia == 'remaja') {
-            $builder->where('p.umur >=', 15);
-            $builder->where('p.umur <=', 24);
-        } elseif ($usia == 'dewasa') {
-            $builder->where('p.umur >=', 25);
-            $builder->where('p.umur <=', 59);
-        } elseif ($usia == 'lansia') {
-            $builder->where('p.umur >=', 60);
+        // --- Sisa kode di bawah ini biarkan sama seperti aslinya ---
+        if (!empty($bulan)) {
+            $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
         }
-    }
-    $builder->groupBy('w.kelurahan');
 
-    $grafik = $builder->get()->getResultArray();
+        if (!empty($tahun)) {
+            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+        }
 
-    // ======================
-    // 🔥 DATA PETA
-    // ======================
-    $tahunMap = $this->request->getGet('tahun_map');
+        if (!empty($jk)) {
+            if ($jk == 'L') {
+                $builder->where('p.jenis_kelamin', 'Laki-laki');
+            } elseif ($jk == 'P') {
+                $builder->where('p.jenis_kelamin', 'Perempuan');
+            }
+        }
 
-    $builderDbd = $db->table('pasien p');
-    $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
-    $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        if (!empty($usia)) {
+            if ($usia == 'anak') {
+                $builder->where('p.umur <=', 14);
+            } elseif ($usia == 'remaja') {
+                $builder->where('p.umur >=', 15);
+                $builder->where('p.umur <=', 24);
+            } elseif ($usia == 'dewasa') {
+                $builder->where('p.umur >=', 25);
+                $builder->where('p.umur <=', 59);
+            } elseif ($usia == 'lansia') {
+                $builder->where('p.umur >=', 60);
+            }
+        }
+        $builder->groupBy('w.kelurahan');
 
-    // 🔥 FILTER HARUS DI SINI (SEBELUM get)
-    if (!empty($tahunMap)) {
-        $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
-    }
+        $grafik = $builder->get()->getResultArray();
 
-    $builderDbd->groupBy('w.kelurahan');
+        // ======================
+        // 🔥 DATA PETA
+        // ======================
+        $tahunMap = $this->request->getGet('tahun_map');
+
+        $builderDbd = $db->table('pasien p');
+        $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
+        $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+        // 🔥 FILTER HARUS DI SINI (SEBELUM get)
+        if (!empty($tahunMap)) {
+            $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
+        }
+
+        $builderDbd->groupBy('w.kelurahan');
+
+        // 🔥 BARU AMBIL DATA
+        $dbd = $builderDbd->get()->getResultArray();
 
     // 🔥 BARU AMBIL DATA
     $dbd = $builderDbd->get()->getResultArray();    // ======================
@@ -1449,6 +1473,7 @@ public function hapus_skrining(int $id)
 
  public function simpanFunfact()
 {
+    
     $status = $this->request->getPost('status_funfact');
 
     $gambar = $this->request->getFile('gambar_funfact');
@@ -1465,6 +1490,9 @@ public function hapus_skrining(int $id)
     }
 
     $data = [
+        'id_petugas' => session()->get('id_petugas'),
+
+        'id_penyakit' => 1,
 
         'judul_funfact'     => $this->request->getPost('judul_funfact'),
 
@@ -1572,6 +1600,8 @@ public function hapus_skrining(int $id)
     $status = $this->request->getPost('status_funfact');
 
     $data = [
+        'id_petugas' => session()->get('id_petugas'),
+        'id_penyakit' => 1,
         'judul_funfact'     => $this->request->getPost('judul_funfact'),
         'isi_funfact'       => $this->request->getPost('isi_funfact'),
         'deskripsi_funfact' => $this->request->getPost('deskripsi_funfact'),

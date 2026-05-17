@@ -319,21 +319,100 @@
         <div class="info-box">
             <h4>Informasi :</h4>
             <table class="info-table">
-                <tr><td class="label">Nama Daerah</td><td class="colon">:</td><td class="value" id="modalNama">-</td></tr>
-                <tr><td class="label">Jumlah Penduduk</td><td class="colon">:</td><td class="value" id="modalPenduduk">-</td></tr>
-                <tr><td class="label">Jumlah Kasus</td><td class="colon">:</td><td class="value" id="modalKasus">-</td></tr>
-                <tr><td class="label">Kategori Kasus</td><td class="colon">:</td><td class="value" id="modalKategori">-</td></tr>
-                <tr><td class="label">Rentang usia</td><td class="colon">:</td><td class="value"></td></tr>
-                <tr class="sub"><td class="label">Anak-anak</td><td class="colon">:</td><td class="value" id="modalAnak">0</td></tr>
-                <tr class="sub"><td class="label">Dewasa</td><td class="colon">:</td><td class="value" id="modalDewasa">0</td></tr>
-                <tr class="sub"><td class="label">Lansia</td><td class="colon">:</td><td class="value" id="modalLansia">0</td></tr>
-                <tr><td class="label">Rentang usia dengan kasus tertinggi</td><td class="colon">:</td><td class="value" id="modalUsiaTertinggi">-</td></tr>
-                <tr><td class="label">Desa dengan kasus tertinggi</td><td class="colon">:</td><td class="value" id="modalDesaTertinggi">-</td></tr>
-                <tr><td class="label">Jenis kelamin terinfeksi</td><td class="colon">:</td><td class="value" id="modalJkTotal">0</td></tr>
-                <tr class="sub"><td class="label">Laki-laki</td><td class="colon">:</td><td class="value" id="modalLaki">0</td></tr>
-                <tr class="sub"><td class="label">Perempuan</td><td class="colon">:</td><td class="value" id="modalPerempuan">0</td></tr>
-                <tr><td class="label">Rumah Diperiksa</td><td class="colon">:</td><td class="value" id="modalRumahPeriksa">0</td></tr>
-                <tr><td class="label">Rumah Positive Jentik</td><td class="colon">:</td><td class="value" id="modalRumahJentik">0</td></tr>
+                <tr>
+                    <td class="label">Nama Daerah</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalNama">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Jumlah Penduduk</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalPenduduk">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Jumlah Kasus</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalKasus">-</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Sembuh</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalSembuh">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Meninggal</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalMeninggal">0</td>
+                </tr>
+                <tr>
+                    <td class="label">Kategori Kasus</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalKategori">-</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Rentang usia</td>
+                    <td class="colon">:</td>
+                    <td class="value"></td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Anak-anak</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalAnak">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Dewasa</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalDewasa">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Lansia</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalLansia">0</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Rentang usia dengan kasus tertinggi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalUsiaTertinggi">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Desa dengan kasus tertinggi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalDesaTertinggi">-</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Jenis kelamin terinfeksi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalJkTotal">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Laki-laki</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalLaki">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Perempuan</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalPerempuan">0</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Rumah Diperiksa</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRumahPeriksa">0</td>
+                </tr>
+                <tr>
+                    <td class="label">Rumah Positive Jentik</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRumahJentik">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">ABJ</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalAbj">0%</td>
+                </tr>
             </table>
         </div>
     </div>
@@ -691,6 +770,15 @@ function showDetailPopup(namaFix, namaAsli){
          || detailDesa[namaAsli.toLowerCase().replace(/\s/g,'')] 
          || {};
 
+    if(!d || Object.keys(d).length === 0){
+        for(let key in detailDesa){
+            if(key.includes(namaFix) || namaFix.includes(key)){
+                d = detailDesa[key]; break;
+            }
+        }
+    }
+    d = d || {};
+
     var kategori   = d.kategori   || '-';
     var kategoriCls = '';
     if(kategori.toLowerCase() === 'tinggi') kategoriCls = 'kategori-tinggi';
@@ -698,9 +786,11 @@ function showDetailPopup(namaFix, namaAsli){
     else if(kategori.toLowerCase() === 'rendah') kategoriCls = 'kategori-rendah';
 
     document.getElementById("modalTahun").innerText        = tahunSekarang;
-    document.getElementById("modalNama").innerText         = namaAsli;
+    document.getElementById("modalNama").innerText         = d.nama || namaAsli;
     document.getElementById("modalPenduduk").innerText     = d.jumlah_penduduk ?? 0;
     document.getElementById("modalKasus").innerText        = d.jumlah_kasus    ?? 0;
+    document.getElementById("modalSembuh").innerText       = d.sembuh ?? 0;
+    document.getElementById("modalMeninggal").innerText    = d.meninggal ?? 0;
 
     var elKat = document.getElementById("modalKategori");
     elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
@@ -710,7 +800,7 @@ function showDetailPopup(namaFix, namaAsli){
     document.getElementById("modalDewasa").innerText       = d.dewasa  ?? 0;
     document.getElementById("modalLansia").innerText       = d.lansia  ?? 0;
     document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
-    document.getElementById("modalDesaTertinggi").innerText = desaTertinggi;
+    document.getElementById("modalDesaTertinggi").innerText = desaTertinggi || '-';
 
     var lk = parseInt(d.laki ?? 0);
     var pr = parseInt(d.perempuan ?? 0);
@@ -718,7 +808,12 @@ function showDetailPopup(namaFix, namaAsli){
     document.getElementById("modalLaki").innerText         = lk;
     document.getElementById("modalPerempuan").innerText    = pr;
     document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
-    document.getElementById("modalRumahJentik").innerText  = d.rumah_positif ?? 0;
+    
+    let rmhJentikEl = document.getElementById("modalRumahJentik");
+    if(rmhJentikEl) rmhJentikEl.innerText  = d.rumah_positif ?? d.rumah_jentik ?? 0; 
+    
+    let abjEl = document.getElementById('modalAbj');
+    if(abjEl) abjEl.innerText = (d.abj ?? 0) + '%';
 
     document.getElementById("detailModal").style.display = "flex";
 }
@@ -732,22 +827,51 @@ function fixNama(nama){
     return (nama || "").toLowerCase().trim().replace(/[^a-z0-9]/g, "");
 }
 
-var aliasDesa = { "kemuningsarilor": "kemuning sari lor" };
+var aliasDesa = { "kemuningsarilor": "kemuning sari lor", "tegalgede": "tegalgede", "tegalgedei": "tegalgede" };
 var dataFinal = {};
 
+/* OLAH DATA UNTUK PETA (Total Kasus) */
 dataDBD.forEach(item => {
     var desa = fixNama(item.desa);
-    if(aliasDesa[desa]){ desa = aliasDesa[desa]; }
-    if(!dataFinal[desa]){ dataFinal[desa] = { total: 0, jumlah: 0 }; }
+    if(aliasDesa[desa]) desa = aliasDesa[desa];
+
+    if(!dataFinal[desa]){
+        dataFinal[desa] = { total: 0, jumlah: 0 };
+    }
     dataFinal[desa].total += parseInt(item.kasus);
     dataFinal[desa].jumlah++;
 });
 
-for(var key in dataFinal){
-    var rata = dataFinal[key].total / dataFinal[key].jumlah;
-    if(rata >= 20) dataFinal[key].kategori = "tinggi";
-    else if(rata >= 10) dataFinal[key].kategori = "sedang";
-    else dataFinal[key].kategori = "rendah";
+/* =========================
+   KATEGORI RISIKO DBD
+========================= */
+for (var key in detailDesa) {
+    let d = detailDesa[key];
+    let kasus = parseInt(d.jumlah_kasus ?? 0);
+    let penduduk = parseInt(d.jumlah_penduduk ?? 0);
+    let meninggal = parseInt(d.meninggal ?? 0);
+    let abj = parseFloat(d.abj ?? 0);
+
+    let ir = 0;
+    if (penduduk > 0) { ir = (kasus / penduduk) * 100000; }
+
+    let cfr = 0;
+    if (kasus > 0) { cfr = (meninggal / kasus) * 100; }
+
+    let indikatorBaik = 0;
+    if (ir <= 10) indikatorBaik++;
+    if (cfr < 1) indikatorBaik++;
+    if (abj >= 95) indikatorBaik++;
+
+    if (indikatorBaik === 3) {
+        detailDesa[key].kategori = "rendah"; // hijau
+    } else if (indikatorBaik >= 1) {
+        detailDesa[key].kategori = "sedang"; // kuning
+    } else {
+        detailDesa[key].kategori = "tinggi"; // merah
+    }
+    detailDesa[key].ir = ir.toFixed(2);
+    detailDesa[key].cfr = cfr.toFixed(2);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -795,14 +919,13 @@ document.addEventListener("DOMContentLoaded", function() {
             style: function(feature){
                 var nama = fixNama(feature.properties.NAMOBJ);
                 if(aliasDesa[nama]){ nama = aliasDesa[nama]; }
-                var item = dataFinal[nama];
+                
+                var detail = detailDesa[nama] || {};
                 var warna = "#cccccc";
 
-                if(item){
-                    if(item.kategori == "tinggi") warna = "#dc3545";
-                    else if(item.kategori == "sedang") warna = "#ffc107";
-                    else if(item.kategori == "rendah") warna = "#28a745";
-                }
+                if(detail.kategori == "tinggi"){ warna = "#dc3545"; }
+                else if(detail.kategori == "sedang"){ warna = "#ffc107"; }
+                else if(detail.kategori == "rendah"){ warna = "#28a745"; }
 
                 return { color: "#00CED1", weight: 2, fillColor: warna, fillOpacity: 0.7 };
             },
@@ -814,8 +937,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 var isi = "<div style='min-width:220px;'><b>Kelurahan: " + namaAsli + "</b>";
                 if(item){
+                    var detail = detailDesa[namaFix] || {};
+                    var kategori = detail.kategori || '-';
                     isi += "<br>Total Kasus: " + item.total;
-                    isi += "<br>Kategori: " + item.kategori;
+                    isi += "<br>Kategori: " + kategori;
                     isi += `<br><br><button onclick="showDetailPopup('${namaFix}','${namaAsli}')" 
                             style="background:#00CED1; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">
                             Selengkapnya</button>`;

@@ -23,6 +23,9 @@ $routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');
 // ===============================================
 $routes->get('/dbd', 'LandingpageDbd::index');
 $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
+$routes->post('simpan-penduduk', 'DashboardadminDbd::simpanPenduduk');
+$routes->get('hapus-penduduk/(:num)', 'DashboardadminDbd::hapusPenduduk/$1');
+$routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
 
 /* ========================= */
 /* SKRINING Pneumonia */

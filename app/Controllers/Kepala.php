@@ -10,19 +10,35 @@ class Kepala extends Controller
     {
         $db = \Config\Database::connect(); // 🔥 WAJIB
 
-        // ======================
+      // ======================
         // 🔥 DATA GRAFIK
         // ======================
-        $bulan = $this->request->getGet('bulan');
-        $tahun = $this->request->getGet('tahun');
-        $usia  = $this->request->getGet('usia');
-        $jk    = $this->request->getGet('jk');
-
+        $wilayah = $this->request->getGet('wilayah'); // <-- TAMBAHAN UNTUK MENANGKAP WILAYAH
+        $bulan   = $this->request->getGet('bulan');
+        $tahun   = $this->request->getGet('tahun');
+        $usia    = $this->request->getGet('usia');
+        $jk      = $this->request->getGet('jk');
 
         $builder = $db->table('pasien p');
         $builder->select('w.kelurahan, COUNT(*) as total');
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
+        // <-- TAMBAHAN LOGIKA FILTER WILAYAH -->
+        if (!empty($wilayah)) {
+            // Mengubah 'Tegalgede' (dari HTML) menjadi 'Tegal Gede' (agar cocok di Database)
+            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+            $builder->where('w.kelurahan', $namaWilayah);
+        } else {
+            // Tampilkan 5 kelurahan utama jika 'All' dipilih
+            $builder->whereIn('w.kelurahan', [
+                'Sumbersari',
+                'Wirolegi',
+                'Antirogo',
+                'Tegal Gede',
+                'Karangrejo'
+            ]);
+        }
+        
         if (!empty($bulan)) {
             $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
         }

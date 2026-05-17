@@ -14,6 +14,7 @@ $desaTertinggi = isset($desaTertinggi)
     : '-';
 
 $tahunSekarang = date('Y');
+$penduduk = $penduduk ?? [];
 
 ?>
 <style>
@@ -287,7 +288,13 @@ $tahunSekarang = date('Y');
 
         <div class="inner-card">
             <div id="map"></div>
-            <div style="margin-top:20px;text-align:right;">
+            <div style="
+                margin-top:30px;
+                margin-bottom:30px;
+                padding-bottom: 30px;
+                padding-right:30px;
+                text-align:right;
+            ">
     <button onclick="openPendudukModal()"
         style="
             background:#00BBC2;
@@ -309,21 +316,12 @@ $tahunSekarang = date('Y');
 
         <div class="modal-title">
             Manajemen Data Penduduk
-        </div>
-          <div id="formTambah" style="display:none; margin-bottom:25px; border: 1px solid #00BBC2; padding: 20px; border-radius: 15px;">
-    FORM UPDATE PENDUDUK
 </div>
 
 <table class="table table-hover">
-   <!-- MODAL DATA PENDUDUK -->
-<div id="pendudukModal" class="custom-modal">
-    <div class="custom-modal-content" style="max-width:900px;">
-        <span class="close-modal" onclick="closePendudukModal()">&times;</span>
-        <div class="modal-title">Manajemen Data Penduduk</div>
-
         <div id="formTambah" style="display:none; margin-bottom:25px; border: 1px solid #00BBC2; padding: 20px; border-radius: 15px;">
             <h5 id="formTitle">Update Data Penduduk</h5>
-            <form id="pendudukForm" action="<?= base_url('/dbd/dashboard/admin/simpanPenduduk') ?>" method="post">
+            <form id="pendudukForm" action="<?= base_url('simpan-penduduk') ?>" method="post">
                 <?= csrf_field() ?>
                 <input type="hidden" name="id_penduduk" id="id_penduduk">
                 
@@ -366,6 +364,7 @@ $tahunSekarang = date('Y');
     <tbody>
         <?php 
         $list_kelurahan = ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo'];
+        $penduduk = isset($penduduk) && is_array($penduduk) ? $penduduk : [];
         foreach($list_kelurahan as $nama_kel): 
             $jml_laki = 0;
             $jml_perempuan = 0;
@@ -392,8 +391,7 @@ $tahunSekarang = date('Y');
         </tr>
         <?php endforeach; ?>
     </tbody>
-</table>
-</table>              
+</table>            
         <!-- isi modal kamu taruh di sini -->
     </div>
 </div>
@@ -425,6 +423,17 @@ $tahunSekarang = date('Y');
                                 <td class="label">Jumlah Kasus</td>
                                 <td class="colon">:</td>
                                 <td class="value" id="modalKasus">-</td>
+                            </tr>
+                            <tr class="sub">
+                                <td class="label">Sembuh</td>
+                                <td class="colon">:</td>
+                                <td class="value" id="modalSembuh">0</td>
+                            </tr>
+
+                            <tr class="sub">
+                                <td class="label">Meninggal</td>
+                                <td class="colon">:</td>
+                                <td class="value" id="modalMeninggal">0</td>
                             </tr>
                             <tr>
                                 <td class="label">Kategori Kasus</td>
@@ -490,12 +499,19 @@ $tahunSekarang = date('Y');
                                 <td class="colon">:</td>
                                 <td class="value" id="modalRumahJentik">0</td>
                             </tr>
+                            <tr class="sub">
+                                <td class="label">ABJ</td>
+                                <td class="colon">:</td>
+                                <td class="value" id="modalAbj">0%</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
             </div>
             <script>
-               
+            function closeFormPenduduk(){
+            document.getElementById("formTambah").style.display = "none";
+        } 
             //FIX NAMA 
             function fixNama(nama){
                 return (nama || "")
@@ -536,13 +552,68 @@ $tahunSekarang = date('Y');
                 dataFinal[desa].jumlah++;
             });
 
-            /* KATEGORI */
-            for(var key in dataFinal){
-                var rata = dataFinal[key].total / dataFinal[key].jumlah;
-                if(rata >= 20) dataFinal[key].kategori = "tinggi";
-                else if(rata >= 10) dataFinal[key].kategori = "sedang";
-                else dataFinal[key].kategori = "rendah";
-            }
+           /* =========================
+   KATEGORI RISIKO DBD
+========================= */
+
+for (var key in detailDesa) {
+
+    let d = detailDesa[key];
+
+    let kasus = parseInt(d.jumlah_kasus ?? 0);
+    let penduduk = parseInt(d.jumlah_penduduk ?? 0);
+    let meninggal = parseInt(d.meninggal ?? 0);
+    let abj = parseFloat(d.abj ?? 0);
+
+    // =====================
+    // HITUNG IR
+    // =====================
+    let ir = 0;
+
+    if (penduduk > 0) {
+        ir = (kasus / penduduk) * 100000;
+    }
+
+    // =====================
+    // HITUNG CFR
+    // =====================
+    let cfr = 0;
+
+    if (kasus > 0) {
+        cfr = (meninggal / kasus) * 100;
+    }
+
+    // =====================
+    // PENILAIAN INDIKATOR
+    // =====================
+    let indikatorBaik = 0;
+
+    // IR ≤ 10
+    if (ir <= 10) indikatorBaik++;
+
+    // CFR < 1%
+    if (cfr < 1) indikatorBaik++;
+
+    // ABJ ≥ 95%
+    if (abj >= 95) indikatorBaik++;
+
+    // =====================
+    // KATEGORI WARNA
+    // =====================
+    if (indikatorBaik === 3) {
+        detailDesa[key].kategori = "rendah"; // hijau
+    }
+    else if (indikatorBaik >= 1) {
+        detailDesa[key].kategori = "sedang"; // kuning
+    }
+    else {
+        detailDesa[key].kategori = "tinggi"; // merah
+    }
+
+    // simpan biar bisa ditampilkan di modal
+    detailDesa[key].ir = ir.toFixed(2);
+    detailDesa[key].cfr = cfr.toFixed(2);
+        }
 
             document.addEventListener("DOMContentLoaded", function() {
 
@@ -558,19 +629,24 @@ $tahunSekarang = date('Y');
 
                     var geo = L.geoJSON(data, {
 
-                        style: function(feature){
-                            var nama = fixNama(feature.properties.NAMOBJ);
-                            if(aliasDesa[nama]) nama = aliasDesa[nama];
+                       style: function(feature){
 
-                            var item = dataFinal[nama];
-                            var warna = "#cccccc";
+                        var nama = fixNama(feature.properties.NAMOBJ);
 
-                            if(item){
-                                if(item.kategori == "tinggi") warna = "#dc3545";
-                                else if(item.kategori == "sedang") warna = "#ffc107";
-                                else if(item.kategori == "rendah") warna = "#28a745";
-                            }
+                        if(aliasDesa[nama]) nama = aliasDesa[nama];
 
+                        var detail = detailDesa[nama] || {};
+                        var warna = "#cccccc";
+
+                        if(detail.kategori == "tinggi"){
+                            warna = "#dc3545";
+                        }
+                        else if(detail.kategori == "sedang"){
+                            warna = "#ffc107";
+                        }
+                        else if(detail.kategori == "rendah"){
+                            warna = "#28a745";
+    }
                             return {
                                 color: "#00CED1",
                                 weight: 2,
@@ -590,6 +666,8 @@ $tahunSekarang = date('Y');
                             isi += "<b>Kelurahan: " + namaAsli + "</b>";
 
                             if(item){
+                                var detail = detailDesa[namaFix] || {};
+                                var kategori = detail.kategori || '-';
                                 isi += "<br>Total Kasus: " + item.total;
                                 isi += "<br>Kategori: " + item.kategori;
 
@@ -609,8 +687,6 @@ $tahunSekarang = date('Y');
                                         Selengkapnya
                                     </button>
                                 `;
-                            } else {
-                                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
                             }
 
                             isi += "</div>";
@@ -669,6 +745,8 @@ d = d || {};
                 document.getElementById("modalNama").innerText         = namaAsli;
                 document.getElementById("modalPenduduk").innerText     = d.jumlah_penduduk ?? 0;
                 document.getElementById("modalKasus").innerText        = d.jumlah_kasus    ?? 0;
+                document.getElementById("modalSembuh").innerText       = d.sembuh ?? 0;
+                document.getElementById("modalMeninggal").innerText    = d.meninggal ?? 0;
 
                 var elKat = document.getElementById("modalKategori");
                 elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
@@ -691,6 +769,7 @@ d = d || {};
 
                 document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
                 document.getElementById("modalRumahJentik").innerText  = d.rumah_jentik ?? 0;
+                document.getElementById('modalAbj').innerText = (d.abj ?? 0) + '%';
 
                 document.getElementById("detailModal").style.display = "flex";
             }
