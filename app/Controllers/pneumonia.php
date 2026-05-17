@@ -12,14 +12,47 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class Pneumonia extends BaseController
 {
+    private function getNotif()
+{
+    $db = \Config\Database::connect();
+
+    return $db->table('skrining s')
+
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
+
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
+
+        ->where('s.id_penyakit', 3)
+
+        ->where('s.hasil', 'Berisiko')
+
+        ->orderBy('s.id_skrining', 'DESC')
+
+        ->limit(3)
+
+        ->get()
+
+        ->getResultArray();
+}
 
     public function inputData()
     {
         return view('gol_c/input_data', [
             'menu' => 'inputdata',
             'penyakit' => 'pneumonia',
-            'judul' => 'Input Data Pasien'
+            'judul' => 'Input Data Pasien',
+            'notif' => $this->getNotif()
         ]);
+        
     }
 
     public function hasil_data()
@@ -75,7 +108,8 @@ class Pneumonia extends BaseController
         'penyakit' => 'pneumonia',
         'judul' => 'Hasil Data Pasien',
         'tahun' => $tahun,
-        'data' => $data
+        'data' => $data, 
+        'notif' => $this->getNotif()
     ]);
 }
 
@@ -868,6 +902,7 @@ try {
 public function grafik()
 {
     $data['judul'] = 'Grafik';
+    $data['notif'] = $this->getNotif();
     return view('gol_c/grafik_admin', $data);
 }
 
@@ -1001,7 +1036,7 @@ public function rekapskrining()
         'berisiko' => $berisiko,
         'tdkberisiko' => $tdkberisiko
     ];
-
+    $data['notif'] = $this->getNotif();
     return view('gol_c/rekapskrining', $data);
 }
 

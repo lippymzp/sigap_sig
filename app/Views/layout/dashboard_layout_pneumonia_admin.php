@@ -65,7 +65,7 @@
             <a href="<?= base_url('index.php/' . $penyakit . '/dashboard/admin#petaSebaran') ?>"
                 class="<?= ($menu == 'peta') ? 'active' : '' ?>">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
-                </a>
+            </a>
 
             <a href="<?= base_url('index.php/pneumonia/grafik') ?>" class="<?= ($menu == 'export') ? 'active' : '' ?>">
                 <i class="fa-solid fa-chart-area me-2"></i> Grafik
@@ -1137,7 +1137,12 @@
 
             window.addEventListener('load', () => {
 
-                <?php if(isset($notif) && count($notif) > 0): ?>
+                <?php if(
+        isset($menu) &&
+        $menu == 'dashboard' &&
+        isset($notif) &&
+        count($notif) > 0
+    ): ?>
 
                 setTimeout(() => {
 

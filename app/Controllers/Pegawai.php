@@ -6,6 +6,37 @@ use App\Models\PetugasModel;
 
 class Pegawai extends BaseController
 {
+    private function getNotif()
+{
+    $db = \Config\Database::connect();
+
+    return $db->table('skrining s')
+
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
+
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
+
+        ->where('s.id_penyakit', 3)
+
+        ->where('s.hasil', 'Berisiko')
+
+        ->orderBy('s.id_skrining', 'DESC')
+
+        ->limit(3)
+
+        ->get()
+
+        ->getResultArray();
+}
     protected $petugasModel;
 
     public function __construct()
@@ -40,9 +71,10 @@ class Pegawai extends BaseController
         'petugas'     => $builder->paginate(10, 'petugas'),
         'pager'       => $this->petugasModel->pager,
         'keyword'     => $keyword,
-        'currentPage' => $currentPage
+        'currentPage' => $currentPage,
+        'notif' => $this->getNotif()
     ];
-
+    
     return view('gol_c/data_pegawai', $data);
 }
 
