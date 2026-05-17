@@ -1009,10 +1009,10 @@ public function manajemen_pkm()
         $this->db->table('instansi')->where('id_instansi', $id)->delete();
         return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil dihapus!');
     }
+
 public function rekap_skrining()
 {
     $db = \Config\Database::connect();
-
     $builder = $db->table('skrining as s');
 
     $builder->select('
@@ -1023,60 +1023,109 @@ public function rekap_skrining()
         p.nama_pasien_skrining,
         p.jenis_kelamin,
         p.usia,
-
         w.provinsi,
         w.kabupaten,
         w.kecamatan,
         w.kelurahan,
         w.rt,
         w.rw,
-
         s.hasil,
         s.tanggal
     ');
 
-    $builder->join(
-        'pasien_skrining p',
-        'p.id_pasien_skrining = s.id_pasien_skrining'
-    );
+    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+    $builder->where('s.id_penyakit', 1);
+    // ==========================================
+    // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
+    // ==========================================
+    
+    // 1. Ambil Parameter dari URL
+    $search = $this->request->getGet('search');
+    $sort   = $this->request->getGet('sort');
+    $filter = $this->request->getGet('filter'); // berupa array checkbox
 
-    $builder->join(
-        'wilayah w',
-        'w.id_wilayah = p.id_wilayah'
-    );
+    // 2. Logika Search / Pencarian Nama atau NIK
+    if (!empty($search)) {
+        $builder->groupStart()
+                ->like('p.nama_pasien_skrining', $search)
+                ->orLike('p.nik', $search)
+                ->groupEnd();
+    }
 
-    $builder->orderBy('s.id_skrining', 'DESC');
+    // 3. Logika Filter Checkbox Multiselect
+    if (!empty($filter) && is_array($filter)) {
+        
+        // Filter Hari Ini
+        if (in_array('hariini', $filter)) {
+            $builder->where('s.tanggal', date('Y-m-d'));
+        }
 
-    // PAGINATION
+        // Filter Hasil/Risiko Lingkungan
+        $hasilFilter = [];
+        if (in_array('baik', $filter)) $hasilFilter[] = 'Kategori Lingkungan Baik';
+        if (in_array('cukup', $filter)) $hasilFilter[] = 'Kategori Lingkungan Cukup';
+        if (in_array('buruk', $filter)) $hasilFilter[] = 'Kategori Lingkungan Buruk';
+        
+        if (!empty($hasilFilter)) {
+            $builder->whereIn('s.hasil', $hasilFilter);
+        }
+
+        // Filter Jenis Kelamin
+        $jkFilter = [];
+        if (in_array('lakilaki', $filter)) $jkFilter[] = 'Laki-laki';
+        if (in_array('perempuan', $filter)) $jkFilter[] = 'Perempuan';
+        
+        if (!empty($jkFilter)) {
+            $builder->whereIn('p.jenis_kelamin', $jkFilter);
+        }
+
+        // Filter Kelompok Usia
+        if (in_array('anak', $filter) && !in_array('dewasa', $filter)) {
+            $builder->where('p.usia <=', 19);
+        } elseif (in_array('dewasa', $filter) && !in_array('anak', $filter)) {
+            $builder->where('p.usia >', 19);
+        }
+    }
+
+    // 4. Logika Pengurutan Nama (Sorting)
+    if ($sort === 'asc') {
+        $builder->orderBy('p.nama_pasien_skrining', 'ASC');
+    } elseif ($sort === 'desc') {
+        $builder->orderBy('p.nama_pasien_skrining', 'DESC');
+    } else {
+        $builder->orderBy('s.id_skrining', 'DESC'); // Default urutan terbaru
+    }
+
+    // ==========================================
+    // 📄 PAGINATION DENGAN MEMPERTAHANKAN FILTER URL
+    // ==========================================
     $perPage = 10;
-    $page = $this->request->getVar('page') ?? 1;
+    $page    = $this->request->getVar('page') ?? 1;
 
-    $data['skrining'] = $builder
-        ->limit($perPage, ($page - 1) * $perPage)
-        ->get()
-        ->getResultArray();
+    // Hitung total data setelah difilter
+    $totalBuilder = clone $builder;
+    $total = $totalBuilder->countAllResults(false);
 
-    // total data
-    $total = $db->table('skrining')->countAll();
+    $skriningData = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
 
-    // PAGER
     $pager = \Config\Services::pager();
-
-    $data['pagerLinks'] = $pager->makeLinks(
-        $page,
-        $perPage,
-        $total
-    );
+    
+    // Simpan parameter filter ke link pager biar saat klik 'Next' filternya tidak hilang
+    $pagerLinks = $pager->makeLinks($page, $perPage, $total, 'default_full');
 
     $data = [
-    'menu' => 'skrining',
-    'judul' => 'Rekap Skrining',   
-    'skrining' => $data['skrining'],
-    'pagerLinks' => $data['pagerLinks']
+        'menu'       => 'skrining',
+        'judul'      => 'Rekap Skrining',   
+        'skrining'   => $skriningData,
+        'pagerLinks' => $pagerLinks,
+        // Kirim balik value input ke view untuk mempertahankan status input form
+        'current_search' => $search,
+        'current_sort'   => $sort,
+        'current_filter' => $filter ?? []
     ];
 
-    return view('gol_a/rekap_skrining', $data)
-    ;
+    return view('gol_a/rekap_skrining', $data);
 }
 
 public function hapus_skrining(int $id)
