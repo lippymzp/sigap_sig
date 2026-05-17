@@ -23,16 +23,61 @@ class Pneumonia extends BaseController
     }
 
     public function hasil_data()
-    {
-        $pasien = session()->get('pasien') ?? [];
+{
+    $tahun = date('Y');
 
-        return view('gol_c/hasil_data_pasien/hasil_data_c', [
-            'menu' => 'hasil',
-            'penyakit' => 'pneumonia',
-            'judul' => 'Hasil Data Pasien',
-            'pasien' => $pasien
-        ]);
+    $db = \Config\Database::connect();
+    $builder = $db->table('pasien p');
+
+    $builder->select("
+        MONTH(p.tgl_kunjungan) as bulan_angka,
+        COALESCE(w.kelurahan, '-') as kelurahan,
+
+        SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
+        SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
+
+        SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
+        SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+
+        COUNT(*) as jumlah
+    ");
+
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+    $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+    $builder->where('p.id_penyakit', 3);
+
+    $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
+    $builder->orderBy('bulan_angka', 'ASC');
+
+    $data = $builder->get()->getResultArray();
+
+    $bulanMap = [
+        1 => 'Januari',
+        2 => 'Februari',
+        3 => 'Maret',
+        4 => 'April',
+        5 => 'Mei',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'Agustus',
+        9 => 'September',
+        10 => 'Oktober',
+        11 => 'November',
+        12 => 'Desember'
+    ];
+
+    foreach ($data as &$d) {
+        $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
     }
+
+    return view('gol_c/hasil_data_pasien/hasil_data_c', [
+        'menu' => 'hasil',
+        'penyakit' => 'pneumonia',
+        'judul' => 'Hasil Data Pasien',
+        'tahun' => $tahun,
+        'data' => $data
+    ]);
+}
 
     // ==================================
     // HASIL DATA PASIEN EXPOR PDF EXCEL
@@ -65,6 +110,8 @@ class Pneumonia extends BaseController
 
         // FILTER TAHUN
         $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+
+        $builder->where('p.id_penyakit', 3); // filter penyakit pneumonia
 
         // GROUP BY WAJIB (BIAR TIDAK ERROR ONLY_FULL_GROUP_BY)
         $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
@@ -798,6 +845,10 @@ class Pneumonia extends BaseController
             'usia' => $this->request->getPost('usia'),
 
             'catatan' => $this->request->getPost('catatan'),
+
+            'id_penyakit' => 3,
+
+            'id_petugas' => 1,
         ];
 
 try {

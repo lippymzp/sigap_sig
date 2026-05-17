@@ -61,19 +61,31 @@ class InputDataPasienModel extends Model
         // =========================
         $db->table('pasien')->insert([
             'id_wilayah'    => $id_wilayah,
-            'no_rm'         => '', // Default kosong karena db menuntut NOT NULL
+            'no_rm'         => '000000',
             'nik'           => $data['nik'] ?? null,
             'nama_pasien'   => $data['nama'] ?? null,
             'jenis_kelamin' => $data['jenis_kelamin'] ?? null,
             'tgl_lahir'     => $data['tgl_lahir'] ?? null,
-            'umur'          => $data['usia'] ?? null,
-            'tgl_kunjungan' => $data['tanggal_pemeriksaan'] ?? null,
+
+            // sementara usia kategori diambil angka awalnya
+            'umur'          => (int) filter_var($data['usia'] ?? 0, FILTER_SANITIZE_NUMBER_INT),
+
+            // ambil dari input tanggal, bukan tanggal_pemeriksaan
+            'tgl_kunjungan' => !empty($data['tanggal'])
+                                ? $data['tanggal'] . ' 00:00:00'
+                                : date('Y-m-d H:i:s'),
+
             'status_akhir'  => $data['status_akhir'] ?? null,
-            'tindak_lanjut' => $tindak_lanjut,
-            'ctt_klinis'    => $data['catatan'] ?? null,
-            'id_petugas'    => $data['id_petugas'] ?? null,
-            'id_penyakit'   => $data['id_penyakit'] ?? null
+            'tindak_lanjut' => $tindak_lanjut ?? null,
+            'ctt_klinis' => $data['diagnosa'] ?? 'Pneumonia',
+
+            // tidak boleh null
+            'id_petugas'    => $data['id_petugas'] ?? 1,
+
+            // otomatis pneumonia
+            'id_penyakit'   => $data['id_penyakit'] ?? 3,
         ]);
+
 
         // selesai transaksi
         $db->transComplete();
