@@ -2921,10 +2921,10 @@ document.addEventListener("DOMContentLoaded", function(){
 /* POPUP */
 #chatbot-popup{
     position:fixed;
-    bottom:95px;
-    right:20px;
-    width:420px;
-    height:650px;
+    bottom:20px;
+    right:90px;
+    width: 360px;
+    height:540px;
     background:white;
     border-radius:20px;
     overflow:hidden;
