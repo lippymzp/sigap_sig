@@ -790,7 +790,59 @@ body{
     bottom: 20px;
     right: 20px;
 }
+.funfact-highlight{
+    background:#f4fefd;
+}
 
+.funfact-card{
+    background:white;
+    border-radius:28px;
+    padding:35px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.08);
+}
+
+.funfact-img{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+    border-radius:20px;
+}
+
+.funfact-badge{
+    display:inline-block;
+    background:#e0f7f6;
+    color:#00bfc8;
+    padding:8px 18px;
+    border-radius:30px;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.funfact-card h2{
+    font-size:34px;
+    font-weight:800;
+    color:#1f3a3a;
+}
+
+.funfact-card p{
+    color:#6b8a8a;
+    line-height:1.8;
+    margin:20px 0;
+}
+
+.btn-funfact{
+    background:#00c4c7;
+    color:white;
+    padding:14px 26px;
+    border-radius:14px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.btn-funfact:hover{
+    color:white;
+    background:#00aeb0;
+}
 }
 </style>
 
@@ -814,7 +866,39 @@ body{
 </div>
 
 </section>
+<section class="funfact-highlight py-5">
+<div class="container">
 
+    <?php if (!empty($funfact)): ?>
+    <?php $f = $funfact[0]; ?>
+
+    <div class="funfact-card row align-items-center">
+
+        <div class="col-md-6">
+            <img src="<?= base_url('uploads/funfact/' . $f['gambar_funfact']) ?>"
+                 class="img-fluid funfact-img">
+        </div>
+
+        <div class="col-md-6">
+            <span class="funfact-badge">FUNFACT DIARE</span>
+
+            <h2><?= esc($f['judul_funfact']) ?></h2>
+
+            <p>
+                <?= word_limiter(strip_tags($f['deskripsi_funfact']), 30) ?>
+            </p>
+
+            <a href="<?= base_url('diare-detail') ?>" class="btn btn-funfact">
+                Baca Selengkapnya →
+            </a>
+        </div>
+
+    </div>
+
+    <?php endif; ?>
+
+</div>
+</section>
 <!-- FITUR -->
 <section class="container text-center mt-5" data-aos="fade-up">
 

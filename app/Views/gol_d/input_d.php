@@ -1,6 +1,7 @@
 <?= $this->extend('layout/dashboarddsing') ?>
 <?= $this->section('content') ?>
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
 
 /* ===== STEP HEADER ===== */
@@ -90,6 +91,30 @@
     border-radius:15px;
     width:320px;
     text-align:center;
+}
+.card-summary{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.05);
+}
+
+#mapPreview{
+    width:100%;
+    height:320px;
+    border-radius:16px;
+    overflow:hidden;
+    border:2px solid #dceeee;
+}
+
+.custom-input{
+    height:48px;
+    font-size:14px;
+}
+
+textarea.custom-input{
+    height:90px;
+    resize:none;
 }
 </style>
 
@@ -190,22 +215,22 @@
 
     </div>
 
-    <!-- KANAN (MAP PREVIEW STYLE FIGMA) -->
-    <div class="col-md-5">
+    <!-- KANAN MAP INTERAKTIF -->
+<div class="col-md-5">
 
-        <div class="card-summary text-center">
+    <div class="card-summary">
 
-            <h6 class="fw-bold mb-3">Preview Lokasi</h6>
+        <h6 class="fw-bold mb-3 text-center">Preview Lokasi</h6>
 
-            <img src="<?= base_url('img/map-preview.png') ?>" 
-                 class="img-fluid rounded"
-                 style="height:200px; object-fit:cover;">
+        <div id="mapPreview"></div>
 
-            <small class="text-muted d-block mt-2">Lokasi akan tampil di peta</small>
-
-        </div>
+        <small class="text-muted d-block mt-2 text-center">
+            Klik peta untuk memilih lokasi
+        </small>
 
     </div>
+
+</div>
 
 </div>
 
@@ -488,7 +513,28 @@ function submitData(){
 
     return false; // ⛔ stop submit langsung
 }
+// ===== MAP JEMBER =====
+const map = L.map('mapPreview').setView([-8.1727, 113.7009], 11);
 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© OpenStreetMap'
+}).addTo(map);
+
+let marker = L.marker([-8.1727, 113.7009]).addTo(map);
+
+document.getElementById('lat').value = -8.1727;
+document.getElementById('lng').value = 113.7009;
+
+map.on('click', function(e){
+
+    const lat = e.latlng.lat.toFixed(6);
+    const lng = e.latlng.lng.toFixed(6);
+
+    marker.setLatLng(e.latlng);
+
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
+});
 </script>
 
 

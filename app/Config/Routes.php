@@ -565,3 +565,22 @@ $routes->get('superadmin/iklan/edit/(:num)', 'SuperAdmin::editIklan/$1');
 $routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
 
 $routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
+
+
+//
+$routes->get('/admind/funfact', 'diare::funfact');
+$routes->get('admind/funfact', 'AdminD::funfact');
+$routes->get('admind/funfact/tambah', 'AdminD::tambahFunfact');
+$routes->post('admind/funfact/simpan', 'AdminD::simpanFunfact');
+$routes->get('admind/funfact/edit/(:num)', 'AdminD::editFunfact/$1');
+$routes->post('admind/funfact/update/(:num)', 'AdminD::updateFunfact/$1');
+$routes->get('admind/funfact/hapus/(:num)', 'AdminD::hapusFunfact/$1');
+$routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
+$routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
+$routes->get('diare-detail/(:num)', 'Home::diare_detail/$1');
+
+$routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
+
+$routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
+$routes->get('/diare-detail', 'Home::diare_detail');
+$routes->get('/diare', 'Diare::index');
