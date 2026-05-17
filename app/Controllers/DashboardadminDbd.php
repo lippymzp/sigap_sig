@@ -10,6 +10,15 @@ public function index()
     {
         $db = \Config\Database::connect();
 
+       
+        $id_petugas = session()->get('id_petugas');
+
+        $petugasModel = new \App\Models\PetugasModel();
+        $petugas = $petugasModel->find($id_petugas);
+
+
+        $id_penyakit = $petugas['id_penyakit'] ?? null;
+
         // 1. Tambahkan penangkap parameter 'wilayah' di sini
         $wilayah = $this->request->getGet('wilayah');
         $bulan   = $this->request->getGet('bulan');
@@ -191,6 +200,8 @@ $builder->groupBy('w.kelurahan');
             ->getRow()
             ->total_penduduk ?? 0;
 
+
+
             $jumlahSembuh = $db->table('pasien p')
                 ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
                 ->where("
@@ -249,63 +260,71 @@ $builder->groupBy('w.kelurahan');
 
             $desaTertinggi = $dbd[0]['desa'];
         }
-    // BERITA
-    // ======================
-    $berita = $db->table('berita')
-        ->whereIn('status_berita', ['publish', 'upload'])
-        ->get()
-        ->getResultArray();
+            // BERITA
+            // ======================
+            $berita = $db->table('berita')
+                ->whereIn('status_berita', ['publish', 'upload'])
+                ->get()
+                ->getResultArray();
 
-    // ======================
-    // FUNFACT
-    $funfact = $db->table('funfact')
-        ->orderBy('id_funfact', 'DESC')
-        ->get()
-        ->getResultArray();
+            // ======================
+            // FUNFACT
+            $funfact = $db->table('funfact')
+                ->orderBy('id_funfact', 'DESC')
+                ->get()
+                ->getResultArray();
 
-    // ======================
-    // DATA PENDUDUK
-    // ======================
-    $penduduk = $db->table('data_penduduk')
-        ->get()
-        ->getResultArray();
-        // =========================
-        // RETURN VIEW
-        // =========================
-      return view('gol_a/dashboard_dbd', [
-    'menu' => 'dashboard',
-    'grafik' => $grafik,
-    'dbd' => $dbd,
-    'detailDesa' => $detailDesa,
-    'desaTertinggi' => $desaTertinggi,
-    'berita' => $berita,
-    'funfact' => $funfact,
-    'penduduk' => $penduduk,
-    'show_footer_maskot' => true,
-    'footer_maskot' => 'logo_denggis.png'
-    
-        ]);
-    }
+            // ======================
+            // DATA PENDUDUK
+            // ======================
+            $penduduk = $db->table('data_penduduk')
+            ->where('id_penyakit', 1)
+            ->get()
+            ->getResultArray();
+                // =========================
+                // RETURN VIEW
+                // =========================
+            return view('gol_a/dashboard_dbd', [
+            'menu' => 'dashboard',
+            'grafik' => $grafik,
+            'dbd' => $dbd,
+            'detailDesa' => $detailDesa,
+            'desaTertinggi' => $desaTertinggi,
+            'berita' => $berita,
+            'funfact' => $funfact,
+            'penduduk' => $penduduk,
+            'show_footer_maskot' => true,
+            'footer_maskot' => 'logo_denggis.png'
+            
+                ]);
+            }
 
-   public function simpanPenduduk()
+public function simpanPenduduk()
 {
     $db = \Config\Database::connect();
     
     $kelurahan = $this->request->getPost('kelurahan');
     $laki      = (int)$this->request->getPost('laki');
     $perempuan = (int)$this->request->getPost('perempuan');
+    
+    $id_penyakit = 1; // Set id_penyakit khusus untuk DBD
 
-    // 1. Hapus semua data lama kelurahan ini (biar tidak double)
-    $db->table('data_penduduk')->where('kelurahan', $kelurahan)->delete();
+    // 1. Hapus data lama kelurahan ini TAPI HANYA untuk DBD (id_penyakit = 1)
+    $db->table('data_penduduk')
+       ->where('kelurahan', $kelurahan)
+       ->where('id_penyakit', $id_penyakit)
+       ->delete();
 
-    // 2. Siapkan data baru untuk dimasukkan kembali
+    // 2. Siapkan data baru dengan menyertakan id_penyakit
     $data_baru = [
         [
+            'id_penyakit'    => $id_penyakit,
             'kelurahan'      => $kelurahan,
             'jenis_kelamin'  => 'Laki-laki',
             'total_penduduk' => $laki
         ],
         [
+            'id_penyakit'    => $id_penyakit,
             'kelurahan'      => $kelurahan,
             'jenis_kelamin'  => 'Perempuan',
             'total_penduduk' => $perempuan
@@ -317,6 +336,7 @@ $builder->groupBy('w.kelurahan');
 
     return redirect()->back()->with('success', 'Data ' . $kelurahan . ' berhasil diperbarui');
 }
+
 public function hapusPenduduk($id)
 {
     $db = \Config\Database::connect();
