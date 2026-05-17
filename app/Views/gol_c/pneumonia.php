@@ -921,6 +921,7 @@ $query = mysqli_query($conn, "
     FROM pasien
 
     WHERE YEAR(tgl_kunjungan) = 2025
+    AND id_penyakit = 3
 
     GROUP BY 
         MONTH(tgl_kunjungan),
