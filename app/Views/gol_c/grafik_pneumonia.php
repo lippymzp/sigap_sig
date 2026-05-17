@@ -135,6 +135,8 @@ $query = mysqli_query($conn, "
 
     FROM pasien
 
+    WHERE id_penyakit = 3
+
     GROUP BY
         MONTH(tgl_kunjungan),
         YEAR(tgl_kunjungan),
@@ -169,6 +171,8 @@ FROM pasien
 
 JOIN wilayah
 ON pasien.id_wilayah = wilayah.id_wilayah
+
+WHERE pasien.id_penyakit = 3
 
 GROUP BY
     wilayah.kelurahan,
