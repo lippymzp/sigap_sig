@@ -2724,6 +2724,8 @@ $queryRingkasan = mysqli_query($conn, "
     JOIN wilayah 
         ON wilayah.id_wilayah = pasien.id_wilayah
 
+    WHERE pasien.id_penyakit = 3
+
     GROUP BY wilayah.id_wilayah
 
     ORDER BY total DESC
