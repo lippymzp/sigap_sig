@@ -774,15 +774,8 @@ document.addEventListener("DOMContentLoaded", function () {
         map.fitBounds(geoLayer.getBounds());
     }
 
-    // =====================================================
-    // PERBAIKAN BUG #1:
-    // Dihapus "var selectedDetailKey" dan "var selectedDetailNama" di dalam fungsi ini
-    // karena membuat variabel lokal baru, sehingga global tidak pernah terupdate.
-    // Sekarang langsung assign ke variabel global yang sudah dideklarasikan di atas.
-    // =====================================================
     window.showDetailWilayah = function(key, namaWilayah){
 
-        // Langsung assign ke variabel global (tanpa "var")
         selectedDetailKey = key;
         selectedDetailNama = namaWilayah;
 
@@ -832,11 +825,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 300);
     }
 
-    // =====================================================
-    // PERBAIKAN BUG #2:
-    // Variabel "wilayah" tidak pernah dideklarasikan di fungsi ini.
-    // Diganti dengan "selectedDetailNama" yang merupakan variabel global yang benar.
-    // =====================================================
     window.changeDetailYear = function(step){
 
         selectedYearIndex += step;
@@ -898,7 +886,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         currentDataFinal = hasil;
 
-        // PERBAIKAN: pakai selectedDetailKey & selectedDetailNama (bukan "wilayah")
         var item = currentDataFinal[selectedDetailKey];
 
         if(!item){
@@ -1032,7 +1019,7 @@ document.addEventListener("DOMContentLoaded", function () {
     background:#ffffff;
     width:100%;
     border-radius:18px;
-    overflow:hidden;
+    overflow:hidden; /* pastikan konten tidak bocor */
     box-shadow:0 2px 9px rgba(0,0,0,0.08);
 }
 
@@ -1110,13 +1097,16 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 /* =========================
-   MAP
+   MAP WRAPPER — FIX BUG MELAYANG
+   Tambahan: isolation:isolate agar elemen absolute
+   (legend & AQI box) tidak bocor keluar saat scroll
 ========================= */
 .map-wrapper{
     position:relative;
     width:100%;
     border-radius:0;
     overflow:hidden;
+    isolation:isolate; /* ← FIX: mencegah elemen absolute bocor keluar saat scroll */
 }
 
 #map{
@@ -1140,20 +1130,20 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 /* =========================
-   KETERANGAN DI DALAM MAP
+   KETERANGAN DI DALAM MAP — FIX BUG MELAYANG
 ========================= */
 .map-legend-box{
     position:absolute;
     left:14px;
     bottom:14px;
     width:175px;
+    z-index:999; /* ← pastikan z-index tetap di dalam stacking context wrapper */
 
     background:#ffffff;
     padding:12px 14px 8px;
 
     border-radius:8px;
     box-shadow:0 2px 8px rgba(0,0,0,0.25);
-    z-index:999;
 }
 
 .map-legend-box h6{
@@ -1191,20 +1181,20 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 /* =========================
-   AIR QUALITY INDEX
+   AIR QUALITY INDEX — FIX BUG MELAYANG
 ========================= */
 .aqi-mini-box{
     position:absolute;
     left:203px;
     bottom:14px;
     width:125px;
+    z-index:1000; /* ← tetap di dalam stacking context wrapper */
 
     background:#ffffff;
     border-radius:10px;
     padding:10px 12px;
 
     box-shadow:0 4px 14px rgba(0,0,0,0.25);
-    z-index:1000;
 
     cursor:pointer;
     font-family:'Poppins', Arial, sans-serif;
@@ -1243,13 +1233,13 @@ document.addEventListener("DOMContentLoaded", function () {
     left:203px;
     bottom:14px;
     width:360px;
+    z-index:1002; /* ← tetap di dalam stacking context wrapper */
 
     background:#ffffff;
     border-radius:12px;
     padding:12px;
 
     box-shadow:0 8px 25px rgba(0,0,0,0.28);
-    z-index:1002;
 
     font-family:'Poppins', Arial, sans-serif;
     cursor:pointer;
