@@ -160,6 +160,7 @@ $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('tbc/dashboard/admin', 'Dashboard::tbc');
+$routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
 $routes->get('pneumonia/input_data', 'pneumonia::inputData');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
@@ -525,3 +526,30 @@ $routes->post('admind/berita/update/(:num)', 'AdminD::updateBerita/$1');
 
 $routes->get('/berita/(:num)', 'Diare::detailBerita/$1');
 $routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
+
+//super admin iki
+$routes->get('/superadmin', 'SuperAdmin::dashboard');
+$routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
+$routes->get('/superadmin/admin', 'SuperAdmin::admin');
+$routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
+$routes->get('/superadmin/profil', 'SuperAdmin::profil');
+
+$routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
+$routes->post('/superadmin/iklan/simpan', 'SuperAdmin::simpanIklan');
+$routes->get('/superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
+$routes->post('/superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
+
+
+$routes->get('/superadmin/iklan/edit/(:num)', 'SuperAdmin::formEditIklan/$1');
+
+$routes->get('/superadmin/iklan/tambah', 'SuperAdmin::formTambahIklan');
+
+$routes->get('superadmin', 'SuperAdmin::dashboard');
+$routes->get('superadmin/manajemen-iklan', 'SuperAdmin::manajemenIklan');
+$routes->get('superadmin/iklan/tambah', 'SuperAdmin::formTambahIklan');
+$routes->post('superadmin/iklan/simpan', 'SuperAdmin::simpanIklan');
+$routes->get('superadmin/iklan/edit/(:num)', 'SuperAdmin::editIklan/$1');
+
+$routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
+
+$routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');

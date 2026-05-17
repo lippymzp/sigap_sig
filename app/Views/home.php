@@ -75,45 +75,40 @@
     </div>
 </section>
 
-<!-- SLIDER PREMIUM -->
-<section class="container mt-5">
-<div class="position-relative">
+<!-- SLIDER IKLAN DINAMIS -->
+<section class="figma-slider-section">
+    <div class="container figma-slider-wrap">
 
-<button class="scroll-btn left" onclick="scrollCardLeft()">‹</button>
-<button class="scroll-btn right" onclick="scrollCardRight()">›</button>
+        <button class="figma-arrow left" onclick="scrollCardLeft()">←</button>
+        <button class="figma-arrow right" onclick="scrollCardRight()">→</button>
 
-<div class="card-slider" id="cardSlider">
+        <div class="figma-slider" id="cardSlider">
 
-    <div class="card-item">
-        <div class="card-content">
-            <h5>Satu Platform Untuk Memantau, Memetakan, dan Mendeteksi Penyakit</h5>
-            <p>SIGAP membantu pemantauan penyakit secara terintegrasi.</p>
+            <?php if(!empty($iklan)): ?>
+                <?php foreach($iklan as $item): ?>
+
+                    <div class="figma-card">
+
+                        <div class="figma-card-content">
+                            <h3>
+                                <?= esc($item['judul']) ?>
+                            </h3>
+
+                            <p>
+                                <?= esc($item['deskripsi']) ?>
+                            </p>
+                        </div>
+
+                        <img src="<?= base_url('uploads/iklan/' . $item['gambar']) ?>">
+
+                    </div>
+
+                <?php endforeach; ?>
+            <?php endif; ?>
+
         </div>
-        <img src="<?= base_url('img/foto3.png') ?>">
-    </div>
 
-    <div class="card-item">
-        <div class="card-content">
-            <h5>SIGAP: Cepat Deteksi, Tepat Informasi</h5>
-            <p>Mendukung akses data kesehatan yang cepat dan akurat.</p>
-        </div>
-        <img src="<?= base_url('img/foto1.png') ?>">
     </div>
-
-    <div class="card-item">
-        <div class="card-content">
-            <h5>Interaktif dan Berbasis Data Wilayah</h5>
-            <ul>
-                <li>Peta persebaran penyakit</li>
-                <li>Dashboard interaktif</li>
-                <li>Visualisasi wilayah</li>
-            </ul>
-        </div>
-        <img src="<?= base_url('img/foto2.png') ?>">
-    </div>
-
-</div>
-</div>
 </section>
 
 <!-- MAP -->
@@ -589,13 +584,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-/* SLIDER */
 function scrollCardLeft() {
-    document.getElementById('cardSlider').scrollBy({ left: -400, behavior: 'smooth' });
+    document.getElementById('cardSlider').scrollBy({
+        left: -580,
+        behavior: 'smooth'
+    });
 }
 
 function scrollCardRight() {
-    document.getElementById('cardSlider').scrollBy({ left: 400, behavior: 'smooth' });
+    document.getElementById('cardSlider').scrollBy({
+        left: 580,
+        behavior: 'smooth'
+    });
 }
 </script>
 
@@ -691,16 +691,6 @@ function scrollCardRight() {
     color:#008A8E !important;
     font-weight:700;
     text-shadow: 0 1px 4px rgba(255,255,255,0.35);
-}
-
-
-/* SLIDER */
-.card-item{
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-}
-
-.card-content h5{
-    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /* MAP */
@@ -1243,6 +1233,115 @@ function scrollCardRight() {
     .penyakit-figma-card p{
         font-size:15px;
     }
+}
+/* FIGMA SLIDER */
+.figma-slider-section{
+    margin-top:40px;
+    overflow:hidden;
+}
+
+.figma-slider-wrap{
+    position:relative;
+    max-width:1280px;
+}
+
+.figma-slider{
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 8px 30px;
+}
+
+.figma-slider::-webkit-scrollbar{
+    display:none;
+}
+
+.figma-card{
+    width: 650px !important;
+    min-width: 650px !important;
+    max-width: 650px !important;
+
+    height: 190px;
+
+    background: linear-gradient(90deg,#08B7C5 0%, #6EDDE3 100%);
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    overflow: hidden;
+    flex-shrink: 0;
+
+    padding-left: 22px;
+
+    box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+.figma-card-content{
+    width: 50%;
+    flex-shrink: 0;
+}
+
+.figma-card-content h3{
+    color:white;
+    font-size:18px;
+    font-weight:800;
+    line-height:1.35;
+    margin-bottom:12px;
+}
+
+.figma-card-content p{
+    color:white;
+    font-size:13px;
+    line-height:1.6;
+    font-weight:500;
+    margin:0;
+}
+
+.figma-card-content ul{
+    padding-left:18px;
+}
+
+.figma-card-content li{
+    color:white;
+    font-size:15px;
+    margin-bottom:8px;
+}
+
+.figma-card img{
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    flex-shrink: 0;
+}
+
+.figma-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:white;
+    color:#0BB8C6;
+    font-size:22px;
+    font-weight:700;
+    z-index:20;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    cursor:pointer;
+}
+
+.figma-arrow.left{
+    left: 8px;
+}
+
+.figma-arrow.right{
+    right: 8px;
 }
 </style>
 </div>

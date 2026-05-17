@@ -597,6 +597,11 @@ body {
     justify-content: center;
     font-size: 1.1rem;
     font-weight: 500;
+
+    position: relative;
+    z-index: 9999;
+
+    cursor: pointer;
 }
 
 /* ================= CONTENT ================= */
@@ -2356,4 +2361,30 @@ body {
 }
 a.info-card{
     display: flex;
+}
+.footer-dashboard{
+    width: 100%;
+}
+
+.footer-dashboard .footer-sigap{
+    width: 100%;
+    margin: 0;
+}
+
+.wrapper.hide .footer-dashboard{
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+@media(max-width:768px){
+    .footer-dashboard{
+        margin-left:0;
+        width:100%;
+    }
+}
+
+/* biar footer diare gak dobel offset */
+.footer-dashboard .footer-sigap{
+    margin:0 !important;
+    width:100% !important;
 }

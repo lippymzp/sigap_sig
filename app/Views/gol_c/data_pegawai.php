@@ -608,6 +608,7 @@ function pageUrlPegawai($page, $queryParams)
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

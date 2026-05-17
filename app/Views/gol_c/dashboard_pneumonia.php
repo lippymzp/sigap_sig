@@ -96,49 +96,15 @@
                         </div>
 
                         <div class="filter-group">
-    <label>Periode</label>
+                            <label>Periode</label>
+                            <select id="filterTahun">
+                                <option value="">Semua Tahun</option>
+                                <?php foreach($tahunList as $tahun): ?>
+                                    <option value="<?= $tahun ?>"><?= $tahun ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
 
-    <select id="filterTahun">
-
-        <option value="">
-            Semua Tahun
-        </option>
-
-        <?php
-        $tahunList = [];
-
-        foreach($pneumonia as $item){
-
-            if(!empty($item['tgl_kunjungan'])){
-
-                $tahun =
-                    date(
-                        'Y',
-                        strtotime(
-                            $item['tgl_kunjungan']
-                        )
-                    );
-
-                $tahunList[] = $tahun;
-            }
-        }
-
-        $tahunList =
-            array_unique($tahunList);
-
-        rsort($tahunList);
-
-        foreach($tahunList as $tahun):
-        ?>
-
-            <option value="<?= $tahun ?>">
-                <?= $tahun ?>
-            </option>
-
-        <?php endforeach; ?>
-
-    </select>
-</div>
                         <div class="filter-group">
                             <label>Jenis Kelamin</label>
                             <select id="filterJk">
@@ -163,80 +129,80 @@
                 </div>
 
                 <!-- MAP -->
- <div class="map-wrapper">
-    <div id="map"></div>
+                <div class="map-wrapper">
+                    <div id="map"></div>
 
-    <!-- KETERANGAN -->
-    <div class="map-legend-box">
-        <h6>Keterangan:</h6>
+                    <!-- KETERANGAN -->
+                    <div class="map-legend-box">
+                        <h6>Keterangan:</h6>
 
-        <div class="legend-item">
-            <span class="legend-color legend-tinggi"></span>
-            <b>Risiko Tinggi</b>
-        </div>
+                        <div class="legend-item">
+                            <span class="legend-color legend-tinggi"></span>
+                            <b>Risiko Tinggi</b>
+                        </div>
 
-        <div class="legend-item">
-            <span class="legend-color legend-sedang"></span>
-            <b>Risiko Sedang</b>
-        </div>
+                        <div class="legend-item">
+                            <span class="legend-color legend-sedang"></span>
+                            <b>Risiko Sedang</b>
+                        </div>
 
-        <div class="legend-item">
-            <span class="legend-color legend-rendah"></span>
-            <b>Risiko Rendah</b>
-        </div>
-    </div>
+                        <div class="legend-item">
+                            <span class="legend-color legend-rendah"></span>
+                            <b>Risiko Rendah</b>
+                        </div>
+                    </div>
 
-    <!-- BOX MINI AIR QUALITY -->
-    <div class="aqi-mini-box" id="aqiMiniBox">
-        <div class="aqi-mini-main">
-            <span class="aqi-mini-icon">AQI</span> :
-            <span id="aqiMiniValue">...</span>
-        </div>
+                    <!-- BOX MINI AIR QUALITY -->
+                    <div class="aqi-mini-box" id="aqiMiniBox">
+                        <div class="aqi-mini-main">
+                            <span class="aqi-mini-icon">AQI</span> :
+                            <span id="aqiMiniValue">...</span>
+                        </div>
 
-        <div class="aqi-mini-status" id="aqiMiniStatus">
-            Memuat...
-        </div>
-    </div>
+                        <div class="aqi-mini-status" id="aqiMiniStatus">
+                            Memuat...
+                        </div>
+                    </div>
 
-    <!-- POPUP DETAIL AIR QUALITY -->
-    <div class="aqi-popup-box" id="aqiPopupBox">
-        <div class="aqi-popup-title" id="aqiPopupTitle">
-            Kualitas Udara Kecamatan Ajung
-        </div>
+                    <!-- POPUP DETAIL AIR QUALITY -->
+                    <div class="aqi-popup-box" id="aqiPopupBox">
+                        <div class="aqi-popup-title" id="aqiPopupTitle">
+                            Kualitas Udara Kecamatan Ajung
+                        </div>
 
-        <div class="aqi-popup-card">
+                        <div class="aqi-popup-card">
 
-            <div class="aqi-popup-main">
-                <span class="aqi-popup-icon">AQI</span> :
-                <span id="aqiPopupValue">...</span>
-            </div>
+                            <div class="aqi-popup-main">
+                                <span class="aqi-popup-icon">AQI</span> :
+                                <span id="aqiPopupValue">...</span>
+                            </div>
 
-            <span class="aqi-popup-status" id="aqiPopupStatus">
-                Memuat...
-            </span>
+                            <span class="aqi-popup-status" id="aqiPopupStatus">
+                                Memuat...
+                            </span>
 
-            <div class="aqi-popup-info">
-                <p>📍 <span id="aqiLocation">Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia</span></p>
-                <p>🌡 Suhu : <span id="aqiTemp">-</span>°C</p>
-                <p>💧 Kelembaban : <span id="aqiHumidity">-</span>%</p>
-                <p>🌬 Tekanan : <span id="aqiPressure">-</span> hPa</p>
-                <p>⏱ Diperbarui : <span id="aqiUpdated">-</span></p>
-            </div>
+                            <div class="aqi-popup-info">
+                                <p>📍 <span id="aqiLocation">Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia</span></p>
+                                <p>🌡 Suhu : <span id="aqiTemp">-</span>°C</p>
+                                <p>💧 Kelembaban : <span id="aqiHumidity">-</span>%</p>
+                                <p>🌬 Tekanan : <span id="aqiPressure">-</span> hPa</p>
+                                <p>⏱ Diperbarui : <span id="aqiUpdated">-</span></p>
+                            </div>
 
-            <div class="aqi-index-list">
-                <b>Indeks Kualitas Udara (AQI)</b>
+                            <div class="aqi-index-list">
+                                <b>Indeks Kualitas Udara (AQI)</b>
 
-                <p class="aqi-good">0 - 50 : Baik</p>
-                <p class="aqi-moderate">51 - 100 : Sedang</p>
-                <p class="aqi-sensitive">101 - 150 : Tidak Sehat (Sensitif)</p>
-                <p class="aqi-unhealthy">151 - 200 : Tidak Sehat</p>
-                <p class="aqi-very">201 - 300 : Sangat Tidak Sehat</p>
-                <p class="aqi-hazard">301+ : Berbahaya</p>
-            </div>
+                                <p class="aqi-good">0 - 50 : Baik</p>
+                                <p class="aqi-moderate">51 - 100 : Sedang</p>
+                                <p class="aqi-sensitive">101 - 150 : Tidak Sehat (Sensitif)</p>
+                                <p class="aqi-unhealthy">151 - 200 : Tidak Sehat</p>
+                                <p class="aqi-very">201 - 300 : Sangat Tidak Sehat</p>
+                                <p class="aqi-hazard">301+ : Berbahaya</p>
+                            </div>
 
-        </div>
-    </div>
-</div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -258,13 +224,23 @@
                 <div class="detail-period">
                     <span>Periode :</span>
 
-                    <button type="button" class="period-btn" onclick="changeDetailYear(-1)">
+                    <button
+                        type="button"
+                        class="period-btn"
+                        onclick="changeDetailYear(-1)"
+                    >
                         ‹
                     </button>
 
-                    <b id="detailYear">2025</b>
+                    <b id="detailYear">
+                        <?= !empty($tahunList[0]) ? $tahunList[0] : '2025' ?>
+                    </b>
 
-                    <button type="button" class="period-btn" onclick="changeDetailYear(1)">
+                    <button
+                        type="button"
+                        class="period-btn"
+                        onclick="changeDetailYear(1)"
+                    >
                         ›
                     </button>
                 </div>
@@ -314,7 +290,18 @@ document.addEventListener("DOMContentLoaded", function () {
     var geoLayer;
     var geoJsonData;
     var currentDataFinal = {};
-    var selectedDetailYear = 2025;
+    var availableYears = <?= json_encode(array_values($tahunList)) ?>;
+
+    var selectedYearIndex = 0;
+
+    var selectedDetailYear =
+        availableYears.length > 0
+        ? parseInt(availableYears[0])
+        : 2025;
+
+    // PERBAIKAN BUG: Dideklarasikan di scope luar agar bisa diakses semua fungsi
+    var selectedDetailKey = "";
+    var selectedDetailNama = "";
 
     function fixNama(nama){
         return (nama || "")
@@ -395,53 +382,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getTahun(item){
-        var tahun = item.tahun
-            || item.TAHUN
-            || item.periode
-            || item.PERIODE
-            || item.year
-            || item.YEAR
-            || "";
-
-        if(!tahun){
-            var tanggal = item.tanggal
-                || item.TANGGAL
-                || item.tgl
-                || item.TGL
-                || item.created_at
-                || item.date
-                || "";
-
-            if(tanggal){
-                tahun = tanggal.toString().substring(0, 4);
-            }
+        if(item.tgl_kunjungan){
+            return item.tgl_kunjungan.toString().substring(0,4);
         }
-
-        return tahun;
+        return "";
     }
 
     function getBulan(item){
-        var bulan = item.bulan
-            || item.BULAN
-            || item.month
-            || item.MONTH
-            || "";
-
-        if(!bulan){
-            var tanggal = item.tanggal
-                || item.TANGGAL
-                || item.tgl
-                || item.TGL
-                || item.created_at
-                || item.date
-                || "";
-
-            if(tanggal){
-                bulan = parseInt(tanggal.toString().substring(5, 7));
-            }
+        if(item.tgl_kunjungan){
+            return parseInt(
+                item.tgl_kunjungan.toString().substring(5,7)
+            );
         }
-
-        return bulan;
+        return "";
     }
 
     function getJk(item){
@@ -471,7 +424,6 @@ document.addEventListener("DOMContentLoaded", function () {
             "11":"November",
             "12":"Desember"
         };
-
         return bulan[angka] || "Juni";
     }
 
@@ -489,11 +441,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if(kategori === "tinggi"){
             return "#ff3131";
         }
-
         if(kategori === "sedang"){
             return "#ffff00";
         }
-
         return "#42a447";
     }
 
@@ -501,11 +451,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if(kategori === "tinggi"){
             return "Tinggi";
         }
-
         if(kategori === "sedang"){
             return "Sedang";
         }
-
         return "Rendah";
     }
 
@@ -581,199 +529,150 @@ document.addEventListener("DOMContentLoaded", function () {
             || "Wilayah";
     }
 
-/* =======================
-   AIR QUALITY INDEX - IQAIR API
-======================= */
+    /* =======================
+       AIR QUALITY INDEX - IQAIR API
+    ======================= */
 
-var IQAIR_API_KEY = "d1160a02-9aa4-4404-86cd-4514f1e18d18";
+    var IQAIR_API_KEY = "d1160a02-9aa4-4404-86cd-4514f1e18d18";
 
-var AQI_LAT = -8.1739;
-var AQI_LON = 113.6473;
+    var AQI_LAT = -8.1739;
+    var AQI_LON = 113.6473;
 
-var AQI_NAMA_LOKASI = "Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia";
-var AQI_JUDUL_POPUP = "Kualitas Udara Kecamatan Ajung";
+    var AQI_NAMA_LOKASI = "Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia";
+    var AQI_JUDUL_POPUP = "Kualitas Udara Kecamatan Ajung";
 
-function getKategoriAQI(aqi){
-    aqi = parseInt(aqi || 0);
+    function getKategoriAQI(aqi){
+        aqi = parseInt(aqi || 0);
 
-    if(aqi <= 50){
-        return {
-            teks: "Baik",
-            className: "aqi-status-baik"
-        };
+        if(aqi <= 50){
+            return { teks: "Baik", className: "aqi-status-baik" };
+        }
+        if(aqi <= 100){
+            return { teks: "Sedang", className: "aqi-status-sedang" };
+        }
+        if(aqi <= 150){
+            return { teks: "Tidak Sehat (Sensitif)", className: "aqi-status-sensitif" };
+        }
+        if(aqi <= 200){
+            return { teks: "Tidak Sehat", className: "aqi-status-tidak-sehat" };
+        }
+        if(aqi <= 300){
+            return { teks: "Sangat Tidak Sehat", className: "aqi-status-sangat-tidak-sehat" };
+        }
+        return { teks: "Berbahaya", className: "aqi-status-berbahaya" };
     }
 
-    if(aqi <= 100){
-        return {
-            teks: "Sedang",
-            className: "aqi-status-sedang"
-        };
+    function formatTanggalAQI(tanggalApi){
+        if(!tanggalApi){ return "-"; }
+
+        var tanggal = new Date(tanggalApi);
+
+        if(isNaN(tanggal.getTime())){ return tanggalApi; }
+
+        return tanggal.toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
     }
 
-    if(aqi <= 150){
-        return {
-            teks: "Tidak Sehat (Sensitif)",
-            className: "aqi-status-sensitif"
-        };
+    function setStatusClassAQI(element, className){
+        element.classList.remove(
+            "aqi-status-baik",
+            "aqi-status-sedang",
+            "aqi-status-sensitif",
+            "aqi-status-tidak-sehat",
+            "aqi-status-sangat-tidak-sehat",
+            "aqi-status-berbahaya"
+        );
+        element.classList.add(className);
     }
 
-    if(aqi <= 200){
-        return {
-            teks: "Tidak Sehat",
-            className: "aqi-status-tidak-sehat"
-        };
-    }
+    function isiDataAQI(dataApi){
 
-    if(aqi <= 300){
-        return {
-            teks: "Sangat Tidak Sehat",
-            className: "aqi-status-sangat-tidak-sehat"
-        };
-    }
-
-    return {
-        teks: "Berbahaya",
-        className: "aqi-status-berbahaya"
-    };
-}
-
-function formatTanggalAQI(tanggalApi){
-    if(!tanggalApi){
-        return "-";
-    }
-
-    var tanggal = new Date(tanggalApi);
-
-    if(isNaN(tanggal.getTime())){
-        return tanggalApi;
-    }
-
-    return tanggal.toLocaleString("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
-
-function setStatusClassAQI(element, className){
-    element.classList.remove(
-        "aqi-status-baik",
-        "aqi-status-sedang",
-        "aqi-status-sensitif",
-        "aqi-status-tidak-sehat",
-        "aqi-status-sangat-tidak-sehat",
-        "aqi-status-berbahaya"
-    );
-
-    element.classList.add(className);
-}
-
-function isiDataAQI(dataApi){
-
-    if(!dataApi || dataApi.status !== "success"){
-        document.getElementById("aqiMiniValue").innerText = "-";
-        document.getElementById("aqiMiniStatus").innerText = "Gagal";
-
-        document.getElementById("aqiPopupValue").innerText = "-";
-        document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
-
-        return;
-    }
-
-    var data = dataApi.data;
-
-    var pollution = data.current && data.current.pollution
-        ? data.current.pollution
-        : {};
-
-    var weather = data.current && data.current.weather
-        ? data.current.weather
-        : {};
-
-    var aqi = pollution.aqius || 0;
-    var kategori = getKategoriAQI(aqi);
-
-    document.getElementById("aqiMiniValue").innerText = aqi;
-    document.getElementById("aqiMiniStatus").innerText = kategori.teks;
-
-    document.getElementById("aqiPopupTitle").innerText = AQI_JUDUL_POPUP;
-    document.getElementById("aqiPopupValue").innerText = aqi;
-    document.getElementById("aqiPopupStatus").innerText = kategori.teks;
-
-    document.getElementById("aqiLocation").innerText = AQI_NAMA_LOKASI;
-    document.getElementById("aqiTemp").innerText = weather.tp ?? "-";
-    document.getElementById("aqiHumidity").innerText = weather.hu ?? "-";
-    document.getElementById("aqiPressure").innerText = weather.pr ?? "-";
-    document.getElementById("aqiUpdated").innerText = formatTanggalAQI(pollution.ts);
-
-    setStatusClassAQI(
-        document.getElementById("aqiMiniStatus"),
-        kategori.className
-    );
-
-    setStatusClassAQI(
-        document.getElementById("aqiPopupStatus"),
-        kategori.className
-    );
-}
-
-function ambilDataAQI(){
-
-    var url = "https://api.airvisual.com/v2/nearest_city" +
-              "?lat=" + AQI_LAT +
-              "&lon=" + AQI_LON +
-              "&key=" + IQAIR_API_KEY;
-
-    fetch(url)
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(data){
-            isiDataAQI(data);
-        })
-        .catch(function(error){
-            console.error("Gagal mengambil data AQI:", error);
-
+        if(!dataApi || dataApi.status !== "success"){
             document.getElementById("aqiMiniValue").innerText = "-";
             document.getElementById("aqiMiniStatus").innerText = "Gagal";
-
             document.getElementById("aqiPopupValue").innerText = "-";
             document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
-        });
-}
+            return;
+        }
 
-function aktifkanPopupAQI(){
+        var data = dataApi.data;
 
-    var miniBox = document.getElementById("aqiMiniBox");
-    var popupBox = document.getElementById("aqiPopupBox");
+        var pollution = data.current && data.current.pollution
+            ? data.current.pollution : {};
 
-    if(!miniBox || !popupBox){
-        return;
+        var weather = data.current && data.current.weather
+            ? data.current.weather : {};
+
+        var aqi = pollution.aqius || 0;
+        var kategori = getKategoriAQI(aqi);
+
+        document.getElementById("aqiMiniValue").innerText = aqi;
+        document.getElementById("aqiMiniStatus").innerText = kategori.teks;
+
+        document.getElementById("aqiPopupTitle").innerText = AQI_JUDUL_POPUP;
+        document.getElementById("aqiPopupValue").innerText = aqi;
+        document.getElementById("aqiPopupStatus").innerText = kategori.teks;
+
+        document.getElementById("aqiLocation").innerText = AQI_NAMA_LOKASI;
+        document.getElementById("aqiTemp").innerText = weather.tp ?? "-";
+        document.getElementById("aqiHumidity").innerText = weather.hu ?? "-";
+        document.getElementById("aqiPressure").innerText = weather.pr ?? "-";
+        document.getElementById("aqiUpdated").innerText = formatTanggalAQI(pollution.ts);
+
+        setStatusClassAQI(document.getElementById("aqiMiniStatus"), kategori.className);
+        setStatusClassAQI(document.getElementById("aqiPopupStatus"), kategori.className);
     }
 
-    miniBox.addEventListener("click", function(e){
-        e.stopPropagation();
-        popupBox.style.display = "block";
-    });
+    function ambilDataAQI(){
 
-    popupBox.addEventListener("click", function(e){
-        e.stopPropagation();
-        popupBox.style.display = "none";
-    });
+        var url = "https://api.airvisual.com/v2/nearest_city" +
+                  "?lat=" + AQI_LAT +
+                  "&lon=" + AQI_LON +
+                  "&key=" + IQAIR_API_KEY;
 
-    document.addEventListener("click", function(){
-        popupBox.style.display = "none";
-    });
-}
+        fetch(url)
+            .then(function(response){ return response.json(); })
+            .then(function(data){ isiDataAQI(data); })
+            .catch(function(error){
+                console.error("Gagal mengambil data AQI:", error);
+                document.getElementById("aqiMiniValue").innerText = "-";
+                document.getElementById("aqiMiniStatus").innerText = "Gagal";
+                document.getElementById("aqiPopupValue").innerText = "-";
+                document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
+            });
+    }
+
+    function aktifkanPopupAQI(){
+
+        var miniBox = document.getElementById("aqiMiniBox");
+        var popupBox = document.getElementById("aqiPopupBox");
+
+        if(!miniBox || !popupBox){ return; }
+
+        miniBox.addEventListener("click", function(e){
+            e.stopPropagation();
+            popupBox.style.display = "block";
+        });
+
+        popupBox.addEventListener("click", function(e){
+            e.stopPropagation();
+            popupBox.style.display = "none";
+        });
+
+        document.addEventListener("click", function(){
+            popupBox.style.display = "none";
+        });
+    }
 
     function initMap(){
         var mapElement = document.getElementById("map");
 
-        if(!mapElement){
-            return;
-        }
+        if(!mapElement){ return; }
 
         map = L.map("map", {
             zoomControl: true
@@ -783,13 +682,11 @@ function aktifkanPopupAQI(){
             attribution: "Leaflet"
         }).addTo(map);
 
-aktifkanPopupAQI();
-ambilDataAQI();
+        aktifkanPopupAQI();
+        ambilDataAQI();
 
         fetch("<?= base_url('assets/peta/pneumonia.geojson') ?>")
-            .then(function(res){
-                return res.json();
-            })
+            .then(function(res){ return res.json(); })
             .then(function(data){
                 geoJsonData = data;
                 renderGeoJson();
@@ -810,7 +707,6 @@ ambilDataAQI();
         geoLayer = L.geoJSON(geoJsonData, {
 
             style: function(feature){
-
                 var nama = getNamaGeo(feature);
                 var key = fixKey(nama);
                 var item = dataFinal[key];
@@ -862,15 +758,10 @@ ambilDataAQI();
                     className: "label-desa"
                 });
 
-                layer.on("click", function(){
-                    layer.openPopup();
-                });
+                layer.on("click", function(){ layer.openPopup(); });
 
                 layer.on("mouseover", function(){
-                    layer.setStyle({
-                        weight: 4,
-                        fillOpacity: 0.85
-                    });
+                    layer.setStyle({ weight: 4, fillOpacity: 0.85 });
                 });
 
                 layer.on("mouseout", function(){
@@ -883,10 +774,19 @@ ambilDataAQI();
         map.fitBounds(geoLayer.getBounds());
     }
 
+    // =====================================================
+    // PERBAIKAN BUG #1:
+    // Dihapus "var selectedDetailKey" dan "var selectedDetailNama" di dalam fungsi ini
+    // karena membuat variabel lokal baru, sehingga global tidak pernah terupdate.
+    // Sekarang langsung assign ke variabel global yang sudah dideklarasikan di atas.
+    // =====================================================
     window.showDetailWilayah = function(key, namaWilayah){
 
-        var item = currentDataFinal[key];
+        // Langsung assign ke variabel global (tanpa "var")
+        selectedDetailKey = key;
+        selectedDetailNama = namaWilayah;
 
+        var item = currentDataFinal[key];
         if(!item){
             item = {
                 nama: namaWilayah,
@@ -900,6 +800,11 @@ ambilDataAQI();
         var bulan = document.getElementById("filterBulan").value || "6";
 
         selectedDetailYear = parseInt(tahun);
+        selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+
+        if(selectedYearIndex < 0){
+            selectedYearIndex = 0;
+        }
 
         document.getElementById("mapPage").style.display = "none";
         document.getElementById("detailPage").style.display = "block";
@@ -927,11 +832,94 @@ ambilDataAQI();
         }, 300);
     }
 
+    // =====================================================
+    // PERBAIKAN BUG #2:
+    // Variabel "wilayah" tidak pernah dideklarasikan di fungsi ini.
+    // Diganti dengan "selectedDetailNama" yang merupakan variabel global yang benar.
+    // =====================================================
     window.changeDetailYear = function(step){
-        selectedDetailYear += step;
+
+        selectedYearIndex += step;
+
+        if(selectedYearIndex < 0){
+            selectedYearIndex = 0;
+        }
+
+        if(selectedYearIndex >= availableYears.length){
+            selectedYearIndex = availableYears.length - 1;
+        }
+
+        selectedDetailYear = parseInt(availableYears[selectedYearIndex]);
 
         document.getElementById("detailYear").innerText = selectedDetailYear;
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
+
+        var bulan = document.getElementById("filterBulan").value;
+        var jk = document.getElementById("filterJk").value;
+
+        var hasil = {};
+
+        dataPneu.forEach(function(item){
+
+            var itemTahun = getTahun(item).toString();
+            var itemBulan = getBulan(item).toString();
+            var itemJk = getJk(item).toString().toLowerCase().trim();
+            var filterJk = jk.toString().toLowerCase().trim();
+
+            if(itemTahun !== selectedDetailYear.toString()){
+                return;
+            }
+
+            if(bulan && itemBulan !== bulan){
+                return;
+            }
+
+            if(jk && itemJk !== filterJk){
+                return;
+            }
+
+            var desaAsli = getDesa(item);
+            var desaKey = fixKey(desaAsli);
+
+            if(!hasil[desaKey]){
+                hasil[desaKey] = {
+                    nama: desaAsli,
+                    total: 0,
+                    kasusBaru: 0,
+                    kategori: "rendah"
+                };
+            }
+
+            var jumlahKasus = getKasus(item);
+
+            hasil[desaKey].total += jumlahKasus;
+            hasil[desaKey].kasusBaru += jumlahKasus;
+        });
+
+        currentDataFinal = hasil;
+
+        // PERBAIKAN: pakai selectedDetailKey & selectedDetailNama (bukan "wilayah")
+        var item = currentDataFinal[selectedDetailKey];
+
+        if(!item){
+            item = {
+                nama: selectedDetailNama,
+                total: 0,
+                kasusBaru: 0,
+                kategori: "rendah"
+            };
+        }
+
+        item.kategori = kategoriKasus(item.total);
+
+        document.getElementById("detailTotal").innerText = item.total + " kasus";
+        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+
+        var badge = document.getElementById("detailKategori");
+        badge.innerText = textKategori(item.kategori);
+        badge.className = "badge-risk " + item.kategori;
+
+        renderRankingChart();
     }
 
     function renderRankingChart(){
@@ -939,9 +927,7 @@ ambilDataAQI();
         var chart = document.getElementById("rankingChart");
 
         var ranking = Object.values(currentDataFinal)
-            .sort(function(a, b){
-                return b.total - a.total;
-            })
+            .sort(function(a, b){ return b.total - a.total; })
             .slice(0, 10);
 
         if(ranking.length === 0){
@@ -987,7 +973,7 @@ ambilDataAQI();
 
     document.getElementById("btnReset").addEventListener("click", function(){
         document.getElementById("filterBulan").value = "";
-        document.getElementById("filterTahun").value = "2025";
+        document.getElementById("filterTahun").value = "";
         document.getElementById("filterJk").value = "";
 
         renderGeoJson();
@@ -1830,8 +1816,7 @@ ambilDataAQI();
 .funfact-section{
     margin-top:60px;
     margin-bottom:80px;
-
-    margin-left:60px;
+    margin-left:0px;
 }
 
 .funfact-header h2{
@@ -1958,29 +1943,71 @@ ambilDataAQI();
     max-width:720px;
 }
 
+
+/* =========================
+   JARAK MAP KE GRAFIK
+========================= */
+#grafik{
+    margin-top:40px;
+}
+
+
 /* =========================
    GRAFIK INTERAKTIF DETAIL
 ========================= */
+#grafik{
+    margin-top:40px;
+
+    background:#eaf9fb;
+    border-radius:18px;
+
+    padding:24px;
+}
+
+#grafik .section-header{
+    margin-bottom:18px;
+}
+
+#grafik .section-header h5{
+    font-size:28px;
+    font-weight:800;
+    color:#0d3440;
+    margin-bottom:6px;
+}
+
+#grafik .section-header .sub{
+    font-size:14px;
+    color:#60727d;
+}
+
 .chart-frame{
     width:100%;
-    height:1000px;
+    height:720px;
+
     overflow:hidden;
+
     border-radius:18px;
-    background:#eaf9fb;
-    padding:0;
+
+    background:#ffffff;
+
+    padding:18px;
+
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
 }
 
 .chart-frame iframe{
     width:100%;
     height:100%;
+
     border:none;
-    border-radius:18px;
+    border-radius:14px;
+
     background:transparent;
 }
 
 #artikelSection{
-    margin-left:60px;
-    margin-right:60px;
+    margin-left:0px;
+    margin-right:0px;
 }
 
 </style>
@@ -1997,17 +2024,14 @@ ambilDataAQI();
 
     <div class="chart-frame">
 
-<iframe 
-    src="<?= base_url('grafik_pneumonia?embed=1') ?>" 
-    frameborder="0">
-    </iframe>
-</div>
+        <iframe
+            src="<?= base_url('grafik_pneumonia?embed=1') ?>"
+            frameborder="0">
+        </iframe>
     </div>
+</div>
 
     <p class="update-text">Diperbarui pada: 11-4-2025</p>
-
-
-</div>
 
 <!-- ARTIKEL -->
 <section id="artikel" class="mt-4">
@@ -2092,16 +2116,10 @@ $totalBerita = mysqli_num_rows($queryBerita);
             <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
 
                 <?php
-                // CEK GAMBAR
                 $gambar = trim((string)($berita['gambar_berita'] ?? ''));
-
-                // FILE ASLI
                 $pathFile = FCPATH . 'uploads/berita/' . $gambar;
-
-                // DEFAULT DUMMY
                 $gambarFix = base_url('uploads/berita/default.jpeg');
 
-                // CEK GAMBAR VALID
                 if(
                     $gambar !== '' &&
                     strtolower($gambar) !== 'null' &&
@@ -2110,17 +2128,15 @@ $totalBerita = mysqli_num_rows($queryBerita);
                     $gambarFix = base_url('uploads/berita/' . $gambar);
                 }
 
-                // CEK URL
                 $urlBerita = !empty($berita['url_berita'])
                     ? $berita['url_berita']
                     : '#';
                 ?>
 
-                <!-- CARD BERITA -->
                 <div class="news-card">
 
-                    <img 
-                        src="<?= $gambarFix ?>" 
+                    <img
+                        src="<?= $gambarFix ?>"
                         alt="<?= $berita['judul_berita'] ?>"
                     >
 
@@ -2139,11 +2155,11 @@ $totalBerita = mysqli_num_rows($queryBerita);
                         </p>
 
                         <?php
-                        $urlBerita = base_url('beritapneumonia/viewUser/' . $berita['id_berita']);
+                        $urlBerita = base_url('beritapneumonia/viewUser/' . $berita['id_berita'] . '?from=admin');
                         ?>
 
-                        <a 
-                            href="<?= $urlBerita ?>" 
+                        <a
+                            href="<?= $urlBerita ?>"
                             class="news-link"
                         >
                             Baca Selengkapnya
@@ -2157,94 +2173,34 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php else: ?>
 
-            <!-- DUMMY CARD 1 -->
             <div class="news-card">
-
-                <img 
-                    src="<?= base_url('uploads/berita/default.jpeg') ?>" 
-                    alt=""
-                >
-
+                <img src="<?= base_url('uploads/berita/default.jpeg') ?>" alt="">
                 <div class="news-content">
-
-                    <span class="news-badge">
-                        Informasi
-                    </span>
-
-                    <h5>
-                        Belum Ada Berita Pneumonia
-                    </h5>
-
-                    <p>
-                        Saat ini belum tersedia artikel atau berita terbaru mengenai pneumonia.
-                    </p>
-
-                    <a href="#" class="news-link">
-                        Nantikan Update
-                    </a>
-
+                    <span class="news-badge">Informasi</span>
+                    <h5>Belum Ada Berita Pneumonia</h5>
+                    <p>Saat ini belum tersedia artikel atau berita terbaru mengenai pneumonia.</p>
+                    <a href="#" class="news-link">Nantikan Update</a>
                 </div>
-
             </div>
 
-            <!-- DUMMY CARD 2 -->
             <div class="news-card">
-
-                <img 
-                    src="<?= base_url('uploads/berita/default.jpeg') ?>" 
-                    alt=""
-                >
-
+                <img src="<?= base_url('uploads/berita/default.jpeg') ?>" alt="">
                 <div class="news-content">
-
-                    <span class="news-badge">
-                        Edukasi
-                    </span>
-
-                    <h5>
-                        Informasi Akan Segera Ditambahkan
-                    </h5>
-
-                    <p>
-                        Tim kami sedang menyiapkan informasi kesehatan pneumonia terbaru.
-                    </p>
-
-                    <a href="#" class="news-link">
-                        Segera Hadir
-                    </a>
-
+                    <span class="news-badge">Edukasi</span>
+                    <h5>Informasi Akan Segera Ditambahkan</h5>
+                    <p>Tim kami sedang menyiapkan informasi kesehatan pneumonia terbaru.</p>
+                    <a href="#" class="news-link">Segera Hadir</a>
                 </div>
-
             </div>
 
-            <!-- DUMMY CARD 3 -->
             <div class="news-card">
-
-                <img 
-                    src="<?= base_url('uploads/berita/default.jpeg') ?>" 
-                    alt=""
-                >
-
+                <img src="<?= base_url('uploads/berita/default.jpeg') ?>" alt="">
                 <div class="news-content">
-
-                    <span class="news-badge">
-                        Kesehatan
-                    </span>
-
-                    <h5>
-                        Tetap Jaga Kesehatan Paru-Paru
-                    </h5>
-
-                    <p>
-                        Hindari asap rokok dan jaga daya tahan tubuh untuk mencegah pneumonia.
-                    </p>
-
-                    <a href="#" class="news-link">
-                        Pelajari
-                    </a>
-
+                    <span class="news-badge">Kesehatan</span>
+                    <h5>Tetap Jaga Kesehatan Paru-Paru</h5>
+                    <p>Hindari asap rokok dan jaga daya tahan tubuh untuk mencegah pneumonia.</p>
+                    <a href="#" class="news-link">Pelajari</a>
                 </div>
-
             </div>
 
         <?php endif; ?>
@@ -2397,8 +2353,6 @@ $totalBerita = mysqli_num_rows($queryBerita);
 <!-- FUNFACT -->
 <?php if(!empty($funfact)): ?>
 
-<?php if(!empty($funfact)): ?>
-
 <section class="funfact-section">
 
     <div class="funfact-header">
@@ -2455,8 +2409,6 @@ $totalBerita = mysqli_num_rows($queryBerita);
     </a>
 
 </section>
-
-<?php endif; ?>
 
 <?php endif; ?>
 

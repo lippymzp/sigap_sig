@@ -308,7 +308,8 @@ $showLoginPages = [
     'hasil',
     'pneumonia',
     'diare',
-    'skrining-diare'
+    'skrining-diare',
+    'grafik_pneumonia'
 ];
 ?>
 

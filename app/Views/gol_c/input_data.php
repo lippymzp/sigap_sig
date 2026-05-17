@@ -578,6 +578,8 @@ textarea.custom-input{
     background: #b9c7c7;        
     z-index: 1;
 
+}
+
 html,
 body{
     overflow-x:hidden;
@@ -739,13 +741,13 @@ body{
                     </div>
 
                     <div class="btn-step1-wrapper">
-                        <button type="button" class="btn-next" onclick="nextStep(2)">
-                            Lanjut ke Data Klinis
-                        </button>
+                        <button type="button" class="btn-next" onclick="validasiStep1()">
+                        Lanjut ke Data Klinis
+                    </button>
                     </div>
 
                 </div>
-
+    
             </div>
 
         </div>
@@ -866,9 +868,9 @@ body{
                     </div>
 
                     <div class="btn-step2-wrapper">
-                        <button type="button" class="btn-next" onclick="nextStep(3)">
-                            Lanjut ke Ringkasan
-                        </button>
+                        <button type="button" class="btn-next" onclick="validasiStep2()">
+                        Lanjut ke Ringkasan
+                    </button>
                     </div>
 
                 </div>
@@ -995,15 +997,9 @@ body{
 
                         <div class="step3-actions">
 
-                            <div class="step3-left-actions">
-                                <button type="button" class="link-action">
-                                    💾 Simpan Draft
-                                </button>
-
-                                <button type="button" class="link-action" onclick="prevStep(2)">
-                                    📝 Ubah Data
-                                </button>
-                            </div>
+                            <button type="button" class="link-action" onclick="prevStep(2)">
+                                📝 Ubah Data
+                            </button>
 
                             <button type="submit" class="btn-next btn-save-step3">
                                 Simpan
@@ -1179,6 +1175,135 @@ function prevStep(step){
     nextStep(step);
 }
 
+function showWarningMessage(judul, pesan){
+    const title = document.querySelector('#popupWarning .popup-title');
+    const text = document.querySelector('#popupWarning .popup-text');
+
+    if(title){
+        title.innerText = judul;
+    }
+
+    if(text){
+        text.innerHTML = pesan;
+    }
+
+    openWarning();
+}
+
+function validasiStep1(){
+
+    let desa = document.getElementById('desa').value.trim();
+    let rt = document.getElementById('rt').value.trim();
+    let rw = document.getElementById('rw').value.trim();
+    let alamat = document.getElementById('alamat').value.trim();
+    let lat = document.getElementById('lat').value.trim();
+    let lng = document.getElementById('lng').value.trim();
+
+    if(desa === ""){
+        showWarningMessage(
+            "Data Lokasi Belum Lengkap",
+            "Silakan pilih desa/kelurahan terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(rt === ""){
+        showWarningMessage(
+            "Data Lokasi Belum Lengkap",
+            "Silakan isi RT terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(rw === ""){
+        showWarningMessage(
+            "Data Lokasi Belum Lengkap",
+            "Silakan isi RW terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(alamat === ""){
+        showWarningMessage(
+            "Data Lokasi Belum Lengkap",
+            "Silakan isi alamat lengkap terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(lat === "" || lng === ""){
+        showWarningMessage(
+            "Data Lokasi Belum Lengkap",
+            "Silakan isi latitude dan longitude terlebih dahulu"
+        );
+        return false;
+    }
+
+    nextStep(2);
+}
+
+function validasiStep2(){
+
+    let nama = document.getElementById('nama').value.trim();
+    let tanggal = document.getElementById('tanggal').value.trim();
+    let usia = document.getElementById('usia').value.trim();
+    let diagnosa = document.getElementById('diagnosa').value.trim();
+
+    let jk = document.querySelector('input[name="jk"]:checked');
+    let antibiotik = document.querySelector('input[name="antibiotik"]:checked');
+
+    if(nama === ""){
+        showWarningMessage(
+            "Data Klinis Belum Lengkap",
+            "Silakan isi nama pasien terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(tanggal === ""){
+        showWarningMessage(
+            "Data Klinis Belum Lengkap",
+            "Silakan isi tanggal input terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(!jk){
+        showWarningMessage(
+            "Data Klinis Belum Lengkap",
+            "Silakan pilih jenis kelamin terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(usia === ""){
+        showWarningMessage(
+            "Data Klinis Belum Lengkap",
+            "Silakan pilih usia terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(diagnosa === ""){
+        showWarningMessage(
+            "Data Klinis Belum Lengkap",
+            "Silakan pilih diagnosa terlebih dahulu"
+        );
+        return false;
+    }
+
+    if(!antibiotik){
+        showWarningMessage(
+            "Data Klinis Belum Lengkap",
+            "Silakan pilih status antibiotik terlebih dahulu"
+        );
+        return false;
+    }
+
+    nextStep(3);
+}
+
+
 function isiRingkasan(){
 
     let prov = document.getElementById('provinsi').value || '-';
@@ -1245,8 +1370,11 @@ function initSummaryMap(){
 
 function submitData(){
 
-    if(!document.getElementById('confirm').checked){
-    openWarning();
+   if(!document.getElementById('confirm').checked){
+    showWarningMessage(
+        "Konfirmasi Belum Dicentang",
+        "Silakan centang konfirmasi<br>bahwa data yang dimasukkan<br>sudah benar dan akurat"
+    );
     return false;
 }
 

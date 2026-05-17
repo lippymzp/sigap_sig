@@ -1,12 +1,19 @@
 <?php
 
 namespace App\Controllers;
-
+use App\Models\IklanModel;
 class Home extends BaseController
 {
     public function index()
     {
-        return view('home');
+        $iklanModel = new IklanModel();
+
+        $data['iklan'] = $iklanModel
+            ->where('status', 'aktif')
+            ->orderBy('urutan', 'ASC')
+            ->findAll();
+
+        return view('home', $data);
     }
 
     public function kontak()

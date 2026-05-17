@@ -240,15 +240,18 @@ class Pasien extends BaseController
 
         }
 
-        $data = [
+$data = [
 
-            'grafik' => json_encode($grafik),
+    'grafik' => json_encode($grafik),
 
-            'wilayah' => json_encode($wilayah),
+    'wilayah' => json_encode($wilayah),
 
-            'bulan' => json_encode($bulanList)
+    'bulan' => json_encode($bulanList),
 
-        ];
+    'menu' => 'grafik',
+    'judul' => 'Grafik'
+
+];
         
         return view('gol_b/grafik/index', $data);
     }

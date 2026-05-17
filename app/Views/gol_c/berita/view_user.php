@@ -1,3 +1,8 @@
+<?php $this->setVar('penyakit', 'pneumonia'); ?>
+<?php 
+$this->setVar('show_footer_maskot', true);
+$this->setVar('footer_maskot', 'cynex.png');
+?>
 <?= $this->include('layout/header') ?>
 
 <?php
@@ -12,10 +17,11 @@ $conn = mysqli_connect("localhost","root","","sigap_db");
 
 $querySidebar = mysqli_query($conn, "
     SELECT 
-        id_berita,
-        judul_berita,
-        tanggal_berita
-    FROM berita
+    id_berita,
+    judul_berita,
+    tanggal_berita,
+    gambar_berita
+FROM berita
     WHERE status_berita = 'publish'
     AND id_penyakit = 3
     ORDER BY tanggal_berita DESC
@@ -274,6 +280,60 @@ if(
     color: #10b7c5;
     padding-left: 5px;
 }
+.related-news{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.news-card{
+    display:flex;
+    gap:12px;
+
+    text-decoration:none;
+
+    background:#f8f9fa;
+
+    padding:10px;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    transition:0.3s;
+}
+
+.news-card:hover{
+    transform:translateY(-3px);
+
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.news-card img{
+    width:90px;
+    height:70px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    flex-shrink:0;
+}
+
+.news-content{
+    flex:1;
+}
+
+.news-content h5{
+    font-size:13px;
+    color:#222;
+    margin-bottom:5px;
+}
+
+.news-content small{
+    color:#888;
+    font-size:11px;
+}
 
 /* RESPONSIVE */
 @media(max-width:992px){
@@ -308,6 +368,10 @@ if(
         font-size: 15px;
     }
 
+}
+
+.footer-maskot{
+    width:250px !important;
 }
 
 </style>
@@ -398,12 +462,20 @@ if(
 
                     <!-- BUTTON -->
                     <div style="text-align:right;">
-                    <a 
-                        href="<?= base_url('pneumonia') ?>" 
-                        class="btn-kembali"
-                    >
-                        Kembali
-                    </a>
+                   <?php
+$from = $_GET['from'] ?? '';
+
+$backUrl = ($from == 'admin')
+    ? base_url('pneumonia/dashboard/admin')
+    : base_url('pneumonia');
+?>
+
+<a 
+    href="<?= $backUrl ?>" 
+    class="btn-kembali"
+>
+    Kembali
+</a>
                     </div>
 
                 </div>
@@ -413,62 +485,101 @@ if(
         </div>
 
         <!-- SIDEBAR -->
-        <div class="detail-sidebar">
+       <!-- SIDEBAR -->
+<div class="detail-sidebar">
 
-            <div class="sidebar-card">
+    <div class="sidebar-card">
 
-                <h4 class="sidebar-title">
-                    Berita Lainnya
-                </h4>
+        <h4 class="sidebar-title">
+            Berita Terkait
+        </h4>
 
-                <?php foreach($groupBerita as $tahun => $bulanData): ?>
+        <div class="related-news">
 
-                    <div class="sidebar-year">
+        <?php foreach($groupBerita as $tahun => $bulanData): ?>
 
-                        <h5>
-                            <?= $tahun ?>
-                        </h5>
+            <?php foreach($bulanData as $bulan => $listBerita): ?>
 
-                        <?php foreach($bulanData as $bulan => $listBerita): ?>
+                <?php foreach($listBerita as $item): ?>
 
-                            <div class="sidebar-month">
+                    <a 
+                        href="<?= base_url('beritapneumonia/viewUser/' . $item['id_berita'] . '?from=' . $from) ?>"
+                        class="news-card"
+                    >
 
-                                <h6>
-                                    <?= $bulan ?>
-                                </h6>
+                        <img 
+                            src="<?= base_url('uploads/berita/' . $item['gambar_berita']) ?>"
+                            alt=""
+                        >
 
-                                <ul class="berita-list">
+                        <div class="news-content">
 
-                                    <?php foreach($listBerita as $item): ?>
+                            <h5>
+                                <?= $item['judul_berita'] ?>
+                            </h5>
 
-                                        <li>
+                            <small>
+                                <?= date('d M Y', strtotime($item['tanggal_berita'])) ?>
+                            </small>
 
-                                            <a href="<?= base_url('beritapneumonia/viewUser/' . $item['id_berita']) ?>">
+                        </div>
 
-                                                • <?= $item['judul_berita'] ?>
-
-                                            </a>
-
-                                        </li>
-
-                                    <?php endforeach; ?>
-
-                                </ul>
-
-                            </div>
-
-                        <?php endforeach; ?>
-
-                    </div>
+                    </a>
 
                 <?php endforeach; ?>
 
-            </div>
+            <?php endforeach; ?>
 
-        </div>
+        <?php endforeach; ?>
+
+               </div>
 
     </div>
+                </div>
+                </div>
+                </div>
 
 </div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const footerDesc = document.querySelector(".footer-desc");
+
+    if(footerDesc){
+
+        footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    CYNEX
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Clinical System for Next Experience
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+});
+
+</script>
 
 <?= $this->include('layout/footer') ?>
