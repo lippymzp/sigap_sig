@@ -593,20 +593,20 @@ if ($value == 1):
 <!-- KEMBALI & SELESAI (DI BAWAH) -->
 <div class="btn-wrapper">
 
-   <button type="button" onclick="confirmBack(event)" class="btn btn-kembali">
+<button type="button" onclick="confirmBack(event)" class="btn btn-kembali">
     Kembali
 </button>
 
 
-   <a href="<?= base_url('/') ?>" class="btn btn-selesai">
+<button type="button" onclick="confirmFinish(event)" class="btn btn-selesai">
     Selesai
-    </a>
+</button>
 
 </div>
 <!-- FOOTER -->
 <div class="footer-text">
-    Halaman 1 dari 1 <br>
-    Laporan ini dihasilkan otomatis dari SIGAP
+ <br>
+    Laporan ini dihasilkan otomatis dari DENGGIS
 </div>
 
 </div>
@@ -638,6 +638,49 @@ function confirmBack(event) {
         // kalau cancel → diam saja (tetap di halaman)
     });
 }
+</script>
+<script>
+    function confirmBack(event) {
+        event.preventDefault();
+
+        Swal.fire({
+            icon: 'question',
+            title: 'Yakin mau kembali?',
+            text: 'Kamu akan kembali ke halaman skrining.',
+            showCancelButton: true,
+            confirmButtonText: 'Iya, kembali',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#00BBC2',
+            cancelButtonColor: '#6c757d',
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                window.location.href = "<?= base_url('skriningdbd') ?>";
+            }
+
+        });
+    }
+
+    function confirmFinish(event) {
+        event.preventDefault();
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Yakin selesai?',
+            text: 'Setelah selesai kamu akan keluar dari halaman hasil skrining.',
+            showCancelButton: true,
+            confirmButtonText: 'Iya, selesai',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#00BBC2',
+            cancelButtonColor: '#6c757d',
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                window.location.href = "<?= base_url('/') ?>";
+            }
+
+        });
+    }
 </script>
 </body>
 </html>
