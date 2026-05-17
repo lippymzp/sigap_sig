@@ -402,10 +402,8 @@ public function manajemen_admin_simpan()
         'alamat' =>
             $this->request->getPost('alamat'),
 
-        'password' => password_hash(
-            $this->request->getPost('password'),
-            PASSWORD_DEFAULT
-        )
+        'password' =>
+            $this->request->getPost('password')
     ]);
 
     return redirect()
@@ -473,10 +471,8 @@ public function manajemen_admin_update($id)
     // password optional
     if($this->request->getPost('password')){
 
-        $data['password'] = password_hash(
-            $this->request->getPost('password'),
-            PASSWORD_DEFAULT
-        );
+        $data['password'] = 
+            $this->request->getPost('password');
     }
 
     $db->table('petugas')

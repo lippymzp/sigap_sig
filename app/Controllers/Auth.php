@@ -37,17 +37,58 @@ class Auth extends BaseController
         $penyakitModel = new \App\Models\PenyakitModel();
         $penyakitDB = $penyakitModel->find($user['id_penyakit']);
 
-        if (
-            !$penyakitDB ||
-            strtolower(trim((string) ($penyakitDB['nama_penyakit'] ?? ''))) != strtolower(trim($penyakit_login))
-        ) {
-            return redirect()->back()->with('error', 'Akun tidak punya akses ke halaman ini!');
+        // =========================
+        // CEK AKSES PENYAKIT
+        // =========================
+
+        // superadmin bebas login dari mana saja
+        if ($user['id_jabatan'] != 4) {
+
+            if (
+                strtolower(trim($penyakitDB['nama_penyakit']))
+                != strtolower(trim($penyakit_login))
+            ) {
+
+                return redirect()->back()->with(
+                    'error',
+                    'Akun tidak punya akses ke halaman ini!'
+                );
+            }
         }
 
         // lanjut OTP
         // AMBIL JABATAN
         $jabatanModel = new \App\Models\JabatanModel();
         $jabatan = $jabatanModel->find($user['id_jabatan']);
+
+        // =========================
+        // SUPERADMIN
+        // =========================
+
+        if (
+            strtolower($jabatan['nama_jabatan'])
+            == 'superadmin'
+        ){
+
+            session()->set([
+
+                'logged_in' => true,
+
+                'id_petugas' =>
+                    $user['id_petugas'],
+
+                'email' =>
+                    $user['email'],
+
+                'id_jabatan' =>
+                    $user['id_jabatan'],
+
+                'id_penyakit' =>
+                    $user['id_penyakit']
+            ]);
+
+            return redirect()->to('/superadmin');
+        }
 
         if (!$jabatan) {
             return redirect()->back()

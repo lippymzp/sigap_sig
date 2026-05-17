@@ -25,6 +25,7 @@ class Filters extends BaseFilters
      * or [filter_name => [classname1, classname2, ...]]
      */
     public array $aliases = [
+        'auth'          => \App\Filters\AuthFilter::class,
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
         'honeypot'      => Honeypot::class,
@@ -71,14 +72,51 @@ class Filters extends BaseFilters
      * }
      */
     public array $globals = [
+
         'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
+
+            'auth' => [
+
+                'except' => [
+
+                    '/',
+
+                    'login',
+                    'login/*',
+
+                    'forgot',
+                    'forgot/*',
+
+                    'otp-login',
+                    'otp-login/*',
+
+                    'otp-reset',
+                    'otp-reset/*',
+
+                    'reset',
+                    'reset/*',
+
+                    // LANDING
+                    'dbd',
+                    'tbc',
+                    'pneumonia',
+                    'diare',
+
+                    // PORTAL
+                    'tentang',
+                    'kontak',
+
+                    // ASSETS
+                    'img/*',
+                    'css/*',
+                    'js/*',
+                    'uploads/*'
+                ]
+            ]
         ],
+
         'after' => [
-            // 'honeypot',
-            // 'secureheaders',
+            'toolbar',
         ],
     ];
 

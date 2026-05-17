@@ -117,7 +117,7 @@
 
                 <div class="col-md-6 mb-4">
                     <label class="form-label">Password</label>
-                    <input type="password"
+                    <input type="text"
                             name="password"
                             class="form-control"
                             placeholder="Kosongkan jika tidak diubah">

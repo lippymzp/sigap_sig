@@ -536,4 +536,38 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </script>
 
+<?php if (session()->getFlashdata('success')) : ?>
+<script>
+Swal.fire({
+    iconHtml: '<i class="fa-solid fa-check"></i>',
+    title: "Berhasil",
+    html: "<?= session()->getFlashdata('success') ?>",
+    confirmButtonText: "Selesai",
+    buttonsStyling: false,
+    customClass: {
+        popup: "popup-crud",
+        icon: "popup-icon-sukses",
+        confirmButton: "btn-popup-ya"
+    }
+});
+</script>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')) : ?>
+<script>
+Swal.fire({
+    iconHtml: '<i class="fa-solid fa-xmark"></i>',
+    title: "Gagal",
+    html: "<?= session()->getFlashdata('error') ?>",
+    confirmButtonText: "Selesai",
+    buttonsStyling: false,
+    customClass: {
+        popup: "popup-crud",
+        icon: "popup-icon-error",
+        confirmButton: "btn-popup-ya"
+    }
+});
+</script>
+<?php endif; ?>
+
 <?= $this->endSection() ?>
