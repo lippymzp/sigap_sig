@@ -305,6 +305,17 @@
     .typing span:nth-child(3) {
         animation-delay: 0.4s;
     }
+    .chatbot-avatar{
+
+    width:55px;
+
+    height:55px;
+
+    object-fit:contain;
+
+    animation:floatBot 3s ease-in-out infinite;
+
+}
 
     /* ANIMATION */
     @keyframes bounce {
@@ -395,7 +406,7 @@
 
             <div class="sidebar-header">
 
-                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png">
+                 <img src="<?= base_url('img/Maskot_CYRO.png') ?>" alt="CYRO" class="chatbot-avatar">
 
                 <div>
                     <h4>CYBOT</h4>
@@ -447,7 +458,7 @@
 
                 <div class="chat-user">
 
-                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png">
+                    <img src="<?= base_url('img/Maskot_CYRO.png') ?>" alt="CYRO" class="chatbot-avatar">
 
                     <div>
 
