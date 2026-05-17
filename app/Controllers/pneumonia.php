@@ -6,6 +6,9 @@ use App\Models\InputDataPasienModel;
 use App\Models\wilayahskriningpneumonia;
 use App\Models\PasienPneumoniaModel;
 use App\Models\SkriningPneumoniaModel;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class Pneumonia extends BaseController
 {
@@ -69,7 +72,7 @@ class Pneumonia extends BaseController
         // URUT BULAN
         $builder->orderBy('bulan_angka', 'ASC');
 
-        $data = $builder->get()->getResultArray();
+        $hasil = $builder->get()->getResultArray();
 
         // CONVERT BULAN KE INDONESIA
         $bulanMap = [
@@ -113,106 +116,646 @@ class Pneumonia extends BaseController
     // ================= HALAMAN =================
     public function export_hasil_data_pasien()
     {
-        $type = $this->request->getGet('type');
+        $fileType = $this->request->getGet('fileType');
 
-        $mode = $this->request->getGet('mode');
-        $tahun = $this->request->getGet('tahun');
-        $waktu = $this->request->getGet('waktu');
         $kelurahan = $this->request->getGet('kelurahan');
 
-        $model = new \App\Models\InputDataPasienModel();
-        $data = $model->getDataExport($mode, $tahun, $waktu, $kelurahan);
+        $startDate = $this->request->getGet('startDate');
+        $endDate = $this->request->getGet('endDate');
 
+        $jenisData = $this->request->getGet('jenisData');
+
+        $db = \Config\Database::connect();
+
+        if($jenisData == 'pegawai'){
+
+            $builder = $db->table('petugas');
+
+            $builder->select('
+                petugas.NIP as nip,
+                petugas.nama_petugas,
+                i.nama_instansi,
+                petugas.no_telp
+            ');
+
+            $builder->join(
+                'instansi i',
+                'i.id_instansi = petugas.id_instansi',
+                'left'
+            );
+
+            $builder->where(
+                'i.nama_instansi',
+                'Puskesmas Ajung'
+            );
+
+            $hasil = $builder->get()->getResultArray();
+
+            // PDF
+            if($fileType == 'pdf'){
+
+                $html = view(
+                    'gol_c/hasil_data_pasien/export_pdf_pegawai',
+                    [
+                        'data' => $hasil
+                    ]
+                );
+
+                $options = new \Dompdf\Options();
+
+                $options->set('isRemoteEnabled', true);
+
+                $dompdf = new \Dompdf\Dompdf($options);
+
+                $dompdf->loadHtml($html);
+
+                $dompdf->setPaper('A4', 'portrait');
+
+                $dompdf->render();
+
+                $dompdf->stream(
+                    "data_pegawai.pdf",
+                    ["Attachment" => true]
+                );
+
+                exit;
+            }
+        }else{
+
+        $builder = $db->table('pasien p');
+
+        $builder->join(
+            'wilayah w',
+            'w.id_wilayah = p.id_wilayah',
+            'left'
+        );
+
+        // FILTER KELURAHAN
+        if ($kelurahan && $kelurahan != 'all') {
+
+            $builder->where('w.kelurahan', $kelurahan);
+        }
+
+        // FILTER TANGGAL
+        if ($startDate && $endDate) {
+
+            $builder->where('DATE(p.tgl_kunjungan) >=', $startDate);
+            $builder->where('DATE(p.tgl_kunjungan) <=', $endDate);
+        }
+
+        $builder->select("
+            w.kelurahan,
+
+            SUM(
+                CASE
+                    WHEN p.umur < 18 THEN 1
+                    ELSE 0
+                END
+            ) as anak,
+
+            SUM(
+                CASE
+                    WHEN p.umur >= 18 THEN 1
+                    ELSE 0
+                END
+            ) as dewasa,
+
+            SUM(
+                CASE
+                    WHEN p.jenis_kelamin = 'Laki-laki'
+                    THEN 1
+                    ELSE 0
+                END
+            ) as laki,
+
+            SUM(
+                CASE
+                    WHEN p.jenis_kelamin = 'Perempuan'
+                    THEN 1
+                    ELSE 0
+                END
+            ) as perempuan,
+
+            COUNT(p.id_pasien) as total
+        ");
+
+        $builder->groupBy('w.kelurahan');
+
+        $hasil = $builder->get()->getResultArray();
         // kalau belum klik export → tampilkan halaman filter
-        if (!$type) {
+        if (!$fileType) {
             return view('gol_c/hasil_data_pasien/export_hasil_data_pasien', [
                 'menu' => 'export_hasil_data_pasien',
                 'penyakit' => 'pneumonia',
                 'judul' => 'Eksport Data Pasien',
-                'data' => $data //
+                'data' => $hasil //
             ]);
+        }
         }
 
     // EXPORT EXCEL
-        if ($type == 'excel') {
+        if($fileType == 'excel'){
 
-        header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=data_pasien.xls");
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-        echo "<html>";
-        echo "<head>
-                <meta charset='UTF-8'>
-                <style>
-                    body { font-family: Arial; font-size: 12px; }
-                    h2 { text-align: center; }
-                    .sub { text-align: center; font-size: 11px; margin-bottom: 10px; }
-                    table { border-collapse: collapse; width: 100%; }
-                    th { background: #2c3e50; color: #fff; padding: 6px; }
-                    td { border: 1px solid #ddd; padding: 5px; }
-                    .center { text-align: center; }
-                </style>
-            </head>";
+            $sheet = $spreadsheet->getActiveSheet();
+            
+            // =========================
+            // JENIS DATA KASUS
+            // =========================
+            if($jenisData == 'kasus'){
 
-        echo "<body>";
+                $sheet->setCellValue('A1', 'DATA KASUS PNEUMONIA');
 
-        // Judul
-        echo "<h2>DATA PASIEN DBD</h2>";
-        echo "<div class='sub'>Hasil Export Berdasarkan Filter</div>";
+                $sheet->fromArray([
+                    [
+                        'No',
+                        'Kelurahan',
+                        'Anak-anak',
+                        'Dewasa',
+                        'Laki-laki',
+                        'Perempuan',
+                        'Total Kasus'
+                    ]
+                ], NULL, 'A3');
 
-        // Tabel
-        echo "<table border='1'>";
-        echo "<tr>
-                <th>No</th>
-                <th>No RM</th>
-                <th>Nama</th>
-                <th>Tanggal</th>
-                <th>JK</th>
-                <th>Usia</th>
-                <th>Kelurahan</th>
-                <th>Kecamatan</th>
-                <th>Alamat</th>
-            </tr>";
+                // HEADER STYLE
+                $sheet->getStyle('A3:G3')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'color' => ['rgb' => '000000'],
+                        'size' => 11
+                    ],
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => [
+                            'rgb' => 'B07D1A'
+                        ]
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                        'wrapText' => true
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN
+                        ]
+                    ]
+                ]);
 
-        $no = 1;
+                $row = 4;
+                $no = 1;
 
-        if (!empty($data)) {
-            foreach ($data as $d) {
-                echo "<tr>
-                        <td class='center'>{$no}</td>
-                        <td>{$d['no_rm']}</td>
-                        <td>{$d['nama_pasien']}</td>
-                        <td class='center'>{$d['tgl_kunjungan']}</td>
-                        <td class='center'>{$d['jenis_kelamin']}</td>
-                        <td class='center'>{$d['umur']}</td>
-                        <td>{$d['kelurahan']}</td>
-                        <td>{$d['kecamatan']}</td>
-                        <td>{$d['alamat_lengkap']}</td>
-                    </tr>";
-                $no++;
+                foreach($hasil as $d){
+
+                    $sheet->setCellValue('A'.$row, $no++);
+                    $sheet->setCellValue('B'.$row, $d['kelurahan']);
+                    $sheet->setCellValue('C'.$row, $d['anak']);
+                    $sheet->setCellValue('D'.$row, $d['dewasa']);
+                    $sheet->setCellValue('E'.$row, $d['laki']);
+                    $sheet->setCellValue('F'.$row, $d['perempuan']);
+                    $sheet->setCellValue('G'.$row, $d['total']);
+
+                    $row++;
+                }
+
+                $lastRow = $row - 1;
+
+                $sheet->getStyle('A4:G'.$lastRow)->applyFromArray([
+
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => [
+                            'rgb' => 'C8B37A'
+                        ]
+                    ],
+
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER
+                    ],
+
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN
+                        ]
+                    ]
+                ]);
+
+                $sheet->setCellValue('A'.$row, 'Jumlah');
+
+                $sheet->mergeCells('A'.$row.':B'.$row);
+
+                $sheet->setCellValue(
+                    'G'.$row,
+                    '=SUM(G4:G'.($row-1).')'
+                );
+
+                $sheet->getStyle('A'.$row.':G'.$row)->applyFromArray([
+
+                    'font' => [
+                        'bold' => true
+                    ],
+
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => [
+                            'rgb' => 'A66F00'
+                        ]
+                    ],
+
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN
+                        ]
+                    ],
+
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER
+                    ]
+                ]);
+
+                $row += 4;
+
+                $sheet->setCellValue(
+                    'F'.$row,
+                    'Mengetahui,'
+                );
+
+                $row += 2;
+
+                $sheet->setCellValue(
+                    'F'.$row,
+                    'Kepala Puskesmas Ajung'
+                );
+
+                $row += 5;
+
+                $sheet->setCellValue(
+                    'F'.$row,
+                    ''
+                );
+
+                $row++;
+
+                $sheet->setCellValue(
+                    'F'.$row,
+                    'NIP.'
+                );
+
+                foreach(range(3, $row) as $r){
+                    $sheet->getRowDimension($r)
+                        ->setRowHeight(-1);
+                }
+
             }
-        } else {
-            echo "<tr>
-                    <td colspan='9' class='center'>Data tidak tersedia</td>
-                </tr>";
-        }
 
-        echo "</table>";
-        echo "</body></html>";
+            // =========================
+            // JENIS DATA PEGAWAI
+            // =========================
+            else{
 
-        exit;
+                // =========================
+                // JUDUL
+                // =========================
+
+                $sheet->mergeCells('A1:E1');
+
+                $sheet->setCellValue(
+                    'A1',
+                    'DATA PEGAWAI PUSKESMAS AJUNG'
+                );
+
+                $sheet->getStyle('A1')->applyFromArray([
+
+                    'font' => [
+                        'bold' => true,
+                        'size' => 16
+                    ],
+
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER
+                    ]
+                ]);
+
+                // =========================
+                // HEADER TABEL
+                // =========================
+
+                $sheet->fromArray([
+                    [
+                        'No',
+                        'NIP',
+                        'Nama Pegawai',
+                        'Instansi',
+                        'Nomor HP'
+                    ]
+                ], NULL, 'A3');
+
+                // STYLE HEADER
+                $sheet->getStyle('A3:E3')->applyFromArray([
+
+                    'font' => [
+                        'bold' => true,
+                        'size' => 11,
+                        'color' => [
+                            'rgb' => '000000'
+                        ]
+                    ],
+
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => [
+                            'rgb' => 'B07D1A'
+                        ]
+                    ],
+
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                        'wrapText' => true
+                    ],
+
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN
+                        ]
+                    ]
+                ]);
+
+                // =========================
+                // ISI DATA
+                // =========================
+
+                $row = 4;
+                $no = 1;
+
+                foreach($hasil as $d){
+
+                    $sheet->setCellValue(
+                        'A'.$row,
+                        $no++
+                    );
+
+                    $sheet->setCellValue(
+                        'B'.$row,
+                        $d['nip']
+                    );
+
+                    $sheet->setCellValue(
+                        'C'.$row,
+                        $d['nama_petugas']
+                    );
+
+                    $sheet->setCellValue(
+                        'D'.$row,
+                        $d['nama_instansi']
+                    );
+
+                    $sheet->setCellValue(
+                        'E'.$row,
+                        $d['no_telp']
+                    );
+
+                    $row++;
+                }
+
+                // =========================
+                // STYLE ISI
+                // =========================
+
+                $lastRow = $row - 1;
+
+                $sheet->getStyle('A4:E'.$lastRow)->applyFromArray([
+
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => [
+                            'rgb' => 'C8B37A'
+                        ]
+                    ],
+
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER
+                    ],
+
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN
+                        ]
+                    ]
+                ]);
+
+                // =========================
+                // AUTO SIZE
+                // =========================
+
+                foreach(range('A','E') as $col){
+
+                    $sheet->getColumnDimension($col)
+                        ->setAutoSize(true);
+                }
+
+                // =========================
+                // TTD
+                // =========================
+
+                $row += 4;
+
+                $sheet->setCellValue(
+                    'D'.$row,
+                    'Mengetahui,'
+                );
+
+                $row += 2;
+
+                $sheet->setCellValue(
+                    'D'.$row,
+                    'Kepala Puskesmas Ajung'
+                );
+
+                $row += 5;
+
+                $sheet->setCellValue(
+                    'D'.$row,
+                    ''
+                );
+
+                $row++;
+
+                $sheet->setCellValue(
+                    'D'.$row,
+                    'NIP.'
+                );
+
+                // =========================
+                // AUTO HEIGHT
+                // =========================
+
+                foreach(range(3, $row) as $r){
+
+                    $sheet->getRowDimension($r)
+                        ->setRowHeight(-1);
+                }
+            }
+
+            // OUTPUT
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+            header(
+                'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            );
+
+            header(
+                'Content-Disposition: attachment;filename="export_data.xlsx"'
+            );
+
+            header('Cache-Control: max-age=0');
+
+            $writer->save('php://output');
+
+            exit;
         }
 
         // EXPORT PDF
-        if ($type == 'pdf') {
-            $html = view('gol_c/hasil_data_pasien/export_pdf_pasien', ['data' => $data]);
+        if ($fileType == 'pdf') {
+            $html = view('gol_c/hasil_data_pasien/export_pdf_berita_acara', ['data' => $hasil]);
 
-            $dompdf = new \Dompdf\Dompdf();
+            $options = new \Dompdf\Options();
+
+            $options->set('isRemoteEnabled', true);
+
+            $dompdf = new \Dompdf\Dompdf($options);
             $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
             $dompdf->stream("data_pasien.pdf", ["Attachment" => true]);
             exit;
         }
+    }
+
+    public function preview_export()
+    {
+        $db = \Config\Database::connect();
+        $kelurahan = $this->request->getGet('kelurahan');
+
+        $startDate = $this->request->getGet('startDate');
+
+        $endDate = $this->request->getGet('endDate');
+
+        $jenisData = $this->request->getGet('jenisData');
+
+        if($jenisData == 'pegawai'){
+
+            $builder = $db->table('petugas');
+
+            $builder->select('
+                petugas.NIP as nip,
+                petugas.nama_petugas,
+                i.nama_instansi,
+                petugas.no_telp
+            ');
+
+            $builder->join(
+                'instansi i',
+                'i.id_instansi = petugas.id_instansi',
+                'left'
+            );
+
+            $builder->where(
+                'i.nama_instansi',
+                'Puskesmas Ajung'
+            );
+
+            $hasil = $builder->get()->getResultArray();
+
+            return view(
+                'gol_c/hasil_data_pasien/export_pdf_pegawai',
+                [
+                    'data' => $hasil
+                ]
+            );
+        }
+
+        $builder = $db->table('pasien p');
+
+        $builder->join(
+            'wilayah w',
+            'w.id_wilayah = p.id_wilayah',
+            'left'
+        );
+
+        $builder->select("
+            w.kelurahan,
+
+            SUM(
+                CASE
+                    WHEN p.umur < 18 THEN 1
+                    ELSE 0
+                END
+            ) as anak,
+
+            SUM(
+                CASE
+                    WHEN p.umur >= 18 THEN 1
+                    ELSE 0
+                END
+            ) as dewasa,
+
+            SUM(
+                CASE
+                    WHEN p.jenis_kelamin = 'Laki-laki'
+                    THEN 1
+                    ELSE 0
+                END
+            ) as laki,
+
+            SUM(
+                CASE
+                    WHEN p.jenis_kelamin = 'Perempuan'
+                    THEN 1
+                    ELSE 0
+                END
+            ) as perempuan,
+
+            COUNT(p.id_pasien) as total
+        ");
+
+        $builder->groupBy('w.kelurahan');
+
+        // FILTER KELURAHAN
+        if($kelurahan && $kelurahan != 'all'){
+
+            $builder->where(
+                'w.kelurahan',
+                $kelurahan
+            );
+        }
+
+        // FILTER TANGGAL
+        if($startDate && $endDate){
+
+            $builder->where(
+                'DATE(p.tgl_kunjungan) >=',
+                $startDate
+            );
+
+            $builder->where(
+                'DATE(p.tgl_kunjungan) <=',
+                $endDate
+            );
+        }
+        
+        $hasil = $builder->get()->getResultArray();
+
+        return view(
+            'gol_c/hasil_data_pasien/export_pdf_berita_acara',
+            [
+                'data' => $hasil
+            ]
+        );
     }
 
     public function simpandatapasien()

@@ -284,23 +284,24 @@
         <label>Kelurahan</label>
         <select id="filterKelurahan" class="filter-input">
             <option value="">Semua</option>
-            <option>Sumbersari</option>
-            <option>Antirogo</option>
-            <option>Tegalgede</option>
-            <option>Wirolegi</option>
-            <option>Karangrejo</option>
+            <option>Ajung</option>
+            <option>Klompangan</option>
+            <option>Mangaran</option>
+            <option>Pancakarya</option>
+            <option>Rowoindah</option>
+            <option>Sukamakmur</option>
+            <option>Wirowongso</option>
         </select>
 
         <label>Urutkan</label>
         <select id="filterUrut" class="filter-input">
             <option value="">Default</option>
-            <option value="asc">Tertinggi</option>
-            <option value="desc">Terendah</option>
+            <option value="desc">Tertinggi</option>
+            <option value="asc">Terendah</option>
         </select>
 
         <div class="d-flex justify-content-between mt-4">
             <button onclick="resetFilter()" class="btn btn-secondary">Reset</button>
-            <button onclick="closeFilter()" class="btn btn-secondary">Batal</button>
             <button onclick="applyFilter()" class="btn-terapkan">Terapkan</button>
         </div>
 
@@ -353,7 +354,7 @@ function loadData(){
     let kelurahan = document.getElementById('filterKelurahan').value;
     let urut = document.getElementById('filterUrut').value;
 
-    fetch(`<?= base_url('dbd/get-data-pasien-by-tahun') ?>?tahun=${currentTahun}`)
+    fetch(`<?= base_url($penyakit . '/get-data-pasien-by-tahun') ?>?tahun=${currentTahun}`)
     .then(res => res.json())
     .then(data => {
 
