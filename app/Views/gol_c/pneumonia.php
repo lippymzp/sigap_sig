@@ -1057,7 +1057,7 @@ new Chart(ctx, {
 
 <!-- PETA -->
 <?php
-/* QUERY DATA PETA - SAMA DENGAN DASHBOARD */
+/* QUERY DATA PETA - KHUSUS PNEUMONIA (id_penyakit = 3) */
 $db = \Config\Database::connect();
 
 $builder = $db->table('pasien p');
@@ -1075,6 +1075,9 @@ $builder->join(
     'w.id_wilayah = p.id_wilayah',
     'left'
 );
+
+/* FILTER KHUSUS PNEUMONIA */
+$builder->where('p.id_penyakit', 3);
 
 $builder->groupBy("
     w.kelurahan,
