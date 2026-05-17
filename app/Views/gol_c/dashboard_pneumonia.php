@@ -53,7 +53,7 @@
 </div>
 
 <!-- MAP -->
-<div class="section-card">
+<div class="section-card" id="petaSebaran">
 
     <!-- =========================
         HALAMAN MAP
@@ -982,6 +982,13 @@ document.addEventListener("DOMContentLoaded", function () {
     border-radius:16px;
     width:100%;
     font-family:'Poppins', Arial, sans-serif;
+}
+
+/* =========================
+   TARGET SCROLL PETA SEBARAN
+========================= */
+#petaSebaran{
+    scroll-margin-top:95px;
 }
 
 .section-block{

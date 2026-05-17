@@ -62,9 +62,10 @@
                 <i class="fa-solid fa-file-lines me-2"></i> Rekap Skrining
             </a>
 
-            <a href="#map" class="<?= ($menu == 'peta') ? 'active' : '' ?>">
+            <a href="<?= base_url('index.php/' . $penyakit . '/dashboard/admin#petaSebaran') ?>"
+                class="<?= ($menu == 'peta') ? 'active' : '' ?>">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
-            </a>
+                </a>
 
             <a href="<?= base_url('index.php/pneumonia/grafik') ?>" class="<?= ($menu == 'export') ? 'active' : '' ?>">
                 <i class="fa-solid fa-chart-area me-2"></i> Grafik

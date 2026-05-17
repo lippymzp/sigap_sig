@@ -321,11 +321,36 @@ const fitur = document.querySelectorAll('.fitur-box');
 fitur.forEach(btn => {
     btn.addEventListener('click', function(e) {
 
-        if(this.getAttribute("href") === "#"){
+        const href = this.getAttribute("href");
+
+        if(href && href.startsWith("#")){
             e.preventDefault();
+
+            const target = document.querySelector(href);
+
+            if(target){
+
+                let offset = 90;
+
+                /* khusus skrining agar tampil di tengah */
+                if(href === "#skriningSection"){
+                    offset = 220;
+                }
+
+                const posisiTarget =
+                    target.getBoundingClientRect().top +
+                    window.pageYOffset -
+                    offset;
+
+                window.scrollTo({
+                    top: posisiTarget,
+                    behavior: "smooth"
+                });
+
+                history.pushState(null, null, href);
+            }
         }
 
-        // aktif efek
         fitur.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
     });
