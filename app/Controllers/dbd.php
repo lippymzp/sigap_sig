@@ -75,59 +75,60 @@ class Dbd extends BaseController
         }
 
     public function simpandatapasien()
-    {
-        $model = new InputDataPasienModel();
-
-        $data = [
-
-            // ID PETUGAS LOGIN
-            'id_petugas' => session()->get('id_petugas'),
-
-            // ======================
-            // DATA WILAYAH
-            // ======================
-            'provinsi' => $this->request->getPost('provinsi'),
-            'kabupaten' => $this->request->getPost('kabupaten'),
-            'kecamatan' => $this->request->getPost('kecamatan'),
-            'desa' => $this->request->getPost('desa'),
-
-            'rt' => $this->request->getPost('rt'),
-            'rw' => $this->request->getPost('rw'),
-
-            'alamat' => $this->request->getPost('alamat'),
-
-            'lat' => $this->request->getPost('lat'),
-            'lng' => $this->request->getPost('lng'),
-
-            // ======================
-            // DATA PASIEN
-            // ======================
-            'nama' => $this->request->getPost('nama'),
-
-            'tanggal' => $this->request->getPost('tanggal'),
-
-            'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
-
-            'usia' => $this->request->getPost('usia'),
-
-            'catatan' => $this->request->getPost('catatan'),
-        ];
-
-        $simpan = $model->simpanSemua($data);
-
-        if ($simpan) {
-
-            return redirect()
-                ->back()
-                ->with('success', 'Data pasien berhasil disimpan');
-
-        } else {
-
-            return redirect()
-                ->back()
-                ->with('error', 'Data gagal disimpan');
+        {
+            $model = new InputDataPasienModel();
+    
+            $data = [
+    
+                // ID PETUGAS LOGIN
+                'id_petugas' => session()->get('id_petugas'),
+                'id_penyakit' => session()->get('id_penyakit'),
+    
+                // ======================
+                // DATA WILAYAH
+                // ======================
+                'provinsi' => $this->request->getPost('provinsi'),
+                'kabupaten' => $this->request->getPost('kabupaten'),
+                'kecamatan' => $this->request->getPost('kecamatan'),
+                'desa' => $this->request->getPost('desa'),
+    
+                'rt' => $this->request->getPost('rt'),
+                'rw' => $this->request->getPost('rw'),
+    
+                'alamat' => $this->request->getPost('alamat'),
+    
+                'lat' => $this->request->getPost('lat'),
+                'lng' => $this->request->getPost('lng'),
+    
+                // ======================
+                // DATA PASIEN
+                // ======================
+                'nik'                 => $this->request->getPost('nik'),
+                'nama'                => $this->request->getPost('nama'),
+                'tgl_lahir'           => $this->request->getPost('tgl_lahir'),
+                'jenis_kelamin'       => $this->request->getPost('jenis_kelamin'),
+                'usia'                => $this->request->getPost('usia'),
+                'tanggal_pemeriksaan' => $this->request->getPost('tanggal_pemeriksaan'),
+                'status_akhir'        => $this->request->getPost('status_akhir'),
+                'tindak_lanjut'       => $this->request->getPost('tindak_lanjut'),
+                'catatan'             => $this->request->getPost('catatan'),
+            ];
+    
+            $simpan = $model->simpanSemua($data);
+    
+            if ($simpan) {
+    
+                return redirect()
+                    ->back()
+                    ->with('success', 'Data pasien berhasil disimpan');
+    
+            } else {
+    
+                return redirect()
+                    ->back()
+                    ->with('error', 'Data gagal disimpan');
+            }
         }
-    }
 
     public function export()
     {
@@ -246,7 +247,7 @@ class Dbd extends BaseController
         if ($data) {
             // 2. Hapus file foto dari folder (opsional, tapi sangat disarankan agar memori server tidak penuh)
             if (!empty($data['foto'])) {
-                $fotoArray = json_decode($data['foto'], true);
+                $fotoArray = json_decode((string)$data['foto'], true);
                 if (is_array($fotoArray)) {
                     foreach ($fotoArray as $foto) {
                         $pathFoto = FCPATH . 'uploads/pelaporan/' . $foto;
@@ -2022,26 +2023,25 @@ public function pelaporan_kader()
 }
 
     public function view_laporan(int $id)
-    {
-        $db = \Config\Database::connect();
-        
-        // Ambil data detail laporan berdasarkan ID
-        $laporan = $db->table('rekap_pelaporan_kader')
-                    ->where('id_laporan', $id)
-                    ->get()
-                    ->getRowArray();
+{
+    $db = \Config\Database::connect();
 
-        if (!$laporan) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan');
-        }
+    // Ambil data detail laporan berdasarkan ID
+    $laporan = $db->table('rekap_pelaporan_kader')
+        ->where('id_laporan', $id)
+        ->get()
+        ->getRowArray();
 
-        $data = [
-            'title'   => 'Pratinjau Hasil Pemeriksaan',
-            'laporan' => $laporan,
-            'menu'    => 'pelaporan_kader'
-        ];
-
-        return view('gol_a/daftar_laporan_kader_admin/view_laporan', $data);
+    if (!$laporan) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan');
     }
 
+    $data = [
+        'title'   => 'Pratinjau Hasil Pemeriksaan',
+        'laporan' => $laporan,
+        'menu'    => 'pelaporan_kader'
+    ];
+
+    return view('gol_a/daftar_laporan_kader_admin/view_laporan', $data);
+}
 }

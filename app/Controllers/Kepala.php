@@ -451,6 +451,7 @@ class Kepala extends Controller
 
         $data = [
             'title'   => 'Pratinjau Hasil Pemeriksaan',
+            'judul'   => 'Pelaporan Kader',
             'laporan' => $laporan,
             'menu'    => 'pelaporan_kader'
         ];

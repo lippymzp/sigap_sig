@@ -45,6 +45,41 @@ class Auth extends BaseController
         }
 
         // lanjut OTP
+        // AMBIL JABATAN
+        $jabatanModel = new \App\Models\JabatanModel();
+        $jabatan = $jabatanModel->find($user['id_jabatan']);
+
+        if (!$jabatan) {
+            return redirect()->back()
+                ->with('error', 'Jabatan tidak ditemukan!');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN KHUSUS KADER TANPA OTP
+        |--------------------------------------------------------------------------
+        */
+        if (strtolower($jabatan['nama_jabatan']) == 'kader') {
+
+            session()->set([
+                'logged_in'   => true,
+                'id_petugas'  => $user['id_petugas'],
+                'email'       => $user['email'],
+                'id_jabatan'  => $user['id_jabatan'],
+                'id_penyakit' => $user['id_penyakit']
+            ]);
+
+            return redirect()->to(
+                '/' . strtolower($penyakitDB['nama_penyakit']) .
+                '/dashboard/' . strtolower($jabatan['nama_jabatan'])
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SELAIN KADER → WAJIB OTP
+        |--------------------------------------------------------------------------
+        */
         $otp = rand(100000, 999999);
 
         session()->set([

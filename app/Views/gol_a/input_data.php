@@ -1,6 +1,12 @@
 <?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
 
+<?php
+// Mencegah error "Undefined variable" di text editor / VS Code
+$labelChart = $labelChart ?? json_encode([]);
+$totalChart = $totalChart ?? json_encode([]);
+?>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -526,7 +532,7 @@
                         <option value="">Pilih Tindak Lanjut</option>
                         <option value="Larvasidasi">Larvasidasi</option>
                         <option value="Fogging">Fogging</option>
-                        <option value="3M">3M</option>
+                        <option value="PSN 3M Plus">3M</option>
                     </select>
                 </div>
 

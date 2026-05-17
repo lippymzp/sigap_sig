@@ -308,4 +308,48 @@ class ManajemenBanner extends BaseController
         'banner' => $banner
     ]);
 }
+public function updateUrutan($id)
+{
+    $bannerModel = new BannerDbdModel();
+
+    $banner = $bannerModel->find($id);
+
+    if (!$banner) {
+
+        return redirect()
+            ->back()
+            ->with('error', 'Banner tidak ditemukan');
+    }
+
+    $urutanBaru = (int)$this->request->getPost('urutan');
+
+    // cari banner lain dengan urutan yang sama
+    $bannerLain = $bannerModel
+        ->where('urutan', $urutanBaru)
+        ->where('id_manajemen_banner !=', $id)
+        ->first();
+
+    // tukar urutan
+    if ($bannerLain) {
+
+        $bannerModel->update(
+            $bannerLain['id_manajemen_banner'],
+            [
+                'urutan' => $banner['urutan']
+            ]
+        );
+    }
+
+    // update banner sekarang
+    $bannerModel->update($id, [
+        'urutan' => $urutanBaru
+    ]);
+
+    return redirect()
+        ->back()
+        ->with(
+            'success',
+            'Urutan banner berhasil diperbarui'
+        );
+}
 }

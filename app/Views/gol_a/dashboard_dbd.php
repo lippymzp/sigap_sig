@@ -16,10 +16,8 @@ $desaTertinggi = isset($desaTertinggi)
 $tahunSekarang = date('Y');
 $penduduk = $penduduk ?? [];
 
-
 ?>
 <style>
-    
 .custom-modal {
     display: none;
     position: fixed;
@@ -366,6 +364,7 @@ $penduduk = $penduduk ?? [];
     <tbody>
         <?php 
         $list_kelurahan = ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo'];
+        $penduduk = isset($penduduk) && is_array($penduduk) ? $penduduk : [];
         foreach($list_kelurahan as $nama_kel): 
             $jml_laki = 0;
             $jml_perempuan = 0;
@@ -1285,22 +1284,6 @@ d = d || {};
     .info-table {
         font-size: 12px;
     }
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 99999 !important;
-    background: #fff;
-}
-
-.avatar-dropdown {
-    position: relative;
-    z-index: 999999 !important;
-}
-
-.avatar-circle {
-    position: relative;
-    z-index: 999999 !important;
-}
 }
 
 </style>
