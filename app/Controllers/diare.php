@@ -7,6 +7,8 @@ use App\Models\SkriningModel;
 use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
+use App\Models\FunfactModelD;
+
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
 // use App\Libraries\DiareDecisionTree;
@@ -235,11 +237,18 @@ public function index()
     helper('text');
 
     $beritaModel = new BeritaModelDD();
+    $funfactModel = new FunfactModelD();
 
     $data['berita'] = $beritaModel
         ->where('id_penyakit', 4)
         ->where('status_berita', 'publish')
         ->orderBy('tanggal_berita', 'DESC')
+        ->findAll();
+
+    $data['funfact'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->where('status_funfact', 'published')
+        ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
     $data['diare'] = [];
@@ -383,5 +392,15 @@ public function detailBerita($id)
     return view('gol_d/detail_berita', [
         'berita' => $berita
     ]);
+}
+public function funfact()
+{
+    $funfactModel = new FunfactModelD();
+
+    $data['funfact'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->findAll();
+
+    return view('admind/funfact', $data);
 }
 }
