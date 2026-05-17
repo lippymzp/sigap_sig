@@ -36,9 +36,10 @@
             <i class="fa-regular fa-newspaper me-2"></i> Manajemen Iklan
         </a>
 
-        <a href="<?= base_url('superadmin/admin') ?>"
-           class="<?= ($menu == 'admin') ? 'active' : '' ?>">
-            <i class="fa-solid fa-users me-2"></i> Manajemen Admin
+        <a href="<?= base_url('superadmin/manajemen_admin') ?>"
+            class="<?= ($menu == 'manajemen_admin') ? 'active' : '' ?>">
+                <i class="fa-solid fa-users me-2"></i>
+                Manajemen Admin
         </a>
 
         <a href="<?= base_url('superadmin/puskesmas') ?>"

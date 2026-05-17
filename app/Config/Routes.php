@@ -587,3 +587,33 @@ $routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
 $routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
 $routes->get('/diare-detail', 'Home::diare_detail');
 $routes->get('/diare', 'Diare::index');
+// Superadmin Manajemen Admin
+$routes->get(
+    'superadmin/manajemen_admin',
+    'superadmin::manajemen_admin'
+);
+
+$routes->get(
+    'superadmin/manajemen_admin/tambah',
+    'superadmin::manajemen_admin_tambah'
+);
+
+$routes->post(
+    'superadmin/manajemen_admin/simpan',
+    'superadmin::manajemen_admin_simpan'
+);
+
+$routes->get(
+    'superadmin/manajemen_admin/edit/(:num)',
+    'superadmin::manajemen_admin_edit/$1'
+);
+
+$routes->post(
+    'superadmin/manajemen_admin/update/(:num)',
+    'superadmin::manajemen_admin_update/$1'
+);
+
+$routes->get(
+    'superadmin/manajemen_admin/hapus/(:num)',
+    'superadmin::manajemen_admin_hapus/$1'
+);

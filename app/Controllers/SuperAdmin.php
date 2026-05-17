@@ -303,4 +303,215 @@ public function formEditIklan($id)
         // Memanggil file view tentang_kami.php yang Anda buat sebelumnya
         return view('tentang_kami', $data); 
     }
+// ===========================
+// Superadmin Manajemen Admin
+// ===========================
+public function manajemen_admin()
+{
+    $db = \Config\Database::connect();
+
+    $keyword = $this->request->getGet('keyword');
+
+    $builder = $db->table('petugas p');
+
+    $builder->select('
+        p.*,
+        i.nama_instansi
+    ');
+
+    $builder->join(
+        'instansi i',
+        'i.id_instansi = p.id_instansi',
+        'left'
+    );
+
+    // admin + superadmin
+    $builder->whereIn('p.id_jabatan', [3,4]);
+
+    if($keyword){
+
+        $builder->groupStart();
+
+        $builder->like(
+            'p.nama_petugas',
+            $keyword
+        );
+
+        $builder->orLike(
+            'p.NIP',
+            $keyword
+        );
+
+        $builder->groupEnd();
+    }
+
+    $petugas = $builder
+        ->orderBy('p.id_petugas', 'DESC')
+        ->get()
+        ->getResultArray();
+
+    return view(
+        'superadmin/manajemen_admin',
+        [
+            'petugas' => $petugas,
+            'keyword' => $keyword,
+
+            'menu' => 'manajemen_admin',
+
+            'judul' => 'Manajemen Admin'
+        ]
+    );
+}
+
+public function manajemen_admin_tambah()
+{
+    return view(
+        'superadmin/manajemen_admin_tambah',
+        [
+            'menu' => 'manajemen_admin',
+
+            'judul' => 'Tambah Admin'
+        ]
+    );
+}
+
+public function manajemen_admin_simpan()
+{
+    $db = \Config\Database::connect();
+
+    $db->table('petugas')->insert([
+
+        'nama_petugas' =>
+            $this->request->getPost('nama_petugas'),
+
+        'NIP' =>
+            $this->request->getPost('NIP'),
+
+        'id_jabatan' =>
+            $this->request->getPost('id_jabatan'),
+
+        'id_instansi' =>
+            $this->request->getPost('id_instansi'),
+
+        'email' =>
+            $this->request->getPost('email'),
+
+        'no_telp' =>
+            $this->request->getPost('no_telp'),
+
+        'alamat' =>
+            $this->request->getPost('alamat'),
+
+        'password' => password_hash(
+            $this->request->getPost('password'),
+            PASSWORD_DEFAULT
+        )
+    ]);
+
+    return redirect()
+        ->to(
+            base_url(
+                'index.php/superadmin/manajemen_admin'
+            )
+        )
+        ->with(
+            'success',
+            'Data admin berhasil ditambahkan'
+        );
+}
+
+public function manajemen_admin_edit($id)
+{
+    $db = \Config\Database::connect();
+
+    $petugas = $db
+        ->table('petugas')
+        ->where('id_petugas', $id)
+        ->get()
+        ->getRowArray();
+
+    return view(
+        'superadmin/manajemen_admin_edit',
+        [
+            'petugas' => $petugas,
+
+            'menu' => 'manajemen_admin',
+
+            'judul' => 'Edit Admin'
+        ]
+    );
+}
+
+public function manajemen_admin_update($id)
+{
+    $db = \Config\Database::connect();
+
+    $data = [
+
+        'nama_petugas' =>
+            $this->request->getPost('nama_petugas'),
+
+        'NIP' =>
+            $this->request->getPost('NIP'),
+
+        'id_jabatan' =>
+            $this->request->getPost('id_jabatan'),
+
+        'id_instansi' =>
+            $this->request->getPost('id_instansi'),
+
+        'email' =>
+            $this->request->getPost('email'),
+
+        'alamat' =>
+            $this->request->getPost('alamat'),
+
+        'no_telp' =>
+            $this->request->getPost('no_telp'),
+    ];
+
+    // password optional
+    if($this->request->getPost('password')){
+
+        $data['password'] = password_hash(
+            $this->request->getPost('password'),
+            PASSWORD_DEFAULT
+        );
+    }
+
+    $db->table('petugas')
+        ->where('id_petugas', $id)
+        ->update($data);
+
+    return redirect()
+        ->to(
+            base_url(
+                'index.php/superadmin/manajemen_admin'
+            )
+        )
+        ->with(
+            'success',
+            'Data admin berhasil diupdate'
+        );
+}
+
+public function manajemen_admin_hapus($id)
+{
+    $db = \Config\Database::connect();
+
+    $db->table('petugas')
+        ->where('id_petugas', $id)
+        ->delete();
+
+    return redirect()
+        ->to(
+            base_url(
+                'index.php/superadmin/manajemen_admin'
+            )
+        )
+        ->with(
+            'success',
+            'Data admin berhasil dihapus'
+        );
+}
 }
