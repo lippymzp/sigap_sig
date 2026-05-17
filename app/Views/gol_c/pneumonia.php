@@ -2916,7 +2916,7 @@ document.addEventListener("DOMContentLoaded", function(){
     width:65px;
     height:65px;
     border-radius:50%;
-    background:linear-gradient(135deg,#0B5B61,#14919B);
+    background:linear-gradient(135deg,#00CED1,#40EDD0);
     color:white;
     display:flex;
     justify-content:center;
@@ -2965,7 +2965,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 /* HEADER */
 .chat-popup-header{
-    background:linear-gradient(135deg,#0B5B61,#14919B);
+    background:linear-gradient(135deg,#00CED1,#40EDD0);
     color:white;
     padding:15px 20px;
     display:flex;

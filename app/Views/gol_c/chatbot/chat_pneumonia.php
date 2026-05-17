@@ -38,7 +38,7 @@
         left: 0;
         width: 100%;
         height: 130px;
-        background: linear-gradient(135deg, #0B5B61, #14919B);
+        background: linear-gradient(135deg, #00BBC2, #40EDD0);
         ;
         z-index: -1;
     }
@@ -65,7 +65,7 @@
     }
 
     .sidebar-header {
-        background: linear-gradient(250deg, #0B5B61, #146C72);
+        background: linear-gradient(135deg, #00CED1, #40EDD0);
         color: white;
         padding: 25px;
         display: flex;
@@ -216,7 +216,7 @@
 
     /* BOT */
     .bot {
-        background: #146C72;
+        background: #00CED1;
         color: white;
         border-radius: 20px 20px 20px 5px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
@@ -224,7 +224,7 @@
 
     /* USER */
     .user {
-        background: #1BAFBF;
+        background: #40EDD0;
         color: white;
         margin-left: auto;
         border-radius: 20px 20px 5px 20px;
@@ -252,7 +252,6 @@
     .chat-input input {
         flex: 1;
         border: border:1px solid #dfeeee;
-        ;
         outline: none;
         padding: 16px 22px;
         border-radius: 30px;
@@ -267,7 +266,7 @@
         height: 60px;
         border: none;
         border-radius: 50%;
-        background: #14919B;
+        background: #00CED1;
         color: white;
         font-size: 22px;
         transition: 0.3s;
@@ -276,7 +275,7 @@
 
     .send-btn:hover {
         transform: scale(1.08);
-        background: #0fb4c7;
+        background: #00CED1;
     }
 
     /* TYPING */
@@ -305,17 +304,18 @@
     .typing span:nth-child(3) {
         animation-delay: 0.4s;
     }
-    .chatbot-avatar{
 
-    width:55px;
+    .chatbot-avatar {
 
-    height:55px;
+        width: 55px;
 
-    object-fit:contain;
+        height: 55px;
 
-    animation:floatBot 3s ease-in-out infinite;
+        object-fit: contain;
 
-}
+        animation: floatBot 3s ease-in-out infinite;
+
+    }
 
     /* ANIMATION */
     @keyframes bounce {
@@ -364,11 +364,10 @@
 
     /* TOAST */
     #toast {
-
         position: fixed;
         top: 90px;
         right: 30px;
-        background: #0F6C73;
+        background: #14919B;
         color: white;
         padding: 15px 22px;
         border-radius: 12px;
@@ -392,6 +391,59 @@
         transform: translateY(0);
 
     }
+
+    .back-landing-btn {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        width: 85%;
+
+        margin: 40px auto 0 auto;
+
+        padding: 12px 16px;
+
+        border-radius: 14px;
+
+        background: linear-gradient(135deg,
+                #00BBC2,
+                #40EDD0);
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        transition: 0.3s;
+
+        box-shadow:
+            0 6px 18px rgba(20,
+                145,
+                155,
+                0.18);
+
+    }
+
+    /* HOVER */
+    .back-landing-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 10px 24px rgba(20,
+                145,
+                155,
+                0.25);
+
+    }
     </style>
 </head>
 
@@ -406,7 +458,7 @@
 
             <div class="sidebar-header">
 
-                 <img src="<?= base_url('img/Maskot_CYRO.png') ?>" alt="CYRO" class="chatbot-avatar">
+                <img src="<?= base_url('img/Maskot_CYRO.png') ?>" alt="CYRO" class="chatbot-avatar">
 
                 <div>
                     <h4>CYBOT</h4>
@@ -445,9 +497,12 @@
                     🤖 Tentang Cybot
 
                 </button>
-
             </div>
-
+            <br><br>
+            <a href="<?= base_url('pneumonia') ?>" class="back-landing-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Kembali ke Beranda
+            </a>
         </div>
 
         <!-- CHAT AREA -->

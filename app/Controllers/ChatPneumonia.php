@@ -351,6 +351,36 @@ Segera periksa ke fasilitas kesehatan bila mengalami:
 }
 
 if (
+    $msg == 'pilih kamu aja' ||
+    str_contains($msg, 'kamu')
+) {
+
+    return "E-eh. S-saya. Kok saya sih... 
+    S-saya kan cuma chatbot...";
+}
+
+if (
+    $msg == 'ya gapapa' ||
+    $msg == 'aku maunya kamu'
+) {
+
+    return "Kalo tuan yang memaksa.... 
+    B-boleh (>/////<) ♡ 
+    Ih.... Tanya pneumonia aja deh";
+}
+
+if (
+    $msg == 'bisa malu' ||
+    $msg == 'kok malah malu gitu' ||
+    str_contains($msg, 'malu')
+) {
+
+    return "S-Siapa yang malu... Aku cuma kaget doang 
+    (⸝⸝⸝>﹏<⸝⸝⸝) Udah... ih...
+    Jangan tanya yang lain selain pneumonia";
+}
+
+if (
     str_contains($msg, 'terima kasih') ||
     str_contains($msg, 'thanks') ||
     str_contains($msg, 'thank you') ||
