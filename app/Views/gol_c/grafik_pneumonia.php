@@ -112,7 +112,7 @@ body{
 .chart-wrapper{
     position:relative;
     width:100%;
-    height:620px;
+    height:400px; 
 }
 
 

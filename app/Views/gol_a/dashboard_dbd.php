@@ -1285,6 +1285,22 @@ d = d || {};
     .info-table {
         font-size: 12px;
     }
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 99999 !important;
+    background: #fff;
+}
+
+.avatar-dropdown {
+    position: relative;
+    z-index: 999999 !important;
+}
+
+.avatar-circle {
+    position: relative;
+    z-index: 999999 !important;
+}
 }
 
 </style>
