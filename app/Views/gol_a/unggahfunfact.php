@@ -947,7 +947,7 @@ textarea:invalid{
 
                             </button>
 
-                          <button type="button" class="btn upload-btn" id="submitButton">
+                          <button type="submit" class="btn upload-btn" id="submitButton">
 
    <?php if(isset($f) && $f['status_funfact'] == 'upload') : ?>
 

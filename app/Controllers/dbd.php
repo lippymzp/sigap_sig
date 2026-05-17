@@ -1473,6 +1473,7 @@ public function hapus_skrining(int $id)
 
  public function simpanFunfact()
 {
+    
     $status = $this->request->getPost('status_funfact');
 
     $gambar = $this->request->getFile('gambar_funfact');
@@ -1489,6 +1490,9 @@ public function hapus_skrining(int $id)
     }
 
     $data = [
+        'id_petugas' => session()->get('id_petugas'),
+
+        'id_penyakit' => 1,
 
         'judul_funfact'     => $this->request->getPost('judul_funfact'),
 
@@ -1596,6 +1600,8 @@ public function hapus_skrining(int $id)
     $status = $this->request->getPost('status_funfact');
 
     $data = [
+        'id_petugas' => session()->get('id_petugas'),
+        'id_penyakit' => 1,
         'judul_funfact'     => $this->request->getPost('judul_funfact'),
         'isi_funfact'       => $this->request->getPost('isi_funfact'),
         'deskripsi_funfact' => $this->request->getPost('deskripsi_funfact'),

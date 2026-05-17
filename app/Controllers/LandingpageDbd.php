@@ -39,7 +39,7 @@ class LandingpageDbd extends BaseController
         $funfactModel = new \App\Models\FunfactModel();
 
         $funfact = $funfactModel
-            ->where('id_penyakit', 1)
+             ->where('id_penyakit', 1)
             ->where('status_funfact', 'upload')
             ->orderBy('tanggal_funfact', 'DESC')
             ->findAll(10);

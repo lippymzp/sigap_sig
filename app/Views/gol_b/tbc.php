@@ -821,4 +821,4 @@
 
 </section>
 
-<?= $this->include('layout/footer') ?>
+<?= $this->include('layout/footer_b') ?>
