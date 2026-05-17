@@ -22,6 +22,7 @@ $routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');
 // ROUTE Landingpage DBD dan Dasboard
 // ===============================================
 $routes->get('/dbd', 'LandingpageDbd::index');
+$routes->post('chagoo/send', 'Chagoo::send');
 $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 $routes->post('simpan-penduduk', 'DashboardadminDbd::simpanPenduduk');
 $routes->get('hapus-penduduk/(:num)', 'DashboardadminDbd::hapusPenduduk/$1');
