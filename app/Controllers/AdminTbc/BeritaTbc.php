@@ -240,14 +240,10 @@ public function publish(int $id)
 
     }
 
-<<<<<<< Updated upstream
-public function detail(int $id)
-=======
     return redirect()->to('/tbc/berita');
 }
 
 public function detail($id)
->>>>>>> Stashed changes
 {
     $model = new BeritaTbcModel();
 
@@ -368,7 +364,7 @@ $data = [
     return redirect()->to('/tbc/berita');
 }
 
-private function getMetaData(int $url)
+private function getMetaData(string $url)
 {
     try {
 

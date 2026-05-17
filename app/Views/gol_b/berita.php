@@ -158,7 +158,15 @@ style="font-size:12px; line-height:1.5; color:#7b7b7b;">
 </p>
 
 <small style="font-size:11px;color:#9c9c9c;">
+<?php if(!empty($row['tanggal_berita']) && $row['tanggal_berita'] != '0000-00-00'): ?>
+
 <?= date('d M Y', strtotime($row['tanggal_berita'])) ?>
+
+<?php else: ?>
+
+Tanggal belum tersedia
+
+<?php endif; ?>
 </small>
 
 </div>

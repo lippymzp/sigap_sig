@@ -51,6 +51,8 @@
 
 </div>
 
+<div id="scroll-target"></div>
+
 <!-- MAP -->
 <div class="section-block" id="peta-sebaran">
 
@@ -492,7 +494,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     <?php if (!empty($funfact)) : ?>
 
-    <div class="funfact-wrapper">
+    <div class="carousel-wrapper">
 
 <button class="nav-btn left" onclick="slideFunfact(-1)">‹</button>
 
@@ -500,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
         <?php foreach ($funfact as $f) : ?>
 
-            <div class="funfact-card">
+            <div class="info-card funfact-card">
 
                 <div class="info-text">
 
@@ -696,59 +698,6 @@ function confirmLogout(url) {
     background:#14b8c4;
 }
 
-.funfact-card{
-    display:flex !important;
-    justify-content:space-between !important;
-    align-items:center !important;
-
-    background:linear-gradient(135deg,#1ecad3,#14b8c4) !important;
-
-    border-radius:28px !important;
-
-    padding:35px !important;
-
-    margin-bottom:25px !important;
-
-    color:white !important;
-}
-
-.funfact-card .info-text{
-    width:70% !important;
-}
-
-.funfact-card .info-text h5{
-    font-size:26px !important;
-    font-weight:700 !important;
-    margin-bottom:18px !important;
-    color:white !important;
-}
-
-.funfact-card .info-text p{
-    font-size:17px !important;
-    line-height:1.8 !important;
-    color:white !important;
-}
-
-.funfact-card .info-image{
-    width:25% !important;
-    display:flex !important;
-    justify-content:flex-end !important;
-}
-
-.funfact-card .info-image img{
-    width:230px !important;
-    height:160px !important;
-
-    object-fit:cover !important;
-
-    border-radius:22px !important;
-}
-
-.funfact-wrapper{
-    overflow:hidden;
-    position:relative;
-}
-
 .funfact-dots{
     margin-top:15px;
     text-align:center;
@@ -776,6 +725,7 @@ function confirmLogout(url) {
     gap:25px;
 
     overflow-x:auto;
+    scroll-behavior:smooth;
 
     padding-bottom:15px;
 }
@@ -906,29 +856,6 @@ document.addEventListener("DOMContentLoaded", function(){
         });
     }
 
-    window.slideFunfact = function(dir){
-
-    indexFunfact += dir;
-
-    if(indexFunfact >= totalFunfact){
-        indexFunfact = 0;
-    }
-
-    if(indexFunfact < 0){
-        indexFunfact = totalFunfact - 1;
-    }
-
-    funfactSlider.scrollTo({
-        left: indexFunfact * 875,
-        behavior:'smooth'
-    });
-
-    dots.forEach((d,i)=>{
-        d.classList.toggle('active', i === indexFunfact);
-    });
-
-}
-
     // AUTO SLIDE
     setInterval(() => {
 
@@ -941,51 +868,87 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <script>
 
+let funfactIndex = 0;
+let funfactInterval;
+
 document.addEventListener("DOMContentLoaded", function(){
 
-    const funfactSlider = document.getElementById('funfactSlider');
+    const funfactSlider = document.getElementById("funfactSlider");
+    const dotsContainer = document.getElementById("funfactDots");
 
-    if(!funfactSlider) return;
+    if(!funfactSlider || !dotsContainer) return;
 
-    let indexFunfact = 0;
+    const cards = funfactSlider.querySelectorAll(".funfact-card");
+    const total = cards.length;
 
-    const totalFunfact = funfactSlider.children.length;
+    // BUAT DOTS
+    dotsContainer.innerHTML = "";
 
-    const dotsContainer = document.getElementById('funfactDots');
+    for(let i = 0; i < total; i++){
 
-    for(let i = 0; i < totalFunfact; i++){
+        const dot = document.createElement("span");
 
-        let dot = document.createElement('span');
-
-        if(i == 0){
-            dot.classList.add('active');
+        if(i === 0){
+            dot.classList.add("active");
         }
+
+        dot.onclick = () => {
+            funfactIndex = i;
+            updateFunfact();
+        };
 
         dotsContainer.appendChild(dot);
     }
 
-    const dots = dotsContainer.querySelectorAll('span');
-
-    setInterval(() => {
-
-        indexFunfact++;
-
-        if(indexFunfact >= totalFunfact){
-            indexFunfact = 0;
-        }
+    // UPDATE SLIDE
+    function updateFunfact(){
 
         funfactSlider.scrollTo({
-            left: indexFunfact * 875,
-            behavior: 'smooth'
+            left: funfactIndex * 875,
+            behavior: "smooth"
         });
 
-        dots.forEach((d,i)=>{
-            d.classList.toggle('active', i === indexFunfact);
+        const dots = dotsContainer.querySelectorAll("span");
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === funfactIndex);
         });
+    }
+
+    // BUTTON
+    window.slideFunfact = function(dir){
+
+        funfactIndex += dir;
+
+        if(funfactIndex >= total){
+            funfactIndex = 0;
+        }
+
+        if(funfactIndex < 0){
+            funfactIndex = total - 1;
+        }
+
+        updateFunfact();
+    }
+
+    // AUTO SLIDE
+    funfactInterval = setInterval(() => {
+
+        funfactIndex++;
+
+        if(funfactIndex >= total){
+            funfactIndex = 0;
+        }
+
+        updateFunfact();
 
     }, 3500);
 
 });
+
+</script>
+
+<style>
 
 .leaflet-popup-content-wrapper{
     pointer-events:auto !important;
@@ -1003,7 +966,7 @@ document.addEventListener("DOMContentLoaded", function(){
     overflow:hidden;
 }
 
-</script>
+</style>
 
 <!-- MODAL DETAIL -->
 <div id="modalTbc" class="modal-tbc">
