@@ -11,6 +11,7 @@ use CodeIgniter\Router\RouteCollection;
 /* ========================= */
 
 $routes->get('/', 'Home::index');
+$routes->get('tbc', 'LandingTbc::index');
 $routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
@@ -27,6 +28,11 @@ $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 $routes->post('simpan-penduduk', 'DashboardadminDbd::simpanPenduduk');
 $routes->get('hapus-penduduk/(:num)', 'DashboardadminDbd::hapusPenduduk/$1');
 $routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
+
+// ===============================================
+// Landingpage TBC 
+// ===============================================
+$routes->get('tbc/detail-funfact/(:num)', 'LandingTbc::detailFunfact/$1');
 
 /* ========================= */
 /* SKRINING Pneumonia */
@@ -165,7 +171,6 @@ $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('tbc/dashboard/admin', 'Dashboard::tbc');
-$routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
 $routes->get('pneumonia/input_data', 'pneumonia::inputData');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
