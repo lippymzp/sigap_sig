@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\IklanModel;
+use App\Models\FunfactModelD;
 class Home extends BaseController
 {
     public function index()
@@ -48,10 +49,21 @@ public function grafikPneumonia()
 {
     return view('gol_c/grafik_pneumonia');
 }
-public function diare_detail()
+public function diare_detail($id = null)
 {
-    return view('gol_d/diare_detail');
+    $funfactModel = new \App\Models\FunfactModelD();
 
+    if ($id) {
+        $data['funfact'] = $funfactModel->find($id);
+    } else {
+        $data['funfact'] = $funfactModel
+            ->where('id_penyakit', 4)
+            ->where('status_funfact', 'publish')
+            ->orderBy('tanggal_funfact', 'DESC')
+            ->first();
+    }
+
+    return view('gol_d/diare_detail', $data);
 }
 public function tbc_detail()
 {

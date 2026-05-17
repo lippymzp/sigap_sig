@@ -46,7 +46,7 @@
             <i class="fa-solid fa-heart-pulse me-2"></i> Manajemen Puskesmas
         </a>
 
-        <a href="<?= base_url('superadmin/profil') ?>"
+        <a href="<?= base_url('superadmin/profil_sistem') ?>"
            class="<?= ($menu == 'profil') ? 'active' : '' ?>">
             <i class="fa-regular fa-user me-2"></i> Profil Sistem
         </a>

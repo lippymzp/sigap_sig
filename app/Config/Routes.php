@@ -482,13 +482,16 @@ $routes->get('funfact/hapus/(:num)', 'dbd::hapusFunfact/$1');
 $routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'dbd::view/$1');;
-$routes->get('/tentang-kami', 'Home::tentangKami');
+
 $routes->get('berita/funfact_user/(:num)', 'dbd::Funfactview/$1');
 
 // PROFIL SISTEM
-$routes->get('profil_sistem', 'ProfilSistem::index');
-$routes->get('profil_sistem/edit', 'ProfilSistem::edit');
-$routes->post('profil_sistem/update', 'ProfilSistem::update');
+$routes->get('superadmin/profil_sistem', 'SuperAdmin::profil_sistem');
+$routes->get('superadmin/profil', 'SuperAdmin::profil');
+$routes->get('superadmin/profil_sistem/edit', 'SuperAdmin::edit');
+$routes->post('superadmin/profil_sistem/update', 'SuperAdmin::update');
+
+$routes->get('tentang-kami', 'SuperAdmin::tentang_kami');
 
 // ================= PELAPORAN KADER DI ADMIN =================
 $routes->get('dbd/pelaporan-kader/admin', 'Dbd::pelaporan_kader');
@@ -565,3 +568,22 @@ $routes->get('superadmin/iklan/edit/(:num)', 'SuperAdmin::editIklan/$1');
 $routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
 
 $routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
+
+
+//
+$routes->get('/admind/funfact', 'diare::funfact');
+$routes->get('admind/funfact', 'AdminD::funfact');
+$routes->get('admind/funfact/tambah', 'AdminD::tambahFunfact');
+$routes->post('admind/funfact/simpan', 'AdminD::simpanFunfact');
+$routes->get('admind/funfact/edit/(:num)', 'AdminD::editFunfact/$1');
+$routes->post('admind/funfact/update/(:num)', 'AdminD::updateFunfact/$1');
+$routes->get('admind/funfact/hapus/(:num)', 'AdminD::hapusFunfact/$1');
+$routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
+$routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
+$routes->get('diare-detail/(:num)', 'Home::diare_detail/$1');
+
+$routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
+
+$routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
+$routes->get('/diare-detail', 'Home::diare_detail');
+$routes->get('/diare', 'Diare::index');
