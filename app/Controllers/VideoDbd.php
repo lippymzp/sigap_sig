@@ -225,7 +225,7 @@ public function view($id = null)
 
         // upload ke public/uploads/video
         $file->move(
-            ROOTPATH . 'public/uploads/video',
+            ROOTPATH . 'public/uploads/video/',
             $namaFile
         );
 

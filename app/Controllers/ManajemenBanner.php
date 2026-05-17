@@ -95,7 +95,7 @@ class ManajemenBanner extends BaseController
 
         // UPLOAD
         $file->move(
-            ROOTPATH . 'public/uploads/banner',
+            ROOTPATH . 'public/uploads/banner/',
             $namaFile
         );
 
@@ -276,7 +276,7 @@ class ManajemenBanner extends BaseController
 
             $file->move(
                 ROOTPATH .
-                'public/uploads/banner',
+                'public/uploads/banner/',
                 $namaBaru
             );
 
