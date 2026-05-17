@@ -366,6 +366,7 @@ $tahunSekarang = date('Y');
     <tbody>
         <?php 
         $list_kelurahan = ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo'];
+        $penduduk = isset($penduduk) && is_array($penduduk) ? $penduduk : [];
         foreach($list_kelurahan as $nama_kel): 
             $jml_laki = 0;
             $jml_perempuan = 0;
