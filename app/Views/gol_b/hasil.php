@@ -398,7 +398,7 @@ BUTTON CETAK
     $nik = session()->get('nik');
     $jenis_kelamin = session()->get('jenis_kelamin');
     $tanggal_lahir = session()->get('tanggal_lahir');
-    $kategori_usia = session()->get('kategori_usia');
+    $usia = session()->get('usia');
 
     $provinsi = session()->get('provinsi');
     $kabupaten = session()->get('kabupaten');
@@ -433,8 +433,8 @@ BUTTON CETAK
                 <label>Tanggal Lahir</label>
                 <div class="info-input"><?= $tanggal_lahir ?></div>
 
-                <label>Kategori Usia</label>
-                <div class="info-input"><?= $kategori_usia ?></div>
+                <label>Usia</label>
+                <div class="info-input"><?= $usia ?></div>
 
             </div>
 

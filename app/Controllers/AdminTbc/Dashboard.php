@@ -32,7 +32,7 @@ class Dashboard extends BaseController
             'nama' => $this->request->getPost('nama'),
             'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
             'tanggal_lahir' => $this->request->getPost('tanggal_lahir'),
-            'kategori_usia' => $this->request->getPost('kategori_usia'),
+            'usia' => $this->request->getPost('usia'),
             'telepon' => $this->request->getPost('telepon'),
 
             'provinsi' => $this->request->getPost('provinsi'),
@@ -116,7 +116,7 @@ class Dashboard extends BaseController
             'nama_pasien_skrining' => session()->get('nama'),
             'jenis_kelamin' => session()->get('jenis_kelamin'),
             'tanggal_lahir' => session()->get('tanggal_lahir'),
-            'usia' => session()->get('kategori_usia'),
+            'usia' => session()->get('usia'),
             'no_hp' => session()->get('telepon'),
 
             'created_at' => date('Y-m-d'),
@@ -233,7 +233,7 @@ class Dashboard extends BaseController
             ps.nama_pasien_skrining AS nama,
             ps.jenis_kelamin,
             ps.tanggal_lahir,
-            ps.usia AS kategori_usia,
+            ps.usia AS usia,
             w.provinsi,
             w.kabupaten,
             w.kecamatan,
