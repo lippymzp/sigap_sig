@@ -31,7 +31,7 @@
   <div class="row align-items-center">
 
     <div class="col-md-6">
-      <h5 class="text-teal">Satu Peta, Sat</h5>
+      <h5 class="text-teal">Satu Peta, Satu Data</h5>
       <h2>Apa itu Penyakit Menular?</h2>
       <p>
         Penyakit menular adalah penyakit yang dapat berpindah dari satu orang ke orang lain, baik melalui udara, air, makanan, maupun kontak langsung. Penyebabnya bisa berupa bakteri, virus, parasit, atau jamur yang masuk ke dalam tubuh dan mengganggu kesehatan.
