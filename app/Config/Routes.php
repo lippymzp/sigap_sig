@@ -183,7 +183,7 @@ $routes->post('pneumonia/pegawai/update/(:num)', 'Pegawai::update/$1');
 $routes->get('pneumonia/pegawai/hapus/(:num)', 'Pegawai::hapus/$1');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
-$routes->get('dbd/dashboard/kader', 'dbd::dashboard');
+$routes->get('dbd/dashboard/kader', 'Dbd::dashboard');
 $routes->get('cekdb', 'Home::cekdb');
 $routes->get('peta_sebaran', 'dbd::peta');
 $routes->get('dashboard', 'Kepala::dashboard');
