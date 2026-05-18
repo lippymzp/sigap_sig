@@ -231,20 +231,34 @@
 <?php
     $dbStat = \Config\Database::connect();
     
-    // 1. Total Kasus Pasien
-    $totalKasus = $dbStat->table('pasien')->countAllResults();
+    $hariIni = date('Y-m-d');
 
-    // 2. Pasien Baru Hari Ini
+    $idPetugas  = session()->get('id_petugas');
+    $idPenyakit = session()->get('id_penyakit');
+
+    $totalKasus = $dbStat->table('pasien')
+        ->where('DATE(tgl_kunjungan)', $hariIni)
+        ->where('id_petugas', $idPetugas)
+        ->where('id_penyakit', $idPenyakit)
+        ->countAllResults();
+
     $hariIni = date('Y-m-d');
     $kasusHariIni = $dbStat->table('pasien')
-                           ->where('DATE(tgl_kunjungan)', $hariIni)
-                           ->countAllResults();
+        ->where('DATE(tgl_kunjungan)', $hariIni)
+        ->where('id_petugas', $idPetugas)
+        ->where('id_penyakit', $idPenyakit)
+        ->countAllResults();
 
     // 3. Kelurahan Terdampak
-    $kelurahanTerdampak = $dbStat->table('pasien')
-                                 ->select('id_wilayah')
-                                 ->distinct()
-                                 ->countAllResults();
+    $idPetugas  = session()->get('id_petugas');
+        $idPenyakit = session()->get('id_penyakit');
+
+        $kelurahanTerdampak = $dbStat->table('pasien')
+            ->select('id_wilayah')
+            ->where('id_petugas', $idPetugas)
+            ->where('id_penyakit', $idPenyakit)
+            ->distinct()
+            ->countAllResults();
 ?>
 
 <div class="stat-row">

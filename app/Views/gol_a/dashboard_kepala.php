@@ -240,18 +240,34 @@
 <?php
     $dbStat = \Config\Database::connect();
     
-    $totalKasus = $dbStat->table('pasien')->countAllResults();
+    $hariIni = date('Y-m-d');
+
+    $idPetugas  = session()->get('id_petugas');
+    $idPenyakit = session()->get('id_penyakit');
+
+    $totalKasus = $dbStat->table('pasien')
+        ->where('DATE(tgl_kunjungan)', $hariIni)
+        ->where('id_petugas', $idPetugas)
+        ->where('id_penyakit', $idPenyakit)
+        ->countAllResults();
+
     $hariIni = date('Y-m-d');
     $kasusHariIni = $dbStat->table('pasien')
-                           ->where('DATE(tgl_kunjungan)', $hariIni)
-                           ->countAllResults();
+        ->where('DATE(tgl_kunjungan)', $hariIni)
+        ->where('id_petugas', $idPetugas)
+        ->where('id_penyakit', $idPenyakit)
+        ->countAllResults();
 
-    $kelurahanTerdampak = $dbStat->table('pasien')
-                                 ->select('id_wilayah')
-                                 ->distinct()
-                                 ->countAllResults();
-    
-    $tahunMap = $_GET['tahun_map'] ?? date('Y');
+    // 3. Kelurahan Terdampak
+    $idPetugas  = session()->get('id_petugas');
+        $idPenyakit = session()->get('id_penyakit');
+
+        $kelurahanTerdampak = $dbStat->table('pasien')
+            ->select('id_wilayah')
+            ->where('id_petugas', $idPetugas)
+            ->where('id_penyakit', $idPenyakit)
+            ->distinct()
+            ->countAllResults();
 ?>
 
 <div class="stat-row">

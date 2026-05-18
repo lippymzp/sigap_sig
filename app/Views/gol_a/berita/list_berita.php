@@ -237,10 +237,23 @@ body{
         <p>Temukan berita kesehatan dan artikel terbaik</p>
 
         <div class="breadcrumb">
-            <span>Beranda</span>
+            <a href="<?= base_url('dbd'); ?>" class="breadcrumb-link">Beranda</a>
             <span>›</span>
             <span>Berita</span>
         </div>
+
+        <style>
+        .breadcrumb-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb-link:hover {
+            color: white;
+            text-decoration: none;
+        }
+        </style>
+    </div>
     </div>
 
     <!-- FILTER -->
@@ -351,6 +364,12 @@ body{
 
         <?php endif; ?>
 
+    </div>
+    <!-- INFO JUMLAH DATA -->
+    <div class="info-row">
+        <div class="data-count">
+            <br><br> Menampilkan <span><?= !empty($semuaData) ? count($semuaData) : 0 ?></span> dari data keseluruhan
+        </div>
     </div>
 
 </div>

@@ -41,6 +41,7 @@ public function index()
             'w.id_wilayah = p.id_wilayah',
             'left'
         );
+        $builder->where('p.id_penyakit', $id_penyakit);
 
         // 2. Logika Filter Wilayah
         if (!empty($wilayah)) {
@@ -98,9 +99,16 @@ public function index()
         // =========================
         // DATA PETA
         // =========================
-        $builder = $db->table('wilayah w');
+        $builderPeta = $db->table('wilayah w');
+        $builderPeta->whereIn('w.kelurahan', [
+            'Sumbersari',
+            'Wirolegi',
+            'Antirogo',
+            'Tegal Gede',
+            'Karangrejo'
+        ]);
 
-        $builder->select("
+        $builderPeta->select("
             w.kelurahan as desa,
 
             COUNT(DISTINCT p.id_pasien) as kasus,
@@ -134,22 +142,23 @@ public function index()
             COALESCE(SUM(rp.positif),0) as rumah_positif
         ");
 
-        $builder->join(
+        $builderPeta->join(
             'pasien p',
             'p.id_wilayah = w.id_wilayah',
             'left'
         );
+        $builderPeta->where('p.id_penyakit', $id_penyakit);
 
         // FIX JOIN JENTIK
-        $builder->join(
+        $builderPeta->join(
     'rekap_pelaporan_kader rp',
     'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))',
     'left'
 );
 
-$builder->groupBy('w.kelurahan');
+$builderPeta->groupBy('w.kelurahan');
 
-        $dbd = $builder->get()->getResultArray();
+        $dbd = $builderPeta->get()->getResultArray();
 
         // =========================
         // DETAIL DESA
@@ -208,6 +217,7 @@ $builder->groupBy('w.kelurahan');
                     LOWER(REPLACE(w.kelurahan,' ','')) = 
                     LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
                 ")
+                ->where('p.id_penyakit', $id_penyakit)
                 ->where('p.status_akhir', 'Sembuh')
                 ->countAllResults();
 
@@ -217,6 +227,7 @@ $builder->groupBy('w.kelurahan');
                     LOWER(REPLACE(w.kelurahan,' ','')) = 
                     LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
                 ")
+                ->where('p.id_penyakit', $id_penyakit)
                 ->where('p.status_akhir', 'Meninggal')
                 ->countAllResults();
 
@@ -263,6 +274,7 @@ $builder->groupBy('w.kelurahan');
             // BERITA
             // ======================
             $berita = $db->table('berita')
+                ->where('id_penyakit', $id_penyakit)
                 ->whereIn('status_berita', ['publish', 'upload'])
                 ->get()
                 ->getResultArray();
@@ -270,6 +282,7 @@ $builder->groupBy('w.kelurahan');
             // ======================
             // FUNFACT
             $funfact = $db->table('funfact')
+                ->where('id_penyakit', $id_penyakit)
                 ->orderBy('id_funfact', 'DESC')
                 ->get()
                 ->getResultArray();
