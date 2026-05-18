@@ -1,5 +1,5 @@
 <?php $this->setVar('penyakit', 'dbd'); ?>
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 
 <style>
 /* ================= HERO SLIDER ================= */
