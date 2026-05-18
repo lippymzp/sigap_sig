@@ -8,15 +8,15 @@ class AI extends BaseController
     {
         $message = $this->request->getPost('message');
 
-        $apiKey = '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';
+        // GANTI DENGAN API KEY BARU
+        $apiKey = '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';
 
         $data = [
-            "model" => "openai/gpt-3.5-turbo-instruct",
+            "model" => "meta-llama/llama-3.1-8b-instruct:free",
             "messages" => [
                 [
                     "role" => "system",
-                    "content" => "Kamu adalah SIGAP AI, asisten kesehatan tentang diare. Jawab singkat, jelas, ramah, bahasa Indonesia."
-                    
+                    "content" => "Kamu adalah SIGAP AI, asisten kesehatan khusus penyakit diare. Jawab singkat, jelas, ramah, dalam bahasa Indonesia."
                 ],
                 [
                     "role" => "user",
@@ -32,6 +32,7 @@ class AI extends BaseController
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $apiKey,
@@ -55,7 +56,7 @@ class AI extends BaseController
         if (isset($response['choices'][0]['message']['content'])) {
             $answer = $response['choices'][0]['message']['content'];
         } else {
-            $answer = 'ERROR: <pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>';
+            $answer = '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>';
         }
 
         return $this->response->setJSON([
