@@ -476,7 +476,7 @@ $routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'dbd::view/$1');;
 $routes->get('/tentang-kami', 'Home::tentangKami');
-$routes->get('berita/funfact_user/(:num)', 'dbd::Funfactview/$1');
+$routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
 $routes->get('profil_sistem', 'ProfilSistem::index');
