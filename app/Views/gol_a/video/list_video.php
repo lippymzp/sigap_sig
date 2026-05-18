@@ -213,10 +213,23 @@ body{
         <p>Temukan video edukasi yang menarik dan bermanfaat</p>
 
         <div class="breadcrumb">
-            <span>Beranda</span>
+            <a href="<?= base_url('dbd'); ?>" class="breadcrumb-link">Beranda</a>
             <span>›</span>
             <span>Video</span>
         </div>
+
+        <style>
+        .breadcrumb-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb-link:hover {
+            color: white;
+            text-decoration: none;
+        }
+        </style>
+    </div>
 
     </div>
 
@@ -308,6 +321,12 @@ body{
         <div class="empty-data">
             Tidak ada video tersedia.
         </div>
+        <!-- INFO JUMLAH DATA -->
+    <div class="info-row">
+        <div class="data-count">
+            Menampilkan data <span><?= !empty($video) ? count($video) : 0 ?></span> dari data keseluruhan
+        </div>
+    </div>
 
     <?php endif; ?>
 

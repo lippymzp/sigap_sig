@@ -9,6 +9,7 @@ class Kepala extends Controller
     public function dashboard()
     {
         $db = \Config\Database::connect(); // 🔥 WAJIB
+        $idPenyakit = session()->get('id_penyakit') ?? 1;
 
       // ======================
         // 🔥 DATA GRAFIK
@@ -23,6 +24,8 @@ class Kepala extends Controller
         $builder->select('w.kelurahan, COUNT(*) as total');
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
+        // 🔥 FILTER BERDASARKAN PENYAKIT SESSION
+        $builder->where('p.id_penyakit', $idPenyakit);
         // <-- TAMBAHAN LOGIKA FILTER WILAYAH -->
         if (!empty($wilayah)) {
             // Mengubah 'Tegalgede' (dari HTML) menjadi 'Tegal Gede' (agar cocok di Database)
@@ -81,6 +84,8 @@ class Kepala extends Controller
         $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
         $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
+        // 🔥 FILTER BERDASARKAN PENYAKIT SESSION
+        $builderDbd->where('p.id_penyakit', $idPenyakit);
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
         if (!empty($tahunMap)) {
             $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
@@ -118,6 +123,8 @@ class Kepala extends Controller
             'left'
         );
 
+        // 🔥 FILTER BERDASARKAN PENYAKIT SESSION DAN TAHUN
+        $builderDetail->where('p.id_penyakit', $idPenyakit);
         if (!empty($tahunMap)) {
             $builderDetail->where('YEAR(p.tgl_kunjungan)', $tahunMap);
         }
@@ -176,7 +183,17 @@ class Kepala extends Controller
                 'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
                 'rumah_positif'   => (int)$row['rumah_positif']
             ];
-        }   // ======================
+        }   
+        // ======================
+        // 🔥 HITUNG TOTAL KASUS KESELURUHAN (BERDASARKAN PENYAKIT SESSION)
+        // ======================
+        $totalKasus = $db->table('pasien')->where('id_penyakit', $idPenyakit)->countAllResults();
+        $kasusBaru  = $db->table('pasien')
+                        ->where('id_penyakit', $idPenyakit)
+                        ->where('MONTH(tgl_kunjungan)', date('m'))
+                        ->where('YEAR(tgl_kunjungan)', date('Y'))
+                        ->countAllResults();
+        // ======================
         // 🔥 KIRIM KE VIEW
         // ======================
         return view('gol_a/dashboard_kepala', [
@@ -278,6 +295,7 @@ class Kepala extends Controller
             // A. JIKA POSYANDU DIPILIH: Hanya tampilkan 1 kolom posyandu tersebut
             // Kita bersihkan string "Catleya " jika ada, agar sesuai dengan ID di DB
             $cleanId = str_replace('Catleya ', '', $filterPosyandu);
+            $cleanId = str_replace(' ', '', $cleanId);
             $listCatleya = [$cleanId];
         } elseif (!empty($filterKelurahan) && isset($dataMapping[$filterKelurahan])) {
             // B. JIKA HANYA KELURAHAN DIPILIH: Tampilkan semua posyandu di kelurahan itu
@@ -310,11 +328,36 @@ class Kepala extends Controller
 
         // 4. Ambil Data Laporan dari DB (Menggunakan YEAR(created_at))
         $laporanDb = $model->where('bulan', $bulanNama)
-            ->where('YEAR(created_at)', $tahun)
+            ->where('YEAR(created_at)', $tahun, false)
+            ->orderBy('id_laporan', 'DESC')
             ->findAll();
+
         $dataLaporan = [];
         foreach ($laporanDb as $row) {
-            $dataLaporan[$row['minggu']][$row['id_posyandu']] = $row['id_laporan'];
+            $mingguKey = trim((string) ($row['minggu'] ?? ''));
+            $posKey    = trim((string) ($row['id_posyandu'] ?? ''));
+            $idLaporan = (int) ($row['id_laporan'] ?? 0);
+
+            if ($mingguKey === '' || $posKey === '' || $idLaporan <= 0) {
+                continue;
+            }
+
+            $posNorm = $posKey;
+            if (ctype_digit($posKey)) {
+                $posNorm = ltrim($posKey, '0');
+                $posNorm = $posNorm === '' ? '0' : $posNorm;
+            }
+            $posPad = ctype_digit($posNorm) ? str_pad($posNorm, 2, '0', STR_PAD_LEFT) : $posNorm;
+
+            if (
+                !isset($dataLaporan[$mingguKey][$posKey]) &&
+                !isset($dataLaporan[$mingguKey][$posNorm]) &&
+                !isset($dataLaporan[$mingguKey][$posPad])
+            ) {
+                $dataLaporan[$mingguKey][$posKey]  = $idLaporan;
+                $dataLaporan[$mingguKey][$posNorm] = $idLaporan;
+                $dataLaporan[$mingguKey][$posPad]  = $idLaporan;
+            }
         }
 
         // 5. Kirim ke View
@@ -346,7 +389,7 @@ class Kepala extends Controller
         $builder = $model;
 
         // FILTER TAHUN (Solusi Error)
-        $builder = $builder->where('YEAR(created_at)', $tahun);
+        $builder = $builder->where('YEAR(created_at)', $tahun, false);
 
         // SEARCH
         if (!empty($search)) {
@@ -385,7 +428,7 @@ class Kepala extends Controller
             'title'      => 'Pelaporan Kader',
             'judul'      => 'Pelaporan Kader',
             'menu'       => 'pelaporan_kader',
-            'pelaporan'  => $builder->findAll()
+            'pelaporan'  => $builder->orderBy('id_laporan', 'DESC')->findAll()
         ];
 
         return view('gol_a/rekap_kader', $data);
@@ -394,6 +437,7 @@ class Kepala extends Controller
     public function hasil_data_kepala()
     {
         $db = \Config\Database::connect();
+        $idPenyakit = session()->get('id_penyakit') ?? 1;
         $builder = $db->table('pasien p');
 
         // Agregasi Data persis seperti tampilan Admin
@@ -521,6 +565,7 @@ class Kepala extends Controller
     public function get_tahun_list()
     {
         $db = \Config\Database::connect();
+        $idPenyakit = session()->get('id_penyakit') ?? 1;
 
         $data = $db->table('pasien')
             ->select('YEAR(tgl_kunjungan) as tahun')
@@ -702,186 +747,6 @@ class Kepala extends Controller
         }
     }
 
-    // ==================================
-    // MANAJEMEN USER (VERSI KEPALA)
-    // ==================================
-
-    public function manajemen_user()
-    {
-        $petugasModel = new \App\Models\PetugasModel();
-        $jabatanModel = new \App\Models\JabatanModel();
-
-        $keyword = $this->request->getGet('keyword');
-        $jabatan = $this->request->getGet('jabatan');
-
-        $perPage = 8;
-
-        // QUERY
-        $petugasModel->select('petugas.*, jabatan.nama_jabatan')
-            ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan');
-
-        // SEARCH
-        if (!empty($keyword)) {
-            $petugasModel->groupStart()
-                ->like('nama_petugas', $keyword)
-                ->orLike('email', $keyword)
-                ->orLike('NIP', $keyword)
-                ->groupEnd();
-        }
-
-        // FILTER
-        if (!empty($jabatan)) {
-            $petugasModel->where('petugas.id_jabatan', $jabatan);
-        }
-
-        // TOTAL DATA
-        $total = $petugasModel->countAllResults(false);
-
-        // PAGINATION
-        $petugas = $petugasModel->paginate($perPage, 'default');
-        $pager = $petugasModel->pager;
-        $currentPage = $pager->getCurrentPage('default');
-        $start = ($currentPage - 1) * $perPage + 1;
-        $end = min($start + $perPage - 1, $total);
-
-        $data = [
-            'petugas' => $petugas,
-            'pager' => $pager,
-            'total' => $total,
-            'start' => $start,
-            'end' => $end,
-            'jabatan_list' => $jabatanModel->findAll(),
-            'keyword' => $keyword,
-            'selected_jabatan' => $jabatan,
-            'menu' => 'manajemen_user_kepala',
-            'judul' => 'Manajemen User'
-        ];
-
-        return view('gol_a/manajemen_user_kepala/index', $data);
-    }
-
-    public function form_user($id = null, $mode = 'tambah')
-    {
-        $petugasModel = new \App\Models\PetugasModel();
-        $jabatanModel = new \App\Models\JabatanModel();
-        $instansiModel = new \App\Models\InstansiModel();
-
-        $data = [
-            'jabatan' => $jabatanModel->findAll(),
-            'instansi' => $instansiModel->findAll(),
-            'mode' => $mode,
-            'menu' => 'manajemen_user_kepala',
-            'judul' => 'Manajemen User'
-        ];
-
-        if ($id) {
-            $data['user'] = $petugasModel->find($id);
-        }
-
-        return view('gol_a/manajemen_user_kepala/form', $data);
-    }
-
-    public function simpan_user()
-    {
-        $petugasModel = new \App\Models\PetugasModel();
-
-        if ($this->request->getPost('password') != $this->request->getPost('konfirmasi_password')) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Konfirmasi password tidak sama.');
-        }
-
-        $petugasModel->save([
-            'NIP'           => $this->request->getPost('nip'),
-            'nama_petugas'  => $this->request->getPost('nama_petugas'),
-            'id_jabatan'    => $this->request->getPost('id_jabatan'),
-            'id_instansi'   => $this->request->getPost('id_instansi'),
-            'id_penyakit'   => 1, // otomatis
-            'no_telp'       => $this->request->getPost('no_telp'),
-            'email'         => $this->request->getPost('email'),
-            'password'      => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'created_at'    => date('Y-m-d H:i:s')
-        ]);
-
-        return redirect()->to('/kepala/manajemen_user')
-            ->with('success', 'Data berhasil ditambahkan.');
-    }
-
-    public function update_user($id)
-    {
-        $petugasModel = new \App\Models\PetugasModel();
-
-        if ($this->request->getPost('password')) {
-            if ($this->request->getPost('password') != $this->request->getPost('konfirmasi_password')) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Konfirmasi password tidak sama.');
-            }
-        }
-
-        $data = [
-            'id_petugas'    => $id,
-            'NIP'           => $this->request->getPost('nip'),
-            'nama_petugas'  => $this->request->getPost('nama_petugas'),
-            'id_jabatan'    => $this->request->getPost('id_jabatan'),
-            'id_instansi'   => $this->request->getPost('id_instansi'),
-            'id_penyakit'   => 1,
-            'no_telp'       => $this->request->getPost('no_telp'),
-            'email'         => $this->request->getPost('email'),
-        ];
-
-        if ($this->request->getPost('password')) {
-            $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
-        }
-
-        $petugasModel->save($data);
-
-        return redirect()->to('/kepala/manajemen_user')
-            ->with('success', 'Data berhasil diupdate.');
-    }
-
-    public function hapus_user($id)
-    {
-        $petugasModel = new \App\Models\PetugasModel();
-        $db = \Config\Database::connect();
-
-        $jumlahPasien = $db->table('pasien')
-            ->where('id_petugas', $id)
-            ->countAllResults();
-
-        if ($jumlahPasien > 0) {
-            return redirect()->to('/kepala/manajemen_user')
-                ->with('error', 'Data petugas tidak bisa dihapus karena masih digunakan pada data pasien.');
-        }
-
-        $petugasModel->delete($id);
-
-        return redirect()->to('/kepala/manajemen_user')
-            ->with('success', 'Data berhasil dihapus.');
-    }
-
-    public function view_user($id)
-    {
-        $petugasModel = new \App\Models\PetugasModel();
-        $jabatanModel = new \App\Models\JabatanModel();   // Panggil model jabatan
-        $instansiModel = new \App\Models\InstansiModel(); // Panggil model instansi
-
-        $data['user'] = $petugasModel
-            ->select('petugas.*, jabatan.nama_jabatan')
-            ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan')
-            ->find($id);
-
-        // Kirimkan data jabatan dan instansi ke view form.php
-        $data['jabatan']  = $jabatanModel->findAll();
-        $data['instansi'] = $instansiModel->findAll();
-
-        $data['mode']     = 'view';
-        $data['menu']     = 'manajemen_user_kepala';
-        $data['judul']    = 'Detail User';
-
-        // Arahkan ke file form yang sama
-        return view('gol_a/manajemen_user_kepala/form', $data);
-    }
 
     public function rekap_skrining()
     {
