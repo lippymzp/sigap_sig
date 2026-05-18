@@ -577,5 +577,6 @@ $routes->get('diare-detail', 'Home::diare_detail');
 $routes->get('diare-detail/(:num)', 'Home::diare_detail/$1');
 
 //
-$routes->get('diare/dashboard/(:any)', 'Dashboard::diare');
-$routes->get('diare/dashboard/admin', 'Dashboard::diare');
+$routes->get('diare/dashboard/(:any)', function () {
+    return redirect()->to('/diare/dashboardd');
+});
