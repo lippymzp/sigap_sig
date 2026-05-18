@@ -4,134 +4,62 @@ namespace App\Controllers;
 
 class AI extends BaseController
 {
-
     public function chat()
     {
-
         $message = $this->request->getPost('message');
 
-        /*
-        =====================================
-        API KEY OPENROUTER
-        =====================================
-        */
-
-        $apiKey = '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';
-
-        /*
-        =====================================
-        DATA
-        =====================================
-        */
+        $apiKey = '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';
 
         $data = [
-
-            "model" => "openai/gpt-3.5-turbo",
-
+            "model" => "openai/gpt-3.5-turbo-instruct",
             "messages" => [
-
                 [
                     "role" => "system",
-                    "content" => "
-                    Kamu adalah SIGAP AI,
-                    asisten kesehatan tentang diare.
-
-                    Jawab:
-                    - bahasa indonesia
-                    - khusus penyakit
-                    - singkat
-                    - jelas
-                    - ramah
-                    "
+                    "content" => "Kamu adalah SIGAP AI, asisten kesehatan tentang diare. Jawab singkat, jelas, ramah, bahasa Indonesia."
+                    
                 ],
-
                 [
                     "role" => "user",
                     "content" => $message
                 ]
-
             ]
-
         ];
-
-        /*
-        =====================================
-        CURL
-        =====================================
-        */
 
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://openrouter.ai/api/v1/chat/completions');
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($ch, CURLOPT_POST, true);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-
-            'Content-Type: application/json',
-
-            'Authorization: Bearer ' . $apiKey
-
+        curl_setopt_array($ch, [
+            CURLOPT_URL => 'https://openrouter.ai/api/v1/chat/completions',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey,
+                'HTTP-Referer: https://sigapcoba.mikpolije.com',
+                'X-Title: SIGAP AI'
+            ]
         ]);
 
         $result = curl_exec($ch);
 
-        /*
-        =====================================
-        ERROR CURL
-        =====================================
-        */
-
-        if(curl_errno($ch)){
-
+        if (curl_errno($ch)) {
             return $this->response->setJSON([
-                'answer' => curl_error($ch)
+                'answer' => 'CURL ERROR: ' . curl_error($ch)
             ]);
-
         }
 
         curl_close($ch);
 
-        /*
-        =====================================
-        JSON
-        =====================================
-        */
-
         $response = json_decode($result, true);
 
-        /*
-        =====================================
-        AMBIL JAWABAN
-        =====================================
-        */
-
-        if(isset($response['choices'][0]['message']['content'])){
-
+        if (isset($response['choices'][0]['message']['content'])) {
             $answer = $response['choices'][0]['message']['content'];
-
-        }else{
-
-            $answer = '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>';
-
+        } else {
+            $answer = 'ERROR: <pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>';
         }
 
-        /*
-        =====================================
-        RETURN
-        =====================================
-        */
-
         return $this->response->setJSON([
-
             'answer' => nl2br($answer)
-
         ]);
-
     }
-
 }
