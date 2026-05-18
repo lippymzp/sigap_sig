@@ -7,33 +7,48 @@ use App\Models\BeritaTbcModel;
 
 class BeritaTbc extends BaseController
 {
-    public function index()
-    {
-        $model = new BeritaTbcModel();
+public function index()
+{
+    $model = new BeritaTbcModel();
 
-        $status = $this->request->getGet('status') ?? 'Publish';
+    $status = $this->request->getGet('status') ?? 'Publish';
 
-        $total   = $model->countAll();
+    $total = (clone $model)
+        ->where('id_penyakit', 2)
+        ->countAllResults();
 
-        $publish = $model->where('status_berita', 'Publish')->countAllResults();
-        $draft   = $model->where('status_berita', 'Draft')->countAllResults();
-        $arsip   = $model->where('status_berita', 'Arsip')->countAllResults();
+    $publish = (clone $model)
+        ->where('id_penyakit', 2)
+        ->where('status_berita', 'Publish')
+        ->countAllResults();
 
-        $berita = $model->where('status_berita', $status)
-                        ->orderBy('id_berita', 'DESC')
-                        ->findAll();
+    $draft = (clone $model)
+        ->where('id_penyakit', 2)
+        ->where('status_berita', 'Draft')
+        ->countAllResults();
 
-        return view('gol_b/berita', [
-            'menu'    => 'berita',
-            'judul'   => 'Kelola Berita',
-            'total'   => $total,
-            'publish' => $publish,
-            'draft'   => $draft,
-            'arsip'   => $arsip,
-            'status'  => $status,
-            'berita'  => $berita
-        ]);
-    }
+    $arsip = (clone $model)
+        ->where('id_penyakit', 2)
+        ->where('status_berita', 'Arsip')
+        ->countAllResults();
+
+    $berita = (clone $model)
+        ->where('id_penyakit', 2)
+        ->where('status_berita', $status)
+        ->orderBy('id_berita', 'DESC')
+        ->findAll();
+
+    return view('gol_b/berita', [
+        'menu'    => 'berita',
+        'judul'   => 'Kelola Berita',
+        'total'   => $total,
+        'publish' => $publish,
+        'draft'   => $draft,
+        'arsip'   => $arsip,
+        'status'  => $status,
+        'berita'  => $berita
+    ]);
+}
 
     public function create()
     {
@@ -76,7 +91,7 @@ public function simpan()
 
         'id_petugas'       => session()->get('id_petugas') ?? 1,
 
-        'id_penyakit'      => 1,
+        'id_penyakit'      => 2,
 
         'judul_berita'     => $this->request->getPost('judul'),
 
@@ -154,7 +169,7 @@ public function simpan()
 
     $model->insert([
     'id_petugas'       => session()->get('id_petugas') ?? 1,
-    'id_penyakit'      => 1,
+    'id_penyakit'      => 2,
 
     'judul_berita'     => !empty($judul)
                             ? $judul
@@ -179,7 +194,13 @@ public function simpan()
     public function hapus(int $id)
     {
         $model = new BeritaTbcModel();
-        $model->delete($id);
+        $cek = $model
+    ->where('id_penyakit', 2)
+    ->find($id);
+
+if ($cek) {
+    $model->delete($id);
+}
 
         return redirect()->to('/tbc/berita');
     }
@@ -188,29 +209,47 @@ public function simpan()
     {
         $model = new BeritaTbcModel();
 
-        $model->update($id, [
-            'status_berita' => 'Draft'
-        ]);
+$cek = $model
+    ->where('id_penyakit', 2)
+    ->find($id);
+
+if ($cek) {
+
+    $model->update($id, [
+        'status_berita' => 'Draft'
+    ]);
+
+}
 
         return redirect()->to('/tbc/berita?status=Draft');
     }
 
-    public function publish(int $id)
-    {
-        $model = new BeritaTbcModel();
+public function publish(int $id)
+{
+    $model = new BeritaTbcModel();
+
+    $cek = $model
+        ->where('id_penyakit', 2)
+        ->find($id);
+
+    if ($cek) {
 
         $model->update($id, [
             'status_berita' => 'Publish'
         ]);
 
-        return redirect()->to('/tbc/berita');
     }
 
-public function detail(int $id)
+    return redirect()->to('/tbc/berita');
+}
+
+public function detail($id)
 {
     $model = new BeritaTbcModel();
 
-    $berita = $model->find($id);
+    $berita = $model
+    ->where('id_penyakit', 2)
+    ->find($id);
 
     if (!$berita) {
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -235,7 +274,9 @@ public function edit(int $id)
 {
     $model = new BeritaTbcModel();
 
-    $berita = $model->find($id);
+    $berita = $model
+    ->where('id_penyakit', 2)
+    ->find($id);
 
     // DETEKSI BERITA EKSTERNAL
     if (
@@ -257,7 +298,14 @@ public function edit(int $id)
     public function update(int $id)
 {
     $model = new BeritaTbcModel();
-    $lama = $model->find($id);
+
+    $lama = $model
+        ->where('id_penyakit', 2)
+        ->find($id);
+
+    if (!$lama) {
+        return redirect()->to('/tbc/berita');
+    }
 
     $link = $this->request->getPost('link');
     $isi  = $this->request->getPost('isi');
@@ -309,12 +357,14 @@ $data = [
         $data['gambar_berita'] = $nama;
     }
 
-    $model->update($id, $data);
+    $model
+    ->where('id_penyakit', 2)
+    ->update($id, $data);
 
     return redirect()->to('/tbc/berita');
 }
 
-private function getMetaData(int $url)
+private function getMetaData(string $url)
 {
     try {
 

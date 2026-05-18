@@ -485,7 +485,7 @@ echo $hari . ' ' . $bulan . ' ' . $tahun;
                 </button>
 
                 <!-- EDIT -->
-                <a href="/video/tambah2/<?= $b['id_video']; ?>"
+                <a href="/video/tambah1/<?= $b['id_video']; ?>"
                 class="icon-btn status">
                     <i class="fas fa-pen"></i>
                 </a>

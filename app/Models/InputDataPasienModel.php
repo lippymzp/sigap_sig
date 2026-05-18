@@ -36,17 +36,13 @@ class InputDataPasienModel extends Model
         // 1. SIMPAN WILAYAH
         // =========================
         $this->insert([
-
             'provinsi'       => $data['provinsi'] ?? null,
             'kabupaten'      => $data['kabupaten'] ?? null,
             'kecamatan'      => $data['kecamatan'] ?? null,
             'kelurahan'      => $data['desa'] ?? null,
-
             'rt'             => $data['rt'] ?? null,
             'rw'             => $data['rw'] ?? null,
-
             'alamat_lengkap' => $data['alamat'] ?? null,
-
             'latitude'       => $data['lat'] ?? null,
             'longitude'      => $data['lng'] ?? null,
         ]);
@@ -54,27 +50,42 @@ class InputDataPasienModel extends Model
         // ambil id wilayah terakhir
         $id_wilayah = $this->insertID();
 
+        // Fix ENUM untuk Tindak Lanjut agar sesuai dengan Database
+        $tindak_lanjut = $data['tindak_lanjut'] ?? null;
+        if ($tindak_lanjut === '3M') {
+            $tindak_lanjut = 'PSN 3M Plus';
+        }
+
         // =========================
         // 2. SIMPAN PASIEN
         // =========================
         $db->table('pasien')->insert([
-
             'id_wilayah'    => $id_wilayah,
-
-            // sementara otomatis
-
+            'no_rm'         => '000000',
+            'nik'           => $data['nik'] ?? null,
             'nama_pasien'   => $data['nama'] ?? null,
-
             'jenis_kelamin' => $data['jenis_kelamin'] ?? null,
+            'tgl_lahir'     => $data['tgl_lahir'] ?? null,
 
-            'umur'          => $data['usia'] ?? null,
+            // sementara usia kategori diambil angka awalnya
+            'umur'          => (int) filter_var($data['usia'] ?? 0, FILTER_SANITIZE_NUMBER_INT),
 
-            'tgl_kunjungan' => $data['tanggal'] ?? null,
+            // ambil dari input tanggal, bukan tanggal_pemeriksaan
+            'tgl_kunjungan' => !empty($data['tanggal'])
+                                ? $data['tanggal'] . ' 00:00:00'
+                                : date('Y-m-d H:i:s'),
 
-            'ctt_klinis'    => $data['catatan'] ?? null,
+            'status_akhir'  => $data['status_akhir'] ?? null,
+            'tindak_lanjut' => $tindak_lanjut ?? null,
+            'ctt_klinis' => $data['diagnosa'] ?? 'Pneumonia',
 
-            'id_petugas'    => $data['id_petugas'] ?? null
+            // tidak boleh null
+            'id_petugas'    => $data['id_petugas'] ?? 1,
+
+            // otomatis pneumonia
+            'id_penyakit'   => $data['id_penyakit'] ?? 3,
         ]);
+
 
         // selesai transaksi
         $db->transComplete();
@@ -140,15 +151,9 @@ class InputDataPasienModel extends Model
     // =========================
     // EXPORT DATA
     // =========================
-    public function getDataExport(
-        ?string $mode,
-        ?int $tahun,
-        ?string $waktu,
-        ?string $kelurahan
-    )
+    public function getDataExport(?string $mode, ?int $tahun, ?string $waktu, ?string $kelurahan)
     {
         $db = \Config\Database::connect();
-
         $builder = $db->table('pasien p');
 
         $builder->select('
@@ -160,7 +165,6 @@ class InputDataPasienModel extends Model
             p.umur,
             p.status_akhir,
             p.tindak_lanjut,
-
             w.kelurahan,
             w.kecamatan,
             w.kabupaten,
@@ -170,87 +174,31 @@ class InputDataPasienModel extends Model
             w.alamat_lengkap
         ');
 
-        // join wilayah
-        $builder->join(
-            'wilayah w',
-            'w.id_wilayah = p.id_wilayah',
-            'left'
-        );
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-        // =========================
-        // FILTER TAHUN
-        // =========================
         if (!empty($tahun)) {
-
-            $builder->where(
-                'YEAR(p.tgl_kunjungan)',
-                $tahun
-            );
+            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
         }
 
-        // =========================
-        // FILTER WAKTU
-        // =========================
         if (!empty($waktu)) {
-
-            // BULANAN
             if ($mode == 'bulanan') {
-
-                $builder->where(
-                    'MONTH(p.tgl_kunjungan)',
-                    $waktu
-                );
-            }
-
-            // TRIWULAN
-            elseif ($mode == 'triwulan') {
-
+                $builder->where('MONTH(p.tgl_kunjungan)', $waktu);
+            } elseif ($mode == 'triwulan') {
                 $start = ($waktu - 1) * 3 + 1;
                 $end   = $start + 2;
-
-                $builder->where(
-                    'MONTH(p.tgl_kunjungan) >=',
-                    $start
-                );
-
-                $builder->where(
-                    'MONTH(p.tgl_kunjungan) <=',
-                    $end
-                );
-            }
-
-            // SEMESTER
-            elseif ($mode == 'semester') {
-
+                $builder->where('MONTH(p.tgl_kunjungan) >=', $start);
+                $builder->where('MONTH(p.tgl_kunjungan) <=', $end);
+            } elseif ($mode == 'semester') {
                 if ($waktu == 1) {
-
-                    $builder->where(
-                        'MONTH(p.tgl_kunjungan) <=',
-                        6
-                    );
-
+                    $builder->where('MONTH(p.tgl_kunjungan) <=', 6);
                 } else {
-
-                    $builder->where(
-                        'MONTH(p.tgl_kunjungan) >=',
-                        7
-                    );
+                    $builder->where('MONTH(p.tgl_kunjungan) >=', 7);
                 }
             }
         }
 
-        // =========================
-        // FILTER KELURAHAN
-        // =========================
-        if (
-            !empty($kelurahan) &&
-            strtolower(trim($kelurahan)) != 'semua'
-        ) {
-
-            $builder->where(
-                'LOWER(w.kelurahan)',
-                strtolower(trim($kelurahan))
-            );
+        if (!empty($kelurahan) && strtolower(trim($kelurahan)) != 'semua') {
+            $builder->where('LOWER(w.kelurahan)', strtolower(trim($kelurahan)));
         }
 
         return $builder->get()->getResultArray();

@@ -52,7 +52,8 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => $publish,
             'draft'     => $draft,
-            'title'     => 'Video'
+            'title'     => 'Video',
+            'judul'     => 'Video'
 
         ]);
     }
@@ -80,7 +81,8 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => count($video),
             'draft'     => 0,
-            'title'     => 'Video'
+            'title'     => 'Video',
+            'judul'     => 'Video'
 
         ]);
     }
@@ -111,8 +113,8 @@ class VideoDbd extends Controller
             'total'     => count($video),
             'publish'   => 0,
             'draft'     => count($video),
-            'title'     => 'Rekap Skrining'
-
+            'title'     => 'Video',
+            'judul'     => 'Video'
         ]);
     }
 
@@ -176,7 +178,8 @@ public function view($id = null)
 
         'video' => $video,
         'rekomendasi' => $rekomendasi,
-        'title' => 'Video'
+        'title' => 'Video',
+        'judul'     => 'Video'
 
     ]);
 }
@@ -185,14 +188,23 @@ public function view($id = null)
     // =========================
     // STEP 1
     // =========================
-    public function tambah()
-    {
-        return view('gol_a/video/tambah1', [
-
-            'title' => 'Rekap Skrining'
-
-        ]);
+    public function tambah1()
+{
+    if (!session()->get('from_edit')) {
+        session()->remove('edit_video');
+        session()->remove('video_temp');
     }
+
+    $video = session()->get('edit_video');
+
+    session()->remove('from_edit');
+
+    return view('gol_a/video/tambah1', [
+        'title'   => 'Video',
+        'video'   => $video,
+        'is_edit' => !empty($video)
+    ]);
+}
 
 
     // =========================
@@ -213,7 +225,7 @@ public function view($id = null)
 
         // upload ke public/uploads/video
         $file->move(
-            ROOTPATH . 'public/uploads/video',
+            ROOTPATH . 'public/uploads/video/',
             $namaFile
         );
 
@@ -228,7 +240,14 @@ public function view($id = null)
 
     public function tambah2()
 {
-    return view('gol_a/video/tambah2');
+    $video = session()->get('edit_video');
+
+    return view('gol_a/video/tambah2', [
+        'video'   => $video,
+        'is_edit' => !empty($video),
+        'title'   => 'Video',
+        'judul'   => 'Video'
+    ]);
 }
 
     // =========================
@@ -248,15 +267,12 @@ public function view($id = null)
             return redirect()->to('/video')
                 ->with('error', 'Video tidak ditemukan');
         }
+        // simpan data lama ke session
+            session()->set('edit_video', $video);
+            session()->set('video_temp', $video['file_video']);
+            session()->set('from_edit', true);
 
-        return view('gol_a/video/tambah2', [
-
-            'video'   => $video,
-            'file'    => $video['file_video'],
-            'is_edit' => true,
-            'title'   => 'Edit Video'
-
-        ]);
+            return redirect()->to('/video/tambah1');
     }
 }
 
@@ -285,7 +301,10 @@ public function view($id = null)
         // ambil id penyakit
         $id_penyakit = $petugas['id_penyakit'];
 
+        $editVideo = session()->get('edit_video');
+
         $model->save([
+            'id_video'         => $editVideo['id_video'] ?? null,
             'id_petugas'       => $id_petugas,
             'id_penyakit'      => $id_penyakit,
             'judul_video'      => $this->request->getPost('judul_video'),

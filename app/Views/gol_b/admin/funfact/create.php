@@ -190,11 +190,7 @@ Batal
 <button type="button"
 class="btn-main"
 onclick="simpanDraft()">
-<<<<<<< Updated upstream
-💾 Simpan Drive
-=======
 💾 Simpan Draft
->>>>>>> Stashed changes
 </button>
 
 <button type="button"

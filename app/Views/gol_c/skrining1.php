@@ -1,3 +1,8 @@
+<?php $this->setVar('penyakit', 'pneumonia'); ?>
+<?php 
+$this->setVar('show_footer_maskot', true);
+$this->setVar('footer_maskot', 'cynex.png');
+?>
 <?= $this->include('layout/header') ?>
 <!DOCTYPE html>
 <html>
@@ -112,6 +117,10 @@ body {
         flex-direction:column;
         text-align:center;
     }
+}
+
+.footer-maskot{
+    width:250px !important;
 }
 </style>
 </head>
@@ -232,6 +241,44 @@ body {
 </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const footerDesc = document.querySelector(".footer-desc");
+
+    if(footerDesc){
+
+        footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    CYNEX
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Clinical System for Next Experience
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+});
+</script>
 <?= $this->include('layout/footer') ?>
 
 <!-- SCRIPT -->

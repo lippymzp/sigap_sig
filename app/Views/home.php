@@ -48,7 +48,7 @@
 
 <!-- MENU -->
 <section class="container text-center mt-5">
-    <h4 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Data</h4>
+    <h3 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Data</h3>
 
     <div class="disease-menu">
 
@@ -75,57 +75,155 @@
     </div>
 </section>
 
-<!-- SLIDER PREMIUM -->
-<section class="container mt-5">
-<div class="position-relative">
+<!-- SLIDER IKLAN DINAMIS -->
+<section class="figma-slider-section">
+    <div class="container figma-slider-wrap">
 
-<button class="scroll-btn left" onclick="scrollCardLeft()">‹</button>
-<button class="scroll-btn right" onclick="scrollCardRight()">›</button>
+        <button class="figma-arrow left" onclick="scrollCardLeft()">←</button>
+        <button class="figma-arrow right" onclick="scrollCardRight()">→</button>
 
-<div class="card-slider" id="cardSlider">
+        <div class="figma-slider" id="cardSlider">
 
-    <div class="card-item">
-        <div class="card-content">
-            <h5>Satu Platform Untuk Memantau, Memetakan, dan Mendeteksi Penyakit</h5>
-            <p>SIGAP membantu pemantauan penyakit secara terintegrasi.</p>
+            <?php if(!empty($iklan)): ?>
+                <?php foreach($iklan as $item): ?>
+
+                    <div class="figma-card">
+
+                        <div class="figma-card-content">
+                            <h3>
+                                <?= esc($item['judul']) ?>
+                            </h3>
+
+                            <p>
+                                <?= esc($item['deskripsi']) ?>
+                            </p>
+                        </div>
+
+                        <img src="<?= base_url('uploads/iklan/' . $item['gambar']) ?>">
+
+                    </div>
+
+                <?php endforeach; ?>
+            <?php endif; ?>
+
         </div>
-        <img src="<?= base_url('img/foto3.png') ?>">
-    </div>
 
-    <div class="card-item">
-        <div class="card-content">
-            <h5>SIGAP: Cepat Deteksi, Tepat Informasi</h5>
-            <p>Mendukung akses data kesehatan yang cepat dan akurat.</p>
-        </div>
-        <img src="<?= base_url('img/foto1.png') ?>">
     </div>
-
-    <div class="card-item">
-        <div class="card-content">
-            <h5>Interaktif dan Berbasis Data Wilayah</h5>
-            <ul>
-                <li>Peta persebaran penyakit</li>
-                <li>Dashboard interaktif</li>
-                <li>Visualisasi wilayah</li>
-            </ul>
-        </div>
-        <img src="<?= base_url('img/foto2.png') ?>">
-    </div>
-
-</div>
-</div>
 </section>
 
 <!-- MAP -->
 <section class="container mt-5">
-<h4 class="text-teal">Peta Interaktif Puskesmas</h4>
+<h3 class="text-teal">Peta Sebaran Penyakit</h3>
 
 <div class="map-box">
     <div id="map"></div>
 
+    <div class="map-dropdown">
+
+        <button id="menuToggle" class="menu-btn">
+            ☰
+        </button>
+
+        <div id="dropdownMenu" class="dropdown-menu-map">
+
+            <div class="dropdown-item" data-value="">
+                Semua Penyakit
+            </div>
+
+            <div class="dropdown-item" data-value="ajung">
+                Pneumonia
+            </div>
+
+            <div class="dropdown-item" data-value="panti">
+                Diare
+            </div>
+
+            <div class="dropdown-item" data-value="sumbersari">
+                DBD
+            </div>
+
+            <div class="dropdown-item" data-value="kaliwates">
+                TBC
+            </div>
+
+        </div>
+
+    </div>
+
     <div class="map-info">
-        <span>Lat: <b id="lat">-</b></span>
-        <span>Lng: <b id="lng">-</b></span>
+        <div>Longitude : <b id="lng">-</b></div>
+        <div>Latitude : <b id="lat">-</b></div>
+    </div>
+
+    <img src="<?= base_url('img/compass.png') ?>" class="map-compass">
+
+    <div class="map-legend">
+
+        <div class="legend-title">
+            Keterangan<br>
+            Penyakit
+        </div>
+
+        <div class="legend-items">
+
+            <div class="legend-item">
+                <span class="legend-color c1"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        Pneumonia
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Ajung
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color c2"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        Diare
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Panti
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color c3"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        DBD
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Sumbersari
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color c4"></span>
+
+                <div class="legend-text">
+                    <div class="legend-main">
+                        TBC
+                    </div>
+
+                    <div class="legend-sub">
+                        Kecamatan Kaliwates
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </div>
 </section>
@@ -286,7 +384,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const map = L.map('map').setView([-8.17, 113.70], 10.5);
+    const map = L.map('map').setView([-8.181767836963857, 113.67592325093854], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -304,16 +402,34 @@ document.addEventListener("DOMContentLoaded", function () {
                    "gray";
         }
 
-        const geojson = L.geoJSON(data, {
-            style: function(feature){
-                const nama = feature.properties?.KECAMATAN || "";
+        let geojson = L.geoJSON(data, {
+            style:function(feature){
 
-                return {
-                    color: "black",
-                    weight: 2,
-                    fillColor: getColor(nama),
-                    fillOpacity: 0.6
+                const nama =
+                (feature.properties?.KECAMATAN || '')
+                .toLowerCase();
+
+                let warna = '#4BB8C7';
+
+                if(nama.includes('ajung')){
+                    warna = '#4BB8C7';
                 }
+                else if(nama.includes('panti')){
+                    warna = '#2AA7B8';
+                }
+                else if(nama.includes('sumbersari')){
+                    warna = '#177C89';
+                }
+                else if(nama.includes('kaliwates')){
+                    warna = '#6CCDD9';
+                }
+
+                return{
+                    color:'#ffffff',
+                    weight:1.5,
+                    fillColor:warna,
+                    fillOpacity:0.85
+                };
             },
 
             onEachFeature: function(feature, layer){
@@ -324,15 +440,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 // KLIK KECAMATAN
                 layer.on('click', function(){
 
-                    // 1. Zoom ke kecamatan
+                    // RESET SEMUA DULU
+                    geojson.eachLayer(function(l){
+
+                        l.setStyle({
+                            fillOpacity:0.15,
+                            opacity:0.2,
+                            weight:1.5
+                        });
+
+                    });
+
+                    // YANG DIKLIK
+                    layer.setStyle({
+                        fillOpacity:1,
+                        opacity:1,
+                        weight:3
+                    });
+
+                    // ZOOM
                     map.fitBounds(layer.getBounds());
 
-                    // 2. Ambil titik tengah
-                    const center = layer.getBounds().getCenter();
+                    // CENTER
+                    const center =
+                    layer.getBounds().getCenter();
 
-                    // 3. Tampilkan Lat Lng
-                    document.getElementById('lat').innerText = center.lat.toFixed(6);
-                    document.getElementById('lng').innerText = center.lng.toFixed(6);
+                    // LAT LNG
+                    document.getElementById('lat')
+                    .innerText =
+                    center.lat.toFixed(6);
+
+                    document.getElementById('lng')
+                    .innerText =
+                    center.lng.toFixed(6);
 
                 });
 
@@ -340,17 +480,122 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }).addTo(map);
 
+        // TOGGLE MENU
+        document
+        .getElementById('menuToggle')
+        .addEventListener('click', function(){
+
+            const menu =
+            document.getElementById('dropdownMenu');
+
+            menu.style.display =
+            menu.style.display === 'block'
+            ? 'none'
+            : 'block';
+
+        });
+
+
+        // FILTER
+        document
+        .querySelectorAll('.dropdown-item')
+        .forEach(item => {
+
+            item.addEventListener('click', function(){
+
+                const value =
+                this.dataset.value;
+
+                geojson.eachLayer(function(layer){
+
+                    const nama = (
+                        layer.feature.properties?.KECAMATAN || ''
+                    ).toLowerCase();
+
+                    // RESET
+                    if(value === ''){
+
+                        layer.closePopup();
+
+                        const namaLayer =
+                        (layer.feature.properties?.KECAMATAN || '')
+                        .toLowerCase();
+
+                        let warna = '#4BB8C7';
+
+                        if(namaLayer.includes('ajung')){
+                            warna = '#4BB8C7';
+                        }
+                        else if(namaLayer.includes('panti')){
+                            warna = '#2AA7B8';
+                        }
+                        else if(namaLayer.includes('sumbersari')){
+                            warna = '#177C89';
+                        }
+                        else if(namaLayer.includes('kaliwates')){
+                            warna = '#6CCDD9';
+                        }
+
+                        layer.setStyle({
+                            fillColor:warna,
+                            fillOpacity:0.85,
+                            opacity:1,
+                            weight:1.5
+                        });
+
+                        map.setView(
+                            [-8.181767836963857, 113.67592325093854],
+                            12
+                        );
+
+                    }else{
+
+                        if(nama.includes(value)){
+
+                            layer.setStyle({
+                                fillOpacity:1,
+                                opacity:1,
+                                weight:3
+                            });
+
+                            map.fitBounds(layer.getBounds());
+
+                            layer.openPopup();
+
+                        }else{
+
+                            layer.setStyle({
+                                fillOpacity:0.15,
+                                opacity:0.2
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        });
+        
+
     });
 
 });
 
-/* SLIDER */
 function scrollCardLeft() {
-    document.getElementById('cardSlider').scrollBy({ left: -400, behavior: 'smooth' });
+    document.getElementById('cardSlider').scrollBy({
+        left: -580,
+        behavior: 'smooth'
+    });
 }
 
 function scrollCardRight() {
-    document.getElementById('cardSlider').scrollBy({ left: 400, behavior: 'smooth' });
+    document.getElementById('cardSlider').scrollBy({
+        left: 580,
+        behavior: 'smooth'
+    });
 }
 </script>
 
@@ -448,16 +693,6 @@ function scrollCardRight() {
     text-shadow: 0 1px 4px rgba(255,255,255,0.35);
 }
 
-
-/* SLIDER */
-.card-item{
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-}
-
-.card-content h5{
-    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
 /* MAP */
 #map{
     border-radius: 18px;
@@ -547,7 +782,7 @@ function scrollCardRight() {
 
 .about-heading{
     text-align:center;
-    font-size:56px;
+    font-size:46px;
     font-weight:800;
     color:#11B7C7;
     margin-bottom:70px;
@@ -597,14 +832,14 @@ function scrollCardRight() {
 
 .sigap-title{
     color:#11B7C7;
-    font-size:54px;
+    font-size:40px;
     font-weight:900;
     margin-bottom:8px;
 }
 
 .sigap-subtitle{
     color:#111;
-    font-size:28px;
+    font-size:26px;
     font-weight:700;
     margin-bottom:22px;
 }
@@ -638,7 +873,7 @@ function scrollCardRight() {
 
 /* BOTTOM */
 .about-bottom-text h3{
-    font-size:46px;
+    font-size:40px;
     font-weight:800;
     color:#0B2141;
     line-height:1.3;
@@ -718,7 +953,7 @@ function scrollCardRight() {
 .penyakit-heading{
     text-align:center;
     color:white;
-    font-size:48px;
+    font-size:40px;
     font-weight:800;
     margin-bottom:65px;
 }
@@ -770,7 +1005,7 @@ function scrollCardRight() {
 /* TITLE */
 .penyakit-figma-card h3{
     color:#08B7C5;
-    font-size:34px;
+    font-size:28px;
     font-weight:800;
     line-height:1.2;
     margin-bottom:22px;
@@ -779,7 +1014,7 @@ function scrollCardRight() {
 /* DESC */
 .penyakit-figma-card p{
     color:#4C4C4C;
-    font-size:19px;
+    font-size:16px;
     line-height:1.9;
     font-weight:500;
     text-align:justify;
@@ -790,6 +1025,191 @@ function scrollCardRight() {
     .penyakit-grid{
         grid-template-columns: repeat(2,1fr);
     }
+}
+
+#map{
+    height:520px;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.map-box{
+    position:relative;
+}
+
+.map-info{
+    position:absolute;
+    bottom:18px;
+    left:18px;
+
+    background:white;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    z-index:400;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+
+    font-size:14px;
+    font-weight:600;
+}
+
+.map-legend{
+    position:absolute;
+
+    bottom:18px;
+    right:18px;
+
+    display:flex;
+    align-items:center;
+
+    background:#D8F5F7;
+
+    border:2px solid #047981;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    z-index:400;
+}
+
+.legend-title{
+    background:linear-gradient(135deg,#14B8C8,#5FD7DE);
+
+    color:white;
+
+    padding:10px 16px;
+
+    font-weight:700;
+
+    font-size:14px;
+}
+
+.legend-items{
+    display:flex;
+    align-items:center;
+
+    gap:18px;
+
+    padding:0 16px;
+
+    height:42px;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+
+    gap:6px;
+
+    font-size:14px;
+    font-weight:600;
+
+    white-space:nowrap;
+}
+
+.legend-color{
+    width:15px;
+    height:15px;
+    border-radius:3px;
+}
+
+.c1{ background:#4BB8C7; }
+.c2{ background:#2AA7B8; }
+.c3{ background:#177C89; }
+.c4{ background:#6CCDD9; }
+
+.map-compass{
+    position:absolute;
+
+    bottom:90px;
+    right:1px;
+
+    width:100px;
+
+    z-index:500;
+}
+
+.legend-text{
+    display:flex;
+    flex-direction:column;
+    line-height:1.2;
+}
+
+.legend-main{
+    font-size:14px;
+    font-weight:700;
+}
+
+.legend-sub{
+    font-size:11px;
+    color:#666;
+}
+
+.map-dropdown{
+    position:absolute;
+
+    top:18px;
+    right:18px;
+
+    z-index:400;
+}
+
+.menu-btn{
+    width:46px;
+    height:46px;
+
+    border:none;
+    border-radius:12px;
+
+    background:white;
+
+    font-size:22px;
+    font-weight:700;
+
+    color:#177C89;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.dropdown-menu-map{
+    position:absolute;
+
+    top:55px;
+    right:0;
+
+    width:180px;
+
+    background:white;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    display:none;
+
+    box-shadow:0 6px 16px rgba(0,0,0,0.15);
+}
+
+.dropdown-item{
+    padding:12px 16px;
+
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.dropdown-item:hover{
+    background:#E7F7F9;
+    color:#177C89;
 }
 
 @media(max-width:768px){
@@ -813,6 +1233,115 @@ function scrollCardRight() {
     .penyakit-figma-card p{
         font-size:15px;
     }
+}
+/* FIGMA SLIDER */
+.figma-slider-section{
+    margin-top:40px;
+    overflow:hidden;
+}
+
+.figma-slider-wrap{
+    position:relative;
+    max-width:1280px;
+}
+
+.figma-slider{
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 8px 30px;
+}
+
+.figma-slider::-webkit-scrollbar{
+    display:none;
+}
+
+.figma-card{
+    width: 650px !important;
+    min-width: 650px !important;
+    max-width: 650px !important;
+
+    height: 190px;
+
+    background: linear-gradient(90deg,#08B7C5 0%, #6EDDE3 100%);
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    overflow: hidden;
+    flex-shrink: 0;
+
+    padding-left: 22px;
+
+    box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+.figma-card-content{
+    width: 50%;
+    flex-shrink: 0;
+}
+
+.figma-card-content h3{
+    color:white;
+    font-size:18px;
+    font-weight:800;
+    line-height:1.35;
+    margin-bottom:12px;
+}
+
+.figma-card-content p{
+    color:white;
+    font-size:13px;
+    line-height:1.6;
+    font-weight:500;
+    margin:0;
+}
+
+.figma-card-content ul{
+    padding-left:18px;
+}
+
+.figma-card-content li{
+    color:white;
+    font-size:15px;
+    margin-bottom:8px;
+}
+
+.figma-card img{
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    flex-shrink: 0;
+}
+
+.figma-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:white;
+    color:#0BB8C6;
+    font-size:22px;
+    font-weight:700;
+    z-index:20;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    cursor:pointer;
+}
+
+.figma-arrow.left{
+    left: 8px;
+}
+
+.figma-arrow.right{
+    right: 8px;
 }
 </style>
 </div>

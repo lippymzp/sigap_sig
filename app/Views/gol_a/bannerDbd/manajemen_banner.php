@@ -235,27 +235,28 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 }
 
 </style>
-<?php if(session()->getFlashdata('success')): ?>
+<?php if (session()->getFlashdata('success')): ?>
 <script>
 Swal.fire({
     icon: 'success',
     title: 'Berhasil!',
-    text: '<?= session()->getFlashdata('success') ?>',
+    text: "<?= esc((string) session()->getFlashdata('success')) ?>",
     confirmButtonText: 'OK'
 });
 </script>
 <?php endif; ?>
 
-<?php if(session()->getFlashdata('error')): ?>
+<?php if (session()->getFlashdata('error')): ?>
 <script>
 Swal.fire({
     icon: 'error',
     title: 'Gagal!',
-    text: '<?= session()->getFlashdata('error') ?>',
+    text: "<?= esc((string) session()->getFlashdata('error')) ?>",
     confirmButtonText: 'OK'
 });
 </script>
 <?php endif; ?>
+
 <div class="main">
 
     <div class="page-title">
@@ -275,7 +276,7 @@ Swal.fire({
                         id="searchBanner"
                         class="search-input"
                         placeholder="Cari banner disini"
-                        value="<?= $_GET['search'] ?? '' ?>"
+                        value="<?= esc((string)($_GET['search'] ?? '')) ?>"
                     >
 
                     <select
@@ -310,17 +311,17 @@ Swal.fire({
         <div class="summary-box">
 
             <h3>
-                <?= count($banner); ?> Banner Telah Diunggah
+                <?= (int) count((array)$banner); ?> Banner Telah Diunggah
             </h3>
 
             <div class="summary-info">
 
                 <span>
-                    ● <?= $publish ?? 0; ?> Banner telah diunggah
+                    ● <?= (int)($publish ?? 0); ?> Banner telah diunggah
                 </span>
 
                 <span>
-                    ● <?= $draft ?? 0; ?> Banner di draft
+                    ● <?= (int)($draft ?? 0); ?> Banner di draft
                 </span>
 
             </div>
@@ -419,14 +420,43 @@ Swal.fire({
                         <!-- DESKRIPSI -->
                         <td>
 
-                            <?= esc(substr((string)($b['deskripsi'] ?? ''),0,50)); ?>...
+                           <?= esc(substr((string) (($b['deskripsi'] ?? '') ?: ''), 0, 50)) ?>...
 
                         </td>
 
                         <!-- URUTAN -->
-                        <td>
+                         <td>
 
-                            <?= esc((string)($b['urutan'] ?? '')); ?>
+                        <form
+                            action="<?= base_url('bannerDbd/updateUrutan/' . $b['id_manajemen_banner']); ?>"
+                            method="post"
+                        >
+
+                            <select
+                                name="urutan"
+                                class="form-control"
+                                onchange="this.form.submit()"
+                                style="
+                                    width:80px;
+                                    margin:auto;
+                                    text-align:center;
+                                "
+                            >
+
+                                <?php for($i=1; $i<=4; $i++) : ?>
+
+                                    <option
+                                        value="<?= $i; ?>"
+                                        <?= ($b['urutan'] == $i) ? 'selected' : ''; ?>
+                                    >
+                                        <?= $i; ?>
+                                    </option>
+
+                                <?php endfor; ?>
+
+                            </select>
+
+                        </form>
 
                         </td>
 

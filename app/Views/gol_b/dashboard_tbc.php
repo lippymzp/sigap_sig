@@ -51,6 +51,8 @@
 
 </div>
 
+<div id="scroll-target"></div>
+
 <!-- MAP -->
 <div class="section-block" id="peta-sebaran">
 
@@ -144,54 +146,22 @@
                     }
 
                     return {
-                        color: "#2a9d8f",
-                        weight: 2,
-                        fillColor: warna,
-                        fillOpacity: 0.7
-                    };
+    color: "#00bcd4",
+    weight: 2,
+    fillColor: warna,
+    fillOpacity: 0.55
+};
                 },
 
                 onEachFeature: function(feature, layer){
 
                     var namaAsli = feature.properties.NAMOBJ;
-                    var item = dataFinal[fixNama(namaAsli)];
+var item = dataFinal[fixNama(namaAsli)];
 
-var isi = `
-<div style="
-    width:300px;
-    background:white;
-    border-radius:18px;
-    overflow:hidden;
-    font-family:Poppins,sans-serif;
-    box-shadow:0 8px 25px rgba(0,0,0,0.15);
-">
-
-    <div style="
-        padding:14px 18px;
-        border-bottom:1px solid #ddd;
-        background:#f8f8f8;
-    ">
-        <div style="
-            font-size:22px;
-            font-weight:700;
-            color:#111;
-        ">
-            Informasi :
-        </div>
-    </div>
-
-    <div style="
-        padding:18px;
-        font-size:15px;
-        line-height:1.9;
-        color:#333;
-    ">
-`;
+var tingkat = "Tidak Ada";
+var warna = "#999";
 
 if(item){
-
-    var tingkat = "";
-    var warna = "";
 
     if(item.total >= 100){
         tingkat = "Tinggi";
@@ -205,86 +175,119 @@ if(item){
         tingkat = "Rendah";
         warna = "#2a9d8f";
     }
-
-    isi += `
-
-    <table style="width:100%;">
-
-        <tr>
-            <td width="45%">Nama Daerah</td>
-            <td width="5%">:</td>
-            <td>${namaAsli}</td>
-        </tr>
-
-        <tr>
-            <td>Jumlah Kasus</td>
-            <td>:</td>
-            <td><b>${item.total}</b></td>
-        </tr>
-
-        <tr>
-            <td>Tingkat Kasus</td>
-            <td>:</td>
-            <td>
-                <span style="
-                    color:${warna};
-                    font-weight:700;
-                ">
-                    ${tingkat}
-                </span>
-            </td>
-        </tr>
-
-        <tr>
-            <td style="padding-top:10px;">
-                Rekomendasi
-            </td>
-
-            <td style="padding-top:10px;">:</td>
-
-            <td style="
-                padding-top:10px;
-                font-size:14px;
-                color:#666;
-            ">
-                ${tingkat == 'Tinggi'
-                    ? 'Perlu penanganan segera.'
-                    : tingkat == 'Sedang'
-                    ? 'Lakukan monitoring berkala.'
-                    : 'Wilayah masih terkendali.'
-                }
-            </td>
-        </tr>
-
-    </table>
-    `;
-}
-else{
-
-    isi += `
-        <div style="
-            text-align:center;
-            color:red;
-            font-weight:600;
-        ">
-            Data tidak ditemukan
-        </div>
-    `;
 }
 
-isi += `
+var isi = `
+
+<div style="
+    width:240px;
+    font-family:Poppins,sans-serif;
+">
+
+    <div style="
+        font-size:18px;
+        font-weight:700;
+        margin-bottom:8px;
+        color:#222;
+    ">
+        Kelurahan: ${namaAsli}
     </div>
+
+    <div style="
+        font-size:14px;
+        color:#444;
+        margin-bottom:4px;
+    ">
+        Total Kasus: <b>${item ? item.total : 0}</b>
+    </div>
+
+    <div style="
+        font-size:14px;
+        color:#444;
+        margin-bottom:14px;
+    ">
+        Kategori:
+        <b style="color:${warna}">
+            ${tingkat}
+        </b>
+    </div>
+
+<button
+    type="button"
+
+    onclick="
+        event.stopPropagation();
+
+        window.openModal(
+            '${namaAsli}',
+            '${item ? item.total : 0}',
+            '${tingkat}',
+            '0',
+            '0',
+            '0',
+            '0',
+            '0'
+        );
+    "
+
+    style="
+        background:#14c7d4;
+        color:white;
+        border:none;
+        padding:10px 18px;
+        border-radius:10px;
+        font-weight:600;
+        cursor:pointer;
+        width:100%;
+    "
+>
+    Selengkapnya
+</button>
+
 </div>
 `;
 
-                    layer.bindPopup(isi);
+layer.on({
+    mouseover: function(e){
 
-layer.on('mouseover', function () {
-    this.openPopup();
+        e.target.setStyle({
+            weight:3,
+            color:'#111',
+            fillOpacity:0.8
+        });
+
+        this.openPopup();
+
+    },
+
+    mouseout: function(e){
+
+        geo.resetStyle(e.target);
+
+    }
+});
+
+layer.bindPopup(isi);
+
+layer.on('popupopen', function(e){
+
+    const popup = e.popup.getElement();
+
+    L.DomEvent.disableClickPropagation(popup);
+    L.DomEvent.disableScrollPropagation(popup);
+
 });
 
 layer.on('mouseout', function () {
-    this.closePopup();
+
+    setTimeout(() => {
+
+        if(!this.isInsidePopup){
+            this.closePopup();
+        }
+
+    }, 1200);
+
 });
 
                     layer.bindTooltip(namaAsli, {
@@ -491,7 +494,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     <?php if (!empty($funfact)) : ?>
 
-    <div class="funfact-wrapper">
+    <div class="carousel-wrapper">
 
 <button class="nav-btn left" onclick="slideFunfact(-1)">‹</button>
 
@@ -499,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
         <?php foreach ($funfact as $f) : ?>
 
-            <div class="funfact-card">
+            <div class="info-card funfact-card">
 
                 <div class="info-text">
 
@@ -695,59 +698,6 @@ function confirmLogout(url) {
     background:#14b8c4;
 }
 
-.funfact-card{
-    display:flex !important;
-    justify-content:space-between !important;
-    align-items:center !important;
-
-    background:linear-gradient(135deg,#1ecad3,#14b8c4) !important;
-
-    border-radius:28px !important;
-
-    padding:35px !important;
-
-    margin-bottom:25px !important;
-
-    color:white !important;
-}
-
-.funfact-card .info-text{
-    width:70% !important;
-}
-
-.funfact-card .info-text h5{
-    font-size:26px !important;
-    font-weight:700 !important;
-    margin-bottom:18px !important;
-    color:white !important;
-}
-
-.funfact-card .info-text p{
-    font-size:17px !important;
-    line-height:1.8 !important;
-    color:white !important;
-}
-
-.funfact-card .info-image{
-    width:25% !important;
-    display:flex !important;
-    justify-content:flex-end !important;
-}
-
-.funfact-card .info-image img{
-    width:230px !important;
-    height:160px !important;
-
-    object-fit:cover !important;
-
-    border-radius:22px !important;
-}
-
-.funfact-wrapper{
-    overflow:hidden;
-    position:relative;
-}
-
 .funfact-dots{
     margin-top:15px;
     text-align:center;
@@ -775,6 +725,7 @@ function confirmLogout(url) {
     gap:25px;
 
     overflow-x:auto;
+    scroll-behavior:smooth;
 
     padding-bottom:15px;
 }
@@ -905,29 +856,6 @@ document.addEventListener("DOMContentLoaded", function(){
         });
     }
 
-    window.slideFunfact = function(dir){
-
-    indexFunfact += dir;
-
-    if(indexFunfact >= totalFunfact){
-        indexFunfact = 0;
-    }
-
-    if(indexFunfact < 0){
-        indexFunfact = totalFunfact - 1;
-    }
-
-    funfactSlider.scrollTo({
-        left: indexFunfact * 875,
-        behavior:'smooth'
-    });
-
-    dots.forEach((d,i)=>{
-        d.classList.toggle('active', i === indexFunfact);
-    });
-
-}
-
     // AUTO SLIDE
     setInterval(() => {
 
@@ -940,47 +868,79 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <script>
 
+let funfactIndex = 0;
+let funfactInterval;
+
 document.addEventListener("DOMContentLoaded", function(){
 
-    const funfactSlider = document.getElementById('funfactSlider');
+    const funfactSlider = document.getElementById("funfactSlider");
+    const dotsContainer = document.getElementById("funfactDots");
 
-    if(!funfactSlider) return;
+    if(!funfactSlider || !dotsContainer) return;
 
-    let indexFunfact = 0;
+    const cards = funfactSlider.querySelectorAll(".funfact-card");
+    const total = cards.length;
 
-    const totalFunfact = funfactSlider.children.length;
+    // BUAT DOTS
+    dotsContainer.innerHTML = "";
 
-    const dotsContainer = document.getElementById('funfactDots');
+    for(let i = 0; i < total; i++){
 
-    for(let i = 0; i < totalFunfact; i++){
+        const dot = document.createElement("span");
 
-        let dot = document.createElement('span');
-
-        if(i == 0){
-            dot.classList.add('active');
+        if(i === 0){
+            dot.classList.add("active");
         }
+
+        dot.onclick = () => {
+            funfactIndex = i;
+            updateFunfact();
+        };
 
         dotsContainer.appendChild(dot);
     }
 
-    const dots = dotsContainer.querySelectorAll('span');
-
-    setInterval(() => {
-
-        indexFunfact++;
-
-        if(indexFunfact >= totalFunfact){
-            indexFunfact = 0;
-        }
+    // UPDATE SLIDE
+    function updateFunfact(){
 
         funfactSlider.scrollTo({
-            left: indexFunfact * 875,
-            behavior: 'smooth'
+            left: funfactIndex * 875,
+            behavior: "smooth"
         });
 
-        dots.forEach((d,i)=>{
-            d.classList.toggle('active', i === indexFunfact);
+        const dots = dotsContainer.querySelectorAll("span");
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === funfactIndex);
         });
+    }
+
+    // BUTTON
+    window.slideFunfact = function(dir){
+
+        funfactIndex += dir;
+
+        if(funfactIndex >= total){
+            funfactIndex = 0;
+        }
+
+        if(funfactIndex < 0){
+            funfactIndex = total - 1;
+        }
+
+        updateFunfact();
+    }
+
+    // AUTO SLIDE
+    funfactInterval = setInterval(() => {
+
+        funfactIndex++;
+
+        if(funfactIndex >= total){
+            funfactIndex = 0;
+        }
+
+        updateFunfact();
 
     }, 3500);
 
@@ -988,68 +948,302 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </script>
 
-<script>
-    <?php $tbc = $tbc ?? []; ?>
-var map = L.map('map').setView([-8.1727, 113.7000], 12);
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
+<script>
+
+var map = L.map('map').setView([-8.1727,113.7000],12);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; OpenStreetMap'
 }).addTo(map);
 
-<?php foreach($tbc as $row): ?>
+</script>
 
-<?php if($row['latitude'] && $row['longitude']): ?>
+<style>
 
-L.marker([<?= $row['latitude'] ?>, <?= $row['longitude'] ?>])
-    .addTo(map)
-.bindPopup(`
-    <div style="
-        width:260px;
-        border-radius:22px;
-        overflow:hidden;
-        font-family:Poppins;
-    ">
+.leaflet-popup-content-wrapper{
+    pointer-events:auto !important;
+}
 
-        <div style="
-            background:#f5f5f5;
-            padding:14px 18px;
-            font-size:20px;
-            font-weight:700;
-            border-bottom:2px solid #999;
-        ">
-            Informasi :
-        </div>
+.leaflet-popup-content{
+    pointer-events:auto !important;
+}
 
-        <div style="
-            background:white;
-            padding:18px;
-            font-size:18px;
-            line-height:1.8;
-        ">
+.leaflet-popup-tip-container{
+    pointer-events:auto !important;
+}
 
-            <b>Jumlah Kasus :</b>
-            <?= $row['kasus'] ?><br>
+#map{
+    overflow:hidden;
+}
 
-            <b>Tingkat Kasus :</b>
+</style>
 
-            <?php
-                if($row['kasus'] >= 100){
-                    echo "<span style='color:red;font-weight:700;'>Tinggi</span>";
-                } elseif($row['kasus'] >= 50){
-                    echo "<span style='color:orange;font-weight:700;'>Sedang</span>";
-                } else {
-                    echo "<span style='color:green;font-weight:700;'>Rendah</span>";
-                }
-            ?>
+<!-- MODAL DETAIL -->
+<div id="modalTbc" class="modal-tbc">
+
+    <div class="modal-content-tbc">
+
+        <span class="close-modal" onclick="closeModal()">
+            &times;
+        </span>
+
+        <h2>Peta Sebaran Kasus 2025</h2>
+
+        <div class="modal-body">
+
+            <div class="detail-list">
+
+                <div class="detail-title">
+                    Informasi :
+                </div>
+
+                <div class="detail-row">
+                    <span>Nama Daerah</span>
+                    <p id="mdNama">: -</p>
+                </div>
+
+                <div class="detail-row">
+                    <span>Jumlah Penduduk</span>
+                    <p id="mdPenduduk">: 0</p>
+                </div>
+
+                <div class="detail-row">
+                    <span>Jumlah Kasus</span>
+                    <p id="mdKasus">: 0</p>
+                </div>
+
+                <div class="detail-row">
+                    <span>Kategori Kasus</span>
+                    <p id="mdKategori">: -</p>
+                </div>
+
+                <div class="detail-row">
+                    <span>Rentang usia</span>
+                    <p>: </p>
+                </div>
+
+                <div class="detail-sub">
+
+                    <div class="detail-row">
+                        <span>Anak-anak</span>
+                        <p id="mdAnak">: 0</p>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Dewasa</span>
+                        <p id="mdDewasa">: 0</p>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Lansia</span>
+                        <p id="mdLansia">: 0</p>
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
-`);
 
-<?php endif; ?>
+</div>
 
-<?php endforeach; ?>
+<style>
+
+.modal-tbc{
+    display:none;
+
+    position:fixed;
+    z-index:9999;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.45);
+
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.modal-content-tbc{
+    width:760px;
+    background:#fff;
+    border-radius:28px;
+    padding:38px;
+    position:relative;
+    font-family:'Poppins',sans-serif;
+    box-shadow:0 10px 35px rgba(0,0,0,0.12);
+
+    max-height:90vh;
+    overflow-y:auto;
+
+}
+
+.modal-content-tbc h2{
+    font-size:24px;
+    font-weight:700;
+    color:#1f2937;
+    margin-bottom:28px;
+}
+
+.close-modal{
+    position:absolute;
+    top:18px;
+    right:24px;
+    font-size:34px;
+    font-weight:bold;
+    cursor:pointer;
+    color:#444;
+}
+
+.detail-list{
+    border:1px solid #e5e7eb;
+    border-radius:24px;
+    padding:32px;
+    background:#fafafa;
+}
+
+.detail-title{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:30px;
+    color:#222;
+}
+
+.detail-row{
+    display:flex;
+    align-items:flex-start;
+    margin-bottom:22px;
+}
+
+/* KIRI */
+.detail-row span{
+    width:380px;
+    font-size:17px;
+    color:#444;
+    font-weight:500;
+    line-height:1.7;
+}
+
+/* KANAN */
+.detail-row p{
+    margin:0;
+    font-size:17px;
+    color:#222;
+    font-weight:600;
+    line-height:1.7;
+}
+
+.detail-sub{
+    margin-left:40px;
+    margin-top:-8px;
+    margin-bottom:22px;
+}
+
+.detail-sub .detail-row{
+    margin-bottom:14px;
+}
+
+.detail-sub .detail-row span{
+    width:340px;
+    font-size:15px;
+    color:#666;
+    font-weight:400;
+}
+
+.detail-sub .detail-row p{
+    font-size:15px;
+    font-weight:500;
+}
+
+.leaflet-popup-content button{
+    position:relative;
+    z-index:99999;
+    pointer-events:auto;
+}
+
+.leaflet-popup-content{
+    pointer-events:auto !important;
+}
+
+.leaflet-popup{
+    pointer-events:auto !important;
+}
+
+.leaflet-container{
+    z-index:1;
+}
+
+.modal-tbc{
+    z-index:999999 !important;
+}
+
+</style>
+
+<script>
+
+function openModal(
+    nama,
+    kasus,
+    kategori,
+    anak = 0,
+    dewasa = 0,
+    lansia = 0,
+    laki = 0,
+    perempuan = 0
+){
+
+    document.getElementById('modalTbc').style.display = 'flex';
+
+    document.getElementById('mdNama').innerHTML =
+        ': ' + nama;
+
+    document.getElementById('mdKasus').innerHTML =
+        ': ' + kasus;
+
+    document.getElementById('mdKategori').innerHTML =
+        ': ' + kategori;
+
+    document.getElementById('mdAnak').innerHTML =
+        ': ' + anak;
+
+    document.getElementById('mdDewasa').innerHTML =
+        ': ' + dewasa;
+
+    document.getElementById('mdLansia').innerHTML =
+        ': ' + lansia;
+
+    document.getElementById('mdLaki').innerHTML =
+        ': ' + laki;
+
+    document.getElementById('mdPerempuan').innerHTML =
+        ': ' + perempuan;
+}
+
+window.openModal = openModal;
+
+function closeModal(){
+
+    document.getElementById('modalTbc').style.display = 'none';
+}
+
+window.onclick = function(e){
+
+    const modal = document.getElementById('modalTbc');
+
+    if(e.target == modal){
+        closeModal();
+    }
+}
+
 </script>
 
 <?= $this->endSection() ?>

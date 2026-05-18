@@ -75,59 +75,60 @@ class Dbd extends BaseController
         }
 
     public function simpandatapasien()
-    {
-        $model = new InputDataPasienModel();
-
-        $data = [
-
-            // ID PETUGAS LOGIN
-            'id_petugas' => session()->get('id_petugas'),
-
-            // ======================
-            // DATA WILAYAH
-            // ======================
-            'provinsi' => $this->request->getPost('provinsi'),
-            'kabupaten' => $this->request->getPost('kabupaten'),
-            'kecamatan' => $this->request->getPost('kecamatan'),
-            'desa' => $this->request->getPost('desa'),
-
-            'rt' => $this->request->getPost('rt'),
-            'rw' => $this->request->getPost('rw'),
-
-            'alamat' => $this->request->getPost('alamat'),
-
-            'lat' => $this->request->getPost('lat'),
-            'lng' => $this->request->getPost('lng'),
-
-            // ======================
-            // DATA PASIEN
-            // ======================
-            'nama' => $this->request->getPost('nama'),
-
-            'tanggal' => $this->request->getPost('tanggal'),
-
-            'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
-
-            'usia' => $this->request->getPost('usia'),
-
-            'catatan' => $this->request->getPost('catatan'),
-        ];
-
-        $simpan = $model->simpanSemua($data);
-
-        if ($simpan) {
-
-            return redirect()
-                ->back()
-                ->with('success', 'Data pasien berhasil disimpan');
-
-        } else {
-
-            return redirect()
-                ->back()
-                ->with('error', 'Data gagal disimpan');
+        {
+            $model = new InputDataPasienModel();
+    
+            $data = [
+    
+                // ID PETUGAS LOGIN
+                'id_petugas' => session()->get('id_petugas'),
+                'id_penyakit' => session()->get('id_penyakit'),
+    
+                // ======================
+                // DATA WILAYAH
+                // ======================
+                'provinsi' => $this->request->getPost('provinsi'),
+                'kabupaten' => $this->request->getPost('kabupaten'),
+                'kecamatan' => $this->request->getPost('kecamatan'),
+                'desa' => $this->request->getPost('desa'),
+    
+                'rt' => $this->request->getPost('rt'),
+                'rw' => $this->request->getPost('rw'),
+    
+                'alamat' => $this->request->getPost('alamat'),
+    
+                'lat' => $this->request->getPost('lat'),
+                'lng' => $this->request->getPost('lng'),
+    
+                // ======================
+                // DATA PASIEN
+                // ======================
+                'nik'                 => $this->request->getPost('nik'),
+                'nama'                => $this->request->getPost('nama'),
+                'tgl_lahir'           => $this->request->getPost('tgl_lahir'),
+                'jenis_kelamin'       => $this->request->getPost('jenis_kelamin'),
+                'usia'                => $this->request->getPost('usia'),
+                'tanggal_pemeriksaan' => $this->request->getPost('tanggal_pemeriksaan'),
+                'status_akhir'        => $this->request->getPost('status_akhir'),
+                'tindak_lanjut'       => $this->request->getPost('tindak_lanjut'),
+                'catatan'             => $this->request->getPost('catatan'),
+            ];
+    
+            $simpan = $model->simpanSemua($data);
+    
+            if ($simpan) {
+    
+                return redirect()
+                    ->back()
+                    ->with('success', 'Data pasien berhasil disimpan');
+    
+            } else {
+    
+                return redirect()
+                    ->back()
+                    ->with('error', 'Data gagal disimpan');
+            }
         }
-    }
 
     public function export()
     {
@@ -246,7 +247,7 @@ class Dbd extends BaseController
         if ($data) {
             // 2. Hapus file foto dari folder (opsional, tapi sangat disarankan agar memori server tidak penuh)
             if (!empty($data['foto'])) {
-                $fotoArray = json_decode($data['foto'], true);
+                $fotoArray = json_decode((string)$data['foto'], true);
                 if (is_array($fotoArray)) {
                     foreach ($fotoArray as $foto) {
                         $pathFoto = FCPATH . 'uploads/pelaporan/' . $foto;
@@ -624,66 +625,90 @@ class Dbd extends BaseController
    public function dashboard()
     {
         $db = \Config\Database::connect();
-      // 🔥 DATA GRAFIK
-    // ======================
-    $bulan = $this->request->getGet('bulan');
-    $tahun = $this->request->getGet('tahun');
-    $usia  = $this->request->getGet('usia');
-    $jk    = $this->request->getGet('jk');
+      // ======================
+        // 🔥 DATA GRAFIK
+        // ======================
+        
+        // 1. TAMBAH PENANGKAP PARAMETER WILAYAH DI SINI
+        $wilayah = $this->request->getGet('wilayah');
+        
+        $bulan = $this->request->getGet('bulan');
+        $tahun = $this->request->getGet('tahun');
+        $usia  = $this->request->getGet('usia');
+        $jk    = $this->request->getGet('jk');
 
 
-    $builder = $db->table('pasien p');
-    $builder->select('w.kelurahan, COUNT(*) as total');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        $builder = $db->table('pasien p');
+        $builder->select('w.kelurahan, COUNT(*) as total');
+        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-    if (!empty($bulan)) {
-    $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
-}
-
-    if (!empty($tahun)) {
-        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-    }
-
-    if (!empty($jk)) {
-        if ($jk == 'L') {
-            $builder->where('p.jenis_kelamin', 'Laki-laki');
-        } elseif ($jk == 'P') {
-            $builder->where('p.jenis_kelamin', 'Perempuan');
+        // 2. TAMBAH LOGIKA FILTER WILAYAH (DAN FIX SPASI TEGAL GEDE)
+        if (!empty($wilayah)) {
+            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+            $builder->where('w.kelurahan', $namaWilayah);
+        } else {
+            // Tampilkan 5 kelurahan utama jika 'All' dipilih
+            $builder->whereIn('w.kelurahan', [
+                'Sumbersari',
+                'Wirolegi',
+                'Antirogo',
+                'Tegal Gede',
+                'Karangrejo'
+            ]);
         }
-    }
 
-    if (!empty($usia)) {
-        if ($usia == 'anak') {
-            $builder->where('p.umur <=', 14);
-        } elseif ($usia == 'remaja') {
-            $builder->where('p.umur >=', 15);
-            $builder->where('p.umur <=', 24);
-        } elseif ($usia == 'dewasa') {
-            $builder->where('p.umur >=', 25);
-            $builder->where('p.umur <=', 59);
-        } elseif ($usia == 'lansia') {
-            $builder->where('p.umur >=', 60);
+        // --- Sisa kode di bawah ini biarkan sama seperti aslinya ---
+        if (!empty($bulan)) {
+            $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
         }
-    }
-    $builder->groupBy('w.kelurahan');
 
-    $grafik = $builder->get()->getResultArray();
+        if (!empty($tahun)) {
+            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+        }
 
-    // ======================
-    // 🔥 DATA PETA
-    // ======================
-    $tahunMap = $this->request->getGet('tahun_map');
+        if (!empty($jk)) {
+            if ($jk == 'L') {
+                $builder->where('p.jenis_kelamin', 'Laki-laki');
+            } elseif ($jk == 'P') {
+                $builder->where('p.jenis_kelamin', 'Perempuan');
+            }
+        }
 
-    $builderDbd = $db->table('pasien p');
-    $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
-    $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        if (!empty($usia)) {
+            if ($usia == 'anak') {
+                $builder->where('p.umur <=', 14);
+            } elseif ($usia == 'remaja') {
+                $builder->where('p.umur >=', 15);
+                $builder->where('p.umur <=', 24);
+            } elseif ($usia == 'dewasa') {
+                $builder->where('p.umur >=', 25);
+                $builder->where('p.umur <=', 59);
+            } elseif ($usia == 'lansia') {
+                $builder->where('p.umur >=', 60);
+            }
+        }
+        $builder->groupBy('w.kelurahan');
 
-    // 🔥 FILTER HARUS DI SINI (SEBELUM get)
-    if (!empty($tahunMap)) {
-        $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
-    }
+        $grafik = $builder->get()->getResultArray();
 
-    $builderDbd->groupBy('w.kelurahan');
+        // ======================
+        // 🔥 DATA PETA
+        // ======================
+        $tahunMap = $this->request->getGet('tahun_map');
+
+        $builderDbd = $db->table('pasien p');
+        $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
+        $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+        // 🔥 FILTER HARUS DI SINI (SEBELUM get)
+        if (!empty($tahunMap)) {
+            $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
+        }
+
+        $builderDbd->groupBy('w.kelurahan');
+
+        // 🔥 BARU AMBIL DATA
+        $dbd = $builderDbd->get()->getResultArray();
 
     // 🔥 BARU AMBIL DATA
     $dbd = $builderDbd->get()->getResultArray();    // ======================
@@ -985,10 +1010,10 @@ public function manajemen_pkm()
         $this->db->table('instansi')->where('id_instansi', $id)->delete();
         return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil dihapus!');
     }
+
 public function rekap_skrining()
 {
     $db = \Config\Database::connect();
-
     $builder = $db->table('skrining as s');
 
     $builder->select('
@@ -999,60 +1024,109 @@ public function rekap_skrining()
         p.nama_pasien_skrining,
         p.jenis_kelamin,
         p.usia,
-
         w.provinsi,
         w.kabupaten,
         w.kecamatan,
         w.kelurahan,
         w.rt,
         w.rw,
-
         s.hasil,
         s.tanggal
     ');
 
-    $builder->join(
-        'pasien_skrining p',
-        'p.id_pasien_skrining = s.id_pasien_skrining'
-    );
+    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+    $builder->where('s.id_penyakit', 1);
+    // ==========================================
+    // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
+    // ==========================================
+    
+    // 1. Ambil Parameter dari URL
+    $search = $this->request->getGet('search');
+    $sort   = $this->request->getGet('sort');
+    $filter = $this->request->getGet('filter'); // berupa array checkbox
 
-    $builder->join(
-        'wilayah w',
-        'w.id_wilayah = p.id_wilayah'
-    );
+    // 2. Logika Search / Pencarian Nama atau NIK
+    if (!empty($search)) {
+        $builder->groupStart()
+                ->like('p.nama_pasien_skrining', $search)
+                ->orLike('p.nik', $search)
+                ->groupEnd();
+    }
 
-    $builder->orderBy('s.id_skrining', 'DESC');
+    // 3. Logika Filter Checkbox Multiselect
+    if (!empty($filter) && is_array($filter)) {
+        
+        // Filter Hari Ini
+        if (in_array('hariini', $filter)) {
+            $builder->where('s.tanggal', date('Y-m-d'));
+        }
 
-    // PAGINATION
+        // Filter Hasil/Risiko Lingkungan
+        $hasilFilter = [];
+        if (in_array('baik', $filter)) $hasilFilter[] = 'Kategori Lingkungan Baik';
+        if (in_array('cukup', $filter)) $hasilFilter[] = 'Kategori Lingkungan Cukup';
+        if (in_array('buruk', $filter)) $hasilFilter[] = 'Kategori Lingkungan Buruk';
+        
+        if (!empty($hasilFilter)) {
+            $builder->whereIn('s.hasil', $hasilFilter);
+        }
+
+        // Filter Jenis Kelamin
+        $jkFilter = [];
+        if (in_array('lakilaki', $filter)) $jkFilter[] = 'Laki-laki';
+        if (in_array('perempuan', $filter)) $jkFilter[] = 'Perempuan';
+        
+        if (!empty($jkFilter)) {
+            $builder->whereIn('p.jenis_kelamin', $jkFilter);
+        }
+
+        // Filter Kelompok Usia
+        if (in_array('anak', $filter) && !in_array('dewasa', $filter)) {
+            $builder->where('p.usia <=', 19);
+        } elseif (in_array('dewasa', $filter) && !in_array('anak', $filter)) {
+            $builder->where('p.usia >', 19);
+        }
+    }
+
+    // 4. Logika Pengurutan Nama (Sorting)
+    if ($sort === 'asc') {
+        $builder->orderBy('p.nama_pasien_skrining', 'ASC');
+    } elseif ($sort === 'desc') {
+        $builder->orderBy('p.nama_pasien_skrining', 'DESC');
+    } else {
+        $builder->orderBy('s.id_skrining', 'DESC'); // Default urutan terbaru
+    }
+
+    // ==========================================
+    // 📄 PAGINATION DENGAN MEMPERTAHANKAN FILTER URL
+    // ==========================================
     $perPage = 10;
-    $page = $this->request->getVar('page') ?? 1;
+    $page    = $this->request->getVar('page') ?? 1;
 
-    $data['skrining'] = $builder
-        ->limit($perPage, ($page - 1) * $perPage)
-        ->get()
-        ->getResultArray();
+    // Hitung total data setelah difilter
+    $totalBuilder = clone $builder;
+    $total = $totalBuilder->countAllResults(false);
 
-    // total data
-    $total = $db->table('skrining')->countAll();
+    $skriningData = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
 
-    // PAGER
     $pager = \Config\Services::pager();
-
-    $data['pagerLinks'] = $pager->makeLinks(
-        $page,
-        $perPage,
-        $total
-    );
+    
+    // Simpan parameter filter ke link pager biar saat klik 'Next' filternya tidak hilang
+    $pagerLinks = $pager->makeLinks($page, $perPage, $total, 'default_full');
 
     $data = [
-    'menu' => 'skrining',
-    'judul' => 'Rekap Skrining',   
-    'skrining' => $data['skrining'],
-    'pagerLinks' => $data['pagerLinks']
+        'menu'       => 'skrining',
+        'judul'      => 'Rekap Skrining',   
+        'skrining'   => $skriningData,
+        'pagerLinks' => $pagerLinks,
+        // Kirim balik value input ke view untuk mempertahankan status input form
+        'current_search' => $search,
+        'current_sort'   => $sort,
+        'current_filter' => $filter ?? []
     ];
 
-    return view('gol_a/rekap_skrining', $data)
-    ;
+    return view('gol_a/rekap_skrining', $data);
 }
 
 public function hapus_skrining(int $id)
@@ -1449,6 +1523,7 @@ public function hapus_skrining(int $id)
 
  public function simpanFunfact()
 {
+    
     $status = $this->request->getPost('status_funfact');
 
     $gambar = $this->request->getFile('gambar_funfact');
@@ -1465,6 +1540,9 @@ public function hapus_skrining(int $id)
     }
 
     $data = [
+        'id_petugas' => session()->get('id_petugas'),
+
+        'id_penyakit' => 1,
 
         'judul_funfact'     => $this->request->getPost('judul_funfact'),
 
@@ -1572,6 +1650,8 @@ public function hapus_skrining(int $id)
     $status = $this->request->getPost('status_funfact');
 
     $data = [
+        'id_petugas' => session()->get('id_petugas'),
+        'id_penyakit' => 1,
         'judul_funfact'     => $this->request->getPost('judul_funfact'),
         'isi_funfact'       => $this->request->getPost('isi_funfact'),
         'deskripsi_funfact' => $this->request->getPost('deskripsi_funfact'),
@@ -1943,26 +2023,25 @@ public function pelaporan_kader()
 }
 
     public function view_laporan(int $id)
-    {
-        $db = \Config\Database::connect();
-        
-        // Ambil data detail laporan berdasarkan ID
-        $laporan = $db->table('rekap_pelaporan_kader')
-                    ->where('id_laporan', $id)
-                    ->get()
-                    ->getRowArray();
+{
+    $db = \Config\Database::connect();
 
-        if (!$laporan) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan');
-        }
+    // Ambil data detail laporan berdasarkan ID
+    $laporan = $db->table('rekap_pelaporan_kader')
+        ->where('id_laporan', $id)
+        ->get()
+        ->getRowArray();
 
-        $data = [
-            'title'   => 'Pratinjau Hasil Pemeriksaan',
-            'laporan' => $laporan,
-            'menu'    => 'pelaporan_kader'
-        ];
-
-        return view('gol_a/daftar_laporan_kader_admin/view_laporan', $data);
+    if (!$laporan) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan');
     }
 
+    $data = [
+        'title'   => 'Pratinjau Hasil Pemeriksaan',
+        'laporan' => $laporan,
+        'menu'    => 'pelaporan_kader'
+    ];
+
+    return view('gol_a/daftar_laporan_kader_admin/view_laporan', $data);
+}
 }

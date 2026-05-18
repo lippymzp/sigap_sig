@@ -6,14 +6,25 @@ helper('text');
 
 class DashboardadminDbd extends BaseController
 {
-    public function index()
+public function index()
     {
         $db = \Config\Database::connect();
 
-        $bulan = $this->request->getGet('bulan');
-        $tahun = $this->request->getGet('tahun');
-        $usia  = $this->request->getGet('usia');
-        $jk    = $this->request->getGet('jk');
+       
+        $id_petugas = session()->get('id_petugas');
+
+        $petugasModel = new \App\Models\PetugasModel();
+        $petugas = $petugasModel->find($id_petugas);
+
+
+        $id_penyakit = $petugas['id_penyakit'] ?? null;
+
+        // 1. Tambahkan penangkap parameter 'wilayah' di sini
+        $wilayah = $this->request->getGet('wilayah');
+        $bulan   = $this->request->getGet('bulan');
+        $tahun   = $this->request->getGet('tahun');
+        $usia    = $this->request->getGet('usia');
+        $jk      = $this->request->getGet('jk');
 
         // =========================
         // QUERY GRAFIK
@@ -31,14 +42,23 @@ class DashboardadminDbd extends BaseController
             'left'
         );
 
-        $builder->whereIn('w.kelurahan', [
-            'Sumbersari',
-            'Wirolegi',
-            'Antirogo',
-            'Tegal Gede',
-            'Karangrejo'
-        ]);
+        // 2. Logika Filter Wilayah
+        if (!empty($wilayah)) {
+            // Menyesuaikan value 'Tegalgede' dari View agar cocok dengan 'Tegal Gede' di DB
+            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+            $builder->where('w.kelurahan', $namaWilayah);
+        } else {
+            // Tampilkan semua (5 kelurahan) jika filter wilayah tidak dipilih (opsi 'All')
+            $builder->whereIn('w.kelurahan', [
+                'Sumbersari',
+                'Wirolegi',
+                'Antirogo',
+                'Tegal Gede',
+                'Karangrejo'
+            ]);
+        }
 
+        // Filter lainnya tetap sama...
         if (!empty($bulan)) {
             $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
         }
@@ -48,33 +68,23 @@ class DashboardadminDbd extends BaseController
         }
 
         if (!empty($jk)) {
-
             if ($jk == 'L') {
                 $builder->where('p.jenis_kelamin', 'Laki-laki');
-            }
-
-            elseif ($jk == 'P') {
+            } elseif ($jk == 'P') {
                 $builder->where('p.jenis_kelamin', 'Perempuan');
             }
         }
 
         if (!empty($usia)) {
-
             if ($usia == 'anak') {
                 $builder->where('p.umur <=', 14);
-            }
-
-            elseif ($usia == 'remaja') {
+            } elseif ($usia == 'remaja') {
                 $builder->where('p.umur >=', 15);
                 $builder->where('p.umur <=', 24);
-            }
-
-            elseif ($usia == 'dewasa') {
+            } elseif ($usia == 'dewasa') {
                 $builder->where('p.umur >=', 25);
                 $builder->where('p.umur <=', 59);
-            }
-
-            elseif ($usia == 'lansia') {
+            } elseif ($usia == 'lansia') {
                 $builder->where('p.umur >=', 60);
             }
         }
@@ -82,6 +92,8 @@ class DashboardadminDbd extends BaseController
         $builder->groupBy('w.kelurahan');
 
         $grafik = $builder->get()->getResultArray();
+
+        // ... (Lanjutkan dengan kode DATA PETA dan sisa kode kamu ke bawah) ...
 
         // =========================
         // DATA PETA
@@ -178,11 +190,44 @@ $builder->groupBy('w.kelurahan');
                 strtolower($namaKel)
             );
 
+            $totalPenduduk = $db->table('data_penduduk')
+            ->selectSum('total_penduduk')
+            ->where("
+                LOWER(REPLACE(kelurahan,' ','')) = 
+                LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
+            ")
+            ->get()
+            ->getRow()
+            ->total_penduduk ?? 0;
+
+
+
+            $jumlahSembuh = $db->table('pasien p')
+                ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
+                ->where("
+                    LOWER(REPLACE(w.kelurahan,' ','')) = 
+                    LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
+                ")
+                ->where('p.status_akhir', 'Sembuh')
+                ->countAllResults();
+
+            $jumlahMeninggal = $db->table('pasien p')
+                ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
+                ->where("
+                    LOWER(REPLACE(w.kelurahan,' ','')) = 
+                    LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
+                ")
+                ->where('p.status_akhir', 'Meninggal')
+                ->countAllResults();
+
             $detailDesa[$key] = [
 
-                'jumlah_penduduk' => 0,
+                'jumlah_penduduk' => (int)$totalPenduduk,
 
                 'jumlah_kasus' => $jumlahKasus,
+
+                'sembuh' => $jumlahSembuh,
+                'meninggal' => $jumlahMeninggal,
 
                 'kategori' => $kategori,
 
@@ -197,6 +242,10 @@ $builder->groupBy('w.kelurahan');
 
                 'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
                 'rumah_jentik' => (int)$row['rumah_positif'],
+                'abj' => ((int)$row['rumah_diperiksa'] > 0)
+                ? round((((int)$row['rumah_diperiksa']-(int)$row['rumah_positif'])
+                        / (int)$row['rumah_diperiksa']) * 100, 2)
+                : 0,
             ];
         }
 
@@ -211,63 +260,71 @@ $builder->groupBy('w.kelurahan');
 
             $desaTertinggi = $dbd[0]['desa'];
         }
-    // BERITA
-    // ======================
-    $berita = $db->table('berita')
-        ->whereIn('status_berita', ['publish', 'upload'])
-        ->get()
-        ->getResultArray();
+            // BERITA
+            // ======================
+            $berita = $db->table('berita')
+                ->whereIn('status_berita', ['publish', 'upload'])
+                ->get()
+                ->getResultArray();
 
-    // ======================
-    // FUNFACT
-    $funfact = $db->table('funfact')
-        ->orderBy('id_funfact', 'DESC')
-        ->get()
-        ->getResultArray();
+            // ======================
+            // FUNFACT
+            $funfact = $db->table('funfact')
+                ->orderBy('id_funfact', 'DESC')
+                ->get()
+                ->getResultArray();
 
-    // ======================
-    // DATA PENDUDUK
-    // ======================
-    $penduduk = $db->table('data_penduduk')
-        ->get()
-        ->getResultArray();
-        // =========================
-        // RETURN VIEW
-        // =========================
-      return view('gol_a/dashboard_dbd', [
-    'menu' => 'dashboard',
-    'grafik' => $grafik,
-    'dbd' => $dbd,
-    'detailDesa' => $detailDesa,
-    'desaTertinggi' => $desaTertinggi,
-    'berita' => $berita,
-    'funfact' => $funfact,
-    'penduduk' => $penduduk,
-    'show_footer_maskot' => true,
-    'footer_maskot' => 'logo_denggis.png'
-    
-        ]);
-    }
+            // ======================
+            // DATA PENDUDUK
+            // ======================
+            $penduduk = $db->table('data_penduduk')
+            ->where('id_penyakit', 1)
+            ->get()
+            ->getResultArray();
+                // =========================
+                // RETURN VIEW
+                // =========================
+            return view('gol_a/dashboard_dbd', [
+            'menu' => 'dashboard',
+            'grafik' => $grafik,
+            'dbd' => $dbd,
+            'detailDesa' => $detailDesa,
+            'desaTertinggi' => $desaTertinggi,
+            'berita' => $berita,
+            'funfact' => $funfact,
+            'penduduk' => $penduduk,
+            'show_footer_maskot' => true,
+            'footer_maskot' => 'logo_denggis.png'
+            
+                ]);
+            }
 
-   public function simpanPenduduk()
+public function simpanPenduduk()
 {
     $db = \Config\Database::connect();
     
     $kelurahan = $this->request->getPost('kelurahan');
     $laki      = (int)$this->request->getPost('laki');
     $perempuan = (int)$this->request->getPost('perempuan');
+    
+    $id_penyakit = 1; // Set id_penyakit khusus untuk DBD
 
-    // 1. Hapus semua data lama kelurahan ini (biar tidak double)
-    $db->table('data_penduduk')->where('kelurahan', $kelurahan)->delete();
+    // 1. Hapus data lama kelurahan ini TAPI HANYA untuk DBD (id_penyakit = 1)
+    $db->table('data_penduduk')
+       ->where('kelurahan', $kelurahan)
+       ->where('id_penyakit', $id_penyakit)
+       ->delete();
 
-    // 2. Siapkan data baru untuk dimasukkan kembali
+    // 2. Siapkan data baru dengan menyertakan id_penyakit
     $data_baru = [
         [
+            'id_penyakit'    => $id_penyakit,
             'kelurahan'      => $kelurahan,
             'jenis_kelamin'  => 'Laki-laki',
             'total_penduduk' => $laki
         ],
         [
+            'id_penyakit'    => $id_penyakit,
             'kelurahan'      => $kelurahan,
             'jenis_kelamin'  => 'Perempuan',
             'total_penduduk' => $perempuan
@@ -279,6 +336,7 @@ $builder->groupBy('w.kelurahan');
 
     return redirect()->back()->with('success', 'Data ' . $kelurahan . ' berhasil diperbarui');
 }
+
 public function hapusPenduduk($id)
 {
     $db = \Config\Database::connect();

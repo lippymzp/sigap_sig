@@ -1,7 +1,9 @@
+<?php helper('text'); ?>
 <?php $this->setVar('penyakit', 'tbc'); ?>
 <?= $this->include('layout/header') ?>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
     html {
@@ -30,74 +32,610 @@
 
     }
 
-    /* HERO FIGMA STYLE */
-    .pneu-hero {
-        position: relative;
-        min-height: 520px;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
+   /* =========================================================
+   HERO SECTION
+========================================================= */
 
-        background:
-            linear-gradient(to right,
-                rgba(0, 206, 209, 0.88) 0%,
-                rgba(0, 206, 209, 0.72) 25%,
-                rgba(0, 206, 209, 0.40) 50%,
-                rgba(0, 206, 209, 0.10) 75%,
-                rgba(0, 206, 209, 0.02) 100%),
-            url('<?= base_url("img/tbc-bg.png") ?>');
+.tb-hero{
+    position: relative;
+    overflow: hidden;
 
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+    min-height: 760px;
+
+    display: flex;
+    align-items: center;
+
+    background:
+    linear-gradient(
+        rgba(11, 170, 190, 0.45),
+        rgba(11, 170, 190, 0.45)
+    ),
+    url('<?= base_url("img/tbc-bg.png") ?>');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* OVERLAY BLUR */
+.hero-overlay{
+    position: absolute;
+    inset: 0;
+
+    background:
+    radial-gradient(circle at top right,
+    rgba(255,255,255,.35),
+    transparent 30%);
+
+    z-index: 1;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.hero-content-box{
+    position: relative;
+    z-index: 3;
+
+    max-width: 720px;
+
+    padding-top: 20px;
+}
+
+.hero-content-box h1{
+    font-size: 45px;
+    font-weight: 800;
+
+    color: #fff;
+
+    margin-bottom: 25px;
+
+    text-shadow: 0 5px 18px rgba(0,0,0,.18);
+}
+
+.hero-sub{
+    font-size: 30px;
+    font-weight: 700;
+
+    color: #fff;
+
+    margin-bottom: 18px;
+
+    text-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+.hero-desc{
+    font-size: 20px;
+    line-height: 2;
+
+    color: rgba(255,255,255,.95);
+
+    margin-bottom: 40px;
+
+    text-shadow: 0 4px 10px rgba(0,0,0,.12);
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.btn-hero{
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+
+    background: linear-gradient(135deg,#1fd6df,#24b8e6);
+
+    color: white !important;
+
+    padding: 15px 28px;
+
+    border-radius: 14px;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    box-shadow:
+    0 10px 20px rgba(0,0,0,.15),
+    inset 0 1px 0 rgba(255,255,255,.25);
+
+    transition: .4s ease;
+}
+
+.btn-hero span{
+    font-size: 24px;
+    transition: .4s;
+}
+
+.btn-hero:hover{
+    transform: translateY(-6px) scale(1.02);
+
+    box-shadow:
+    0 20px 35px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+.btn-hero:hover span{
+    transform: translateX(8px);
+}
+
+/* =========================================================
+   WAVE
+========================================================= */
+
+.hero-wave{
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+
+    width: 100%;
+    z-index: 2;
+}
+
+.hero-wave svg{
+    display: block;
+    width: 100%;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:992px){
+
+    .tb-hero{
+        min-height: auto;
+        padding: 130px 0 160px;
+        text-align: center;
     }
 
-    .hero-content {
-        border: 2px solid rgba(255, 255, 255, 0.6);
-        padding: 25px;
-        border-radius: 15px;
-        backdrop-filter: blur(5px);
+    .hero-content-box{
+        margin: auto;
     }
 
-    .hero-content h1 {
-        font-size: 42px;
-        font-weight: 800;
+    .hero-content-box h1{
+        font-size: 58px;
     }
 
-    .btn-light {
-        border-radius: 30px;
+    .hero-sub{
+        font-size: 24px;
     }
 
-    /* FITUR */
-    .fitur-box {
-        background: var(--card);
-        padding: 18px;
-        border-radius: 12px;
-        font-weight: 600;
-        color: #00BBC2;
-        transition: 0.3s;
+    .hero-desc{
+        font-size: 18px;
+        line-height: 1.8;
     }
 
-    .fitur-box:hover {
-        background: var(--accent);
-        color: white;
-        transform: translateY(-5px);
+}
+
+@media(max-width:576px){
+
+    .hero-content-box h1{
+        font-size: 44px;
     }
 
-    /* TITLE */
-    .text-teal {
-        color: #00BBC2;
+    .hero-sub{
+        font-size: 20px;
     }
 
-    /* CARD INSIGHT */
-    .card {
-        border: none !important;
+    .hero-desc{
+        font-size: 16px;
     }
 
-    .card-gradient {
-        background: linear-gradient(135deg, var(--dark), var(--primary));
-        color: white;
+    .btn-hero{
+        width: 100%;
+        justify-content: center;
+
+        font-size: 18px;
+        padding: 18px 25px;
     }
+
+}
+
+/* =========================================================
+   FITUR SECTION
+========================================================= */
+
+.fitur-section{
+    padding: 80px 0 30px;
+    background: #f7fbfb;
+}
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.fitur-title{
+    margin-bottom: 45px;
+}
+
+.fitur-title h2{
+    font-size: 42px;
+    font-weight: 800;
+
+    color: #08b4c6;
+}
+
+/* =========================================================
+   FITUR BOX
+========================================================= */
+
+.fitur-box{
+    background: linear-gradient(
+        135deg,
+        #18c6d1,
+        #73dbe4
+    );
+
+    border-radius: 14px;
+
+    height: 92px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+
+    padding: 20px;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+    transition: .35s ease;
+}
+
+/* HOVER */
+.fitur-box:hover{
+    transform: translateY(-6px);
+
+    box-shadow:
+    0 18px 30px rgba(0,0,0,.12);
+
+    color: white;
+}
+
+/* ICON */
+.fitur-icon{
+    font-size: 24px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:992px){
+
+    .fitur-title h2{
+        font-size: 34px;
+    }
+
+}
+
+@media(max-width:576px){
+
+    .fitur-title h2{
+        font-size: 28px;
+    }
+
+    .fitur-box{
+        font-size: 16px;
+        height: auto;
+        min-height: 85px;
+    }
+
+}
+
+/* =========================================
+    INSIGHT SECTION
+========================================= */
+
+.insight-section{
+    padding:90px 0;
+    background:
+    linear-gradient(
+        180deg,
+        #f8ffff 0%,
+        #ffffff 100%
+    );
+    overflow:hidden;
+}
+
+.insight-subtitle{
+    color:#10B8C7;
+    font-weight:700;
+    font-size:18px;
+}
+
+.insight-title{
+    font-size:42px;
+    font-weight:800;
+    color:#0D5C63;
+    margin-top:10px;
+}
+
+.insight-desc{
+    max-width:700px;
+    margin:auto;
+    color:#6b7280;
+    margin-top:15px;
+    line-height:1.8;
+}
+
+/* =========================================
+    SLIDER
+========================================= */
+
+.insight-slider-wrapper{
+    position:relative;
+}
+
+.insight-slider{
+    display:flex;
+    gap:25px;
+    overflow:hidden;
+    scroll-behavior:smooth;
+}
+
+/* =========================================
+    CARD
+========================================= */
+
+.insight-card{
+    min-width:100%;
+    background:
+    linear-gradient(
+        135deg,
+        #10B8C7 0%,
+        #88DCE4 100%
+    );
+
+    border-radius:32px;
+    padding:50px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:40px;
+
+    position:relative;
+    overflow:hidden;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.08);
+
+    transition:0.4s;
+}
+
+.insight-card:hover{
+    transform:translateY(-8px);
+}
+
+.insight-card::before{
+    content:'';
+    position:absolute;
+    width:300px;
+    height:300px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+    top:-120px;
+    right:-100px;
+}
+
+.insight-content{
+    flex:1;
+    z-index:2;
+}
+
+.insight-badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.18);
+    color:white;
+    padding:8px 18px;
+    border-radius:50px;
+    font-size:14px;
+    margin-bottom:20px;
+    backdrop-filter:blur(10px);
+}
+
+.insight-content h3{
+    color:white;
+    font-size:40px;
+    font-weight:800;
+    line-height:1.4;
+    margin-bottom:20px;
+}
+
+.insight-content p{
+    color:rgba(255,255,255,0.95);
+    font-size:17px;
+    line-height:1.9;
+    margin-bottom:25px;
+    max-width:650px;
+}
+
+.insight-meta{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.insight-meta span{
+    color:white;
+    font-size:14px;
+}
+
+.insight-meta i{
+    margin-right:6px;
+}
+
+/* =========================================
+    BUTTON
+========================================= */
+
+.btn-insight{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:white;
+    color:#10B8C7;
+    padding:14px 28px;
+    border-radius:50px;
+    text-decoration:none;
+    font-weight:700;
+    transition:0.3s;
+}
+
+.btn-insight:hover{
+    background:#0D5C63;
+    color:white;
+    transform:translateX(5px);
+}
+
+/* =========================================
+    IMAGE
+========================================= */
+
+.insight-image{
+    width:420px;
+    flex-shrink:0;
+    z-index:2;
+}
+
+.insight-image img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    border-radius:28px;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.15);
+
+    transition:0.4s;
+}
+
+.insight-card:hover img{
+    transform:scale(1.03);
+}
+
+/* =========================================
+    NAVIGATION
+========================================= */
+
+.insight-nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+
+    width:62px;
+    height:62px;
+
+    border-radius:50%;
+    border:4px solid rgba(255,255,255,0.95);
+
+    background:linear-gradient(
+        135deg,
+        #16C2D5 0%,
+        #0EA5B7 100%
+    );
+
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:24px;
+    cursor:pointer;
+
+    z-index:20;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.15);
+
+    transition:all 0.35s ease;
+}
+
+.insight-nav:hover{
+    transform:translateY(-50%) scale(1.1);
+
+    background:linear-gradient(
+        135deg,
+        #0EA5B7 0%,
+        #0B8FA0 100%
+    );
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.22);
+}
+
+/* posisi kiri */
+.prevBtn{
+    left:-30px;
+}
+
+/* posisi kanan */
+.nextBtn{
+    right:-30px;
+}
+
+/* =========================================
+    DOTS
+========================================= */
+
+.insight-dots{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:30px;
+}
+
+.insight-dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#cbd5e1;
+    transition:0.3s;
+}
+
+.insight-dot.active{
+    width:35px;
+    border-radius:30px;
+    background:#10B8C7;
+}
+
+/* =========================================
+    RESPONSIVE
+========================================= */
+
+@media(max-width:992px){
+
+    .insight-card{
+        flex-direction:column;
+        text-align:center;
+        padding:35px;
+    }
+
+    .insight-content h3{
+        font-size:28px;
+    }
+
+    .insight-image{
+        width:100%;
+    }
+
+    .insight-nav{
+        display:none;
+    }
+}
+
 
     /* CTA */
     .btn-teal {
@@ -184,641 +722,936 @@
     .right {
         right: -10px;
     }
+
+/* =========================================
+    GEJALA SECTION
+========================================= */
+
+.gejala-section{
+    padding:5px 0 55px;
+    background:#f8ffff;
+}
+
+.gejala-box{
+    background:linear-gradient(
+        135deg,
+        #D4F3F4 0%,
+        #BFECEF 100%
+    );
+
+    border:2px solid #0DB5C1;
+
+    border-radius:28px;
+
+    padding:38px 50px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+
+    transition:0.35s;
+}
+
+.gejala-box:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================================
+    CONTENT
+========================================= */
+
+.gejala-content h2{
+    font-size:34px;
+    font-weight:800;
+    color:#08AFBC;
+    margin-bottom:18px;
+}
+
+.gejala-content p{
+    font-size:18px;
+    color:#1496A0;
+    line-height:1.9;
+    max-width:690px;
+    margin-bottom:0;
+}
+
+.gejala-content span{
+    color:#ff2b2b;
+    font-weight:800;
+}
+
+/* =========================================
+    BUTTON
+========================================= */
+
+.gejala-btn{
+    width:76px;
+    height:76px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #16C7D8 0%,
+        #0EA8B8 100%
+    );
+
+    border:7px solid rgba(255,255,255,0.95);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:30px;
+    font-weight:700;
+
+    text-decoration:none;
+
+    flex-shrink:0;
+
+    transition:0.35s;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.12);
+}
+
+.gejala-btn:hover{
+    transform:scale(1.08);
+
+    color:white;
+
+    box-shadow:
+    0 14px 35px rgba(0,0,0,0.18);
+}
+
+.gejala-btn i{
+    transform:translateX(2px);
+}
+
+/* =========================================
+    RESPONSIVE
+========================================= */
+
+@media(max-width:992px){
+
+    .gejala-box{
+        flex-direction:column;
+        text-align:center;
+        padding:30px;
+    }
+
+    .gejala-content h2{
+        font-size:28px;
+    }
+
+    .gejala-content p{
+        font-size:16px;
+    }
+
+    .gejala-btn{
+        width:68px;
+        height:68px;
+        font-size:24px;
+    }
+}
+
+/* =========================================
+    SECTION GLOBAL
+========================================= */
+
+.grafik-section,
+.peta-section{
+    padding:80px 0;
+    background:#DDF2F2;
+}
+
+.peta-section{
+    padding-top:20px;
+}
+
+.section-header h2{
+    font-size:58px;
+    font-weight:800;
+    color:#08AFBC;
+    margin-bottom:10px;
+}
+
+.section-header p{
+    color:#5f6b6b;
+    font-size:18px;
+}
+
+/* =========================================
+    CARD
+========================================= */
+
+.grafik-card,
+.peta-card{
+    background:white;
+
+    border-radius:32px;
+
+    min-height:520px;
+
+    padding:40px;
+
+    box-shadow:
+    0 10px 35px rgba(0,0,0,0.05);
+}
+
+/* =========================================
+    EMPTY STATE
+========================================= */
+
+.empty-box{
+    width:100%;
+    height:440px;
+
+    border:3px dashed #B9DADA;
+    border-radius:25px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+}
+
+.empty-box i{
+    font-size:70px;
+    color:#0DB5C1;
+    margin-bottom:25px;
+}
+
+.empty-box h4{
+    font-size:30px;
+    font-weight:700;
+    color:#10939D;
+    margin-bottom:10px;
+}
+
+.empty-box p{
+    color:#7d8b8b;
+    font-size:17px;
+}
+
+/* =========================================
+    RESPONSIVE
+========================================= */
+
+@media(max-width:992px){
+
+    .gejala-box{
+        flex-direction:column;
+        text-align:center;
+        padding:35px;
+    }
+
+    .gejala-content h2{
+        font-size:38px;
+    }
+
+    .gejala-content p{
+        font-size:18px;
+    }
+
+    .section-header h2{
+        font-size:38px;
+    }
+
+    .grafik-card,
+    .peta-card{
+        min-height:380px;
+    }
+
+    .empty-box{
+        height:300px;
+    }
+}
+
+/* =========================================
+    RINGKASAN SECTION
+========================================= */
+
+.ringkasan-section{
+    padding:50px 0 90px;
+    background:#f6f6f6;
+}
+
+/* =========================================
+    CARD
+========================================= */
+
+.ringkasan-card{
+
+    position:relative;
+
+    background:linear-gradient(
+        90deg,
+        #C8EEF0 0%,
+        #BFEAEC 45%,
+        #D7F7F8 100%
+    );
+
+    border:2px solid #05B7C6;
+
+    border-radius:26px;
+
+    min-height:280px;
+
+    padding:45px 48px;
+
+    overflow:hidden;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:30px;
+
+    transition:0.35s ease;
+}
+
+.ringkasan-card:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 18px 40px rgba(0,0,0,0.08);
+}
+
+/* =========================================
+    CONTENT
+========================================= */
+
+.ringkasan-content{
+    position:relative;
+    z-index:2;
+    width:65%;
+}
+
+.ringkasan-content h2{
+
+    color:#03AEBE;
+
+    font-size:50px;
+    font-weight:800;
+
+    margin-bottom:28px;
+}
+
+.ringkasan-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.ringkasan-list p{
+
+    margin:0;
+
+    color:#4C5557;
+
+    font-size:18px;
+    line-height:1.8;
+
+    font-weight:500;
+}
+
+.ringkasan-list span{
+
+    color:#FF0000;
+    font-weight:800;
+}
+
+/* =========================================
+    IMAGE
+========================================= */
+
+.ringkasan-image{
+
+    position:absolute;
+
+    right:20px;
+    bottom:0;
+
+    width:540px;
+
+    opacity:0.8;
+
+    pointer-events:none;
+}
+
+.ringkasan-image img{
+    width:100%;
+    object-fit:contain;
+}
+
+/* =========================================
+    RESPONSIVE
+========================================= */
+
+@media(max-width:992px){
+
+    .ringkasan-card{
+        padding:35px 28px;
+    }
+
+    .ringkasan-content{
+        width:100%;
+    }
+
+    .ringkasan-content h2{
+        font-size:34px;
+    }
+
+    .ringkasan-list p{
+        font-size:16px;
+    }
+
+    .ringkasan-image{
+        display:none;
+    }
+}
+
 </style>
 
-<!-- HERO -->
-<section class="pneu-hero text-white">
+
+<!-- =========================================================
+    HERO SECTION
+========================================================= -->
+
+<section class="tb-hero">
+
+    <!-- OVERLAY -->
+    <div class="hero-overlay"></div>
+
     <div class="container">
+
         <div class="row align-items-center">
 
-            <!-- TEXT -->
-            <div class="hero-content-box" data-aos="fade-right">
-                <h1>Tuberkulosis</h1>
+            <!-- LEFT CONTENT -->
+            <div class="col-lg-6">
 
-                <p class="hero-sub">
-                    Tau ga sih, Apa Itu Tuberkulosis ?
-                </p>
+                <div class="hero-content-box" data-aos="fade-right">
 
-                <p class="hero-desc">
-                    Tuberkulosis adalah suatu penyakit menular yang
-                    disebabkan oleh kuman Mycobacterium tuberculosis.
-                    Kuman Mycobacterium tuberculosis menular melalui
-                    udara (airborne disease) dari penderita sakit
-                    tuberkulosis ke orang lain disekitarnya.
-                </p>
+                    <h1>
+                        Tuberkulosis
+                    </h1>
 
-                <a href="<?= base_url('tbc-detail') ?>" class="btn btn-hero">
-                    Pelajari selengkapnya →
+                    <p class="hero-sub">
+                        Tau ga sih, Apa Itu Tuberkulosis ?
+                    </p>
+
+                    <p class="hero-desc">
+                        Tuberkulosis adalah suatu penyakit menular yang
+                        disebabkan oleh kuman Mycobacterium tuberculosis.
+                        Kuman Mycobacterium tuberculosis menular melalui
+                        udara (airborne disease) dari penderita sakit
+                        tuberkulosis ke orang lain disekitarnya.
+                    </p>
+
+                    <a href="<?= base_url('tbc-detail') ?>" class="btn btn-hero">
+                        Pelajari selengkapnya
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CURVE -->
+    <div class="hero-wave">
+        <svg viewBox="0 0 1440 320">
+            <path fill="#ffffff" fill-opacity="1"
+                d="M0,224L80,229.3C160,235,320,245,480,240C640,235,800,213,960,197.3C1120,181,1280,171,1360,165.3L1440,160L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z">
+            </path>
+        </svg>
+    </div>
+
+</section>
+
+<!-- =========================================================
+    FITUR SECTION
+========================================================= -->
+
+<section class="fitur-section">
+
+    <div class="container">
+
+        <!-- TITLE -->
+        <div class="fitur-title text-center" data-aos="fade-up">
+
+            <h2>
+                Fitur Menarik yang Bisa Dimanfaatkan
+            </h2>
+
+        </div>
+
+
+        <!-- FITUR -->
+        <div class="row justify-content-center g-4">
+
+            <!-- ITEM -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+
+                <a href="#grafik" class="fitur-box text-decoration-none">
+
+                    <div class="fitur-icon">
+                        📊
+                    </div>
+
+                    <span>
+                        Grafik Kesehatan
+                    </span>
+
                 </a>
+
             </div>
 
-        </div>
-    </div>
-</section>
 
-<!-- FITUR -->
-<section class="container text-center mt-5" data-aos="fade-up">
+            <!-- ITEM -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
 
-    <h4 class="text-teal mb-4 fw-bold">Fitur Menarik yang Bisa Dimanfaatkan</h4>
+                <a href="#peta" class="fitur-box text-decoration-none">
 
-    <div class="row g-4">
-
-        <div class="col-md-3">
-            <a href="#grafik" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">
-                    📊 Grafik Kesehatan
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="#peta" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">
-                    🗺️ Peta Persebaran Penyakit
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="#artikel" class="text-decoration-none">
-                <div class="fitur-box shadow-sm">
-                    📄 Artikel Kesehatan
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="skrining-tbc" class="fitur-box text-decoration-none shadow-sm d-block">
-                🩺 Skrining Kesehatan
-            </a>
-        </div>
-
-
-    </div>
-</section>
-
-<!-- INSIGHT (TETAP ADA, HANYA DIPERCANTIK) -->
-<section id="artikel" class="container mt-5" data-aos="fade-up">
-    <h6 class="text-center" style="color:#13616A;">
-        Insights
-    </h6>
-    <h4 class="text-center mb-4 fw-bold" style="color:#13616A;">
-        Telusuri Informasi Berikut
-    </h4>
-    <div class="carousel-wrapper">
-
-        <button class="nav-btn left" onclick="slide(-1)">‹</button>
-
-        <div class="scroll-container" id="slider">
-
-            <!-- CARD 1 -->
-            <div class="scroll-item card-gradient shadow">
-                <div class="d-flex justify-content-between align-items-center h-100">
-                    <div>
-                        <h5>Pengertian, penyebab, gejala, diagnosis, pengobatan, pencegahan, dan komplikasi TBC</h5>
-                        <p>Informasi lengkap tentang TBC</p>
+                    <div class="fitur-icon">
+                        🗺️
                     </div>
-                    <img src="<?= base_url('img/diare-artikel.png') ?>">
-                </div>
+
+                    <span>
+                        Peta Persebaran Penyakit
+                    </span>
+
+                </a>
+
             </div>
 
-            <!-- CARD 2 -->
-            <div class="scroll-item card-gradient shadow">
-                <div class="d-flex justify-content-between align-items-center h-100">
-                    <div>
-                        <h5>ISPA dan Diare Penyakit Dominan Pasca Banjir Aceh Tamian</h5>
-                        <p>Kasus dominan</p>
+
+            <!-- ITEM -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+
+                <a href="#artikel" class="fitur-box text-decoration-none">
+
+                    <div class="fitur-icon">
+                        📄
                     </div>
-                    <img src="<?= base_url('img/dokter.png') ?>">
-                </div>
+
+                    <span>
+                        Artikel Kesehatan
+                    </span>
+
+                </a>
+
             </div>
 
-            <!-- CARD 3 -->
-            <div class="scroll-item card-gradient shadow">
-                <div class="d-flex justify-content-between align-items-center h-100">
-                    <div>
-                        <h5>DIARE, PANTI PERKUAT KOLABORASI HADAPI ANCAMAN KESEHATAN</h5>
-                        <p>Panti berkolaborasi untuk menghadapi ancaman kesehatan.</p>
-                    </div>
-                    <img src="<?= base_url('img/seminar.png') ?>">
-                </div>
-            </div>
 
-            <!-- CARD 4 -->
-            <div class="scroll-item card-gradient shadow">
-                <div class="d-flex justify-content-between align-items-center h-100">
-                    <div>
-                        <h5>Variasi Temporal dan Klaster Spasial Penyakit Diare di Provinsi Jakarta, Indonesia</h5>
-                        <p>Penyakit diare</p>
+            <!-- ITEM -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+
+                <a href="skrining-tbc" class="fitur-box text-decoration-none">
+
+                    <div class="fitur-icon">
+                        🩺
                     </div>
-                    <img src="<?= base_url('img/riset.png') ?>">
-                </div>
+
+                    <span>
+                        Skrining Kesehatan
+                    </span>
+
+                </a>
+
             </div>
 
         </div>
 
-        <button class="nav-btn right" onclick="slide(1)">›</button>
-
-        <!-- DOT -->
-        <div class="dots" id="dots"></div>
-
     </div>
-</section>
-<script>
-    function scrollInsight(direction) {
-        const el = document.getElementById('insightScroll');
-        const width = el.clientWidth;
 
-        el.scrollBy({
-            left: direction * width,
-            behavior: 'smooth'
-        });
-    }
-</script>
-<script>
-    let index = 0;
-    const slider = document.getElementById('slider');
-    const total = slider.children.length;
-
-    /* buat dots */
-    const dotsContainer = document.getElementById('dots');
-    for (let i = 0; i < total; i++) {
-        let dot = document.createElement('span');
-        dot.onclick = () => goTo(i);
-        dotsContainer.appendChild(dot);
-    }
-    updateDots();
-
-    function slide(dir) {
-        index += dir;
-        if (index >= total) index = 0;
-        if (index < 0) index = total - 1;
-        updateSlide();
-    }
-
-    function goTo(i) {
-        index = i;
-        updateSlide();
-    }
-
-    function updateSlide() {
-        const cardWidth = document.querySelector('.scroll-item').offsetWidth;
-
-        slider.scrollTo({
-            left: index * cardWidth,
-            behavior: 'smooth'
-        });
-
-        updateDots();
-    }
-
-    function updateDots() {
-        const dots = document.querySelectorAll('#dots span');
-        dots.forEach((d, i) => {
-            d.classList.toggle('active', i === index);
-        });
-    }
-
-    /* auto slide */
-    setInterval(() => {
-        slide(1);
-    }, 4000);
-
-    /* swipe mobile */
-    let startX = 0;
-    slider.addEventListener("touchstart", e => {
-        startX = e.touches[0].clientX;
-    });
-    slider.addEventListener("touchend", e => {
-        let endX = e.changedTouches[0].clientX;
-        if (startX - endX > 50) slide(1);
-        if (endX - startX > 50) slide(-1);
-    });
-</script>
-
-<!-- CTA (TIDAK DIHAPUS) -->
-<section id="skrining" class="container mt-5" data-aos="zoom-in">
-    <div class="p-4 text-center shadow-sm" style="border-radius:20px; border:2px solid var(--border); background:white;">
-        <h5 class="fw-bold">Mengalami Gejala?</h5>
-        <p>
-            Tubuhmu memberi sinyal, jangan diabaikan.<br>
-            Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
-        </p>
-        <a href="<?= base_url('skrining-tbc') ?>" class="btn btn-teal px-4 py-2 shadow">
-            Mulai Skrining →
-        </a>
-    </div>
 </section>
 
-<!-- GRAFIK -->
-<section id="grafik" class="container mt-5" data-aos="fade-up">
-    <h4 class="text-teal mb-3 fw-bold">Grafik Tuberkulosis</h4>
-    <div class="row mb-3">
-        <div class="col-md-3"><select class="form-control shadow-sm">
-                <option>Kelurahan</option>
-            </select></div>
-        <div class="col-md-3"><select class="form-control shadow-sm">
-                <option>Kategori</option>
-            </select></div>
-        <div class="col-md-3"><select class="form-control shadow-sm">
-                <option>Tahun</option>
-            </select></div>
-    </div>
-    <div class="row">
-        <div class="col-md-9">
-            <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-                <canvas id="chartDiare"></canvas>
-            </div>
+<!-- =========================================
+    INSIGHT / ARTIKEL
+========================================= -->
+
+<?php
+$funfacts = $funfact ?? [];
+?>
+
+<section id="artikel" class="insight-section" data-aos="fade-up">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <span class="insight-subtitle">
+                Insights
+            </span>
+
+            <h2 class="insight-title">
+                Telusuri Informasi Berikut
+            </h2>
+
+            <p class="insight-desc">
+                Dapatkan informasi kesehatan terpercaya, edukatif,
+                dan mudah dipahami untuk meningkatkan kesadaran masyarakat.
+            </p>
         </div>
-        <div class="col-md-3">
-            <div class="p-3 shadow-sm bg-white" style="border-radius:15px;">
-                <h6>Keterangan Grafik</h6>
-                <p><span style="color:#8ecae6">■</span> Sembuh</p>
-                <p><span style="color:#219ebc">■</span> Pengobatan</p>
-                <p><span style="color:#90dbf4">■</span> Meninggal</p>
+
+        <div class="insight-slider-wrapper">
+
+            <!-- BUTTON LEFT -->
+            <button class="insight-nav prevBtn">
+    ❮
+</button>
+
+            <!-- SLIDER -->
+            <div class="insight-slider" id="insightSlider">
+
+                <?php foreach($funfacts as $item): ?>
+
+                <div class="insight-card">
+
+                    <div class="insight-content">
+
+    <h3>
+        <?= esc($item['judul_funfact']) ?>
+    </h3>
+
+    <p class="insight-text">
+        <?= character_limiter(strip_tags($item['deskripsi_funfact']), 170) ?>
+    </p>
+
+    <div class="insight-meta">
+
+        <span>
+            <i class="fas fa-calendar-alt"></i>
+            <?= date('d F Y', strtotime($item['tanggal_funfact'])) ?>
+        </span>
+
+    </div>
+
+    <a href="<?= base_url('tbc/detail-funfact/' . $item['id_funfact']) ?>" target="_blank" class="btn-insight">
+        Klik Selengkapnya
+        <span class="arrow-circle">
+            <i class="fas fa-arrow-right"></i>
+        </span>
+    </a>
+
+</div>
+
+                    <div class="insight-image">
+                        <img src="<?= base_url('img/' . $item['gambar_funfact']) ?>" alt="">
+                    </div>
+
+                </div>
+
+                <?php endforeach; ?>
+
             </div>
+
+            <!-- BUTTON RIGHT -->
+            <button class="insight-nav nextBtn">
+    ❯
+</button>
+
         </div>
+
+        <!-- DOTS -->
+        <div class="insight-dots" id="insightDots"></div>
+
     </div>
-</section>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
 
-        new Chart(document.getElementById('chartDiare'), {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
-                datasets: [{
-                        label: 'Sembuh',
-                        data: [100, 80, 70, 60, 150],
-                        backgroundColor: '#8ecae6'
-                    },
-                    {
-                        label: 'Pengobatan',
-                        data: [90, 150, 120, 90, 95],
-                        backgroundColor: '#219ebc'
-                    },
-                    {
-                        label: 'Meninggal',
-                        data: [40, 20, 40, 40, 60],
-                        backgroundColor: '#90dbf4'
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                }
-            }
-
-        });
-
-    });
-</script>
-
-<!-- PETA -->
-<section id="peta" class="container mt-5" data-aos="fade-up">
-    <h4 class="text-teal mb-3 fw-bold">Peta Persebaran Penyakit</h4>
-    <div id="mapTbc" style="height:400px; border-radius:15px;"></div>
-
-
-    <div class="mt-3 d-flex gap-2">
-        <span class="badge bg-warning">Rendah</span>
-        <span class="badge bg-danger">Sedang</span>
-        <span class="badge bg-dark">Tinggi</span>
-    </div>
 </section>
 
-<!-- SCRIPT -->
+
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
 
-        /* ================= TAMBAHAN QGIS ================= */
-        function fixNama(nama) {
-            return (nama || "")
-                .toLowerCase()
-                .trim()
-                .replace(/\s+/g, " ")
-                .replace(/[^a-z0-9 ]/g, "");
-        }
+const slider = document.getElementById('insightSlider');
+const cards = document.querySelectorAll('.insight-card');
+const dotsContainer = document.getElementById('insightDots');
 
-        var dataTbc = <?= json_encode($tbc ?? []) ?>;
-        console.log("DATA TBC:", dataTbc);
+let currentIndex = 0;
 
-        var dataFinal = {};
+/* =========================================
+    CREATE DOTS
+========================================= */
 
-        dataTbc.forEach(item => {
+cards.forEach((_, index)=>{
 
-            var desa = fixNama(item.desa);
+    const dot = document.createElement('div');
+    dot.classList.add('insight-dot');
 
-            if (!dataFinal[desa]) {
-                dataFinal[desa] = {
-                    total: 0,
-                    jumlah: 0
-                };
-            }
-
-            dataFinal[desa].total += parseInt(item.kasus);
-            dataFinal[desa].jumlah++;
-        });
-
-        for (var key in dataFinal) {
-            var rata = dataFinal[key].total / dataFinal[key].jumlah;
-
-            if (rata >= 20) dataFinal[key].kategori = "tinggi";
-            else if (rata >= 10) dataFinal[key].kategori = "sedang";
-            else dataFinal[key].kategori = "rendah";
-        }
-
-        console.log("DATA FINAL TBC:", dataFinal);
-
-
-
-        /* CHART TBC */
-        const ctx = document.getElementById('chartTbc');
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei'],
-                datasets: [{
-                        label: 'Sembuh',
-                        data: [70, 100, 80, 60, 120],
-                        backgroundColor: '#95d5b2'
-                    },
-                    {
-                        label: 'Pengobatan',
-                        data: [120, 140, 110, 90, 100],
-                        backgroundColor: '#52b788'
-                    },
-                    {
-                        label: 'Meninggal',
-                        data: [15, 25, 20, 15, 30],
-                        backgroundColor: '#1b4332'
-                    }
-                ]
-            }
-        });
-
-        /* MAP */
-        var map = L.map('mapTbc').setView([-8.1, 113.5], 12);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-            .addTo(map);
-
-        /* 🔥 FIX BIAR LANGSUNG MUNCUL */
-        setTimeout(() => {
-            map.invalidateSize();
-        }, 200);
-
-        /* 🔥 QGIS GEOJSON */
-        fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
-            .then(res => res.json())
-            .then(data => {
-
-                var geo = L.geoJSON(data, {
-
-                    style: function(feature) {
-
-                        var nama = fixNama(feature.properties.NAMOBJ);
-                        var item = dataFinal[nama];
-
-                        var warna = "#cccccc";
-
-                        if (item) {
-                            if (item.kategori == "tinggi") warna = "#1b4332";
-                            else if (item.kategori == "sedang") warna = "#40916c";
-                            else if (item.kategori == "rendah") warna = "#95d5b2";
-                        }
-
-                        return {
-                            color: "#2a9d8f",
-                            weight: 2,
-                            fillColor: warna,
-                            fillOpacity: 0.7
-                        };
-                    },
-
-                    onEachFeature: function(feature, layer) {
-
-                        var namaAsli = feature.properties.NAMOBJ;
-                        var item = dataFinal[fixNama(namaAsli)];
-
-                        var isi = "<b>Desa: " + namaAsli + "</b>";
-
-                        if (item) {
-                            isi += "<br>Total Kasus: " + item.total;
-                            isi += "<br>Kategori: " + item.kategori;
-                        } else {
-                            isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                        }
-
-                        layer.bindPopup(isi);
-
-                        layer.bindTooltip(namaAsli, {
-                            permanent: true,
-                            direction: "center",
-                            className: "label-desa"
-                        });
-
-                    }
-
-                }).addTo(map);
-
-                map.fitBounds(geo.getBounds());
-            });
-
-    });
-</script>
-
-<style>
-    .label-desa {
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        border: none;
-        padding: 2px 6px;
-        font-size: 11px;
-        border-radius: 6px;
+    if(index === 0){
+        dot.classList.add('active');
     }
-</style>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
 
-        /* ================= TAMBAHAN QGIS ================= */
-        function fixNama(nama) {
-            return (nama || "")
-                .toLowerCase()
-                .trim()
-                .replace(/\s+/g, " ")
-                .replace(/[^a-z0-9 ]/g, "");
-        }
+    dot.addEventListener('click', ()=>{
 
-        var dataTbc = <?= json_encode($tbc ?? []) ?>;
-        console.log("DATA TBC:", dataTbc);
-
-        var dataFinal = {};
-
-        dataTbc.forEach(item => {
-
-            var desa = fixNama(item.desa);
-
-            if (!dataFinal[desa]) {
-                dataFinal[desa] = {
-                    total: 0,
-                    jumlah: 0
-                };
-            }
-
-            dataFinal[desa].total += parseInt(item.kasus);
-            dataFinal[desa].jumlah++;
-        });
-
-        for (var key in dataFinal) {
-            var rata = dataFinal[key].total / dataFinal[key].jumlah;
-
-            if (rata >= 20) dataFinal[key].kategori = "tinggi";
-            else if (rata >= 10) dataFinal[key].kategori = "sedang";
-            else dataFinal[key].kategori = "rendah";
-        }
-
-        console.log("DATA FINAL TBC:", dataFinal);
-
-
-        /* CHART TBC */
-        const ctx = document.getElementById('chartTbc');
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei'],
-                datasets: [{
-                        label: 'Sembuh',
-                        data: [70, 100, 80, 60, 120],
-                        backgroundColor: '#95d5b2'
-                    },
-                    {
-                        label: 'Pengobatan',
-                        data: [120, 140, 110, 90, 100],
-                        backgroundColor: '#52b788'
-                    },
-                    {
-                        label: 'Meninggal',
-                        data: [15, 25, 20, 15, 30],
-                        backgroundColor: '#1b4332'
-                    }
-                ]
-            }
-        });
-
-        /* MAP */
-        var map = L.map('mapTbc').setView([-8.1, 113.5], 12);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-            .addTo(map);
-
-        /* 🔥 FIX BIAR LANGSUNG MUNCUL */
-        setTimeout(() => {
-            map.invalidateSize();
-        }, 200);
-
-        /* 🔥 QGIS GEOJSON */
-        fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
-            .then(res => res.json())
-            .then(data => {
-
-                var geo = L.geoJSON(data, {
-
-                    style: function(feature) {
-
-                        var nama = fixNama(feature.properties.NAMOBJ);
-                        var item = dataFinal[nama];
-
-                        var warna = "#cccccc";
-
-                        if (item) {
-                            if (item.kategori == "tinggi") warna = "#1b4332";
-                            else if (item.kategori == "sedang") warna = "#40916c";
-                            else if (item.kategori == "rendah") warna = "#95d5b2";
-                        }
-
-                        return {
-                            color: "#2a9d8f",
-                            weight: 2,
-                            fillColor: warna,
-                            fillOpacity: 0.7
-                        };
-                    },
-
-                    onEachFeature: function(feature, layer) {
-
-                        var namaAsli = feature.properties.NAMOBJ;
-                        var item = dataFinal[fixNama(namaAsli)];
-
-                        var isi = "<b>Desa: " + namaAsli + "</b>";
-
-                        if (item) {
-                            isi += "<br>Total Kasus: " + item.total;
-                            isi += "<br>Kategori: " + item.kategori;
-                        } else {
-                            isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                        }
-
-                        layer.bindPopup(isi);
-
-                        layer.bindTooltip(namaAsli, {
-                            permanent: true,
-                            direction: "center",
-                            className: "label-desa"
-                        });
-
-                    }
-
-                }).addTo(map);
-
-                map.fitBounds(geo.getBounds());
-            });
+        currentIndex = index;
+        updateSlider();
 
     });
+
+    dotsContainer.appendChild(dot);
+
+});
+
+const dots = document.querySelectorAll('.insight-dot');
+
+/* =========================================
+    UPDATE SLIDER
+========================================= */
+
+function updateSlider(){
+
+    slider.scrollTo({
+        left: cards[currentIndex].offsetLeft,
+        behavior:'smooth'
+    });
+
+    dots.forEach(dot=>dot.classList.remove('active'));
+    dots[currentIndex].classList.add('active');
+
+}
+
+/* =========================================
+    NEXT SLIDE
+========================================= */
+
+function nextSlide(){
+
+    currentIndex++;
+
+    if(currentIndex >= cards.length){
+        currentIndex = 0;
+    }
+
+    updateSlider();
+
+}
+
+/* =========================================
+    PREV SLIDE
+========================================= */
+
+function prevSlide(){
+
+    currentIndex--;
+
+    if(currentIndex < 0){
+        currentIndex = cards.length - 1;
+    }
+
+    updateSlider();
+
+}
+
+/* =========================================
+    BUTTON
+========================================= */
+
+document.querySelector('.nextBtn')
+.addEventListener('click', nextSlide);
+
+document.querySelector('.prevBtn')
+.addEventListener('click', prevSlide);
+
+/* =========================================
+    AUTO SLIDE
+========================================= */
+
+setInterval(()=>{
+
+    nextSlide();
+
+}, 5000);
+
 </script>
 
-<!-- RINGKASAN DATA -->
-<section class="container mt-5">
+<section class="gejala-section" data-aos="fade-up">
 
-    <div class="ringkasan-box">
+    <div class="container">
 
-        <h4 class="fw-bold mb-3">Ringkasan Data</h4>
+        <div class="gejala-box">
 
-        <p>
-            Kasus TBC tertinggi terjadi di Desa
-            <span class="highlight-red">Kaliwates</span>
-            yang masuk kategori sangat tinggi dibanding wilayah lain
-        </p>
+            <div class="gejala-content">
 
-        <p>
-            Terdapat <b>2 desa</b> dengan kasus di atas rata-rata
-        </p>
+                <h2>
+                    Mengalami Gejala?
+                </h2>
 
-        <p>
-            Rata-rata kasus diare di tiap desa adalah
-            <span class="highlight-red">80 kasus</span>
-        </p>
+                <p>
+                    Tubuhmu sedang memberi sinyal, jangan diabaikan.
+                    Yuk, kenali gejala Tuberkulosis dan lakukan
+                    <span>skrining</span>
+                    sejak dini!
+                </p>
 
-        <p>
-            Rata-rata kasus diare di kecamatan Kaliwates adalah
-            <span class="highlight-red">130 kasus</span>
-        </p>
+            </div>
 
-    </div>
+            <a href="#" class="gejala-btn">
+                <i class="fas fa-arrow-right"></i>
+            </a>
 
-    <div class="text-center mt-4">
-        <a href="<?= base_url('/') ?>" class="btn-kembali">
-            Kembali
-        </a>
+        </div>
+
     </div>
 
 </section>
+
+
+
+<!-- =========================================
+    GRAFIK SECTION
+========================================= -->
+
+<section class="grafik-section">
+
+    <div class="container">
+
+        <div class="section-header mb-4">
+
+            <h2>
+                Grafik Tuberkulosis
+            </h2>
+
+        </div>
+
+        <div class="grafik-card">
+
+            <!-- KOSONG DULU -->
+            <div class="empty-box">
+
+                <i class="fas fa-chart-bar"></i>
+
+                <h4>
+                    Grafik Akan Ditampilkan Di Sini
+                </h4>
+
+                <p>
+                    Data grafik sedang dipersiapkan.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+    PETA SECTION
+========================================= -->
+
+<section class="peta-section">
+
+    <div class="container">
+
+        <div class="section-header mb-4">
+
+            <h2>
+                Peta Sebaran Tuberkulosis
+            </h2>
+
+        </div>
+
+        <div class="peta-card">
+
+            <!-- KOSONG DULU -->
+            <div class="empty-box">
+
+                <i class="fas fa-map-marked-alt"></i>
+
+                <h4>
+                    Peta Akan Ditampilkan Di Sini
+                </h4>
+
+                <p>
+                    Integrasi peta sedang dipersiapkan.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+    RINGKASAN DATA
+========================================= -->
+
+<section class="ringkasan-section" data-aos="fade-up">
+
+    <div class="container">
+
+        <div class="ringkasan-card">
+
+            <!-- CONTENT -->
+            <div class="ringkasan-content">
+
+                <h2>
+                    Ringkasan Data
+                </h2>
+
+                <div class="ringkasan-list">
+
+                    <p>
+                        Kasus Tuberkulosis tertinggi terjadi di Desa
+                        <span>Kebon Agung</span>
+                        yang masuk kategori sangat tinggi dibanding wilayah lain
+                    </p>
+
+                    <p>
+                        Terdapat
+                        <span>2 desa</span>
+                        dengan kasus di atas rata-rata
+                    </p>
+
+                    <p>
+                        Rata-rata kasus pneumonia di tiap desa adalah
+                        <span>90 kasus</span>
+                    </p>
+
+                    <p>
+                        Rata-rata kasus pneumonia di kecamatan Kebon Agung adalah
+                        <span>120 kasus</span>
+                    </p>
+
+                    <p>
+                        Wilayah dengan kasus tinggi lainnya adalah
+                        <span>Mangli</span>
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- IMAGE -->
+            <div class="ringkasan-image">
+
+                <img src="<?= base_url('img/ilustrasi.png') ?>" alt="">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 <?= $this->include('layout/footer') ?>

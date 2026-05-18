@@ -39,7 +39,7 @@ class LandingpageDbd extends BaseController
         $funfactModel = new \App\Models\FunfactModel();
 
         $funfact = $funfactModel
-            ->where('id_penyakit', 1)
+             ->where('id_penyakit', 1)
             ->where('status_funfact', 'upload')
             ->orderBy('tanggal_funfact', 'DESC')
             ->findAll(10);
@@ -94,7 +94,18 @@ class LandingpageDbd extends BaseController
     if ($jk) $builder->where('p.jenis_kelamin', $jk == 'L' ? 'Laki-laki' : 'Perempuan');
 
     if ($wilayah) {
-        $builder->where('w.kelurahan', $wilayah);
+        // Menyesuaikan value 'Tegalgede' agar cocok dengan 'Tegal Gede' di database
+        $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+        $builder->where('w.kelurahan', $namaWilayah);
+    } else {
+        // Opsional: Untuk memastikan hanya 5 kelurahan ini yang tampil jika memilih "All"
+        $builder->whereIn('w.kelurahan', [
+            'Sumbersari',
+            'Wirolegi',
+            'Antirogo',
+            'Tegal Gede',
+            'Karangrejo'
+        ]);
     }
 
     if ($usia) {

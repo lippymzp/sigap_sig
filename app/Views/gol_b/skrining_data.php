@@ -255,8 +255,8 @@ label{
                 -- Pilih Jenis Kelamin --
             </option>
 
-            <option value="P">Perempuan</option>
-            <option value="L">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+            <option value="Laki-laki">Laki-laki</option>
 
         </select>
 
@@ -267,19 +267,13 @@ label{
             class="form-control mb-3"
         >
 
-        <label>Kategori Usia</label>
-        <select name="kategori_usia" class="form-select mb-3" required>
-
-            <option value="" selected disabled>
-                -- Pilih Kategori Usia --
-            </option>
-            
-            <option value="P">0 - 4 tahun: bayi dan balita </option>
-            <option value="L">5 - 9 tahun: anak-anak</option>
-            <option value="L">5 - 10 - 18 tahun: remaja</option>
-            <option value="L">5 - 19 - 59 tahun: dewasa</option>
-            <option value="L">60 + : lansia</option>
-        </select>
+        <label>Usia</label>
+        <input 
+            type="text"
+            name="usia"
+            class="form-control mb-3" 
+            placeholder="Masukkan Usia"
+        >
 
         <label>Nomor Telepon</label>
         <input 

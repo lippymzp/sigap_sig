@@ -5,7 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use App\Models\PetugasModel;
 
-class profile_admin_pneumonia extends Controller
+class Profile_admin_pneumonia extends Controller
 {
     // HALAMAN PROFIL
     public function profil_admin()
@@ -56,26 +56,25 @@ class profile_admin_pneumonia extends Controller
 
     //update
     public function updateProfil()
-    {
-        $model = new PetugasModel();
+{
+    $model = new PetugasModel();
 
-        $id_petugas = session()->get('id_petugas');
+    $id_petugas = session()->get('id_petugas');
 
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+    $password = $this->request->getPost('password');
 
-        $data = [
-            'email' => $email
-        ];
+    $data = [];
 
-        // kalau password diisi
-        if (!empty($password)) {
-            $data['password'] = $password;
-        }
-
-        $model->update($id_petugas, $data);
-
-        return redirect()->to(base_url('profil_admin'))
-            ->with('success', 'Profil berhasil diupdate');
+    // email tidak diupdate agar tidak bisa diubah
+    if (!empty($password)) {
+        $data['password'] = $password;
     }
+
+    if (!empty($data)) {
+        $model->update($id_petugas, $data);
+    }
+
+    return redirect()->to(base_url('pneumonia/profil_admin'))
+        ->with('success', 'Profil berhasil diupdate');
+}
 }

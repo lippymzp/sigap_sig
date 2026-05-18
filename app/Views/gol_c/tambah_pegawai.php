@@ -77,9 +77,9 @@
                 </div>
 
                 <div class="col-md-6 mb-4">
-                    <label class="form-label">Jabatan</label>
+                    <label class="form-label">Role</label>
                     <select name="id_jabatan" class="form-control" required>
-                        <option value="">Pilih Jabatan</option>
+                        <option value="">Pilih Role</option>
                         <option value="1">Kepala</option>
                         <option value="2">Kader</option>
                         <option value="3">Admin</option>

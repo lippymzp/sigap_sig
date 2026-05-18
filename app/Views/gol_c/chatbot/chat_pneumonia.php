@@ -1,146 +1,732 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Chatbot Pneumonia</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-
-    body{
-        background:#f5f7fb;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    .chat-box{
-        height:500px;
-        overflow-y:auto;
-        background:white;
-        border-radius:15px;
-        padding:20px;
-        border:1px solid #ddd;
+    body {
+        background: #e5ddd5;
+        height: 100vh;
+        overflow: hidden;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
     }
 
-    .user{
-        text-align:right;
-        margin-bottom:15px;
+    /* BACKGROUND TOP */
+    .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 130px;
+        background: linear-gradient(135deg, #00BBC2, #40EDD0);
+        ;
+        z-index: -1;
     }
 
-    .bot{
-        text-align:left;
-        margin-bottom:15px;
+    /* MAIN */
+    .chat-wrapper {
+        width: 95%;
+        height: 95vh;
+        margin: 20px auto;
+        background: white;
+        display: flex;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
     }
 
-    .bubble-user{
-        display:inline-block;
-        background:#00BBC2;
-        color:white;
-        padding:12px 18px;
-        border-radius:15px;
-        max-width:70%;
+    /* SIDEBAR */
+    .sidebar {
+        width: 30%;
+        background: #F0F7F7;
+        border-right: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
     }
 
-    .bubble-bot{
-        display:inline-block;
-        background:#e9ecef;
-        padding:12px 18px;
-        border-radius:15px;
-        max-width:70%;
-        white-space:pre-line;
+    .sidebar-header {
+        background: linear-gradient(135deg, #00CED1, #40EDD0);
+        color: white;
+        padding: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+        position: relative;
+        z-index: 2;
     }
 
+    .sidebar-header img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        font-weight: 600;
+        color: white;
+    }
+
+    .sidebar-header p {
+        margin: 0;
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .menu-section {
+        padding: 14px 20px 20px;
+        margin-top: -5px;
+    }
+
+    .menu-title {
+        font-size: 13px;
+        color: #6B7A7A;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .quick-btn {
+        width: 100%;
+        border: 1px solid #dfeeee;
+        ;
+        background: white;
+        padding: 14px;
+        border-radius: 12px;
+        text-align: left;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .quick-btn:hover {
+        background: #14919B;
+        color: white;
+        transform: translateX(5px);
+    }
+
+    /* CHAT AREA */
+    .chat-area {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        background: #F5F7F8;
+        position: relative;
+    }
+
+    /* HEADER */
+    .chat-header {
+        background: #F7FBFB;
+        padding: 7px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .chat-user {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .chat-user img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .chat-user h5 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .chat-user p {
+        color: #8FA3A5;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .header-icons {
+        display: flex;
+        gap: 20px;
+        color: #666;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    /* CHAT BODY */
+    .chat-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+        scroll-behavior: smooth;
+
+        background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+    }
+
+    /* MESSAGE */
+    .message {
+        max-width: 75%;
+        width: fit-content;
+        padding: 14px 18px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        position: relative;
+        animation: fadeIn 0.3s ease;
+        line-height: 1.7;
+        font-size: 14px;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+
+    }
+
+    /* BOT */
+    .bot {
+        background: #00CED1;
+        color: white;
+        border-radius: 20px 20px 20px 5px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* USER */
+    .user {
+        background: #40EDD0;
+        color: white;
+        margin-left: auto;
+        border-radius: 20px 20px 5px 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* TIME */
+    .message-time {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 8px;
+        text-align: right;
+        font-weight: 400;
+    }
+
+    /* INPUT */
+    .chat-input {
+        background: #ffffff;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .chat-input input {
+        flex: 1;
+        border: border:1px solid #dfeeee;
+        outline: none;
+        padding: 16px 22px;
+        border-radius: 30px;
+        font-size: 14px;
+        background: white;
+        color: #444;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .send-btn {
+        width: 60px;
+        height: 60px;
+        border: none;
+        border-radius: 50%;
+        background: #00CED1;
+        color: white;
+        font-size: 22px;
+        transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .send-btn:hover {
+        transform: scale(1.08);
+        background: #00CED1;
+    }
+
+    /* TYPING */
+    .typing {
+        display: flex;
+        gap: 5px;
+        padding: 10px 15px;
+        background: white;
+        width: fit-content;
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+
+    .typing span {
+        width: 10px;
+        height: 10px;
+        background: #999;
+        border-radius: 50%;
+        animation: bounce 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    .chatbot-avatar {
+
+        width: 55px;
+
+        height: 55px;
+
+        object-fit: contain;
+
+        animation: floatBot 3s ease-in-out infinite;
+
+    }
+
+    /* ANIMATION */
+    @keyframes bounce {
+
+        0%,
+        80%,
+        100% {
+            transform: scale(0);
+        }
+
+        40% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+
+        .sidebar {
+            display: none;
+        }
+
+        .chat-area {
+            width: 100%;
+        }
+
+        .chat-wrapper {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            border-radius: 0;
+        }
+    }
+
+    /* TOAST */
+    #toast {
+        position: fixed;
+        top: 90px;
+        right: 30px;
+        background: #14919B;
+        color: white;
+        padding: 15px 22px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 99999;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: 0.3s ease;
+
+    }
+
+    /* SHOW TOAST */
+    #toast.show {
+
+        opacity: 1;
+        visibility: visible;
+
+        transform: translateY(0);
+
+    }
+
+    .back-landing-btn {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        width: 85%;
+
+        margin: 40px auto 0 auto;
+
+        padding: 12px 16px;
+
+        border-radius: 14px;
+
+        background: linear-gradient(135deg,
+                #00BBC2,
+                #40EDD0);
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        transition: 0.3s;
+
+        box-shadow:
+            0 6px 18px rgba(20,
+                145,
+                155,
+                0.18);
+
+    }
+
+    /* HOVER */
+    .back-landing-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 10px 24px rgba(20,
+                145,
+                155,
+                0.25);
+
+    }
     </style>
 </head>
 
 <body>
 
-<div class="container py-5">
+    <div class="top-bar"></div>
 
-    <h3 class="mb-4 text-center">
-        Chatbot Edukasi Pneumonia
-    </h3>
+    <div class="chat-wrapper">
 
-    <div class="chat-box mb-3" id="chatBox">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
 
-        <div class="bot">
-            <div class="bubble-bot">
-Halo 👋
+            <div class="sidebar-header">
 
-Saya chatbot edukasi pneumonia.
+                <img src="<?= base_url('img/Maskot_CYRO.png') ?>" alt="CYRO" class="chatbot-avatar">
 
-Silakan tanyakan mengenai:
-• Pencegahan pneumonia
-• Batuk
-• Demam
-• Sesak napas
-• Vaksin
-• PHBS
-• Kesehatan paru
+                <div>
+                    <h4>CYBOT</h4>
+                    <p>Chatbot Edukasi Pneumonia</p>
+                </div>
+
             </div>
+
+            <div class="menu-section">
+
+                <div class="menu-title">
+                    Pertanyaan Cepat
+                </div>
+
+                <button class="quick-btn" onclick="quickAsk('Apa itu pneumonia?')">
+                    Apa itu pneumonia?
+                </button>
+
+                <button class="quick-btn" onclick="quickAsk('Apa gejala pneumonia?')">
+                    🤒 Gejala pneumonia
+                </button>
+
+                <button class="quick-btn" onclick="quickAsk('Bagaimana pencegahan pneumonia?')">
+                    💉 Pencegahan pneumonia
+                </button>
+
+                <button class="quick-btn" onclick="quickAsk('Apa yang harus dilakukan saat sesak napas?')">
+                    😮‍💨 Sesak napas
+                </button>
+
+                <button class="quick-btn" onclick="quickAsk('Apa manfaat vaksin?')">
+                    💊 Vaksin
+                </button>
+                <button class="quick-btn" onclick="quickAsk('Tentang Cybot')">
+
+                    🤖 Tentang Cybot
+
+                </button>
+            </div>
+            <br><br>
+            <a href="<?= base_url('pneumonia') ?>" class="back-landing-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Kembali ke Beranda
+            </a>
+        </div>
+
+        <!-- CHAT AREA -->
+        <div class="chat-area">
+
+            <!-- HEADER -->
+            <div class="chat-header">
+
+                <div class="chat-user">
+
+                    <img src="<?= base_url('img/Maskot_CYRO.png') ?>" alt="CYRO" class="chatbot-avatar">
+
+                    <div>
+
+                        <h5><br>CYBOT</h5>
+                        <p>● Online</p>
+                    </div>
+
+                </div>
+
+                <div class="header-icons">
+                    <i class="fa-solid fa-phone" onclick="comingSoon('Panggilan suara')"></i>
+                    <i class="fa-solid fa-video" onclick="comingSoon('Video call')"></i>
+                    <i class="fa-solid fa-ellipsis-vertical" onclick="comingSoon('Pengaturan chatbot')"></i>
+                </div>
+
+            </div>
+
+            <!-- CHAT BODY -->
+            <div class="chat-body" id="chatBody">
+
+                <!-- BOT -->
+                <div class="message bot">
+
+                    Halo 👋<br><br>
+
+                    Saya chatbot edukasi pneumonia.<br><br>
+
+                    Silakan tanyakan mengenai:
+                    <br><br>
+
+                    • Pneumonia<br>
+                    • Batuk<br>
+                    • Demam<br>
+                    • Sesak napas<br>
+                    • Vaksin<br>
+                    • PHBS<br>
+                    • Kesehatan paru
+
+                    <div class="message-time">
+                        <?= date('H:i') ?>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- INPUT -->
+            <div class="chat-input">
+
+                <input type="text" id="message" placeholder="Tulis pesan...">
+
+                <button class="send-btn" onclick="sendMessage()">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                </button>
+
+            </div>
+
         </div>
 
     </div>
 
-    <div class="input-group">
+    <script>
+    // ENTER KEY
+    document.getElementById('message')
+        .addEventListener('keypress', function(e) {
 
-        <input type="text"
-               id="message"
-               class="form-control"
-               placeholder="Tulis pertanyaan...">
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
 
-        <button class="btn btn-info text-white"
-                onclick="sendMessage()">
-            Kirim
-        </button>
+        });
 
-    </div>
+    // TIME
+    function getTime() {
 
-</div>
+        let now = new Date();
 
-<script>
+        let h = now.getHours().toString().padStart(2, '0');
+        let m = now.getMinutes().toString().padStart(2, '0');
 
-function sendMessage(){
+        return `${h}:${m}`;
 
-    let message = document.getElementById('message').value;
-
-    if(message.trim() == ''){
-        return;
     }
 
-    let chatBox = document.getElementById('chatBox');
+    // QUICK ASK
+    function quickAsk(text) {
 
-    chatBox.innerHTML += `
-        <div class="user">
-            <div class="bubble-user">${message}</div>
-        </div>
-    `;
+        document.getElementById('message').value = text;
+        sendMessage();
 
-    fetch("<?= base_url('/chat-pneumonia/send') ?>",{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/x-www-form-urlencoded'
-        },
-        body:'message='+encodeURIComponent(message)
-    })
+    }
 
-    .then(response => response.json())
+    // SCROLL
+    function scrollBottom() {
 
-    .then(data => {
+        let chatBody = document.getElementById('chatBody');
 
-        chatBox.innerHTML += `
-            <div class="bot">
-                <div class="bubble-bot">${data.reply}</div>
+        chatBody.scrollTo({
+            top: chatBody.scrollHeight,
+            behavior: 'smooth'
+        });
+
+    }
+
+    // SEND MESSAGE
+    function sendMessage() {
+
+        let messageInput = document.getElementById('message');
+
+        let message = messageInput.value.trim();
+
+        if (message === '') {
+            return;
+        }
+
+        let chatBody = document.getElementById('chatBody');
+
+        // USER MESSAGE
+        chatBody.innerHTML += `
+            <div class="message user">
+
+                ${message}
+
+                <div class="message-time">
+                    ${getTime()}
+                </div>
+
             </div>
         `;
 
-        chatBox.scrollTop = chatBox.scrollHeight;
+        scrollBottom();
 
-    });
+        // CLEAR
+        messageInput.value = '';
 
-    document.getElementById('message').value='';
+        // TYPING
+        chatBody.innerHTML += `
+            <div class="typing" id="typing">
 
-}
+                <span></span>
+                <span></span>
+                <span></span>
 
-</script>
+            </div>
+        `;
+
+        scrollBottom();
+
+        // FETCH
+        fetch("<?= base_url('chat-pneumonia/send') ?>", {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+
+                body: 'message=' + encodeURIComponent(message)
+
+            })
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                // REMOVE TYPING
+                document.getElementById('typing').remove();
+
+                // BOT REPLY
+                chatBody.innerHTML += `
+                <div class="message bot">
+
+                    ${data.reply.replace(/\n/g,'<br>')}
+
+                    <div class="message-time">
+                        ${getTime()}
+                    </div>
+
+                </div>
+            `;
+
+                scrollBottom();
+
+            });
+    }
+
+    function comingSoon(feature) {
+
+        let toast = document.getElementById('toast');
+
+        // UBAH ISI TOAST
+        toast.innerHTML = feature + " belum tersedia 😊";
+
+        // MUNCULKAN TOAST
+        toast.classList.add('show');
+
+        // HILANGKAN SETELAH 2.5 DETIK
+        setTimeout(() => {
+
+            toast.classList.remove('show');
+
+        }, 2500);
+
+    }
+    </script>
+    <div id="toast">
+
+        Fitur belum tersedia 😊
+
+    </div>
 
 </body>
+
 </html>

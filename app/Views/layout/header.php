@@ -32,8 +32,15 @@
     padding: 10px 0;
     border-bottom: 1px solid #f2f2f2;
 }
-/* ===== HEADER KHUSUS DIARE ===== */
 
+/* ===== HEADER KHUSUS PNEUMONIA ===== */
+.pneu-logo{
+    width:240px !important;
+    height:auto;
+    object-fit:contain;
+}
+
+/* ===== HEADER KHUSUS DIARE ===== */
 .brand-diare{
     gap:12px;
 }
@@ -270,13 +277,24 @@ $uri = service('uri')->getSegment(1);
 */
 $fullUrl = current_url();
 
-$isDiarePage =
-    $uri === 'diare' ||
-    $uri === 'skrining-diare' ||
-    $uri === 'hasil-diare' ||
-    $uri === 'diare-detail' ||
-    $uri === 'kalkulator-air' ||
-    strpos($fullUrl, 'diare') !== false;
+$isDiarePage = in_array($uri, [
+    'diare',
+    'skrining-diare',
+    'hasil-diare',
+    'diare-detail',
+    'berita'
+]) || strpos(current_url(), 'diare') !== false;
+
+$isPneumoniaPage = in_array($uri, [
+    'pneumonia',
+    'pneumonia-funfact',
+    'beritapneumonia/viewUser/(:num)',
+    'skrining-pneumonia',
+    'skriningpneumonia/skriningpneumonia2',
+    'skriningpneumonia/skriningpneumonia3',
+    'grafik_pneumonia',
+    'hasil-pneumonia'
+]) || strpos(current_url(), 'pneumonia') !== false;
 
 /*
 |--------------------------------------------------------------------------
@@ -290,7 +308,8 @@ $showLoginPages = [
     'hasil',
     'pneumonia',
     'diare',
-    'skrining-diare'
+    'skrining-diare',
+    'grafik_pneumonia'
 ];
 ?>
 
@@ -313,6 +332,12 @@ $showLoginPages = [
                 Diarrhea Geographic Information System
             </p>
         </div>
+
+    <?php elseif ($isPneumoniaPage): ?>
+
+        <img src="<?= base_url('img/pulmora.png') ?>" 
+            alt="Pulmora"
+            class="brand-logo pneu-logo">
 
     <?php else: ?>
 

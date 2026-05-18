@@ -275,13 +275,13 @@ public function update(int $id)
 
         }
 
-        $data = [
+$data = [
 
-            'grafik' => json_encode($grafik),
+    'grafik' => json_encode($grafik),
 
-            'wilayah' => json_encode($wilayah),
+    'wilayah' => json_encode($wilayah),
 
-            'bulan' => json_encode($bulanList)
+    'bulan' => json_encode($bulanList),
 
         ];
 
@@ -290,6 +290,12 @@ public function update(int $id)
         $data['jumlah_pengobatan'] = $db->table('pasien') ->where('status_akhir','Pengobatan') ->countAllResults();
 
         $data['jumlah_meninggal'] = $db->table('pasien') ->where('status_akhir','Meninggal') ->countAllResults();
+    $data = [
+    'menu' => 'grafik',
+    'judul' => 'Grafik'
+
+];
+
         
         return view('gol_b/grafik/index', $data);
     }

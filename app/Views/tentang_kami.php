@@ -102,35 +102,9 @@ body{
 }
 
 /* =========================================
-   FILOSOFI
-========================================= */
-
-.section-title{
-    text-align:center;
-    color:var(--primary);
-    font-size:2.8rem;
-    font-weight:700;
-    margin:90px 0 60px;
-}
-
-.filosofi-card:hover{
-    transform:translateY(-10px);
-}
-
-
-
-/* =========================================
    FILOSOFI LOGO FIGMA FIX
 ========================================= */
 
-.section-title{
-    text-align:center;
-    color:#10C4C8;
-    font-size:42px;
-    font-weight:700;
-    margin:70px 0 45px;
-}
-/* FILOSOFI FIGMA */
 .filosofi-section{
     padding:40px 0 90px;
 }
@@ -150,6 +124,7 @@ body{
     border-left:6px solid #14CACA;
     box-shadow:0 2px 8px rgba(0,0,0,0.08);
     min-height:160px;
+    height: 100%;
 }
 
 .filosofi-header{
@@ -173,6 +148,7 @@ body{
 .icon-box img{
     width:18px;
     height:18px;
+    object-fit: contain;
 }
 
 .filosofi-card h4{
@@ -251,7 +227,8 @@ body{
 }
 
 .vm-box p,
-.vm-box li{
+.vm-box li,
+.vm-box div{
     line-height:2;
     color:#444;
 }
@@ -275,6 +252,7 @@ body{
 .maskot-box img{
     width:100%;
     max-width:800px;
+    height: auto;
 }
 
 .maskot-title{
@@ -304,267 +282,126 @@ body{
     }
 
 }
-
 </style>
 
-<!-- HERO -->
 <section class="about-hero">
-
-<div class="container">
-
-    <div class="breadcrumb-custom">
-        Beranda &nbsp; > &nbsp; <b>Tentang Kami</b>
+    <div class="container">
+        <div class="breadcrumb-custom">
+            Beranda &nbsp; > &nbsp; <b>Tentang Kami</b>
+        </div>
+        <h1 class="about-title">Tentang Kami</h1>
     </div>
-
-    <h1 class="about-title">
-        Tentang Kami
-    </h1>
-
-</div>
-
 </section>
 
-<!-- ABOUT -->
 <section class="about-section">
-
-<div class="container">
-
-    <div class="row align-items-center g-5">
-
-        <!-- LOGO -->
-        <div class="col-lg-5" data-aos="fade-right">
-
-            <div class="logo-box">
-
-                <img src="<?= base_url('img/sigap_logo.png') ?>" alt="Logo SIGAP">
-
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5" data-aos="fade-right">
+                <div class="logo-box">
+                    <?php if(!empty($profil['logo'])): ?>
+                        <img src="<?= base_url('uploads/profil_sistem/' . $profil['logo']) ?>" alt="Logo">
+                    <?php else: ?>
+                        <img src="<?= base_url('img/sigap_logo.png') ?>" alt="Logo Default">
+                    <?php endif; ?>
+                </div>
             </div>
 
+            <div class="col-lg-7" data-aos="fade-left">
+                <h2 class="about-heading">
+                    Apa itu <?= htmlspecialchars($profil['profil'] ?? 'SIGAP') ?>
+                </h2>
+                <div class="about-desc">
+                    <?= $profil['deskripsi_profil'] ?? 'Deskripsi belum diatur.' ?>
+                </div>
+            </div>
         </div>
 
-        <!-- DESKRIPSI -->
-        <div class="col-lg-7" data-aos="fade-left">
-
-            <h2 class="about-heading">
-                Apa itu SIGAP
-            </h2>
-
-            <p class="about-desc">
-                SIGAP (Sistem Informasi Geografi Analisis dan Pemantauan) adalah 
-                sistem berbasis geospasial untuk mengumpulkan, menganalisis, 
-                dan memantau data kesehatan berdasarkan wilayah. Data ditampilkan 
-                dalam bentuk peta dan grafik sehingga memudahkan melihat 
-                persebaran penyakit, tren kasus, serta mendukung deteksi dini 
-                KLB dan pengambilan keputusan yang cepat.
-            </p>
-
+        <?php if(!empty($profil['tagline'])): ?>
+        <div class="tagline" data-aos="zoom-in">
+            <h3>
+                “<?= strip_tags(html_entity_decode($profil['tagline'])) ?>”
+            </h3>
         </div>
-
+        <?php endif; ?>
     </div>
-
-    <!-- TAGLINE -->
-    <div class="tagline" data-aos="zoom-in">
-
-        <h3>
-            “Pantau, Analisis, Lindungi”
-        </h3>
-
-    </div>
-
-</div>
-
 </section>
 
-<!-- FILOSOFI -->
 <section class="filosofi-section">
-<div class="container">
+    <div class="container">
+        <h2 class="section-title">Filosofi Logo</h2>
 
-    <h2 class="section-title">Filosofi Logo</h2>
-
-    <!-- ROW ATAS -->
-    <div class="row g-4 mb-4">
-
-        <div class="col-lg-4 col-md-6">
-            <div class="filosofi-card">
-                <div class="filosofi-header">
-                    <div class="icon-box">
-                        <img src="<?= base_url('img/perisai.png') ?>">
+        <div class="row g-4">
+            <?php 
+            if(!empty($filosofi)): 
+                foreach($filosofi as $key => $row): 
+            ?>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?= $key * 50 ?>">
+                <div class="filosofi-card">
+                    <div class="filosofi-header">
+                        <div class="icon-box">
+                            <?php if(!empty($row['komponen_logo'])): ?>
+                                <img src="<?= base_url('uploads/profil_sistem/' . $row['komponen_logo']) ?>" alt="Icon Filosofi">
+                            <?php else: ?>
+                                <img src="<?= base_url('img/perisai.png') ?>" alt="Icon Default">
+                            <?php endif; ?>
+                        </div>
+                        <h4><?= htmlspecialchars($row['nama_logo'] ?? '') ?></h4>
                     </div>
-                    <h4>Bentuk Perisai</h4>
-                </div>
-
-                <p>
-                    Melambangkan perlindungan SIGAP hadir untuk melindungi
-                    dan menjaga kesehatan masyarakat
-                </p>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-            <div class="filosofi-card">
-                <div class="filosofi-header">
-                    <div class="icon-box">
-                        <img src="<?= base_url('img/pin.png') ?>">
-                    </div>
-                    <h4>Bentuk Pin Lokasi</h4>
-                </div>
-
-                <p>
-                    Melambangkan ketepatan lokasi, SIGAP bekerja tepat
-                    sasaran dalam memantau persebaran penyakit di kecamatan
-                </p>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-            <div class="filosofi-card">
-                <div class="filosofi-header">
-                    <div class="icon-box">
-                        <img src="<?= base_url('img/plus.png') ?>">
-                    </div>
-                    <h4>Simbol Plus (Kesehatan)</h4>
-                </div>
-
-                <p>
-                    Melambangkan dunia kesehatan, SIGAP berfokus
-                    pada penanganan dan pelayanan kesehatan
-                </p>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ROW BAWAH -->
-    <div class="row g-4">
-
-        <div class="col-lg-4 col-md-6">
-            <div class="filosofi-card">
-                <div class="filosofi-header">
-                    <div class="icon-box">
-                        <img src="<?= base_url('img/melingkar.png') ?>">
-                    </div>
-                    <h4>Garis Melingkar</h4>
-                </div>
-
-                <p>
-                    Melambangkan pemantauan yang terus berjalan,
-                    SIGAP melakukan monitoring secara terus-menerus
-                    (real-time) dan sigap
-                </p>
-            </div>
-        </div>
-
-        <div class="col-lg-8">
-            <div class="filosofi-card warna-card">
-
-                <div class="warna-kiri"></div>
-
-                <div class="warna-content">
-                    <h4>Warna Biru Tosca Pada Logo SIGAP</h4>
-
                     <p>
-                        Melambangkan perpaduan antara kepercayaan dan kesehatan.
-                        Warna biru menunjukkan sistem yang stabil dan dapat diandalkan,
-                        sedangkan sentuhan hijau mencerminkan kepedulian terhadap kesehatan.
+                        <?= isset($row['deskripsi_logo']) ? strip_tags(html_entity_decode($row['deskripsi_logo'])) : '' ?>
                     </p>
                 </div>
-
-                <div class="warna-kanan"></div>
-
             </div>
+            <?php 
+                endforeach; 
+            else: 
+            ?>
+            <div class="col-12 text-center text-muted">
+                <p>Belum ada data komponen filosofi logo.</p>
+            </div>
+            <?php endif; ?>
         </div>
-
     </div>
-
-</div>
 </section>
-<!-- VISI MISI -->
+
 <section class="visi-misi">
-
-<div class="container">
-
-    <h2 class="section-title" data-aos="fade-up">
-        Visi & Misi
-    </h2>
-
-    <div class="row g-4">
-
-        <!-- VISI -->
-        <div class="col-lg-5" data-aos="fade-right">
-
-            <div class="vm-box">
-
-                <h3>Visi</h3>
-
-                <p>
-                    Menjadi perusahaan teknologi kesehatan terdepan dan terpercaya 
-                    dalam pengembangan sistem surveilans dan analitik kesehatan 
-                    berbasis sistem informasi geografis untuk mendukung pengendalian 
-                    penyakit serta mewujudkan sistem kesehatan yang efektif dan terintegrasi.
-                </p>
-
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Visi & Misi</h2>
+        <div class="row g-4">
+            <div class="col-lg-5" data-aos="fade-right">
+                <div class="vm-box">
+                    <h3>Visi</h3>
+                    <div>
+                        <?= $profil['isi_visi'] ?? '<p class="text-muted">Visi belum diatur.</p>' ?>
+                    </div>
+                </div>
             </div>
 
-        </div>
-
-        <!-- MISI -->
-        <div class="col-lg-7" data-aos="fade-left">
-
-            <div class="vm-box">
-
-                <h3>Misi</h3>
-
-                <ol>
-
-                    <li>
-                        Mengimplementasikan sistem surveilans kesehatan berbasis SIG
-                        yang akurat, real-time, dan terintegrasi.
-                    </li>
-
-                    <li>
-                        Menyediakan layanan analitik dan visualisasi data kesehatan
-                        yang komprehensif.
-                    </li>
-
-                    <li>
-                        Mendukung deteksi dini dan pemantauan tren penyebaran penyakit.
-                    </li>
-
-                    <li>
-                        Mengintegrasikan data kesehatan dari berbagai sumber
-                        untuk meningkatkan efektivitas pengendalian penyakit.
-                    </li>
-
-                </ol>
-
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="vm-box">
+                    <h3>Misi</h3>
+                    <div>
+                        <?= $profil['isi_misi'] ?? '<p class="text-muted">Misi belum diatur.</p>' ?>
+                    </div>
+                </div>
             </div>
-
         </div>
-
     </div>
-
-</div>
-
 </section>
 
-<!-- MASKOT -->
 <section class="maskot-section">
-
-<div class="container">
-
-    <h2 class="section-title" data-aos="fade-up">
-        Maskot Medixa Technology
-    </h2>
-
-    <div class="maskot-box" data-aos="zoom-in">
-
-        <!-- GANTI DENGAN GAMBAR MASKOT -->
-        <img src="<?= base_url('img/mascot.png') ?>" alt="Maskot">
-
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+            Maskot Medixa Technology
+        </h2>
+        <div class="maskot-box" data-aos="zoom-in">
+            <?php if(!empty($profil['maskot'])): ?>
+                <img src="<?= base_url('uploads/profil_sistem/' . $profil['maskot']) ?>" alt="Maskot">
+            <?php else: ?>
+                <img src="<?= base_url('img/mascot.png') ?>" alt="Maskot Default">
+            <?php endif; ?>
+        </div>
     </div>
-
-</div>
-
 </section>
 </div>
 <?= $this->include('layout/footer') ?>

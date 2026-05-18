@@ -39,10 +39,30 @@
 
             <h5 class="footer-heading">Media Sosial</h5>
 
-            <div class="social-item">
-                <i class="bi bi-instagram"></i>
-                <span>sigap.co.id</span>
-            </div>
+            <?php if (($penyakit ?? '') == 'pneumonia'): ?>
+
+                <div class="social-group">
+
+                    <div class="social-item">
+                        <i class="bi bi-instagram"></i>
+                        <span>@sigap.co.id</span>
+                    </div>
+
+                    <div class="social-item">
+                        <i class="bi bi-instagram"></i>
+                        <span>@cynex.tech</span>
+                    </div>
+
+                </div>
+
+            <?php else: ?>
+
+                <div class="social-item">
+                    <i class="bi bi-instagram"></i>
+                    <span>@sigap.co.id</span>
+                </div>
+
+            <?php endif; ?>
 
         </div>
 
@@ -58,7 +78,25 @@
 
                 <div>
                     <h6>Email</h6>
-                    <p>medixatechnology@gmail.com</p>
+
+                    <?php if (($penyakit ?? '') == 'pneumonia'): ?>
+
+                        <p class="mb-1">
+                            medixatechnology@gmail.com
+                        </p>
+
+                        <p>
+                            cynextechnology.c@gmail.com
+                        </p>
+
+                    <?php else: ?>
+
+                        <p>
+                            medixatechnology@gmail.com
+                        </p>
+
+                    <?php endif; ?>
+
                 </div>
             </div>
 

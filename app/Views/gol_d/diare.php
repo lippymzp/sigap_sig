@@ -146,19 +146,27 @@ body{
 .premium-card{
     background:linear-gradient(135deg,#08cdd1,#05b3bf);
     border-radius:34px;
-    min-height:460px;
+
+    min-height:420px;
+    max-height:420px;
+
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:60px;
+
+    padding:45px 50px;
     overflow:hidden;
     box-shadow:0 25px 50px rgba(0,0,0,0.12);
 }
 
 .premium-left{
-    width:50%;
+    width:48%;
     color:white;
     z-index:2;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
 
 .badge-artikel{
@@ -172,17 +180,23 @@ body{
 }
 
 .premium-left h3{
-    font-size:52px;
+    font-size:34px;
     font-weight:800;
-    line-height:1.2;
-    margin-bottom:24px;
+    line-height:1.25;
+    margin-bottom:18px;
+
+    max-height:170px;
+    overflow:hidden;
 }
 
 .premium-left p{
-    font-size:22px;
+    font-size:16px;
     line-height:1.8;
     opacity:0.95;
-    margin-bottom:28px;
+    margin-bottom:20px;
+
+    max-height:120px;
+    overflow:hidden;
 }
 
 .meta-row{
@@ -196,11 +210,13 @@ body{
     background:white;
     color:#00b8c3;
     text-decoration:none;
-    padding:18px 34px;
-    border-radius:18px;
+    padding:14px 28px;
+    border-radius:16px;
     font-weight:800;
-    display:inline-block;
-    transition:.3s;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:220px;
 }
 
 .btn-premium:hover{
@@ -209,7 +225,8 @@ body{
 }
 
 .premium-right{
-    width:42%;
+    width:44%;
+    height:100%;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -217,11 +234,10 @@ body{
 
 .premium-right img{
     width:100%;
-    max-width:520px;
-    height:320px;
+    max-width:420px;
+    height:250px;
     object-fit:cover;
-    border-radius:28px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.18);
+    border-radius:24px;
 }
 
 .slider-arrow{
@@ -774,7 +790,59 @@ body{
     bottom: 20px;
     right: 20px;
 }
+.funfact-highlight{
+    background:#f4fefd;
+}
 
+.funfact-card{
+    background:white;
+    border-radius:28px;
+    padding:35px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.08);
+}
+
+.funfact-img{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+    border-radius:20px;
+}
+
+.funfact-badge{
+    display:inline-block;
+    background:#e0f7f6;
+    color:#00bfc8;
+    padding:8px 18px;
+    border-radius:30px;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.funfact-card h2{
+    font-size:34px;
+    font-weight:800;
+    color:#1f3a3a;
+}
+
+.funfact-card p{
+    color:#6b8a8a;
+    line-height:1.8;
+    margin:20px 0;
+}
+
+.btn-funfact{
+    background:#00c4c7;
+    color:white;
+    padding:14px 26px;
+    border-radius:14px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.btn-funfact:hover{
+    color:white;
+    background:#00aeb0;
+}
 }
 </style>
 
@@ -798,7 +866,39 @@ body{
 </div>
 
 </section>
+<section class="funfact-highlight py-5">
+<div class="container">
 
+    <?php if (!empty($funfact)): ?>
+    <?php $f = $funfact[0]; ?>
+
+    <div class="funfact-card row align-items-center">
+
+        <div class="col-md-6">
+            <img src="<?= base_url('uploads/funfact/' . $f['gambar_funfact']) ?>"
+                 class="img-fluid funfact-img">
+        </div>
+
+        <div class="col-md-6">
+            <span class="funfact-badge">FUNFACT DIARE</span>
+
+            <h2><?= esc($f['judul_funfact']) ?></h2>
+
+            <p>
+                <?= word_limiter(strip_tags($f['deskripsi_funfact']), 30) ?>
+            </p>
+
+            <a href="<?= base_url('diare-detail') ?>" class="btn btn-funfact">
+                Baca Selengkapnya →
+            </a>
+        </div>
+
+    </div>
+
+    <?php endif; ?>
+
+</div>
+</section>
 <!-- FITUR -->
 <section class="container text-center mt-5" data-aos="fade-up">
 
@@ -871,7 +971,7 @@ body{
                         <h3><?= esc($b['judul_berita']) ?></h3>
 
                         <p>
-                            <?= word_limiter(strip_tags($b['deskripsi_berita']), 24) ?>
+                            <?= word_limiter(strip_tags($b['deskripsi_berita'] ?? ''), 18) ?>
                         </p>
 
                         <div class="meta-row">
@@ -881,13 +981,15 @@ body{
 
                             <span>
                                 <i class="far fa-calendar"></i>
-                                <?= date('d M Y', strtotime($b['tanggal_berita'])) ?>
+                                <?= !empty($b['tanggal_berita']) 
+    ? date('d M Y', strtotime($b['tanggal_berita'])) 
+    : '-' ?>
                             </span>
                         </div>
 
                         <a href="<?= base_url('berita/' . $b['id_berita']) ?>" class="btn-premium">
-                            Selengkapnya →
-                        </a>
+    Selengkapnya →
+</a>
                     </div>
 
                     <div class="premium-right">
