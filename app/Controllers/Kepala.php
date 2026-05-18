@@ -200,6 +200,14 @@ class Kepala extends Controller
             'menu' => 'dashboard_kepala',
             'judul' => 'Dashboard Kepala Puskesmas',
             'nama_puskesmas' => 'Puskesmas Panti, Jember',
+            'tahunMap' => [
+                    2020 => '2020',
+                    2021 => '2021',
+                    2022 => '2022',
+                    2023 => '2023',
+                    2024 => '2024',
+                    2025 => '2025',
+                ],
 
             'total_kasus' => 20,
             'kasus_baru' => 2,
