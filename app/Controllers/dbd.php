@@ -163,7 +163,7 @@ class Dbd extends BaseController
         echo "</table>";
     }
 
-   //FORM KADER PSN
+   //FORM KADER Jentik
 
     public function riwayat_jentik()
     {
