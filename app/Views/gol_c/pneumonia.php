@@ -365,16 +365,18 @@ fitur.forEach(btn => {
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$beritaList = $queryBerita->getResultArray();
+
+$totalBerita = count($beritaList);
 ?>
 
 <div class="news-slider">
@@ -387,7 +389,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($beritaList as $berita): ?>
 
                 <?php
                 // CEK GAMBAR
@@ -451,7 +453,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 
@@ -926,7 +928,7 @@ prevBtn.addEventListener('click', () => {
 
 <?php
 
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $bulanLabels = [
     'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
@@ -936,8 +938,9 @@ $bulanLabels = [
 $laki = array_fill(0, 12, 0);
 $wanita = array_fill(0, 12, 0);
 
-$query = mysqli_query($conn, "
+$db = \Config\Database::connect();
 
+$query = $db->query("
     SELECT 
         MONTH(tgl_kunjungan) as bulan,
         jenis_kelamin,
@@ -951,10 +954,11 @@ $query = mysqli_query($conn, "
     GROUP BY 
         MONTH(tgl_kunjungan),
         jenis_kelamin
-
 ");
 
-while($row = mysqli_fetch_assoc($query)){
+$result = $query->getResultArray();
+
+foreach($result as $row){
 
     $index = $row['bulan'] - 1;
 
@@ -2729,7 +2733,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <?php
 /* RINGKASAN DATA PNEUMONIA  */
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $dataRingkasan = [];
 
@@ -2741,7 +2745,7 @@ $tertinggi = [
 $rataRata = 0;
 $diAtasRata = 0;
 
-$queryRingkasan = mysqli_query($conn, "
+$queryRingkasan = $db->query("
 
     SELECT 
         wilayah.kelurahan,
@@ -2762,7 +2766,7 @@ $queryRingkasan = mysqli_query($conn, "
 
 if($queryRingkasan){
 
-    while($r = mysqli_fetch_assoc($queryRingkasan)){
+    foreach($queryRingkasan->getResultArray() as $r){
         $dataRingkasan[] = $r;
     }
 
