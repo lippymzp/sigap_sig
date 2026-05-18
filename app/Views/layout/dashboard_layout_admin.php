@@ -183,7 +183,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
 </a>
 
-        <a href="<?= base_url('dbd/pelaporan-kader/admin') ?>"
+        <a href="<?= base_url('dbd/pelaporan') ?>"
             class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
             <i class="fa-regular fa-folder-open me-2"></i> Pelaporan Kader
         </a>
