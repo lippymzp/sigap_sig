@@ -14,6 +14,7 @@ use App\Models\FunfactModelD;
 // use App\Libraries\DiareDecisionTree;
 // use App\Models\PasienSkriningModel;
 // use App\Models\BeritaModelDD;
+//
 
 class Diare extends BaseController
 {
