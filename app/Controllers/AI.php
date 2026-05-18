@@ -16,7 +16,7 @@ class AI extends BaseController
         =====================================
         */
 
-        $apiKey = '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';
+        $apiKey = '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';
 
         /*
         =====================================
