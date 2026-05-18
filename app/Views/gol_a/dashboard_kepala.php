@@ -340,7 +340,7 @@ $tahunMap = $tahunMap ?? [
     <div class="custom-modal-content">
         <span class="close-modal" onclick="closeDetailModal()">&times;</span>
         <div class="modal-title">
-            Peta Sebaran Kasus <span id="modalTahun"><?= $tahunMap ?></span>
+            Peta Sebaran Kasus <span id="modalTahun"><?= $filterTahunMap ?? date('Y') ?></span>
         </div>
 
         <div class="info-box">

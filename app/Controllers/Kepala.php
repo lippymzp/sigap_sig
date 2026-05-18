@@ -78,7 +78,7 @@ class Kepala extends Controller
         // ======================
         // 🔥 DATA PETA
         // ======================
-        $tahunMap = $this->request->getGet('tahun_map');
+       $filterTahunMap = $this->request->getGet('tahun_map');
 
         $builderDbd = $db->table('pasien p');
         $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
@@ -87,9 +87,9 @@ class Kepala extends Controller
         // 🔥 FILTER BERDASARKAN PENYAKIT SESSION
         $builderDbd->where('p.id_penyakit', $idPenyakit);
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
-        if (!empty($tahunMap)) {
-            $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
-        }
+        if (!empty($filterTahunMap)) {
+    $builderDbd->where('YEAR(p.tgl_kunjungan)', $filterTahunMap);
+}
 
         $builderDbd->groupBy('w.kelurahan');
 
@@ -125,9 +125,9 @@ class Kepala extends Controller
 
         // 🔥 FILTER BERDASARKAN PENYAKIT SESSION DAN TAHUN
         $builderDetail->where('p.id_penyakit', $idPenyakit);
-        if (!empty($tahunMap)) {
-            $builderDetail->where('YEAR(p.tgl_kunjungan)', $tahunMap);
-        }
+        if (!empty($filterTahunMap)) {
+    $builderDetail->where('YEAR(p.tgl_kunjungan)', $filterTahunMap);
+}
 
         $builderDetail->groupBy('w.kelurahan');
 
@@ -200,6 +200,7 @@ class Kepala extends Controller
             'menu' => 'dashboard_kepala',
             'judul' => 'Dashboard Kepala Puskesmas',
             'nama_puskesmas' => 'Puskesmas Panti, Jember',
+            'filterTahunMap' => $filterTahunMap,
             'tahunMap' => [
                     2020 => '2020',
                     2021 => '2021',
