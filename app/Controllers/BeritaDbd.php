@@ -12,14 +12,16 @@ class BeritaDbd extends Controller
     // =========================
     public function index()
     {
-        $model = new BeritaDbdModel();
+        // 1. Ambil ID Penyakit dan ID Petugas dari Session yang sedang login
+    $idPenyakit = session()->get('id_penyakit');
+    $idPetugas  = session()->get('id_petugas');
+
+    $model = new BeritaDbdModel();
 
     $status = $this->request->getGet('status') ?? '';
     $keyword = $this->request->getGet('keyword');
 
-    $builder = $model;
-        // ambil semua data
-    $berita = $model->findAll();
+    $builder = $model->where('id_penyakit', $idPenyakit);
 
     // FILTER STATUS
     if ($status == 'publish') {
