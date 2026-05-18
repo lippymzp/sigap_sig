@@ -61,34 +61,6 @@ class Auth extends BaseController
         $jabatanModel = new \App\Models\JabatanModel();
         $jabatan = $jabatanModel->find($user['id_jabatan']);
 
-        // =========================
-        // SUPERADMIN
-        // =========================
-
-        if (
-            strtolower($jabatan['nama_jabatan'])
-            == 'superadmin'
-        ){
-
-            session()->set([
-
-                'logged_in' => true,
-
-                'id_petugas' =>
-                    $user['id_petugas'],
-
-                'email' =>
-                    $user['email'],
-
-                'id_jabatan' =>
-                    $user['id_jabatan'],
-
-                'id_penyakit' =>
-                    $user['id_penyakit']
-            ]);
-
-            return redirect()->to('/superadmin');
-        }
 
         if (!$jabatan) {
             return redirect()->back()
@@ -238,6 +210,18 @@ class Auth extends BaseController
             return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
         }
 
+        // =========================
+        // SUPERADMIN
+        // =========================
+
+        if (
+            strtolower(trim($jabatan['nama_jabatan']))
+            == 'superadmin'
+        ){
+
+            return redirect()->to('/superadmin');
+        }
+
         return redirect()->to(
             '/' . strtolower($penyakit['nama_penyakit']) .
             '/dashboard/' . strtolower($jabatan['nama_jabatan'])
@@ -316,7 +300,7 @@ class Auth extends BaseController
         $emailService = \Config\Services::email();
 
         $emailService->setTo($email);
-        $emailService->setFrom('lutfirizalul06@gmail.com', 'SIGAP');
+        $emailService->setFrom('medixatechnology@gmail.com', 'SIGAP');
         $emailService->setSubject('OTP Code');
         $emailService->setMessage("OTP kamu: $otp");
 
