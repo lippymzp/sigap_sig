@@ -16,15 +16,32 @@ class Pasien extends BaseController
 
     // ================= DATA PASIEN =================
     public function index()
-    {
-        $data = [
-            'pasien' => $this->pasienModel->findAll(),
-            'menu' => 'hasil',
-            'judul' => 'Hasil Data Pasien'
-        ];
+{
+    $data = [
 
-        return view('gol_b/data-pasien/data_pasien', $data);
-    }
+        'pasien' => $this->pasienModel->findAll(),
+
+        'jumlah_sembuh' =>
+            $this->pasienModel
+            ->where('status_akhir', 'Sembuh')
+            ->countAllResults(),
+
+        'jumlah_pengobatan' =>
+            $this->pasienModel
+            ->where('status_akhir', 'Pengobatan')
+            ->countAllResults(),
+
+        'jumlah_meninggal' =>
+            $this->pasienModel
+            ->where('status_akhir', 'Meninggal')
+            ->countAllResults(),
+
+        'menu' => 'hasil',
+        'judul' => 'Hasil Data Pasien'
+    ];
+
+    return view('gol_b/data-pasien/data_pasien', $data);
+}
 
     // ================= FORM INPUT =================
     public function create()
@@ -52,11 +69,13 @@ class Pasien extends BaseController
         $this->pasienModel->save([
 
             'id_wilayah' => $this->request->getPost('id_wilayah'),
+            'nik' => $this->request->getPost('nik'),
             'no_rm' => $this->request->getPost('no_rm'),
             'nama_pasien' => $this->request->getPost('nama_pasien'),
             'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
             'umur' => $this->request->getPost('umur'),
             'tgl_kunjungan' => $this->request->getPost('tgl_kunjungan'),
+            'status_akhir' => $this->request->getPost('status_akhir'),
             'ctt_klinis' => $this->request->getPost('ctt_klinis'),
             'id_petugas' => 3
 
@@ -78,22 +97,37 @@ class Pasien extends BaseController
     }
 
     // ================= UPDATE =================
-    public function update(int $id)
-    {
-        $this->pasienModel->update($id, [
+public function update(int $id)
+{
+    $this->pasienModel->update($id, [
 
-            'id_wilayah' => $this->request->getPost('id_wilayah'),
-            'no_rm' => $this->request->getPost('no_rm'),
-            'nama_pasien' => $this->request->getPost('nama_pasien'),
-            'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
-            'umur' => $this->request->getPost('umur'),
-            'tgl_kunjungan' => $this->request->getPost('tgl_kunjungan'),
-            'ctt_klinis' => $this->request->getPost('ctt_klinis'),
+        // ===== WILAYAH =====
+        'id_wilayah'     => $this->request->getPost('id_wilayah'),
+        'provinsi'       => $this->request->getPost('provinsi'),
+        'kabupaten'      => $this->request->getPost('kabupaten'),
+        'kecamatan'      => $this->request->getPost('kecamatan'),
+        'rt'             => $this->request->getPost('rt'),
+        'rw'             => $this->request->getPost('rw'),
+        'alamat_lengkap' => $this->request->getPost('alamat'),
+        'latitude'       => $this->request->getPost('lat'),
+        'longitude'      => $this->request->getPost('lng'),
 
-        ]);
+        // ===== DATA PASIEN =====
+        'nik'            => $this->request->getPost('nik'),
+        'no_rm'          => $this->request->getPost('no_rm'),
+        'nama_pasien'    => $this->request->getPost('nama_pasien'),
+        'jenis_kelamin'  => $this->request->getPost('jenis_kelamin'),
+        'tgl_lahir'      => $this->request->getPost('tanggal_lahir'),
+        'umur'           => $this->request->getPost('umur'),
+        'tgl_kunjungan'  => $this->request->getPost('tgl_kunjungan'),
+        'status_akhir'   => $this->request->getPost('status_akhir'),
+        'ctt_klinis'     => $this->request->getPost('ctt_klinis'),
 
-        return redirect()->to('/tbc/hasil');
-    }
+    ]);
+
+    return redirect()->to('/tbc/hasil');
+}
+    
 
     // ================= DELETE =================
     public function delete(int $id)
@@ -106,18 +140,19 @@ class Pasien extends BaseController
     // ================= GRAFIK =================
     public function grafik()
     {
+        $db = \Config\Database::connect();
         $pasien = $this->pasienModel->findAll();
 
         // ================= WILAYAH =================
         $mappingWilayah = [
 
-            1 => 'Jemberkidul',
-            2 => 'Tegalbesar',
-            3 => 'Kaliwates',
-            4 => 'Kebonagung',
-            5 => 'Sempusari',
-            6 => 'Mangli',
-            7 => 'Kepatihan'
+            2001 => 'Jemberkidul',
+            2002 => 'Tegalbesar',
+            2003 => 'Kaliwates',
+            2004 => 'Kebonagung',
+            2005 => 'Sempusari',
+            2006 => 'Mangli',
+            2007 => 'Kepatihan'
 
         ];
 
@@ -249,7 +284,63 @@ class Pasien extends BaseController
             'bulan' => json_encode($bulanList)
 
         ];
+
+        $data['jumlah_sembuh'] = $db->table('pasien') ->where('status_akhir','Sembuh') ->countAllResults();
+
+        $data['jumlah_pengobatan'] = $db->table('pasien') ->where('status_akhir','Pengobatan') ->countAllResults();
+
+        $data['jumlah_meninggal'] = $db->table('pasien') ->where('status_akhir','Meninggal') ->countAllResults();
         
         return view('gol_b/grafik/index', $data);
     }
+        public function export()
+    {
+        return view('gol_b/export/export_data');
+    }
+    public function getTahunList()
+    {
+        $db = \Config\Database::connect();
+
+        $query = $db->query("
+            SELECT DISTINCT YEAR(tgl_kunjungan) as tahun
+            FROM pasien
+            ORDER BY tahun DESC
+        ");
+
+        return $this->response->setJSON(
+            $query->getResult()
+        );
+    }
+
+
+public function exportPage()
+{
+    return view('gol_b/grafik/index');
+}
+public function exportData()
+{
+    $type = $this->request->getGet('type');
+
+    $pasienModel = new \App\Models\PasienModel();
+
+    $data['pasien'] = $pasienModel
+    ->select('pasien.*, wilayah.kelurahan')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->findAll();
+
+    // ================= EXCEL =================
+    if($type == 'excel'){
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=data_pasien.xls");
+
+        echo view('gol_b/export/excel', $data);
+    }
+
+    // ================= PDF =================
+    else{
+
+        echo view('gol_b/export/pdf', $data);
+    }
+}
 }

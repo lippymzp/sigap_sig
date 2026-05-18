@@ -989,6 +989,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 
 <script>
+    <?php $tbc = $tbc ?? []; ?>
 var map = L.map('map').setView([-8.1727, 113.7000], 12);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

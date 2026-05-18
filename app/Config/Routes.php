@@ -342,6 +342,8 @@ $routes->get('tbc/hasil', 'AdminTbc\Pasien::index');
 
 $routes->get('tbc/input_data', 'AdminTbc\Pasien::create');
 
+$routes->get('tbc/export', 'AdminTbc\Pasien::export');
+
 $routes->post('tbc/store', 'AdminTbc\Pasien::store');
 
 $routes->get('tbc/edit/(:num)', 'AdminTbc\Pasien::edit/$1');
@@ -352,6 +354,16 @@ $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
 
 $routes->get('tbc/grafik', 'AdminTbc\Pasien::grafik');
 $routes->get('tbc/create', 'AdminTbc\Pasien::create');
+
+$routes->get('tbc/get-tahun-list', 'AdminTbc\Pasien::getTahunList');
+
+$routes->get(
+    'tbc/export-hasil-data-pasien', 'AdminTbc\Pasien::export'
+);
+
+$routes->get(
+    'tbc/export-data', 'AdminTbc\Pasien::exportData'
+);
 
 /* ========================= */
 /* Landing Page TBC */

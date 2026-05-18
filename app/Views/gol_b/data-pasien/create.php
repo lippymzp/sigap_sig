@@ -3,6 +3,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -186,13 +187,13 @@
                     <label>Desa</label>
                     <select name="desa" class="form-control custom-input" id="desa">
 
-                        <option value="1">Jemberkidul</option>
-                        <option value="2">Tegalbesar</option>
-                        <option value="3">Kaliwates</option>
-                        <option value="4">Kebonagung</option>
-                        <option value="5">Sempusari</option>
-                        <option value="6">Mangli</option>
-                        <option value="7">Kepatihan</option>
+                        <option value="2001">Jemberkidul</option>
+                        <option value="2002">Tegalbesar</option>
+                        <option value="2003">Kaliwates</option>
+                        <option value="2004">Kebonagung</option>
+                        <option value="2005">Sempusari</option>
+                        <option value="2006">Mangli</option>
+                        <option value="2007">Kepatihan</option>
 
                     </select>
                 </div>
@@ -203,8 +204,8 @@
                 </div>
 
                 <div class="col-md-6 d-flex gap-2">
-                    <input type="text" class="form-control custom-input" placeholder="Latitude" id="lat" name="lat">
-                    <input type="text" class="form-control custom-input" placeholder="Longitude" id="lng" name="lng">
+                    <input type="text" class="form-control custom-input" id="lat" name="lat" readonly> 
+                    <input type="text" class="form-control custom-input" id="lng" name="lng" readonly>
                 </div>
 
                 <div class="col-md-12">
@@ -256,13 +257,13 @@
                 // 🔥 DATA KOORDINAT DESA (DEFAULT)
                 var koordinatDesa = {
 
-                    "1": { lat: -8.1698, lng: 113.7021 }, // Jemberkidul
-                    "2": { lat: -8.1840, lng: 113.7150 }, // Tegalbesar
-                    "3": { lat: -8.1685, lng: 113.7038 }, // Kaliwates
-                    "4": { lat: -8.1720, lng: 113.6980 }, // Kebonagung
-                    "5": { lat: -8.1612, lng: 113.6945 }, // Sempusari
-                    "6": { lat: -8.1764, lng: 113.7102 }, // Mangli
-                    "7": { lat: -8.1588, lng: 113.7067 }  // Kepatihan
+                    "2001": { lat: -8.1698, lng: 113.7021 }, // Jemberkidul
+                    "2002": { lat: -8.1840, lng: 113.7150 }, // Tegalbesar
+                    "2003": { lat: -8.1685, lng: 113.7038 }, // Kaliwates
+                    "2004": { lat: -8.1720, lng: 113.6980 }, // Kebonagung
+                    "2005": { lat: -8.1612, lng: 113.6945 }, // Sempusari
+                    "2006": { lat: -8.1764, lng: 113.7102 }, // Mangli
+                    "2007": { lat: -8.1588, lng: 113.7067 }  // Kepatihan
 
                 };
 
@@ -396,6 +397,16 @@
             <h6 class="fw-bold mb-3">Data Klinis</h6>
 
             <div class="row g-3">
+               <div class="col-md-6">
+            <label>NIK</label>
+            <input 
+                type="text"
+                name="nik"
+                class="form-control custom-input"
+                placeholder="Masukkan 16 digit NIK"
+                id="nik">
+                </div>
+
                 <div class="col-md-6">
                     <label>No RM</label>
                     <input 
@@ -411,8 +422,21 @@
                 </div>
 
                 <div class="col-md-6">
+                <label>Tanggal Lahir</label>
+                <input 
+                    name="tgl_lahir"
+                    type="date"
+                    class="form-control custom-input"
+                    id="tgl_lahir">
+                </div>
+
+                <div class="col-md-6">
                     <label>Tanggal Kunjungan</label>
-                    <input name="tgl_kunjungan" type="date" class="form-control custom-input" id="tanggal">
+                    <input 
+                        name="tgl_kunjungan"
+                        type="date"
+                        class="form-control custom-input"
+                        id="tanggal">
                 </div>
 
                 <div class="col-md-6">
@@ -423,9 +447,17 @@
 
                 <div class="col-md-6">
                     <label>Usia</label>
-                    <input name="umur" type="number" class="form-control custom-input" placeholder="Usia" id="usia">
+                    <input name="umur" type="number" class="form-control custom-input" placeholder="Usia otomatis" id="usia" readonly>
                 </div>
-
+                <div class="col-md-6">
+                <label>Status Akhir</label>
+                <select name="status_akhir" id="status_akhir" class="form-control">
+                    <option value="">Pilih Status</option>
+                    <option value="Pengobatan">Pengobatan</option>
+                    <option value="Sembuh">Sembuh</option>
+                    <option value="Meninggal">Meninggal</option>
+                </select>
+                </div>
                 <div class="col-md-12">
                     <label>Catatan Klinis</label>
                     <textarea name="ctt_klinis" class="form-control custom-input" placeholder="Masukkan catatan..." id="catatan"></textarea>
@@ -446,7 +478,6 @@
 
 </div>
 
-<!-- ================= STEP 3 ================= -->
 <!-- ================= STEP 3 ================= -->
 <div id="step3" style="display:none">
 
@@ -474,13 +505,12 @@
         </div>
 
         <!-- OPTIONAL CHART -->
-        <div class="card-summary text-center mt-3">
+        <div class="text-center py-4">
+            <canvas id="usiaChart" height="180"></canvas>
 
-            <h6 class="fw-bold mb-3">Kelompok Usia</h6>
-
-            <img src="<?= base_url('img/chart.png') ?>" 
-                 class="img-fluid rounded"
-                 style="height:180px; object-fit:cover;">
+            <p class="text-muted mb-0">
+                Kategori usia pasien otomatis
+            </p>
 
         </div>
 
@@ -494,24 +524,43 @@
             <h6 class="fw-bold mb-3">Ringkasan Laporan Kasus</h6>
 
             <!-- DATA -->
-            <div class="summary-box">
-
+        <div class="row mb-2">
+            <div class="col-4 text-muted">NIK</div>
+            <div class="col-1 text-center">:</div>
+            <div class="col-7 fw-semibold" id="sumNik">-</div>
+        </div>
         <div class="row mb-2">
             <div class="col-4 text-muted">No RM</div>
             <div class="col-1 text-center">:</div>
             <div class="col-7 fw-semibold" id="sumRM">-</div>
         </div>
-        
-        <div class="row mb-2 align-items-start">
-        <div class="col-4 text-muted">Alamat</div>
-        <div class="col-1 text-center">:</div>
-        <div class="col-7 fw-semibold" id="sumAlamat">-</div>
-    </div>
+        <div class="row mb-2">
+            <div class="col-4 text-muted">Nama Pasien</div>
+            <div class="col-1 text-center">:</div>
+            <div class="col-7 fw-semibold" id="sumNama">-</div>
+        </div>
+            <div class="row mb-2 align-items-start">
+            <div class="col-4 text-muted">Alamat</div>
+            <div class="col-1 text-center">:</div>
+            <div class="col-7 fw-semibold" id="sumAlamat">-</div>
+        </div>
 
     <div class="row mb-2">
         <div class="col-4 text-muted">Jenis Kelamin</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumJK">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Tanggal Lahir</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumLahir">-</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 text-muted">Tanggal Kunjungan</div>
+        <div class="col-1 text-center">:</div>
+        <div class="col-7 fw-semibold" id="sumTanggal">-</div>
     </div>
 
     <div class="row mb-2">
@@ -521,9 +570,9 @@
     </div>
 
     <div class="row mb-2">
-        <div class="col-4 text-muted">Tanggal</div>
+        <div class="col-4 text-muted">Status</div>
         <div class="col-1 text-center">:</div>
-        <div class="col-7 fw-semibold" id="sumTanggal">-</div>
+        <div class="col-7 fw-semibold" id="sumStatus">-</div>
     </div>
 
     <div class="row mb-3">
@@ -539,8 +588,6 @@
             Saya mengonfirmasi data benar
         </label>
     </div>
-
-</div>
 
 </div>
 
@@ -560,16 +607,19 @@
 
                 <input type="hidden" name="nama_pasien" id="formNama">
                 <input type="hidden" name="tgl_kunjungan" id="formTanggal">
+                <input type="hidden" name="tanggal_lahir" id="formLahir">
                 <input type="hidden" name="umur" id="formUsia">
+                <input type="hidden" id="formStatus" name="status_akhir">
                 <input type="hidden" name="ctt_klinis" id="formCatatan">
                 <input type="hidden" name="jenis_kelamin" id="formJK">
+                <input type="hidden" name="nik" id="formNik">
                 <input type="hidden" name="no_rm" id="formRM">
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
 
 
                     <div class="d-flex justify-content-end gap-3 mt-4 w-100">
-    <button type="button" class="btn-next" onclick="prevStep(2)">← Kembali</button>
+    <button type="button" class="btn-next" onclick="prevStep(2)">← ubah data</button>
     <button type="submit" class="btn-next">Simpan</button>
 </div>
 
@@ -595,44 +645,116 @@
 <script>
 
 function nextStep(step){
-        if(step === 2){
 
-        if(document.getElementById('alamat').value == ''){
-            alert('Alamat wajib diisi');
+    // VALIDASI STEP 1
+    if(step === 2){
+
+        let kosong = [];
+
+        if(document.getElementById('rt').value.trim() == ''){
+            kosong.push('RT');
+        }
+
+        if(document.getElementById('rw').value.trim() == ''){
+            kosong.push('RW');
+        }
+
+        if(document.getElementById('alamat').value.trim() == ''){
+            kosong.push('Alamat Lengkap');
+        }
+
+        if(kosong.length > 0){
+
+            document.getElementById('popupGagalText').innerText =
+            'Kolom ' + kosong.join(', ') + ' wajib diisi';
+
+            document.getElementById('popupGagal').style.display = 'flex';
+
             return;
         }
 
+    }
+    // VALIDASI STEP 2
+    if(step === 3){
+
+    let kosong = [];
+
+        if(document.getElementById('nik').value.trim() == ''){
+            kosong.push('NIK');
         }
 
-        if(step === 3){
-
-            if(
-                document.getElementById('no_rm').value == '' ||
-                document.getElementById('nama').value == ''
-            ){
-                alert('Lengkapi data klinis');
-                return;
-            }
-
+        if(document.getElementById('nik').value.length != 16){
+            kosong.push('NIK harus 16 digit');
         }
 
-    // pindah step
+        if(document.getElementById('no_rm').value.trim() == ''){
+            kosong.push('No RM');
+        }
+
+        if(document.getElementById('nama').value.trim() == ''){
+            kosong.push('Nama Pasien');
+        }
+
+        if(document.getElementById('tgl_lahir').value.trim() == ''){
+            kosong.push('Tanggal Lahir');
+        }
+
+        if(document.getElementById('tanggal').value.trim() == ''){
+            kosong.push('Tanggal Kunjungan');
+        }
+
+        if(document.getElementById('usia').value.trim() == ''){
+            kosong.push('Usia');
+        }
+
+        if(document.getElementById('status_akhir').value.trim() == ''){
+            kosong.push('Status Akhir');
+        }
+
+        if(document.getElementById('catatan').value.trim() == ''){
+            kosong.push('Catatan Klinis');
+        }
+
+        if(!document.querySelector('input[name="jenis_kelamin"]:checked')){
+            kosong.push('Jenis Kelamin');
+        }
+
+        if(kosong.length > 0){
+
+            document.getElementById('popupGagalText').innerText =
+            'Kolom ' + kosong.join(', ') + ' wajib diisi';
+
+            document.getElementById('popupGagal').style.display = 'flex';
+
+            return false;;
+        }
+
+        if(!document.querySelector('input[name="jenis_kelamin"]:checked')){
+            alert('Pilih jenis kelamin');
+            return false;;
+        }
+
+    }
+
+    // PINDAH STEP
     document.getElementById('step1').style.display='none';
     document.getElementById('step2').style.display='none';
     document.getElementById('step3').style.display='none';
 
     document.getElementById('step'+step).style.display='block';
 
-    // update nav
+    // UPDATE NAV
     document.getElementById('stepNav1').classList.remove('active');
     document.getElementById('stepNav2').classList.remove('active');
     document.getElementById('stepNav3').classList.remove('active');
 
     document.getElementById('stepNav'+step).classList.add('active');
 
-    // ===== AUTO ISI STEP 3 =====
+    // AUTO ISI RINGKASAN
     if(step === 3){
+        let nik = document.getElementById('nik').value;
         let rm = document.getElementById('no_rm').value;
+        let nama = document.getElementById('nama').value;
         let prov = document.getElementById('provinsi').value;
         let kab = document.getElementById('kabupaten').value;
         let kec = document.getElementById('kecamatan').value;
@@ -641,34 +763,44 @@ function nextStep(step){
         let rw = document.getElementById('rw').value;
         let alamat = document.getElementById('alamat').value;
 
+        let tanggalLahir = document.getElementById('tgl_lahir').value;
         let tanggal = document.getElementById('tanggal').value;
         let usia = document.getElementById('usia').value;
+        let status = document.getElementById('status_akhir').value;
         let catatan = document.getElementById('catatan').value;
-            if(!document.querySelector('input[name="jenis_kelamin"]:checked')){
-            alert('Pilih jenis kelamin');
-            return;
-        }
+
         let jk = document.querySelector('input[name="jenis_kelamin"]:checked');
         jk = jk ? (jk.value == '1' ? 'Laki-laki' : 'Perempuan') : '-';
+        document.getElementById('sumNik').innerText = nik;
         document.getElementById('sumRM').innerText = rm;
+        document.getElementById('sumNama').innerText = nama;
+
         document.getElementById('sumAlamat').innerText =
             prov + ', ' + kab + ', ' + kec + ', ' + desa +
             ' RT ' + rt + ' RW ' + rw + ' - ' + alamat;
 
         document.getElementById('sumJK').innerText = jk;
+        document.getElementById('sumLahir').innerText = tanggalLahir;
         document.getElementById('sumUsia').innerText = usia;
+        document.getElementById('sumStatus').innerText = status;
         document.getElementById('sumTanggal').innerText = tanggal;
         document.getElementById('sumCatatan').innerText = catatan;
-    }
-}
 
+    }
+
+}
 
 // ===== SUBMIT =====
 function submitData(){
     if(!document.getElementById('confirm').checked){
-    alert('Silakan konfirmasi data terlebih dahulu');
+
+    document.getElementById('popupGagalText').innerText =
+    'Silakan centang konfirmasi data terlebih dahulu';
+
+    document.getElementById('popupGagal').style.display = 'flex';
+
     return false;
-    }
+}
     // STEP 1
     document.getElementById('formProvinsi').value = document.getElementById('provinsi').value;
     document.getElementById('formKabupaten').value = document.getElementById('kabupaten').value;
@@ -681,29 +813,189 @@ function submitData(){
     document.getElementById('formWilayah').value = document.getElementById('desa').value;
 
     // STEP 2
-    document.getElementById('formRM').value =
-    document.getElementById('no_rm').value;
+    document.getElementById('formNik').value = document.getElementById('nik').value;
+    document.getElementById('formRM').value = document.getElementById('no_rm').value;
     document.getElementById('formNama').value = document.getElementById('nama').value;
     document.getElementById('formTanggal').value = document.getElementById('tanggal').value;
+    document.getElementById('formLahir').value = document.getElementById('tgl_lahir').value;
     document.getElementById('formUsia').value = document.getElementById('usia').value;
+    document.getElementById('formStatus').value = document.getElementById('status_akhir').value;
     document.getElementById('formCatatan').value = document.getElementById('catatan').value;
 
     let jk = document.querySelector('input[name="jenis_kelamin"]:checked');
     document.getElementById('formJK').value = jk ? jk.value : '';
 
     // popup
-    document.getElementById('popupSuccess').style.display = 'flex';
+        document.getElementById('popupSuccess').style.display = 'flex';
 
-    setTimeout(() => {
+        // submit langsung
         document.getElementById('formPasien').submit();
-    }, 800);
 
-    return false;
+        return true;
+        }
+        function closePopup(){
+            document.getElementById('popupSuccess').style.display = 'none';
+        }
+        document.getElementById('tgl_lahir').addEventListener('change', function(){
+
+            let lahir = new Date(this.value);
+            let today = new Date();
+
+            let usia = today.getFullYear() - lahir.getFullYear();
+
+            let m = today.getMonth() - lahir.getMonth();
+
+            if(m < 0 || (m === 0 && today.getDate() < lahir.getDate())){
+                usia--;
+            }
+
+            document.getElementById('usia').value = usia;
+
+            // ===== KATEGORI =====
+            let kategori = '';
+
+            if(usia <= 4){
+
+                kategori = 'Balita';
+
+            }else if(usia <= 9){
+
+                kategori = 'Anak-anak';
+
+            }else if(usia <= 18){
+
+                kategori = 'Remaja';
+
+            }else if(usia <= 59){
+
+                kategori = 'Dewasa';
+
+            }else{
+
+                kategori = 'Lansia';
+
+            }
+
+            let dataBar = [0,0,0,0,0];
+
+if(usia <= 4){
+
+    dataBar = [1,0,0,0,0];
+
+}else if(usia <= 9){
+
+    dataBar = [0,1,0,0,0];
+
+}else if(usia <= 18){
+
+    dataBar = [0,0,1,0,0];
+
+}else if(usia <= 59){
+
+    dataBar = [0,0,0,1,0];
+
+}else{
+
+    dataBar = [0,0,0,0,1];
+
 }
-    function closePopup(){
-        document.getElementById('popupSuccess').style.display = 'none';
+
+usiaChart.data.datasets[0].data = dataBar;
+usiaChart.update();
+
+        });
+        const ctxUsia =
+document.getElementById('usiaChart');
+
+const usiaChart = new Chart(ctxUsia, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: [
+            'Balita',
+            'Anak-anak',
+            'Remaja',
+            'Dewasa',
+            'Lansia'
+        ],
+
+        datasets: [{
+
+            data: [0,0,0,0,0],
+
+            backgroundColor: [
+                '#7ED7C1',
+                '#65B741',
+                '#FFD166',
+                '#3AA6B9',
+                '#2F4858'
+            ],
+
+            borderRadius: 12
+
+        }]
+    },
+
+    options: {
+
+        responsive:true,
+
+        plugins:{
+            legend:{
+                display:false
+            }
+        },
+
+        scales:{
+            y:{
+                beginAtZero:true,
+                ticks:{
+                    stepSize:1
+                }
+            }
+        }
     }
+});
+
+function closePopupGagal(){
+    document.getElementById('popupGagal').style.display = 'none';
+}
 </script>
     
+<!-- POPUP GAGAL -->
+<div class="popup" id="popupGagal">
 
+    <div class="popup-box">
+
+        <div style="
+            width:80px;
+            height:80px;
+            background:#ffeaea;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:auto;
+            font-size:40px;
+            color:#ff4d4f;
+            margin-bottom:15px;
+        ">
+            ✕
+        </div>
+
+        <h3 style="font-weight:700;">Gagal</h3>
+
+        <p id="popupGagalText">
+            Data belum lengkap
+        </p>
+
+        <button class="btn-next" onclick="closePopupGagal()">
+            OK
+        </button>
+
+    </div>
+
+</div>
 <?= $this->endSection() ?>
