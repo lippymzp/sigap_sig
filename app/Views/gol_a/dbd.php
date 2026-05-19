@@ -1,5 +1,5 @@
 <?php $this->setVar('penyakit', 'dbd'); ?>
-<?= $this->include('layout/header_a') ?>
+<?= $this->include('layout/header') ?>
 
 <style>
 /* ================= HERO SLIDER ================= */
@@ -425,7 +425,7 @@
 .slider-item{
     min-width:420px;
     min-height:220px;
-    background:#fff;
+    background:#00BBC2;
     border-radius:24px;
     padding:22px;
     display:flex;
@@ -583,21 +583,21 @@
     justify-content:center;
 }
 .funfact-content h5{
-    font-size:24px;
+    font-size:20px;
     font-weight:700;
-    color:#222;
+    color:white;
     margin-bottom:12px;
     line-height:1.4;
 }
 .funfact-content p{
-    font-size:16px;
+    font-size:14px;
     line-height:1.8;
-    color:#666;
+    color:white;
     margin-bottom:16px;
 }
 .funfact-link{
-    color:#00BBC2;
-    font-size:16px;
+    color:#fff;
+    font-size:14px;
     font-weight:700;
     text-decoration:none;
     transition:0.25s ease;
@@ -658,7 +658,7 @@
     max-width:220px;
     min-height:160px;
     padding:26px 18px;
-    background:#fff;
+    background:#00BBC2;
     border-radius:24px;
     display:flex;
     flex-direction:column;
@@ -666,7 +666,7 @@
     justify-content:center;
     gap:16px;
     text-align:center;
-    color:#00aeb5;
+    color:#fff;
     font-size:16px;
     font-weight:700;
     border:1px solid rgba(0,187,194,.15);
@@ -681,8 +681,8 @@
 }
 .fitur-box:hover{
     transform:translateY(-6px);
-    background:#00BBC2;
-    color:#fff;
+    background:#fff;
+    color:#00BBC2;
     box-shadow:0 15px 35px rgba(0,187,194,.25);
 }
 .fitur-box:hover i{
@@ -1004,15 +1004,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                     <h4 class="fw-bold mb-1" style="color: #222;">Peta Interaktif Penyebaran</h4>
                     <p class="sub text-muted" style="font-size: 14px; margin-bottom: 0;">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
                 </div>
-                <div class="filter mt-2 mt-md-0">
-                    <span class="fw-bold me-2">Periode:</span>
-                    <?php $tahunMap = $_GET['tahun_map'] ?? date('Y'); ?>
-                    <select id="periodeMap" class="form-select d-inline-block w-auto shadow-sm" style="border-radius: 10px; cursor: pointer;" onchange="updateMap()">
-                        <?php for($t = 2024; $t <= date('Y'); $t++): ?>
-                            <option value="<?= $t ?>" <?= ($t == $tahunMap ? 'selected' : '') ?>><?= $t ?></option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
+                <div class="filter mt-2 mt-md-0 d-flex align-items-center">
+                <span class="me-2" style="color: #007680; font-size: 16px; font-weight: 500;">Periode:</span>
+    <?php $tahunMap = $_GET['tahun_map'] ?? date('Y'); ?>
+    <select id="periodeMap" class="form-select d-inline-block w-auto" style="border-radius: 20px; border: 1px solid #d1d5db; padding: 4px 32px 4px 16px; font-size: 15px; cursor: pointer; box-shadow: none; background-color: #fff;" onchange="updateMap()">
+        <?php for($t = 2024; $t <= date('Y'); $t++): ?>
+            <option value="<?= $t ?>" <?= ($t == $tahunMap ? 'selected' : '') ?>><?= $t ?></option>
+        <?php endfor; ?>
+    </select>
+</div>
             </div>
             
             <div class="inner-card position-relative">
@@ -1419,13 +1419,35 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         }
     }
 
+    // Kunci ID Penyakit untuk DBD
+    $id_penyakit_dbd = 1;
+
+    // Kunci 5 nama desa yang ingin ditampilkan (di-set ke lowercase/huruf kecil semua agar pencarian aman)
+    $desa_diizinkan = ['sumbersari', 'antirogo', 'karangrejo', 'wirolegi', 'tegalgede', 'tegal gede'];
+
     // Menghitung data Ringkasan
     $maxKasusRingkasan = 0;
     $desaTertinggiVal = '-';
     $totalKasusRingkasan = 0;
     $totalDesaTinggi = 0;
+    $totalDesaValid = 0; 
 
     foreach($detailMap as $k => &$d) {
+        // FILTER 1: Cek apakah nama desa masuk dalam list 5 desa di atas
+        $namaDesaData = trim(strtolower($d['nama'] ?? $d['nama_desa'] ?? ''));
+        if (!in_array($namaDesaData, $desa_diizinkan)) {
+            continue; // Lewati jika desanya bukan salah satu dari 5 desa tersebut
+        }
+
+        // FILTER 2: Cek ID Penyakit DBD
+        $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
+        if ($idPenyakitData !== $id_penyakit_dbd) {
+            continue; 
+        }
+
+        // Jika lolos kedua filter, baru dihitung:
+        $totalDesaValid++; 
+
         // Tentukan Usia Tertinggi
         $mU = max($d['anak'], $d['dewasa'], $d['lansia']);
         if ($mU == 0) $d['usia_tertinggi'] = '-';
@@ -1433,21 +1455,33 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         else if ($mU == $d['dewasa']) $d['usia_tertinggi'] = 'Dewasa';
         else $d['usia_tertinggi'] = 'Lansia';
 
-        $jumlahKasus = (int)($d['jumlah_kasus'] ?? 0);
+        $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
         $totalKasusRingkasan += $jumlahKasus;
         
         // Set Desa dengan Kasus Terbanyak
         if ($jumlahKasus > $maxKasusRingkasan) {
             $maxKasusRingkasan = $jumlahKasus;
-            $desaTertinggiVal = $d['nama'];
+            $desaTertinggiVal = $d['nama'] ?? $d['nama_desa'] ?? '-';
         }
     }
 
-    $totalDesa = count($detailMap);
-    $rataDesa = $totalDesa > 0 ? round($totalKasusRingkasan / $totalDesa) : 0;
+    // Hitung rata-rata khusus dari desa yang valid DBD dan masuk 5 besar wilayah tersebut
+    $rataDesa = $totalDesaValid > 0 ? round($totalKasusRingkasan / $totalDesaValid) : 0;
 
     foreach ($detailMap as $d) {
-        if ((int)($d['jumlah_kasus'] ?? 0) > $rataDesa) {
+        // Terapkan filter yang sama untuk hitungan desa di atas rata-rata
+        $namaDesaData = trim(strtolower($d['nama'] ?? $d['nama_desa'] ?? ''));
+        if (!in_array($namaDesaData, $desa_diizinkan)) {
+            continue;
+        }
+
+        $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
+        if ($idPenyakitData !== $id_penyakit_dbd) {
+            continue;
+        }
+
+        $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
+        if ($jumlahKasus > $rataDesa) {
             $totalDesaTinggi++;
         }
     }

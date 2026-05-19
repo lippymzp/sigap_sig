@@ -74,7 +74,7 @@ class LandingpageDbd extends BaseController
     'video'         => $video,
     'banner'        => $banner,
     'show_footer_maskot' => true,
-    'footer_maskot' => 'logodenggisputih.png'
+    'footer_maskot' => 'logo_denggis.png'
 ]);
     }
 
