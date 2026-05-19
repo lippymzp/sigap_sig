@@ -1,4 +1,4 @@
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 <!DOCTYPE html>
 <html>
 <head>
