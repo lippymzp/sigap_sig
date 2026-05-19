@@ -474,16 +474,16 @@ $routes->get('/manajemen-user/view/(:num)', 'ManajemenUser::form/$1/view');
 $routes->get('/manajemen-user/hapus/(:num)', 'ManajemenUser::hapus/$1');
 
 // ================= FUNFACT =================
-$routes->get('funfact', 'dbd::funfact');
-$routes->get('dbd/unggahfunfact', 'dbd::unggahfunfact');
-$routes->get('dbd/unggahfunfact/(:num)', 'dbd::unggahfunfact/$1');
-$routes->post('funfact/simpan', 'dbd::simpanFunfact');
-$routes->get('funfact/edit/(:num)', 'dbd::editFunfact/$1');
-$routes->post('funfact/update/(:num)', 'dbd::updateFunfact/$1');
-$routes->get('funfact/hapus/(:num)', 'dbd::hapusFunfact/$1');
-$routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
-$routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
-$routes->get('funfact/view/(:num)', 'dbd::view/$1');;
+$routes->get('funfact', 'Dbd::funfact');
+$routes->get('dbd/unggahfunfact', 'Dbd::unggahfunfact');
+$routes->get('dbd/unggahfunfact/(:num)', 'Dbd::unggahfunfact/$1');
+$routes->post('funfact/simpan', 'Dbd::simpanFunfact');
+$routes->get('funfact/edit/(:num)', 'Dbd::editFunfact/$1');
+$routes->post('funfact/update/(:num)', 'Dbd::updateFunfact/$1');
+$routes->get('funfact/hapus/(:num)', 'Dbd::hapusFunfact/$1');
+$routes->get('funfact/upload/(:num)', 'Dbd::uploadFunfact/$1');
+$routes->get('funfact/simpan-draft/(:num)', 'Dbd::simpanDraft/$1');
+$routes->get('funfact/view/(:num)', 'Dbd::view/$1');;
 $routes->get('/tentang-kami', 'Home::tentangKami');
 $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
