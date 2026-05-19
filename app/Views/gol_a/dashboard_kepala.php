@@ -1056,7 +1056,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-});
 document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
@@ -1092,6 +1091,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+});
 });
 </script>
 <?= $this->endSection(); ?>

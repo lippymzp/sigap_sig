@@ -1092,7 +1092,7 @@ document.addEventListener("DOMContentLoaded", function() {
             scales: { y: { min: 0, max: 100, ticks: { stepSize: 25, callback: function(value) { return value + '%'; } }, grid: { borderDash: [5, 5] } }, x: { grid: { display: false } } }
         }
     });
-});
+
 document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
@@ -1128,6 +1128,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+});
 });
 </script>
 <?= $this->endSection() ?>
