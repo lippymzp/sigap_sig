@@ -212,7 +212,6 @@ $totalChart = $totalChart ?? json_encode([]);
 
 <h4 class="mb-4">Input Data Pasien</h4>
 
-<!-- STEP HEADER -->
 <div class="step-progress">
 
     <div class="progress-line"></div>
@@ -236,15 +235,12 @@ $totalChart = $totalChart ?? json_encode([]);
 
 <div class="form-box">
 
-<!-- ================= STEP 1 ================= -->
-<!-- ================= STEP 1 ================= -->
 <div id="step1">
 
 <h5 class="mb-4">Step 1 : Lokasi Kasus</h5>
 
 <div class="row g-4">
 
-    <!-- KIRI -->
     <div class="col-md-7">
 
         <div class="card-summary">
@@ -307,13 +303,10 @@ $totalChart = $totalChart ?? json_encode([]);
                 </button>
             </div>
 
-            
-
         </div>
 
     </div>
 
-    <!-- KANAN (MAP PREVIEW STYLE FIGMA) -->
     <div class="col-md-5">
 
         <div class="card-summary text-center">
@@ -345,7 +338,6 @@ $totalChart = $totalChart ?? json_encode([]);
                 var map;
                 var marker;
 
-                // 🔥 DATA KOORDINAT DESA (DEFAULT)
                 var koordinatDesa = {
                     "Sumbersari": { lat: -8.1725, lng: 113.7033 },
                     "Antirogo": { lat: -8.1570, lng: 113.6905 },
@@ -356,24 +348,18 @@ $totalChart = $totalChart ?? json_encode([]);
 
                 document.addEventListener("DOMContentLoaded", function(){
 
-                    // 🔥 INIT MAP
                     map = L.map('mapPreview').setView([-8.1725, 113.7033], 13);
 
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap'
                     }).addTo(map);
 
-                    // 🔥 MARKER AWAL
                     marker = L.marker([-8.1725, 113.7033]).addTo(map);
 
-                    // 🔥 FIX BUG MAP KOSONG (WAJIB kalau di step/tab)
                     setTimeout(() => {
                         map.invalidateSize();
                     }, 300);
 
-                    // =========================================
-                    // 🔥 DEFAULT SAAT LOAD
-                    // =========================================
                     var defaultDesa = document.getElementById("desa").value;
 
                     if(koordinatDesa[defaultDesa]){
@@ -387,9 +373,6 @@ $totalChart = $totalChart ?? json_encode([]);
                         marker.setLatLng([lat, lng]);
                     }
 
-                    // =========================================
-                    // 🔥 PILIH DESA → AUTO PINDAH MAP
-                    // =========================================
                     document.getElementById("desa").addEventListener("change", function(){
 
                         var desa = this.value;
@@ -407,29 +390,19 @@ $totalChart = $totalChart ?? json_encode([]);
 
                     });
 
-                    // =========================================
-                    // 🔥 KLIK PETA → AMBIL TITIK RUMAH (INI INTI)
-                    // =========================================
                     map.on('click', function(e){
 
                         var lat = e.latlng.lat;
                         var lng = e.latlng.lng;
 
-                        // isi input
                         document.getElementById("lat").value = lat.toFixed(6);
                         document.getElementById("lng").value = lng.toFixed(6);
 
-                        // pindah marker
                         marker.setLatLng([lat, lng]);
-
-                        // zoom ke titik
                         map.setView([lat, lng], 17);
 
                     });
 
-                    // =========================================
-                    // 🔥 MANUAL INPUT LAT LNG → MAP IKUT GERAK
-                    // =========================================
                     document.getElementById("lat").addEventListener("input", updateMap);
                     document.getElementById("lng").addEventListener("input", updateMap);
 
@@ -448,15 +421,12 @@ $totalChart = $totalChart ?? json_encode([]);
 
 </div>
 
-<!-- ================= STEP 2 ================= -->
-<!-- ================= STEP 2 ================= -->
 <div id="step2" style="display:none">
 
 <h5 class="mb-4">Step 2 : Data Klinis</h5>
 
 <div class="row g-4">
 
-    <!-- KIRI (STEP INDICATOR STYLE FIGMA) -->
     <div class="col-md-4">
 
         <div class="card-summary">
@@ -477,7 +447,6 @@ $totalChart = $totalChart ?? json_encode([]);
 
     </div>
 
-    <!-- KANAN (FORM) -->
     <div class="col-md-8">
 
         <div class="card-summary">
@@ -503,7 +472,7 @@ $totalChart = $totalChart ?? json_encode([]);
 
                 <div class="col-md-6">
                     <label>Usia (Otomatis)</label>
-                    <input name="usia" type="number" class="form-control custom-input" placeholder="Usia" id="usia" readonly>
+                    <input type="text" class="form-control custom-input" placeholder="Usia otomatis hitung" id="usia" readonly>
                 </div>
 
                 <div class="col-md-6">
@@ -551,22 +520,19 @@ $totalChart = $totalChart ?? json_encode([]);
                     Lanjut →
                 </button>
 
-    </div> <!-- d-flex -->
-    </div> <!-- card-summary -->
-    </div> <!-- col-md-8 -->
+    </div>
+    </div>
+    </div>
 
-    </div> <!-- row -->
-    </div> <!-- step2 -->
+    </div>
+    </div>
 
-<!-- ================= STEP 3 ================= -->
-<!-- ================= STEP 3 ================= -->
 <div id="step3" style="display:none">
 
 <h5 class="mb-4">Step 3 : Ringkasan & Kirim</h5>
 
 <div class="row g-4">
 
-    <!-- KIRI (STEP INDICATOR) -->
     <div class="col-md-4">
 
         <div class="card-summary">
@@ -585,7 +551,6 @@ $totalChart = $totalChart ?? json_encode([]);
 
         </div>
 
-        <!-- OPTIONAL CHART -->
         <div class="card-summary text-center mt-3">
             <h6 class="fw-bold mb-3">Kelompok Usia</h6>
             <canvas id="usiaChart" height="180"></canvas>
@@ -593,14 +558,12 @@ $totalChart = $totalChart ?? json_encode([]);
 
     </div>
 
-    <!-- KANAN (SUMMARY + FORM) -->
     <div class="col-md-8">
 
         <div class="card-summary">
 
             <h6 class="fw-bold mb-3">Ringkasan Laporan Kasus</h6>
 
-            <!-- DATA -->
             <div class="summary-box">
 
     <div class="row mb-2">
@@ -615,7 +578,7 @@ $totalChart = $totalChart ?? json_encode([]);
     <div class="col-7 fw-semibold" id="sumNama">-</div>
     </div>
 
-            <div class="row mb-2 align-items-start">
+    <div class="row mb-2 align-items-start">
         <div class="col-4 text-muted">Alamat</div>
         <div class="col-1 text-center">:</div>
         <div class="col-7 fw-semibold" id="sumAlamat">-</div>
@@ -663,7 +626,6 @@ $totalChart = $totalChart ?? json_encode([]);
         <div class="col-7 fw-semibold" id="sumCatatan">-</div>
     </div>
 
-    <!-- CHECK -->
     <div class="form-check mt-3" style="padding-left: 2rem;">
     <input 
         class="form-check-input" 
@@ -694,8 +656,6 @@ $totalChart = $totalChart ?? json_encode([]);
 
 </div>
 
-
-            <!-- FORM SUBMIT -->
             <form action="<?= base_url('dbd/simpandatapasien') ?>" 
                   method="post" 
                   onsubmit="return submitData()">
@@ -715,12 +675,13 @@ $totalChart = $totalChart ?? json_encode([]);
                 <input type="hidden" name="tgl_lahir" id="formTglLahir">
                 <input type="hidden" name="tanggal_pemeriksaan" id="formTanggalPemeriksaan">
                 <input type="hidden" name="jenis_kelamin" id="formJK">
-                <input type="hidden" name="usia" id="formUsia">
+                
+                <input type="hidden" name="usia" id="formUsia"> 
+                
                 <input type="hidden" name="status_akhir" id="formStatus">
                 <input type="hidden" name="tindak_lanjut" id="formTindak">
                 <input type="hidden" name="catatan" id="formCatatan">
 
-                    
                 <div class="d-flex justify-content-end align-items-center gap-3 mt-4">
 
                 <button 
@@ -744,11 +705,11 @@ $totalChart = $totalChart ?? json_encode([]);
     </div>
 </div>
 
-</div> <!-- END STEP 3 -->
+</div>
 
-</div> <!-- END FORM BOX -->
+</div>
 
-</div> <!-- END SECTION CARD -->
+</div>
 
 <script>
 
@@ -782,11 +743,7 @@ function nextStep(step){
         }
 
         if(kosong.length > 0){
-
-            showPopupGagal(
-                'Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.'
-            );
-
+            showPopupGagal('Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.');
             return;
         }
     }
@@ -835,11 +792,7 @@ function nextStep(step){
         }
 
         if(kosong.length > 0){
-
-            showPopupGagal(
-                'Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.'
-            );
-
+            showPopupGagal('Kolom ' + kosong.join(', ') + ' belum terisi. Silahkan dilengkapi.');
             return;
         }
     }
@@ -876,7 +829,7 @@ function nextStep(step){
         let nama = document.getElementById('nama').value;
         let tgl_lahir = document.getElementById('tgl_lahir').value;
         let tanggal = document.getElementById('tanggal_pemeriksaan').value;
-        let usia = document.getElementById('usia').value;
+        let usia = document.getElementById('usia').value; // Ambil teks lengkap (Thn Bulan Hari)
         let status = document.getElementById('status_akhir').value;
         let tindak = document.getElementById('tindak_lanjut').value;
         let catatan = document.getElementById('catatan').value;
@@ -892,7 +845,7 @@ function nextStep(step){
         document.getElementById('sumNama').innerText = nama;
         document.getElementById('sumTglLahir').innerText = tgl_lahir;
         document.getElementById('sumJK').innerText = jk;
-        document.getElementById('sumUsia').innerText = usia;
+        document.getElementById('sumUsia').innerText = usia; // Tampilkan teks lengkap di ringkasan
         document.getElementById('sumTanggal').innerText = tanggal;
         document.getElementById('sumStatus').innerText = status;
         document.getElementById('sumTindak').innerText = tindak;
@@ -900,132 +853,104 @@ function nextStep(step){
     }
 }
 
+// 🔥 HITUNG OTOMATIS DETAIL, SIMPAN ANGKA TAHUN SECARA TERSEMBUNYI
 document.getElementById('tgl_lahir').addEventListener('change', function() {
     let dob = new Date(this.value);
     let today = new Date();
+    
     if (!isNaN(dob.getTime())) {
-        let age = today.getFullYear() - dob.getFullYear();
-        let m = today.getMonth() - dob.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-            age--;
+        let ageYears = today.getFullYear() - dob.getFullYear();
+        let ageMonths = today.getMonth() - dob.getMonth();
+        let ageDays = today.getDate() - dob.getDate();
+
+        if (ageDays < 0) {
+            let previousMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            ageDays += previousMonth;
+            ageMonths--;
         }
-        document.getElementById('usia').value = age;
+
+        if (ageMonths < 0) {
+            ageMonths += 12;
+            ageYears--;
+        }
+
+        // Format teks yang dilihat oleh User
+        let hasilUsia = "";
+        if (ageYears > 0) hasilUsia += ageYears + " Tahun ";
+        if (ageMonths > 0) hasilUsia += ageMonths + " Bulan ";
+        if (ageDays > 0 || hasilUsia === "") hasilUsia += ageDays + " Hari";
+
+        let usiaInput = document.getElementById('usia');
+        usiaInput.value = hasilUsia.trim();
+        
+        // Simpan angka tahun murni ke dalam atribut kustom 'data-tahun'
+        usiaInput.setAttribute('data-tahun', ageYears); 
     }
 });
 
 function prevStep(step){
-
     document.getElementById('step1').style.display='none';
     document.getElementById('step2').style.display='none';
     document.getElementById('step3').style.display='none';
-
     document.getElementById('step'+step).style.display='block';
-
     document.getElementById('stepNav1').classList.remove('active');
     document.getElementById('stepNav2').classList.remove('active');
     document.getElementById('stepNav3').classList.remove('active');
-
     document.getElementById('stepNav'+step).classList.add('active');
 }
 
 function submitData(){
 
-    // VALIDASI CHECKBOX
     if(!document.getElementById('confirm').checked){
-
-        showPopupGagal(
-            'Silahkan centang konfirmasi data terlebih dahulu'
-        );
-
+        showPopupGagal('Silahkan centang konfirmasi data terlebih dahulu');
         return false;
     }
 
     // STEP 1
-    document.getElementById('formProvinsi').value =
-        document.getElementById('provinsi').value;
-
-    document.getElementById('formKabupaten').value =
-        document.getElementById('kabupaten').value;
-
-    document.getElementById('formKecamatan').value =
-        document.getElementById('kecamatan').value;
-
-    document.getElementById('formDesa').value =
-        document.getElementById('desa').value;
-
-    document.getElementById('formRT').value =
-        document.getElementById('rt').value;
-
-    document.getElementById('formRW').value =
-        document.getElementById('rw').value;
-
-    document.getElementById('formAlamat').value =
-        document.getElementById('alamat').value;
-
-    document.getElementById('formLat').value =
-        document.getElementById('lat').value;
-
-    document.getElementById('formLng').value =
-        document.getElementById('lng').value;
+    document.getElementById('formProvinsi').value = document.getElementById('provinsi').value;
+    document.getElementById('formKabupaten').value = document.getElementById('kabupaten').value;
+    document.getElementById('formKecamatan').value = document.getElementById('kecamatan').value;
+    document.getElementById('formDesa').value = document.getElementById('desa').value;
+    document.getElementById('formRT').value = document.getElementById('rt').value;
+    document.getElementById('formRW').value = document.getElementById('rw').value;
+    document.getElementById('formAlamat').value = document.getElementById('alamat').value;
+    document.getElementById('formLat').value = document.getElementById('lat').value;
+    document.getElementById('formLng').value = document.getElementById('lng').value;
 
     // STEP 2
-    document.getElementById('formNIK').value =
-        document.getElementById('nik').value;
+    document.getElementById('formNIK').value = document.getElementById('nik').value;
+    document.getElementById('formNama').value = document.getElementById('nama').value;
+    document.getElementById('formTglLahir').value = document.getElementById('tgl_lahir').value;
+    document.getElementById('formTanggalPemeriksaan').value = document.getElementById('tanggal_pemeriksaan').value;
+    
+    // 🔥 PENTING: Hanya mengirimkan angka tahun murni ke form kirim agar database menerima data numerik tahun saja (0, 1, 2, dst)
+    let usiaInput = document.getElementById('usia');
+    document.getElementById('formUsia').value = usiaInput.getAttribute('data-tahun') || 0;
 
-    document.getElementById('formNama').value =
-        document.getElementById('nama').value;
-
-    document.getElementById('formTglLahir').value =
-        document.getElementById('tgl_lahir').value;
-
-    document.getElementById('formTanggalPemeriksaan').value =
-        document.getElementById('tanggal_pemeriksaan').value;
-
-    document.getElementById('formUsia').value =
-        document.getElementById('usia').value;
-
-    document.getElementById('formStatus').value =
-        document.getElementById('status_akhir').value;
-
-    document.getElementById('formTindak').value =
-        document.getElementById('tindak_lanjut').value;
-
-    document.getElementById('formCatatan').value =
-        document.getElementById('catatan').value;
+    document.getElementById('formStatus').value = document.getElementById('status_akhir').value;
+    document.getElementById('formTindak').value = document.getElementById('tindak_lanjut').value;
+    document.getElementById('formCatatan').value = document.getElementById('catatan').value;
 
     let jk = document.querySelector('input[name="jk"]:checked');
-
-    document.getElementById('formJK').value =
-        jk ? jk.value : '';
+    document.getElementById('formJK').value = jk ? jk.value : '';
 
     return true;
 }
 
 </script>
 
-<!-- chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-
 const ctx = document.getElementById('usiaChart');
-
 new Chart(ctx, {
-
     type: 'bar',
-
     data: {
-
         labels: <?= $labelChart ?>,
-
         datasets: [{
-
             label: 'Jumlah Pasien',
-
             data: <?= $totalChart ?>,
-
             borderRadius: 10,
-
             backgroundColor: [
                 '#36A2EB',
                 '#4BC0C0',
@@ -1035,17 +960,13 @@ new Chart(ctx, {
             ]
         }]
     },
-
     options: {
-
         responsive: true,
-
         plugins: {
             legend: {
                 display: false
             }
         },
-
         scales: {
             y: {
                 beginAtZero: true
@@ -1053,37 +974,19 @@ new Chart(ctx, {
         }
     }
 });
-
 </script>
 
-<!-- pesan suskes atau gagal -->
-
-<<div 
+<div 
     class="popup popup-success" 
     id="popupSuccess"
     style="<?= session()->getFlashdata('success') ? 'display:flex;' : 'display:none;' ?>"
 >
-
     <div class="popup-box">
-
-        <div class="popup-icon">
-            ✓
-        </div>
-
-        <div class="popup-title">
-            Berhasil
-        </div>
-
-        <div class="popup-text">
-            Data pasien berhasil disimpan
-        </div>
-
-        <button class="popup-btn" onclick="closePopupSuccess()">
-            OK
-        </button>
-
+        <div class="popup-icon">✓</div>
+        <div class="popup-title">Berhasil</div>
+        <div class="popup-text">Data pasien berhasil disimpan</div>
+        <button class="popup-btn" onclick="closePopupSuccess()">OK</button>
     </div>
-
 </div>
 
 <div 
@@ -1091,44 +994,32 @@ new Chart(ctx, {
     id="popupGagal"
     style="<?= session()->getFlashdata('error') ? 'display:flex;' : 'display:none;' ?>"
 >
-
     <div class="popup-box">
-
-        <div class="popup-icon">
-            ✕
-        </div>
-
-        <div class="popup-title">
-            Gagal
-        </div>
-
+        <div class="popup-icon">✕</div>
+        <div class="popup-title">Gagal</div>
         <div class="popup-text" id="popupGagalText">
-            <?= session()->getFlashdata('error') ?? 'Data belum lengkap' ?>
+            <?= session()->getFlashdata('error') ?: 'Terjadi kesalahan, sila cek kembali data Anda.' ?>
         </div>
-
-        <button class="popup-btn" onclick="closePopupGagal()">
-            OK
-        </button>
-
+        <button class="popup-btn" onclick="closePopupGagal()">OK</button>
     </div>
-
 </div>
 
 <script>
-
-function showPopupGagal(pesan){
-    document.getElementById('popupGagalText').innerText = pesan;
-    document.getElementById('popupGagal').style.display = 'flex';
+function closePopupSuccess() {
+    document.getElementById('popupSuccess').style.display = 'none';
+    // Opsional: reload halaman setelah klik OK agar form kembali bersih
+    window.location.reload(); 
 }
 
-function closePopupGagal(){
+function closePopupGagal() {
     document.getElementById('popupGagal').style.display = 'none';
 }
 
-function closePopupSuccess(){
-    document.getElementById('popupSuccess').style.display = 'none';
+// Fungsi pembantu jika validasi step mendeteksi kolom kosong
+function showPopupGagal(pesan) {
+    document.getElementById('popupGagalText').innerText = pesan;
+    document.getElementById('popupGagal').style.display = 'flex';
 }
-
 </script>
 
 <?= $this->endSection() ?>

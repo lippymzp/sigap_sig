@@ -124,10 +124,11 @@ class InputDataPasienAModel extends Model
                 MONTHNAME(p.tgl_kunjungan) as bulan,
                 w.kelurahan,
 
-                SUM(CASE WHEN p.umur BETWEEN 0 AND 6 THEN 1 ELSE 0 END) as bayi_anak_prasekolah,
-                SUM(CASE WHEN p.umur > 6 AND p.umur <= 18 THEN 1 ELSE 0 END) as sekolah_dan_remaja,
-                SUM(CASE WHEN p.umur > 18 AND p.umur <= 59 THEN 1 ELSE 0 END) as dewasa,
-                SUM(CASE WHEN p.umur >= 60 THEN 1 ELSE 0 END) as lansia,
+                SUM(CASE WHEN p.umur BETWEEN 0 AND 5 THEN 1 ELSE 0 END) as bayi,
+                SUM(CASE WHEN p.umur BETWEEN 6 AND 10 THEN 1 ELSE 0 END) as anak,
+                SUM(CASE WHEN p.umur BETWEEN 11 AND 18 THEN 1 ELSE 0 END) as remaja,
+                SUM(CASE WHEN p.umur BETWEEN 19 AND 59 THEN 1 ELSE 0 END) as dewasa,
+                SUM(CASE WHEN p.umur > 59 THEN 1 ELSE 0 END) as lansia,
 
                 SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
                 SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
@@ -203,5 +204,4 @@ class InputDataPasienAModel extends Model
 
         return $builder->get()->getResultArray();
     }
-
 }
