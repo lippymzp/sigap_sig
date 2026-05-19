@@ -220,14 +220,11 @@ $penduduk = $penduduk ?? [];
 
 <?php
     $dbStat = \Config\Database::connect();
-    
-    $hariIni = date('Y-m-d');
 
     $idPetugas  = session()->get('id_petugas');
     $idPenyakit = session()->get('id_penyakit');
 
     $totalKasus = $dbStat->table('pasien')
-        ->where('DATE(tgl_kunjungan)', $hariIni)
         ->where('id_petugas', $idPetugas)
         ->where('id_penyakit', $idPenyakit)
         ->countAllResults();
