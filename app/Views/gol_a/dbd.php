@@ -1419,13 +1419,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         }
     }
 
-    // Kunci ID Penyakit untuk DBD
-    $id_penyakit_dbd = 1;
-
-    // Kunci 5 nama desa yang ingin ditampilkan (di-set ke lowercase/huruf kecil semua agar pencarian aman)
+    $id_penyakit= 1;
     $desa_diizinkan = ['sumbersari', 'antirogo', 'karangrejo', 'wirolegi', 'tegalgede', 'tegal gede'];
 
-    // Menghitung data Ringkasan
     $maxKasusRingkasan = 0;
     $desaTertinggiVal = '-';
     $totalKasusRingkasan = 0;
@@ -1433,24 +1429,23 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     $totalDesaValid = 0; 
 
     foreach($detailMap as $k => &$d) {
-        // FILTER 1: Cek apakah nama desa masuk dalam list 5 desa di atas
-        $namaDesaData = trim(strtolower($d['nama'] ?? $d['nama_desa'] ?? ''));
+        // MENGGUNAKAN KEY 'kelurahan'
+        $namaDesaData = trim(strtolower($d['kelurahan'] ?? ''));
+        
         if (!in_array($namaDesaData, $desa_diizinkan)) {
-            continue; // Lewati jika desanya bukan salah satu dari 5 desa tersebut
-        }
-
-        // FILTER 2: Cek ID Penyakit DBD
-        // (Pastikan key 'id_penyakit' benar-benar ada di dalam array $detailMap)
-        $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
-        if ($idPenyakitData !== $id_penyakit_dbd) {
             continue; 
         }
 
-        // Jika lolos kedua filter, baru dihitung:
+        // Jika id_penyakit tidak ada di view, filter ini bisa dimatikan dengan //
+        $idPenyakitData = (int)($d['id_penyakit'] ?? 1); 
+        if ($idPenyakitData !== $id_penyakit) {
+            continue; 
+        }
+
         $totalDesaValid++; 
 
-        // Tentukan Usia Tertinggi (berikan nilai default 0 jika key tidak ada untuk mencegah error)
-        $anak = (int)($d['anak'] ?? 0);
+        // MENGGUNAKAN KEY YANG BENAR UNTUK USIA
+        $anak = (int)($d['bayi_anak_prasekolah'] ?? 0) + (int)($d['sekolah_dan_remaja'] ?? 0);
         $dewasa = (int)($d['dewasa'] ?? 0);
         $lansia = (int)($d['lansia'] ?? 0);
         
@@ -1458,41 +1453,38 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         if ($mU == 0) {
             $d['usia_tertinggi'] = '-';
         } else if ($mU == $anak) {
-            $d['usia_tertinggi'] = 'Anak-anak';
+            $d['usia_tertinggi'] = 'Anak-anak & Remaja';
         } else if ($mU == $dewasa) {
             $d['usia_tertinggi'] = 'Dewasa';
         } else {
             $d['usia_tertinggi'] = 'Lansia';
         }
 
-        $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
+        // MENGGUNAKAN KEY 'jumlah'
+        $jumlahKasus = (int)($d['jumlah'] ?? 0);
         $totalKasusRingkasan += $jumlahKasus;
         
-        // Set Desa dengan Kasus Terbanyak
         if ($jumlahKasus > $maxKasusRingkasan) {
             $maxKasusRingkasan = $jumlahKasus;
-            $desaTertinggiVal = $d['nama'] ?? $d['nama_desa'] ?? '-';
+            $desaTertinggiVal = $d['kelurahan'] ?? '-';
         }
     }
-    // SANGAT PENTING: Hapus referensi $d sebelum memulai loop baru
     unset($d); 
 
-    // Hitung rata-rata khusus dari desa yang valid DBD dan masuk 5 besar wilayah tersebut
     $rataDesa = $totalDesaValid > 0 ? round($totalKasusRingkasan / $totalDesaValid) : 0;
 
     foreach ($detailMap as $d) {
-        // Terapkan filter yang sama untuk hitungan desa di atas rata-rata
-        $namaDesaData = trim(strtolower($d['nama'] ?? $d['nama_desa'] ?? ''));
+        $namaDesaData = trim(strtolower($d['kelurahan'] ?? ''));
         if (!in_array($namaDesaData, $desa_diizinkan)) {
             continue;
         }
 
-        $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
-        if ($idPenyakitData !== $id_penyakit_dbd) {
+        $idPenyakitData = (int)($d['id_penyakit'] ?? 1);
+        if ($idPenyakitData !== $id_penyakit) {
             continue;
         }
 
-        $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
+        $jumlahKasus = (int)($d['jumlah'] ?? 0);
         if ($jumlahKasus > $rataDesa) {
             $totalDesaTinggi++;
         }
