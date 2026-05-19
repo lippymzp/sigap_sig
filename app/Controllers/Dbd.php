@@ -714,6 +714,7 @@ class Dbd extends BaseController
     $dbd = $builderDbd->get()->getResultArray();    // ======================
     // 🔥 KIRIM KE VIEW
     // ======================
+    
     return view('gol_a/dashboard_kader', [
         'menu' => 'dashboard',
         'judul' => 'Dashboard Kader',
