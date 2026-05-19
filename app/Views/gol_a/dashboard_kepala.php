@@ -272,14 +272,14 @@ $dataWilayah = $dbStat->table('pasien p')
     ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
     ->where('p.id_petugas', $idPetugas)
     ->where('p.id_penyakit', $idPenyakit)
-    ->whereIn('w.nama_wilayah', [
+    ->whereIn('kelurahan', [
         'Sumbersari',
         'Antirogo',
         'Tegalgede',
         'Karangrejo',
         'Wirolegi'
     ])
-    ->select('w.nama_wilayah')
+    ->select('kelurahan')
     ->distinct()
     ->get()
     ->getResult();
