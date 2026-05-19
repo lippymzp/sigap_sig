@@ -1419,76 +1419,89 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         }
     }
 
-    $id_penyakit= 1;
-    $desa_diizinkan = ['sumbersari', 'antirogo', 'karangrejo', 'wirolegi', 'tegalgede', 'tegal gede'];
+<?php
 
-    $maxKasusRingkasan = 0;
-    $desaTertinggiVal = '-';
-    $totalKasusRingkasan = 0;
-    $totalDesaTinggi = 0;
-    $totalDesaValid = 0; 
+$db = \Config\Database::connect();
 
-    foreach($detailMap as $k => &$d) {
-        // MENGGUNAKAN KEY 'kelurahan'
-        $namaDesaData = trim(strtolower($d['kelurahan'] ?? ''));
-        
-        if (!in_array($namaDesaData, $desa_diizinkan)) {
-            continue; 
-        }
+$id_penyakit = 1;
+$idPetugas = session()->get('id_petugas');
 
-        // Jika id_penyakit tidak ada di view, filter ini bisa dimatikan dengan //
-        $idPenyakitData = (int)($d['id_penyakit'] ?? 1); 
-        if ($idPenyakitData !== $id_penyakit) {
-            continue; 
-        }
+$desa_diizinkan = [
+    'sumbersari',
+    'antirogo',
+    'karangrejo',
+    'wirolegi',
+    'tegalgede'
+];
 
-        $totalDesaValid++; 
+/*
+|--------------------------------------------------------------------------
+| AMBIL DATA LANGSUNG DARI DATABASE
+|--------------------------------------------------------------------------
+*/
+$dataDesa = $db->table('pasien')
+    ->select('LOWER(REPLACE(kelurahan," ","")) as nama_desa, COUNT(*) as jumlah')
+    ->where('id_petugas', $idPetugas)
+    ->where('id_penyakit', $id_penyakit)
+    ->whereIn('LOWER(REPLACE(kelurahan," ",""))', $desa_diizinkan)
+    ->groupBy('nama_desa')
+    ->get()
+    ->getResultArray();
 
-        // MENGGUNAKAN KEY YANG BENAR UNTUK USIA
-        $anak = (int)($d['bayi_anak_prasekolah'] ?? 0) + (int)($d['sekolah_dan_remaja'] ?? 0);
-        $dewasa = (int)($d['dewasa'] ?? 0);
-        $lansia = (int)($d['lansia'] ?? 0);
-        
-        $mU = max($anak, $dewasa, $lansia);
-        if ($mU == 0) {
-            $d['usia_tertinggi'] = '-';
-        } else if ($mU == $anak) {
-            $d['usia_tertinggi'] = 'Anak-anak & Remaja';
-        } else if ($mU == $dewasa) {
-            $d['usia_tertinggi'] = 'Dewasa';
-        } else {
-            $d['usia_tertinggi'] = 'Lansia';
-        }
+/*
+|--------------------------------------------------------------------------
+| INISIALISASI
+|--------------------------------------------------------------------------
+*/
+$totalKasusRingkasan = 0;
+$maxKasusRingkasan = 0;
+$desaTertinggiVal = '-';
+$totalDesaValid = 0;
+$totalDesaTinggi = 0;
 
-        // MENGGUNAKAN KEY 'jumlah'
-        $jumlahKasus = (int)($d['jumlah'] ?? 0);
-        $totalKasusRingkasan += $jumlahKasus;
-        
-        if ($jumlahKasus > $maxKasusRingkasan) {
-            $maxKasusRingkasan = $jumlahKasus;
-            $desaTertinggiVal = $d['kelurahan'] ?? '-';
-        }
+$rekapDesa = [];
+
+/*
+|--------------------------------------------------------------------------
+| LOOP DATA
+|--------------------------------------------------------------------------
+*/
+foreach ($dataDesa as $d) {
+
+    $namaDesa = ucfirst($d['nama_desa']);
+    $jumlah = (int)$d['jumlah'];
+
+    $rekapDesa[$namaDesa] = $jumlah;
+
+    $totalKasusRingkasan += $jumlah;
+    $totalDesaValid++;
+
+    if ($jumlah > $maxKasusRingkasan) {
+        $maxKasusRingkasan = $jumlah;
+        $desaTertinggiVal = $namaDesa;
     }
-    unset($d); 
+}
 
-    $rataDesa = $totalDesaValid > 0 ? round($totalKasusRingkasan / $totalDesaValid) : 0;
+/*
+|--------------------------------------------------------------------------
+| RATA-RATA
+|--------------------------------------------------------------------------
+*/
+$rataDesa = $totalDesaValid > 0
+    ? round($totalKasusRingkasan / $totalDesaValid)
+    : 0;
 
-    foreach ($detailMap as $d) {
-        $namaDesaData = trim(strtolower($d['kelurahan'] ?? ''));
-        if (!in_array($namaDesaData, $desa_diizinkan)) {
-            continue;
-        }
-
-        $idPenyakitData = (int)($d['id_penyakit'] ?? 1);
-        if ($idPenyakitData !== $id_penyakit) {
-            continue;
-        }
-
-        $jumlahKasus = (int)($d['jumlah'] ?? 0);
-        if ($jumlahKasus > $rataDesa) {
-            $totalDesaTinggi++;
-        }
+/*
+|--------------------------------------------------------------------------
+| DESA DI ATAS RATA-RATA
+|--------------------------------------------------------------------------
+*/
+foreach ($rekapDesa as $jumlah) {
+    if ($jumlah > $rataDesa) {
+        $totalDesaTinggi++;
     }
+}
+
 ?>
 
 <section class="container mt-5 mb-5">
