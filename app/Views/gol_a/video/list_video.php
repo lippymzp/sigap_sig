@@ -94,15 +94,17 @@ body{
 
 /* ================= CARD ================= */
 .video-card{
-    position:relative;
-    display:flex;
-    gap:16px;
-    background:#edf7f7;
-    border:1px solid #cfdede;
-    border-radius:8px;
-    padding:10px;
-    margin-bottom:18px;
-    box-shadow:0 2px 5px rgba(0,0,0,.08);
+    position: relative;
+    display: flex;
+    gap: 16px;
+    background: #edf7f7;
+    border: 1px solid #cfdede;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
+    /* Tambahan agar card sendiri punya batas lebar maksimal jika pembungkusnya lebar */
+    width: 100%;
 }
 
 /* AREA LINK VIDEO */
@@ -199,6 +201,24 @@ body{
     padding:60px;
     text-align:center;
     border-radius:10px;
+}
+/* Tambahkan Media Query di paling bawah style agar di HP/Layar Kecil tampilannya tidak rusak */
+@media (max-width: 576px) {
+    .video-card {
+        flex-direction: column; /* Ubah jadi vertikal kalau di HP */
+    }
+    .video-main {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .video-thumb {
+        width: 100%;
+        height: 180px;
+    }
+    .video-menu {
+        top: auto;
+        bottom: 50px;
+    }
 }
 
 </style>
