@@ -254,28 +254,35 @@ $tahunMap = $tahunMap ?? [
     $idPetugas  = session()->get('id_petugas');
     $idPenyakit = session()->get('id_penyakit');
 
-    $totalKasus = $dbStat->table('pasien')
-        ->where('id_petugas', $idPetugas)
-        ->where('id_penyakit', $idPenyakit)
-        ->countAllResults();
+    $builder = $dbStat->table('pasien')
+    ->where('id_petugas', $idPetugas)
+    ->where('id_penyakit', $idPenyakit);
 
-    $hariIni = date('Y-m-d');
-    $kasusHariIni = $dbStat->table('pasien')
-        ->where('DATE(tgl_kunjungan)', $hariIni)
-        ->where('id_petugas', $idPetugas)
-        ->where('id_penyakit', $idPenyakit)
-        ->countAllResults();
+// Total kasus
+$totalKasus = $builder->countAllResults(false);
 
-    // 3. Kelurahan Terdampak
-    $idPetugas  = session()->get('id_petugas');
-        $idPenyakit = session()->get('id_penyakit');
+// Kasus hari ini
+$kasusHariIni = $builder
+    ->where('tgl_kunjungan >=', date('Y-m-d') . ' 00:00:00')
+    ->where('tgl_kunjungan <=', date('Y-m-d') . ' 23:59:59')
+    ->countAllResults(false);
 
-        $kelurahanTerdampak = $dbStat->table('pasien')
-            ->select('id_wilayah')
-            ->where('id_petugas', $idPetugas)
-            ->where('id_penyakit', $idPenyakit)
-            ->distinct()
-            ->countAllResults();
+// Kelurahan terdampak
+$dataWilayah = $dbStat->table('pasien p')
+    ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
+    ->where('p.id_petugas', $idPetugas)
+    ->where('p.id_penyakit', $idPenyakit)
+    ->whereIn('w.nama_wilayah', [
+        'Sumbersari',
+        'Antirogo',
+        'Tegalgede',
+        'Karangrejo',
+        'Wirolegi'
+    ])
+    ->select('w.nama_wilayah')
+    ->distinct()
+    ->get()
+    ->getResult();
 ?>
 
 <div class="stat-row">
