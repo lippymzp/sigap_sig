@@ -40,9 +40,9 @@ $routes->get('/pneumonia/rekapskrining/admin', 'Pneumonia::rekapskrining');
 /* ========================= */
 /* SKRINING DBD */
 /* ========================= */
-$routes->get('/skriningdbd', 'Dbd::skriningdbd');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Dbd::skriningdbd2');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Dbd::skriningdbd3');
+$routes->get('/skriningdbd', 'Skriningdbd::skriningdbd');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Skriningdbd::skriningdbd2');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Skriningdbd::skriningdbd3');
 $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
 $routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 
