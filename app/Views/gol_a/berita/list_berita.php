@@ -1,15 +1,9 @@
-<?php
-/** @var array $semuaData */
-?>
-
-<?= $this->include('layout/header_a') ?>
+<?php /** @var array $video */ ?>
+<?= $this->include('layout/header') ?>
 
 <?php
-$keyword  = $keyword ?? '';
-$kategori = $kategori ?? '';
+$status = $_GET['status'] ?? '';
 ?>
-
-<title>List Berita</title>
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -18,8 +12,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 rel="stylesheet">
 
 <style>
-/* ====== (CSS kamu tetap aku pertahankan, tidak aku ubah karena sudah bagus) ====== */
 
+/* ================= GLOBAL ================= */
 *{
     margin:0;
     padding:0;
@@ -31,26 +25,29 @@ body{
     background:#f5f5f5;
 }
 
-.berita-wrapper{
-    max-width:1280px;
+/* ================= WRAPPER ================= */
+.video-page{
+    max-width:1100px;
     margin:auto;
-    padding-bottom:60px;
+    padding:0 20px 40px;
 }
 
-.hero-section{
-    background:linear-gradient(90deg,#19bcc2,#9fd8d3);
+/* ================= HERO (INI YANG KAMU KIRA HILANG) ================= */
+.hero-video{
+    background:linear-gradient(90deg,#18b8be,#9ad6d2);
     padding:38px 20px;
     text-align:center;
     color:#fff;
+    margin-bottom:16px;
 }
 
-.hero-section h2{
+.hero-video h2{
     font-size:28px;
     font-weight:700;
     margin-bottom:6px;
 }
 
-.hero-section p{
+.hero-video p{
     font-size:14px;
     opacity:.95;
     margin-bottom:14px;
@@ -59,187 +56,187 @@ body{
 .breadcrumb{
     display:flex;
     justify-content:center;
-    align-items:center;
-    gap:8px;
+    gap:10px;
     font-size:13px;
 }
 
-.top-filter{
+/* ================= FILTER (INI YANG HILANG DI KAMU) ================= */
+.filter-tabs{
     display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
-    padding:28px 20px;
+    margin-bottom:20px;
 }
 
-.search-box{
-    position:relative;
-    width:700px;
-    display:flex;
-    align-items:center;
+.tab-btn{
+    min-width:170px;
+    text-align:center;
+    padding:10px 20px;
+    border:1px solid #00BBC2;
+    color:#00BBC2;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:600;
     background:#fff;
-    border-radius:14px;
-    box-shadow:0 6px 18px rgba(25,188,194,.25);
-    padding:0 12px;
-    transition:.3s;
-    border:1px solid #19bcc2;;
-}
-
-.search-box:focus-within{
-    border:1px solid #19bcc2;
-    box-shadow:0 6px 20px rgba(25,188,194,.25);
-}
-
-.search-box i{
-    color:#19bcc2;
-    font-size:15px;
-    margin-right:10px;
-}
-
-.search-box input{
-    flex:1;
-    height:46px;
-    border:none;
-    outline:none;
-    font-size:14px;
-    background:transparent;
-    color:#333;
-}
-
-.search-box input::placeholder{
-    color:#aaa;
-}
-
-/* tombol clear */
-.clear-btn{
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    color:#999;
-    font-size:14px;
-    padding:6px;
     transition:.2s;
 }
 
-.clear-btn:hover{
-    color:#ff4d4d;
-    transform:scale(1.1);
+.tab-btn:first-child{
+    border-radius:8px 0 0 8px;
 }
 
-.filter-select{
-    width:220px;
-    height:42px;
-    border:1px solid #d8d8d8;
+.tab-btn:last-child{
+    border-radius:0 8px 8px 0;
+}
+
+.tab-btn.active{
+    background:#00BBC2;
+    color:#fff;
+}
+
+/* ================= CARD ================= */
+.video-card{
+    position:relative;
+    display:flex;
+    gap:16px;
+    background:#edf7f7;
+    border:1px solid #cfdede;
     border-radius:8px;
-    padding:0 14px;
-    font-size:13px;
-    color:#666;
-    outline:none;
-    background:#fff;
-    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    padding:12px;
+    margin-bottom:18px;
+    max-width:900px;
+    width:100%;
+    box-shadow:0 2px 5px rgba(0,0,0,.08);
 }
 
-.berita-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:34px;
-    padding:0 20px;
-}
-
-.berita-link{
+/* AREA LINK VIDEO */
+.video-main{
+    display:flex;
+    gap:16px;
+    flex:1;
     text-decoration:none;
     color:inherit;
 }
 
-.berita-card{
-    background:#eef6f6;
-    border:1px solid #bccccc;
+/* THUMB */
+.video-thumb{
+    width:220px;
+    height:130px;
     border-radius:10px;
-    padding:14px;
-    box-shadow:0 3px 8px rgba(0,0,0,.12);
-    transition:.25s;
-}
-
-.berita-card:hover{
-    transform:translateY(-4px);
-}
-
-.berita-image{
-    width:100%;
-    height:165px;
     overflow:hidden;
-    border-radius:10px;
-    margin-bottom:12px;
-    background:#ddd;
+    background:#000;
+    flex-shrink:0;
 }
 
-.berita-image img{
+.video-thumb video{
     width:100%;
     height:100%;
     object-fit:cover;
 }
 
-.berita-title{
-    font-size:14px;
+/* CONTENT */
+.video-content{
+    flex:1;
+}
+
+.video-title{
+    font-size:15px;
     font-weight:700;
-    color:#222;
-    line-height:1.5;
-    margin-bottom:6px;
-    min-height:42px;
 }
 
-.berita-date{
-    font-size:10px;
-    color:#999;
-    margin-bottom:12px;
+.video-desc{
+    font-size:12px;
+    color:#888;
 }
 
-.berita-badge{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-width:120px;
-    height:28px;
-    border-radius:999px;
-    border:1px solid #19bcc2;
-    background:#dff7f6;
-    color:#19bcc2;
-    font-size:11px;
-    font-weight:600;
+/* ================= HAMBURGER ================= */
+.menu-toggle{
+    position:absolute;
+    right:12px;
+    top:12px;
+    cursor:pointer;
+    font-size:20px;
+    background:#fff;
+    padding:8px 10px;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
 }
 
-.empty-data{
-    grid-column:1/-1;
+/* ================= MENU ================= */
+.video-menu{
+    display:none;
+    position:absolute;
+    right:12px;
+    top:50px;
+    width:160px;
     background:#fff;
     border-radius:12px;
+    padding:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
+    z-index:50;
+}
+
+.video-menu.active{
+    display:block;
+}
+
+/* ITEM */
+.menu-item{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    font-size:13px;
+    cursor:pointer;
+}
+
+/* DATE */
+.video-date{
+    position:absolute;
+    right:14px;
+    bottom:12px;
+    font-size:10px;
+    color:#999;
+}
+
+/* EMPTY */
+.empty-data{
+    background:#fff;
     padding:60px;
     text-align:center;
-    color:#777;
+    border-radius:10px;
+}
+.info-row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:30px;
 }
 
-@media(max-width:992px){
-    .berita-grid{grid-template-columns:repeat(2,1fr);}
+.data-count{
+    font-size:14px;
+    color:#555;
+    text-align:center;
+    font-weight:500;
 }
 
-@media(max-width:768px){
-    .top-filter{flex-direction:column;align-items:stretch;}
-    .search-box{width:100%;}
-    .filter-select{width:100%;}
-    .berita-grid{grid-template-columns:1fr;}
+.data-count span{
+    color:black;
+    font-weight:700;
 }
+
 </style>
 
-<div class="berita-wrapper">
+<div class="video-page">
 
-    <!-- HERO -->
-    <div class="hero-section">
-        <h2>Berita Kesehatan dan Funfact DBD</h2>
-        <p>Temukan berita kesehatan dan artikel terbaik</p>
+    <!-- HERO (SUDAH BALIK LAGI) -->
+    <div class="hero-video">
+
+        <h2>Video Edukasi</h2>
+
+        <p>Temukan video edukasi yang menarik dan bermanfaat</p>
 
         <div class="breadcrumb">
             <a href="<?= base_url('dbd'); ?>" class="breadcrumb-link">Beranda</a>
             <span>›</span>
-            <span>Berita</span>
+            <span>Video</span>
         </div>
 
         <style>
@@ -253,125 +250,140 @@ body{
             text-decoration: none;
         }
         </style>
+
     </div>
+
+    <!-- FILTER (SUDAH BALIK LAGI) -->
+    <div class="filter-tabs">
+
+        <a href="<?= current_url() ?>"
+           class="tab-btn <?= ($status=='') ? 'active' : '' ?>">
+            Semua
+        </a>
+
+        <a href="<?= current_url() ?>?status=belum"
+           class="tab-btn <?= ($status=='belum') ? 'active' : '' ?>">
+            Belum Ditonton
+        </a>
+
+        <a href="<?= current_url() ?>?status=sudah"
+           class="tab-btn <?= ($status=='sudah') ? 'active' : '' ?>">
+            Sudah Ditonton
+        </a>
+
+        <a href="<?= current_url() ?>?status=baru"
+           class="tab-btn <?= ($status=='baru') ? 'active' : '' ?>">
+            Baru Diupload
+        </a>
+
     </div>
 
-    <!-- FILTER -->
-    <form method="GET">
+    <!-- LIST VIDEO -->
+    <?php if(!empty($video)) : ?>
 
-        <div class="top-filter">
+        <?php foreach($video as $v) : ?>
 
-            <!-- SEARCH -->
-            <div class="search-box">
+        <div class="video-card">
 
-                <i class="fa fa-search"></i>
+            <!-- LINK VIDEO -->
+            <a href="<?= base_url('video/video_dbd/' . $v['id_video']) ?>" class="video-main">
 
-                <input type="text"
-                    name="keyword"
-                    placeholder="Cari berita atau funfact..."
-                    value="<?= esc($keyword) ?>">
+                <div class="video-thumb">
+                    <video muted autoplay loop playsinline>
+                        <source src="<?= base_url('uploads/video/' . ($v['file_video'] ?? '')) ?>" type="video/mp4">
+                    </video>
+                </div>
 
-                <?php if(!empty($keyword)) : ?>
-                    <button type="button" class="clear-btn" onclick="window.location.href='<?= current_url() ?>'">
-                        <i class="fa fa-times"></i>
-                    </button>
-                <?php endif; ?>
+                <div class="video-content">
+                    <div class="video-title">
+                        <?= esc($v['judul_video'] ?? '') ?>
+                    </div>
+
+                    <div class="video-desc">
+                        <?= substr(strip_tags($v['deskripsi_video'] ?? ''),0,85) ?>...
+                    </div>
+                </div>
+
+            </a>
+
+            <!-- HAMBURGER -->
+            <div class="menu-toggle"
+                 onclick="event.stopPropagation(); toggleMenu(this)">
+                <i class="fa fa-ellipsis-vertical"></i>
+            </div>
+
+            <!-- MENU -->
+            <div class="video-menu">
+
+                <div class="menu-item"
+                     onclick="event.stopPropagation(); downloadVideo('<?= base_url('uploads/video/' . ($v['file_video'] ?? '')) ?>')">
+                    <i class="fa fa-download"></i> Download
+                </div>
+
+                <div class="menu-item"
+                     onclick="event.stopPropagation(); shareVideo('<?= base_url('VideoDbd/view/' . $v['id_video']) ?>')">
+                    <i class="fa fa-share"></i> Bagikan
+                </div>
 
             </div>
 
-            <!-- KATEGORI -->
-            <select name="kategori"
-                    class="filter-select"
-                    onchange="this.form.submit()">
-
-                <option value="">Semua Kategori</option>
-
-                <option value="Berita Kesehatan"
-                    <?= ($kategori == 'Berita Kesehatan') ? 'selected' : '' ?>>
-                    Berita Kesehatan
-                </option>
-
-                <option value="Funfact DBD"
-                    <?= ($kategori == 'Funfact DBD') ? 'selected' : '' ?>>
-                    Funfact DBD
-                </option>
-
-            </select>
+            <!-- DATE -->
+            <div class="video-date">
+                <?= esc($v['tanggal_video'] ?? '02 Maret 2026') ?>
+            </div>
 
         </div>
 
-    </form>
+        <?php endforeach; ?>
 
-    <!-- GRID -->
-    <div class="berita-grid">
+    <?php else : ?>
 
-        <?php if (!empty($semuaData)) : ?>
+        <div class="empty-data">
+            Tidak ada video tersedia.
+        </div>
 
-            <?php foreach ($semuaData as $item) : ?>
-
-                <?php
-                $isBerita = $item['tipe'] == 'berita';
-
-                if ($isBerita) {
-                    $judul   = $item['judul_berita'] ?? '';
-                    $tanggal = $item['tanggal_berita'] ?? '';
-                    $gambar  = $item['gambar_berita'] ?? 'default.jpg';
-                    $kategoriItem = 'Berita Kesehatan';
-                    $link = base_url('berita/view_user/' . $item['id_berita']);
-                    $path = 'uploads/berita/';
-                } else {
-                    $judul   = $item['judul_funfact'] ?? '';
-                    $tanggal = $item['tanggal_funfact'] ?? '';
-                    $gambar  = $item['gambar_funfact'] ?? 'default.jpg';
-                    $kategoriItem = 'Funfact DBD';
-                    $link = base_url('berita/funfact_user/' . $item['id_funfact']);
-                    $path = 'uploads/funfact/';
-                }
-                ?>
-
-                <a href="<?= $link ?>" class="berita-link">
-
-                    <div class="berita-card">
-
-                        <div class="berita-image">
-                            <img src="<?= base_url($path . $gambar) ?>"
-                                 alt="<?= esc($judul) ?>">
-                        </div>
-
-                        <div class="berita-title">
-                            <?= esc($judul) ?>
-                        </div>
-
-                        <div class="berita-date">
-                            <?= esc($tanggal ?: '-') ?>
-                        </div>
-
-                        <div class="berita-badge">
-                            <?= esc($kategoriItem) ?>
-                        </div>
-
-                    </div>
-
-                </a>
-
-            <?php endforeach; ?>
-
-        <?php else : ?>
-
-            <div class="empty-data">
-                Tidak ada data tersedia.
-            </div>
-
-        <?php endif; ?>
-
-    </div>
+    <?php endif; ?>
     <!-- INFO JUMLAH DATA -->
     <div class="info-row">
         <div class="data-count">
-            <br><br> Menampilkan <span><?= !empty($semuaData) ? count($semuaData) : 0 ?></span> dari data keseluruhan
+            Menampilkan data <span><?= !empty($video) ? count($video) : 0 ?></span> dari data keseluruhan
         </div>
     </div>
 
 </div>
+
+<script>
+
+function toggleMenu(el){
+
+    const menu = el.parentElement.querySelector('.video-menu');
+
+    document.querySelectorAll('.video-menu').forEach(m=>{
+        if(m!==menu) m.classList.remove('active');
+    });
+
+    menu.classList.toggle('active');
+}
+
+document.addEventListener('click', function(){
+    document.querySelectorAll('.video-menu')
+    .forEach(m=>m.classList.remove('active'));
+});
+
+function downloadVideo(url){
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function shareVideo(url){
+    navigator.clipboard.writeText(url);
+    alert('Link berhasil disalin');
+}
+
+</script>
 
 <?= $this->include('layout/footer_a') ?>
