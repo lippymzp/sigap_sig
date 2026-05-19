@@ -1440,6 +1440,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         }
 
         // FILTER 2: Cek ID Penyakit DBD
+        // (Pastikan key 'id_penyakit' benar-benar ada di dalam array $detailMap)
         $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
         if ($idPenyakitData !== $id_penyakit_dbd) {
             continue; 
@@ -1448,12 +1449,21 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         // Jika lolos kedua filter, baru dihitung:
         $totalDesaValid++; 
 
-        // Tentukan Usia Tertinggi
-        $mU = max($d['anak'], $d['dewasa'], $d['lansia']);
-        if ($mU == 0) $d['usia_tertinggi'] = '-';
-        else if ($mU == $d['anak']) $d['usia_tertinggi'] = 'Anak-anak';
-        else if ($mU == $d['dewasa']) $d['usia_tertinggi'] = 'Dewasa';
-        else $d['usia_tertinggi'] = 'Lansia';
+        // Tentukan Usia Tertinggi (berikan nilai default 0 jika key tidak ada untuk mencegah error)
+        $anak = (int)($d['anak'] ?? 0);
+        $dewasa = (int)($d['dewasa'] ?? 0);
+        $lansia = (int)($d['lansia'] ?? 0);
+        
+        $mU = max($anak, $dewasa, $lansia);
+        if ($mU == 0) {
+            $d['usia_tertinggi'] = '-';
+        } else if ($mU == $anak) {
+            $d['usia_tertinggi'] = 'Anak-anak';
+        } else if ($mU == $dewasa) {
+            $d['usia_tertinggi'] = 'Dewasa';
+        } else {
+            $d['usia_tertinggi'] = 'Lansia';
+        }
 
         $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
         $totalKasusRingkasan += $jumlahKasus;
@@ -1464,6 +1474,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
             $desaTertinggiVal = $d['nama'] ?? $d['nama_desa'] ?? '-';
         }
     }
+    // SANGAT PENTING: Hapus referensi $d sebelum memulai loop baru
+    unset($d); 
 
     // Hitung rata-rata khusus dari desa yang valid DBD dan masuk 5 besar wilayah tersebut
     $rataDesa = $totalDesaValid > 0 ? round($totalKasusRingkasan / $totalDesaValid) : 0;
