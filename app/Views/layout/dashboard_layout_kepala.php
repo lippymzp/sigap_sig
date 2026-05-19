@@ -229,8 +229,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-solid fa-chart-column me-2"></i> Grafik
 </a>
 
-<a href="<?= base_url('hasil_data_kepala/hasil') ?>"
-    class="<?= ($menu == 'hasil_data_kepala') ? 'active' : '' ?>">
+<a href="<?= base_url('dbd/hasil') ?>"
+    class="<?= ($menu == 'hasil') ? 'active' : '' ?>">
     <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
 </a>
 

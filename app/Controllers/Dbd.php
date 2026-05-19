@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\InputDataPasienModel;
+use App\Models\InputDataPasienAModel;
 use App\Models\PelaporanModel; // <-- DITAMBAHKAN: Panggil Model Pelaporan
 use App\Models\FunfactModel;
 use Dompdf\Dompdf;
@@ -76,7 +76,7 @@ class Dbd extends BaseController
 
     public function simpandatapasien()
         {
-            $model = new InputDataPasienModel();
+            $model = new InputDataPasienAModel();
     
             $data = [
     
@@ -1053,7 +1053,7 @@ public function hapus_skrining(int $id)
     $waktu = $this->request->getGet('waktu');
     $kelurahan = $this->request->getGet('kelurahan');
 
-    $model = new InputDataPasienModel();
+    $model = new InputDataPasienAModel();
     $data = $model->getDataExport($mode, $tahun, $waktu, $kelurahan);
 
     // kalau belum klik export → tampilkan halaman filter
