@@ -726,7 +726,7 @@ class Dbd extends BaseController
         'grafik' => $grafik, // 🔥 TAMBAH
         'dbd' => $dbd,        // 🔥 TAMBAH
         'show_footer_maskot' => true,
-        'footer_maskot' => 'logo_denggis.png'
+        'footer_maskot' => 'logodenggisputih.png'
     ]);}
 
 

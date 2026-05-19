@@ -221,7 +221,7 @@ class Kepala extends Controller
             'detailDesa' => $detailDesa,
             'desaTertinggi' => $desaTertinggi,
             'show_footer_maskot' => true,
-            'footer_maskot' => 'logo_denggis.png'
+            'footer_maskot' => 'logodenggisputih.png'
         ]);
     }
     public function export()
