@@ -124,7 +124,7 @@ Swal.fire({
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= esc((string)($p['nik'] ?? '')) ?></td>
-                    <td class="text-start"><<?= esc((string)($p['nama_pasien'] ?? '')) ?></td>
+                    <td class="text-start"><?= esc((string)($p['nama_pasien'] ?? '')) ?></td>
                     <td><?= esc($p['jenis_kelamin']) ?></td>
                     <td>
                         <?php 
