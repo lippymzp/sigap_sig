@@ -6,10 +6,29 @@ use CodeIgniter\Controller;
 
 class Kepala extends Controller
 {
+
+    private function getDashboardLayout()
+        {
+            // Mengambil id_jabatan dari session login petugas
+            $id_jabatan = session()->get('id_jabatan');
+
+            // Melakukan mapping layout berdasarkan id_jabatan dari tabel petugas/jabatan
+            switch ($id_jabatan) {
+                case 1:
+                    return 'layout/dashboard_layout_kepala';   // id_jabatan 1 -> Admin
+                case 2:
+                    return 'layout/dashboard_layout_kader';   // id_jabatan 2 -> Kader
+                case 3:
+                    return 'layout/dashboard_layout_admin';  // id_jabatan 3 -> Kepala
+                default:
+                    // Fallback jika id_jabatan berupa superadmin (4) atau belum login
+                    return 'layout/dashboard_layout_admin'; 
+            }
+    }
+
     public function dashboard()
     {
         $db = \Config\Database::connect(); // 🔥 WAJIB
-        $idPenyakit = session()->get('id_penyakit') ?? 1;
 
       // ======================
         // 🔥 DATA GRAFIK
@@ -24,8 +43,6 @@ class Kepala extends Controller
         $builder->select('w.kelurahan, COUNT(*) as total');
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-        // 🔥 FILTER BERDASARKAN PENYAKIT SESSION
-        $builder->where('p.id_penyakit', $idPenyakit);
         // <-- TAMBAHAN LOGIKA FILTER WILAYAH -->
         if (!empty($wilayah)) {
             // Mengubah 'Tegalgede' (dari HTML) menjadi 'Tegal Gede' (agar cocok di Database)
@@ -78,18 +95,16 @@ class Kepala extends Controller
         // ======================
         // 🔥 DATA PETA
         // ======================
-       $filterTahunMap = $this->request->getGet('tahun_map');
+        $tahunMap = $this->request->getGet('tahun_map');
 
         $builderDbd = $db->table('pasien p');
         $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
         $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
-        // 🔥 FILTER BERDASARKAN PENYAKIT SESSION
-        $builderDbd->where('p.id_penyakit', $idPenyakit);
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
-        if (!empty($filterTahunMap)) {
-    $builderDbd->where('YEAR(p.tgl_kunjungan)', $filterTahunMap);
-}
+        if (!empty($tahunMap)) {
+            $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
+        }
 
         $builderDbd->groupBy('w.kelurahan');
 
@@ -123,11 +138,9 @@ class Kepala extends Controller
             'left'
         );
 
-        // 🔥 FILTER BERDASARKAN PENYAKIT SESSION DAN TAHUN
-        $builderDetail->where('p.id_penyakit', $idPenyakit);
-        if (!empty($filterTahunMap)) {
-    $builderDetail->where('YEAR(p.tgl_kunjungan)', $filterTahunMap);
-}
+        if (!empty($tahunMap)) {
+            $builderDetail->where('YEAR(p.tgl_kunjungan)', $tahunMap);
+        }
 
         $builderDetail->groupBy('w.kelurahan');
 
@@ -183,32 +196,13 @@ class Kepala extends Controller
                 'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
                 'rumah_positif'   => (int)$row['rumah_positif']
             ];
-        }   
-        // ======================
-        // 🔥 HITUNG TOTAL KASUS KESELURUHAN (BERDASARKAN PENYAKIT SESSION)
-        // ======================
-        $totalKasus = $db->table('pasien')->where('id_penyakit', $idPenyakit)->countAllResults();
-        $kasusBaru  = $db->table('pasien')
-                        ->where('id_penyakit', $idPenyakit)
-                        ->where('MONTH(tgl_kunjungan)', date('m'))
-                        ->where('YEAR(tgl_kunjungan)', date('Y'))
-                        ->countAllResults();
-        // ======================
+        }   // ======================
         // 🔥 KIRIM KE VIEW
         // ======================
         return view('gol_a/dashboard_kepala', [
             'menu' => 'dashboard_kepala',
             'judul' => 'Dashboard Kepala Puskesmas',
             'nama_puskesmas' => 'Puskesmas Panti, Jember',
-            'filterTahunMap' => $filterTahunMap,
-            'tahunMap' => [
-                    2020 => '2020',
-                    2021 => '2021',
-                    2022 => '2022',
-                    2023 => '2023',
-                    2024 => '2024',
-                    2025 => '2025',
-                ],
 
             'total_kasus' => 20,
             'kasus_baru' => 2,
@@ -221,7 +215,7 @@ class Kepala extends Controller
             'detailDesa' => $detailDesa,
             'desaTertinggi' => $desaTertinggi,
             'show_footer_maskot' => true,
-            'footer_maskot' => 'logodenggisputih.png'
+            'footer_maskot' => 'logo_denggis.png'
         ]);
     }
     public function export()
@@ -280,6 +274,7 @@ class Kepala extends Controller
 
     public function daftar_laporan()
     {
+         $layout_dinamis = $this->getDashboardLayout();
         $model = new \App\Models\PelaporanModel();
 
         // 1. Tangkap semua input filter dari URL (GET)
@@ -371,6 +366,7 @@ class Kepala extends Controller
 
         // 5. Kirim ke View
         $data = [
+             'layout'      => $layout_dinamis, 
             'title'       => 'Pelaporan Kader',
             'judul'       => 'Pelaporan Kader', 
             'menu'        => 'pelaporan_kader',
@@ -386,6 +382,7 @@ class Kepala extends Controller
 
     public function pelaporan_kader()
     {
+         $layout_dinamis = $this->getDashboardLayout();
         $model = new \App\Models\PelaporanModel();
 
         // Ambil parameter GET
@@ -434,6 +431,7 @@ class Kepala extends Controller
         }
 
         $data = [
+             'layout'      => $layout_dinamis, 
             'title'      => 'Pelaporan Kader',
             'judul'      => 'Pelaporan Kader',
             'menu'       => 'pelaporan_kader',
@@ -443,53 +441,10 @@ class Kepala extends Controller
         return view('gol_a/rekap_kader', $data);
     }
 
-    public function hasil_data_kepala()
-    {
-        $db = \Config\Database::connect();
-        $idPenyakit = session()->get('id_penyakit') ?? 1;
-        $builder = $db->table('pasien p');
-
-        // Agregasi Data persis seperti tampilan Admin
-        $builder->select("
-        MONTH(p.tgl_kunjungan) as bulan_angka,
-        w.kelurahan,
-        SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
-        SUM(CASE WHEN p.umur > 18 THEN 1 ELSE 0 END) as dewasa,
-        SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
-        SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
-        COUNT(*) as jumlah
-    ");
-
-        // Join tabel wilayah untuk mendapatkan kelurahan
-        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
-
-        // Kelompokkan berdasarkan Bulan dan Kelurahan
-        $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
-        $builder->orderBy('bulan_angka', 'ASC');
-
-        $dataPasien = $builder->get()->getResultArray();
-
-        // Ubah angka bulan menjadi nama bulan
-        $bulanMap = [
-            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
-            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
-        ];
-
-        foreach ($dataPasien as &$d) {
-            $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
-        }
-
-        return view('gol_a/hasil_data_pasien_kepala/hasil_data_kepala', [
-            'menu' => 'hasil_data_kepala',
-            'penyakit' => 'dbd',
-            'judul' => 'Hasil Data Pasien',
-            'pasien' => $dataPasien // Kirim data rekap ke view
-        ]);
-    }
 
     public function view_laporan($id)
     {
+         $layout_dinamis = $this->getDashboardLayout();
         $db = \Config\Database::connect();
 
         // Ambil data detail laporan berdasarkan ID
@@ -503,6 +458,7 @@ class Kepala extends Controller
         }
 
         $data = [
+             'layout'      => $layout_dinamis, 
             'title'   => 'Pratinjau Hasil Pemeriksaan',
             'judul'   => 'Pelaporan Kader',
             'laporan' => $laporan,
@@ -511,250 +467,7 @@ class Kepala extends Controller
 
         return view('gol_a/view_laporan', $data);
     }
-    // ==================================
-    // HASIL DATA PASIEN EXPORT KEPALA
-    // ==================================
-
-    // ================= buat hasil data pasien (versi kepala) =================
-    public function get_data_pasien_by_tahun()
-    {
-        $tahun = $this->request->getGet('tahun');
-
-        $db = \Config\Database::connect();
-        $builder = $db->table('pasien p');
-
-        // QUERY UTAMA
-        $builder->select("
-            MONTH(p.tgl_kunjungan) as bulan_angka,
-            w.kelurahan,
-
-            SUM(CASE WHEN p.umur BETWEEN 0 AND 5 THEN 1 ELSE 0 END) as bayi,
-            SUM(CASE WHEN p.umur BETWEEN 6 AND 10 THEN 1 ELSE 0 END) as anak,
-            SUM(CASE WHEN p.umur BETWEEN 11 AND 18 THEN 1 ELSE 0 END) as remaja,
-            SUM(CASE WHEN p.umur BETWEEN 19 AND 59 THEN 1 ELSE 0 END) as dewasa,
-            SUM(CASE WHEN p.umur > 59 THEN 1 ELSE 0 END) as lansia,
-
-            SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
-            SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
-
-            COUNT(*) as jumlah
-        ");
-
-        // JOIN
-        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
-
-        // FILTER TAHUN
-        if (!empty($tahun)) {
-            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-        }
-
-        // GROUP BY WAJIB (BIAR TIDAK ERROR ONLY_FULL_GROUP_BY)
-        $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
-
-        // URUT BULAN
-        $builder->orderBy('bulan_angka', 'ASC');
-
-        $data = $builder->get()->getResultArray();
-
-        // CONVERT BULAN KE INDONESIA
-        $bulanMap = [
-            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
-            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
-        ];
-
-        foreach ($data as &$d) {
-            $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
-        }
-
-        return $this->response->setJSON($data);
-    }
-
-    // ================= list tahun di export data =================
-    public function get_tahun_list()
-    {
-        $db = \Config\Database::connect();
-        $idPenyakit = session()->get('id_penyakit') ?? 1;
-
-        $data = $db->table('pasien')
-            ->select('YEAR(tgl_kunjungan) as tahun')
-            ->distinct()
-            ->orderBy('tahun', 'DESC')
-            ->get()
-            ->getResultArray();
-
-        return $this->response->setJSON($data);
-    }
-
-
-    // ================= HALAMAN =================
-    public function export_hasil_data_pasien()
-    {
-        $type = $this->request->getGet('type');
-
-        $mode = $this->request->getGet('mode');
-        $tahun = $this->request->getGet('tahun');
-        $waktu = $this->request->getGet('waktu');
-        $kelurahan = $this->request->getGet('kelurahan');
-
-        $model = new \App\Models\InputDataPasienModel();
-        $data = $model->getDataExport($mode, $tahun, $waktu, $kelurahan);
-
-        // kalau belum klik export → tampilkan halaman filter
-        if (!$type) {
-            return view('gol_a/hasil_data_pasien/export_hasil_data_pasien', [
-                'menu' => 'export_hasil_data_pasien',
-                'penyakit' => 'dbd',
-                'judul' => 'Eksport Data Pasien',
-                'data' => $data //
-            ]);
-        }
-
-        // EXPORT EXCEL
-        if ($type == 'excel') {
-            header("Content-Type: application/vnd.ms-excel");
-            header("Content-Disposition: attachment; filename=data_pasien.xls");
-            echo "
-            <html>
-            <head>
-                <meta charset='UTF-8'>
-                <style>
-                    body{
-                        font-family: Arial;
-                        font-size: 12px;
-                        color:#333;
-                    }
-                    h2{
-                        text-align:center;
-                        margin-bottom:5px;
-                    }
-                    .sub{
-                        text-align:center;
-                        font-size:11px;
-                        margin-bottom:15px;
-                    }
-                    table{
-                        border-collapse:collapse;
-                        width:100%;
-                    }
-                    th{
-                        background:#2c3e50;
-                        color:white;
-                        padding:8px;
-                        text-align:center;
-                        border:1px solid #000;
-                    }
-                    td{
-                        border:1px solid #999;
-                        padding:6px;
-                        vertical-align:top;
-                    }
-                    .center{
-                        text-align:center;
-                    }
-                    .alamat{
-                        width:350px;
-                    }
-                    .catatan{
-                        width:220px;
-                    }
-                </style>
-            </head>
-            <body>
-            ";
-            //judul
-            echo "<h2>DATA PASIEN DBD</h2>";
-
-            echo "
-            <div class='sub'>
-                    Hasil Export Data Pasien DBD <br>
-                Dicetak pada : " . date('d-m-Y H:i:s') . "
-            </div>
-            ";
-            //tabel
-            echo "
-            <table>
-
-                <tr>
-                    <th>No</th>
-                    <th>Nama Pasien</th>
-                    <th>Tgl Kunjungan</th>
-                    <th>JK</th>
-                    <th>Usia</th>
-                    <th>Catatan Klinis</th>
-                    <th>Alamat Lengkap</th>
-                </tr>
-            ";
-            $no = 1;
-            //jika data ada:
-            if (!empty($data)) {
-                foreach ($data as $d) {
-                    $alamat =
-                        ($d['alamat_lengkap'] ?? '-') .
-                        ", RT " . ($d['rt'] ?? '-') .
-                        "/RW " . ($d['rw'] ?? '-') .
-                        ", Kel. " . ($d['kelurahan'] ?? '-') .
-                        ", Kec. " . ($d['kecamatan'] ?? '-') .
-                        ", " . ($d['kabupaten'] ?? '-') .
-                        ", " . ($d['provinsi'] ?? '-');
-                    echo "
-                    <tr>
-                        <td class='center'>
-                            {$no}
-                        </td>
-                        <td>
-                            {$d['nama_pasien']}
-                        </td>
-                        <td class='center'>
-                            {$d['tgl_kunjungan']}
-                        </td>
-                        <td class='center'>
-                            {$d['jenis_kelamin']}
-                        </td>
-                        <td class='center'>
-                            {$d['umur']}
-                        </td>
-                        <td class='catatan'>
-                            {$d['ctt_klinis']}
-                        </td>
-                        <td class='alamat'>
-                            {$alamat}
-                        </td>
-                    </tr>
-                    ";
-                    $no++;
-                }
-            }
-            // DATA KOSONG
-            else {
-                echo "
-                <tr>
-                    <td colspan='7' class='center'>
-                        Data tidak tersedia
-                    </td>
-                </tr>
-                ";
-            }
-            echo "
-            </table>
-            </body>
-            </html>
-            ";
-            exit;
-        }
-
-        // EXPORT PDF
-        if ($type == 'pdf') {
-            $html = view('gol_a/hasil_data_pasien/export_pdf_pasien', ['data' => $data]);
-
-            $dompdf = new \Dompdf\Dompdf();
-            $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'landscape');
-            $dompdf->render();
-            $dompdf->stream("data_pasien.pdf", ["Attachment" => true]);
-            exit;
-        }
-    }
+    
 
 
     public function rekap_skrining()

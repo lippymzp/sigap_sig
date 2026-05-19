@@ -1,4 +1,7 @@
-<?= $this->extend('layout/dashboard_layout_kepala'); ?>
+<?php
+$layout = $layout ?? 'layout/dashboard_layout_admin';
+?>
+<?= $this->extend($layout) ?>
 
 <?= $this->section('style'); ?>
 <style>
