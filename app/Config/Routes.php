@@ -499,6 +499,9 @@ $routes->get('pelaporan-kader/delete/(:num)', 'Dbd::delete_laporan/$1');
 $routes->get('hasil_data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->get('dbd/view_laporan_kader/admin/(:num)', 'Dbd::view_laporan/$1');
 
+// ================= CHAGOO ================= //
+$routes->post('chagoo/send', 'Chagoo::send');
+
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen_user', 'ManajemenUser::index');
 $routes->get('/manajemen_user/tambah', 'ManajemenUser::form');
