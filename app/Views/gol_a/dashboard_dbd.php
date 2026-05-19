@@ -1831,9 +1831,6 @@ function editPenduduk(kelurahan, laki, perempuan) {
     document.getElementById("input_perempuan").value = perempuan;
     hitungTotalManual();
 }
-
-</script>
-<script>
 document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
