@@ -1,5 +1,5 @@
 <?php /** @var array $video */ ?>
-<?= $this->include('layout/header_a') ?>
+<?= $this->include('layout/header') ?>
 
 <?php
 $status = $_GET['status'] ?? '';
@@ -27,9 +27,9 @@ body{
 
 /* ================= WRAPPER ================= */
 .video-page{
-    max-width:1280px;
+    max-width:1100px;
     margin:auto;
-    padding:0 16px 40px;
+    padding:0 20px 40px;
 }
 
 /* ================= HERO (INI YANG KAMU KIRA HILANG) ================= */
@@ -94,17 +94,17 @@ body{
 
 /* ================= CARD ================= */
 .video-card{
+    max-width:1100px;
+    margin:auto;
+    padding:0 20px 40px;
     position: relative;
     display: flex;
     gap: 16px;
     background: #edf7f7;
     border: 1px solid #cfdede;
     border-radius: 8px;
-    padding: 10px;
     margin-bottom: 18px;
     box-shadow: 0 2px 5px rgba(0,0,0,.08);
-    /* Tambahan agar card sendiri punya batas lebar maksimal jika pembungkusnya lebar */
-    width: 100%;
 }
 
 /* AREA LINK VIDEO */
@@ -118,11 +118,12 @@ body{
 
 /* THUMB */
 .video-thumb{
-    width:210px;
-    height:118px;
+    width:220px;
+    height:130px;
     border-radius:10px;
     overflow:hidden;
     background:#000;
+    flex-shrink:0;
 }
 
 .video-thumb video{
@@ -202,6 +203,24 @@ body{
     text-align:center;
     border-radius:10px;
 }
+.info-row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:30px;
+}
+
+.data-count{
+    font-size:14px;
+    color:#555;
+    text-align:center;
+    font-weight:500;
+}
+
+.data-count span{
+    color:black;
+    font-weight:700;
+}
 /* Tambahkan Media Query di paling bawah style agar di HP/Layar Kecil tampilannya tidak rusak */
 @media (max-width: 576px) {
     .video-card {
@@ -249,7 +268,6 @@ body{
             text-decoration: none;
         }
         </style>
-    </div>
 
     </div>
 
@@ -341,14 +359,14 @@ body{
         <div class="empty-data">
             Tidak ada video tersedia.
         </div>
-        <!-- INFO JUMLAH DATA -->
+
+    <?php endif; ?>
+    <!-- INFO JUMLAH DATA -->
     <div class="info-row">
         <div class="data-count">
             Menampilkan data <span><?= !empty($video) ? count($video) : 0 ?></span> dari data keseluruhan
         </div>
     </div>
-
-    <?php endif; ?>
 
 </div>
 

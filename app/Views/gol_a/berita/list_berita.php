@@ -2,7 +2,7 @@
 /** @var array $semuaData */
 ?>
 
-<?= $this->include('layout/header_a') ?>
+<?= $this->include('layout/header') ?>
 
 <?php
 $keyword  = $keyword ?? '';
@@ -216,6 +216,24 @@ body{
     text-align:center;
     color:#777;
 }
+.info-row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:30px;
+}
+
+.data-count{
+    font-size:14px;
+    color:#555;
+    text-align:center;
+    font-weight:500;
+}
+
+.data-count span{
+    color:black;
+    font-weight:700;
+}
 
 @media(max-width:992px){
     .berita-grid{grid-template-columns:repeat(2,1fr);}
@@ -363,6 +381,12 @@ body{
 
         <?php endif; ?>
 
+    </div>
+    <!-- INFO JUMLAH DATA -->
+    <div class="info-row">
+        <div class="data-count">
+            <br><br> Menampilkan <span><?= !empty($semuaData) ? count($semuaData) : 0 ?></span> dari data keseluruhan
+        </div>
     </div>
 
 </div>
