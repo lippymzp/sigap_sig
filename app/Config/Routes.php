@@ -158,8 +158,8 @@ $routes->post('/otp-reset', 'Auth::verifyOtpReset');
 $routes->get('/dashboard', 'Dashboard::index');
 $routes->get('dbd/dashboard/admin', 'Dashboard::dbd');
 $routes->get('dbd/input_data', 'Dbd::inputData');
-$routes->get('dbd/hasil', 'Dbd::hasil_data');
-$routes->get('data_kepala/hasil', 'Dbd::hasil_data_kepala');
+
+
 $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
@@ -310,6 +310,20 @@ $routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
 $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
 
+// ================= DETAIL & CRUD PASIEN PER KELURAHAN =================
+$routes->get('dbd/detail-pasien', 'HasilDataPasienA::detail_pasien');
+$routes->post('dbd/update-pasien/(:num)', 'HasilDataPasienA::update_pasien/$1');
+$routes->get('dbd/delete-pasien/(:num)', 'HasilDataPasienA::delete_pasien/$1');
+
+// ================= EXPORT HASIL DATA PASIEN =================
+$routes->get('dbd/hasil', 'HasilDataPasienA::hasil_data');
+$routes->get('dbd/get-data-pasien-by-tahun', 'HasilDataPasienA::get_data_pasien_by_tahun');
+$routes->get('dbd/export-hasil-data-pasien', 'HasilDataPasienA::export_hasil_data_pasien');
+$routes->get('dbd/get-tahun-list', 'HasilDataPasienA::get_tahun_list');
+$routes->get('dbd/export-hasil-data-pasien/pdf', 'HasilDataPasienA::export_hasil_data_pasien');
+$routes->get('dbd/export-hasil-data-pasien/excel', 'HasilDataPasienA::export_hasil_data_pasien');
+
+
 // ================= PSN KADER =================
 $routes->get('formkader/riwayat_lapor_jentik', 'Dbd::riwayat_jentik');
 $routes->get('formkader/formulir_tambah_data', 'Dbd::tambah_pelaporan');
@@ -323,11 +337,7 @@ $routes->get('formkader/rekap', 'Dbd::rekappsn');
 $routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
 $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
 
-// ================= EXPORT HASIL DATA PASIEN =================
-$routes->get('dbd/get-data-pasien-by-tahun', 'Dbd::get_data_pasien_by_tahun');
-$routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
 
-$routes->get('dbd/get-tahun-list', 'Dbd::get_tahun_list');
 
 // ================= Berita DBD =================
 $routes->get('/berita/tambah', 'BeritaDbd::tambah');
@@ -346,8 +356,7 @@ $routes->get('berita/list_berita', 'LandingpageDbd::list_berita');
 $routes->get('/berita/view_user/(:num)', 'BeritaDbd::viewUser/$1');
 $routes->post('berita/upload-editor-image', 'BeritaDbd::uploadEditorImage');
 
-$routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
-$routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');
+
 
 $routes->get('tbc/hasil', 'AdminTbc\Pasien::index');
 
