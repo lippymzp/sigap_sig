@@ -64,7 +64,7 @@ class HasilDataPasienA extends Controller
 
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
         $builder->where('p.id_penyakit', $id_penyakit_session);
-        $builder->where('w.kecamatan', $id_penyakit_session);
+        $builder->where('w.kecamatan', 'Sumbersari');
 
         if (!empty($tahun)) {
             $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
@@ -127,7 +127,7 @@ class HasilDataPasienA extends Controller
         ');
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
         $builder->where('p.id_penyakit', $id_penyakit_session); 
-        $builder->where('w.kecamatan', $id_penyakit_session);
+        $builder->where('w.kecamatan', 'Sumbersari');
 
         if (!empty($tahun)) {
             $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
@@ -210,7 +210,7 @@ class HasilDataPasienA extends Controller
         $builder->where('MONTH(p.tgl_kunjungan)', $bulan_angka);
         $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
         $builder->where('w.kelurahan', $kelurahan);
-        $builder->where('w.kecamatan', $id_penyakit_session);
+        $builder->where('w.kecamatan', 'Sumbersari');
         $builder->where('MONTH(p.tgl_kunjungan)', $bulan_angka);
         
         $data_pasien = $builder->get()->getResultArray();
