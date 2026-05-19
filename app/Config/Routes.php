@@ -439,10 +439,10 @@ $routes->post('video/simpanDetail', 'VideoDbd::simpanDetail');
 
 $routes->get('/video/video_dbd/(:num)', 'VideoDbd::view/$1');
 
-$routes->get('/video/tambah1', 'VideoDbd::tambah');
+$routes->get('/video/tambah1', 'VideoDbd::tambah1');
 $routes->post('/video/simpan', 'VideoDbd::simpan');
 
-$routes->get('/video/tambah2/(:num)', 'VideoDbd::edit/$1');
+$routes->get('/video/tambah1/(:num)', 'VideoDbd::edit/$1');
 $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 
 $routes->get('/video/delete/(:num)', 'VideoDbd::delete/$1');
@@ -498,7 +498,7 @@ $routes->get('dbd/pelaporan-kader/daftar/admin', 'Dbd::daftar_laporan');
 $routes->get('pelaporan-kader/delete/(:num)', 'Dbd::delete_laporan/$1');
 $routes->get('hasil_data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->get('dbd/view_laporan_kader/admin/(:num)', 'Dbd::view_laporan/$1');
-
+$routes->get('dbd/view_laporan/(:num)', 'Dbd::view_laporan/$1');
 // ================= CHAGOO ================= //
 $routes->post('chagoo/send', 'Chagoo::send');
 
