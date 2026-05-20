@@ -1352,7 +1352,7 @@ public function skriningpneumonia3()
     $data['kabupaten'] = $kabupaten;
     $data['kecamatan'] = $kecamatan;
     $data['kelurahan'] = $kelurahan;
-
+ 
     $data['hasil'] = $hasil;
     $data['alasan'] = $alasan;
 
