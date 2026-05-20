@@ -17,7 +17,7 @@ public function index()
         $petugas = $petugasModel->find($id_petugas);
 
 
-        $id_penyakit = $petugas['id_penyakit'] ?? null;
+        $id_penyakit = 1;
 
         // 1. Tambahkan penangkap parameter 'wilayah' di sini
         $wilayah = $this->request->getGet('wilayah');
@@ -31,8 +31,6 @@ public function index()
         // 1. QUERY UTAMA: DATA PETA & DETAIL DESA (TERFILTER)
         // ==========================================
         $builderMape = $db->table('wilayah w');
-
-        $penyakitFilter = !empty($id_penyakit) ? "AND p.id_penyakit = " . $db->escape($id_penyakit) : "";
         // FILTER GLOBAL
         $bulanFilter = !empty($bulan)
             ? "AND MONTH(p.tgl_kunjungan) = " . $db->escape($bulan)
@@ -75,7 +73,7 @@ public function index()
             }
         }
 
-        $allFilters = "$penyakitFilter $bulanMapFilter $tahunMapFilter $jkFilter $usiaFilter";
+        $allFilters = " $bulanMapFilter $tahunMapFilter $jkFilter $usiaFilter";
         
         $builderMape->select("
             w.kelurahan as desa,
@@ -97,8 +95,11 @@ public function index()
             COALESCE(SUM(DISTINCT rp.positif), 0) as rumah_positif
         ");
 
-        // Join standar ke pasien (menggunakan LEFT JOIN agar kelurahan tetap muncul walau kasus 0)
-        $builderMape->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
+$builderMape->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'left'
+);
 
         // Join Rekap Jentik (Kader)
         $builderMape->join('rekap_pelaporan_kader rp', 'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
@@ -136,7 +137,12 @@ $builderGrafik->select("
     COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
     ");
 
-$builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
+$builderGrafik->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'left'
+);
+
 $builderGrafik->whereIn('w.kelurahan', [
     'Sumbersari',
     'Wirolegi',
@@ -144,12 +150,6 @@ $builderGrafik->whereIn('w.kelurahan', [
     'Tegal Gede',
     'Karangrejo'
 ]);
-
-$builderGrafik->where('p.id_penyakit', 1);
-
-if (!empty($id_penyakit)) {
-    $builderGrafik->where('p.id_penyakit', 1);
-}
 
 if (!empty($bulan)) {
     $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
@@ -173,6 +173,7 @@ if (!empty($wilayah)) {
 
     $builderGrafik->where('w.kelurahan', $namaWilayah);
 }
+$builderGrafik->where('p.id_penyakit', 1);
 $builderGrafik->groupBy('w.kelurahan');
 
 $grafik = $builderGrafik->get()->getResultArray();
@@ -291,7 +292,7 @@ public function simpanPenduduk()
     return redirect()->back()->with('success', 'Data ' . $kelurahan . ' berhasil diperbarui');
 }
 
-public function hapusPenduduk($id)
+public function hapusPenduduk(int $id)
 {
     $db = \Config\Database::connect();
 
@@ -303,7 +304,7 @@ public function hapusPenduduk($id)
         ->with('success','Data berhasil dihapus');
 }
 
-public function editPenduduk($id)
+public function editPenduduk(int $id)
 {
     $db = \Config\Database::connect();
 
