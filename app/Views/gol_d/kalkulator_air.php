@@ -176,6 +176,7 @@ onclick="showMode('normal')">
 
     <div class="big-number">
     <?= isset($hasil) ? $hasil : '--' ?>
+</div>
      <?php if(($mode ?? 'who') === 'who'): ?>
 
 <div class="mt-4 p-3 rounded" style="background:rgba(255,255,255,.15)">
