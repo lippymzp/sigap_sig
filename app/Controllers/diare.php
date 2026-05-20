@@ -224,7 +224,7 @@ public function index()
 
     $beritaModel = new BeritaModelDD();
     $funfactModel = new FunfactModelD();
-    $dataDiareModel = new DataDiareModel();
+    $diareModel = new DiareModel();
 
     $data['berita'] = $beritaModel
         ->where('id_penyakit', 4)
@@ -238,8 +238,7 @@ public function index()
         ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
-    // DATA DIARE DARI DATABASE
-    $data['diare'] = $dataDiareModel->findAll();
+    $data['diare'] = $diareModel->findAll();
 
     return view('gol_d/diare', $data);
 }
