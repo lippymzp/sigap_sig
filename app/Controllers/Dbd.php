@@ -855,6 +855,7 @@ public function manajemen_pkm()
     public function rekap_skrining()
 {
     $layout_dinamis = $this->getDashboardLayout();
+
     $db = \Config\Database::connect();
     $builder = $db->table('skrining as s');
 
@@ -876,30 +877,12 @@ public function manajemen_pkm()
         s.tanggal
     ');
 
-    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining', 'left');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
-    
-    // ==========================================
-    // ⚡ FILTER DEFAULT (WAJIB)
-    // ==========================================
-    // 1. Pastikan hanya penyakit DBD (id_penyakit = 1)
+    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
     $builder->where('s.id_penyakit', 1);
-    
-    // 2. Pastikan HANYA menampilkan hasil yang relevan (Baik, Cukup, Buruk)
-    // Menggunakan groupStart() dan like() agar fleksibel meskipun ada perbedaan spasi/kata awalan di database
-    /*
-    $builder->groupStart()
-            ->like('s.hasil', 'Baik')
-            ->orLike('s.hasil', 'Cukup')
-            ->orLike('s.hasil', 'Buruk')
-            ->groupEnd();
-
-    */
-    $builder->groupBy('s.id_skrining');
-    
 
     // ==========================================
-    // ⚡ SERVER-SIDE FILTERING (DARI INPUT USER)
+    // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
     // ==========================================
     
     // 1. Ambil Parameter dari URL
@@ -923,7 +906,7 @@ public function manajemen_pkm()
             $builder->where('s.tanggal', date('Y-m-d'));
         }
 
-        // Filter Hasil/Risiko Lingkungan Spesifik
+        // Filter Hasil/Risiko Lingkungan
         $hasilFilter = [];
         if (in_array('baik', $filter)) $hasilFilter[] = 'Kategori Lingkungan Baik';
         if (in_array('cukup', $filter)) $hasilFilter[] = 'Kategori Lingkungan Cukup';
@@ -967,7 +950,7 @@ public function manajemen_pkm()
 
     // Hitung total data setelah difilter
     $totalBuilder = clone $builder;
-    $total = $totalBuilder->countAllResults();
+    $total = $totalBuilder->countAllResults(false);
 
     $skriningData = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
 
@@ -990,7 +973,6 @@ public function manajemen_pkm()
 
     return view('gol_a/rekap_skrining', $data);
 }
-
 
 
 public function hapus_skrining(int $id)
