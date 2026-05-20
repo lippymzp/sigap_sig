@@ -152,7 +152,7 @@ body {
 <h4><b>Informasi Umum</b></h4>
 <p class="mb-5">Lengkapi beberapa info dasar sebelum Skrining dimulai</p>
 
-<form method="post" action="/skriningpneumonia/skriningpneumonia2" id="formSkrining">
+<form method="post" action="<?= base_url('pneumonia/skrining/step2') ?>" id="formSkrining">
 
 <div class="row gy-4">
 

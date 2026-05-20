@@ -1,7 +1,7 @@
 <?= $this->extend('layout/dashboard_layout') ?>
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
+<div class="container-fluid pb-5">
 
     <div class="card border-0 shadow-sm rounded-4 p-4"
          style="background:#EEF5F5;">
@@ -102,9 +102,58 @@
         </div>
 
         <!-- CHART -->
-        <div style="height:500px;">
+        <div class="mt-4">
 
-            <canvas id="grafikPasien"></canvas>
+            <div class="row">
+
+    <!-- GRAFIK JK -->
+    <div class="col-md-6 mb-4">
+
+        <div class="card border-0 rounded-4 p-3 h-100">
+
+            <h5 class="fw-bold mb-3">
+                Grafik Jenis Kelamin
+            </h5>
+
+            <div style="height:280px; position:relative;">
+                <canvas id="chartJK"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRAFIK STATUS -->
+    <div class="col-md-6 mb-4">
+
+        <div class="card border-0 rounded-4 p-3 h-100">
+
+            <h5 class="fw-bold mb-3">
+                Grafik Status Pasien
+            </h5>
+
+            <div style="height:350px;">
+                <canvas id="chartStatus"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- GRAFIK UMUR -->
+<div class="card border-0 rounded-4 p-3">
+
+    <h5 class="fw-bold mb-3">
+        Grafik Kategori Umur
+    </h5>
+
+    <div style="height:350px;">
+        <canvas id="chartUmur"></canvas>
+    </div>
+
+</div>
 
         </div>
 
@@ -130,8 +179,11 @@ const grafikData = <?= isset($grafik) ? $grafik : '{}' ?>;
 const wilayah = <?= isset($wilayah) ? $wilayah : '[]' ?>;
 
 
-const ctx =
-document.getElementById('grafikPasien');
+const ctxJK = document.getElementById('chartJK');
+
+const ctxStatus = document.getElementById('chartStatus');
+
+const ctxUmur = document.getElementById('chartUmur');
 
 let kategoriAktif = 'Semua';
 let bulanAktif = 'Semua';
@@ -248,78 +300,198 @@ function getLabels(){
 
 }
 
-// ================= CHART =================
+// ============================
+// CHART JK
+// ============================
 
-const chart = new Chart(ctx, {
+const chartJK = new Chart(ctxJK, {
 
     type: 'bar',
 
     data: {
 
-        labels:  getLabels(),
+        labels: getLabels(),
 
         datasets: [
 
             {
-
                 label: 'Laki-laki',
-
                 data: ambilData('laki'),
-
-                backgroundColor: '#3AA6B9',
-
-                borderRadius: 8
-
+                backgroundColor:'#3AA6B9',
+                borderRadius:8
             },
 
             {
-
                 label: 'Perempuan',
-
                 data: ambilData('perempuan'),
-
-                backgroundColor: '#6EDCD9',
-
-                borderRadius: 8
-
+                backgroundColor:'#6EDCD9',
+                borderRadius:8
             }
 
         ]
+    }
 
+});
+
+
+// ============================
+// CHART STATUS
+// ============================
+
+function hitungStatus(statusCari){
+
+    let total = 0;
+
+    Object.keys(grafikData).forEach(bulan => {
+
+        ['laki','perempuan'].forEach(gender => {
+
+            ['Balita','Anak-anak','Remaja','Dewasa','Lansia']
+            .forEach(kategori => {
+
+                Object.keys(
+                    grafikData[bulan][gender][kategori]
+                ).forEach(w => {
+
+                    let jumlah =
+                    grafikData[bulan][gender][kategori][w] || 0;
+
+                    // sementara mapping sederhana
+                    if(statusCari == 'Sembuh'){
+                        total += jumlah;
+                    }
+
+                });
+
+            });
+
+        });
+
+    });
+
+    return total;
+
+}
+
+const chartStatus = new Chart(ctxStatus, {
+
+    type:'bar',
+
+    data:{
+
+        labels:[
+            'Sembuh',
+            'Pengobatan',
+            'Meninggal'
+        ],
+
+        datasets:[{
+
+            label:'Jumlah',
+
+            data:[
+                <?= $jumlah_sembuh ?? 0 ?>,
+                <?= $jumlah_pengobatan ?? 0 ?>,
+                <?= $jumlah_meninggal ?? 0 ?>
+            ],
+
+            backgroundColor:[
+                '#7ED6DF',
+                '#20C9C3',
+                '#A5D8E8'
+            ],
+
+            borderRadius:8
+        }]
     },
 
-    options: {
+    options:{
+        responsive:true,
+        maintainAspectRatio:false
+    }
 
-        responsive: true,
+});
 
-        maintainAspectRatio: false,
+// ============================
+// CHART UMUR
+// ============================
 
-        plugins: {
+const umurLabels = [
+    'Balita',
+    'Anak-anak',
+    'Remaja',
+    'Dewasa',
+    'Lansia'
+];
 
-            legend: {
+function hitungUmur(){
 
-                position: 'bottom'
+    let hasil = [];
 
-            }
+    umurLabels.forEach(kategori => {
 
-        },
+        let total = 0;
 
-        scales: {
+        Object.keys(grafikData).forEach(bulan => {
 
-            y: {
+            total += grafikData[bulan]['laki']?.[kategori]?.['Jemberkidul'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Jemberkidul'] || 0;
 
-                beginAtZero: true,
+            total += grafikData[bulan]['laki']?.[kategori]?.['Tegalbesar'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Tegalbesar'] || 0;
 
-                ticks: {
+            total += grafikData[bulan]['laki']?.[kategori]?.['Kaliwates'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Kaliwates'] || 0;
 
-                    precision: 0
+            total += grafikData[bulan]['laki']?.[kategori]?.['Kebonagung'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Kebonagung'] || 0;
 
-                }
+            total += grafikData[bulan]['laki']?.[kategori]?.['Sempusari'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Sempusari'] || 0;
 
-            }
+            total += grafikData[bulan]['laki']?.[kategori]?.['Mangli'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Mangli'] || 0;
 
-        }
+            total += grafikData[bulan]['laki']?.[kategori]?.['Kepatihan'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Kepatihan'] || 0;
 
+            total += grafikData[bulan]['laki']?.[kategori]?.['Lainnya'] || 0;
+            total += grafikData[bulan]['perempuan']?.[kategori]?.['Lainnya'] || 0;
+
+        });
+
+        hasil.push(total);
+
+    });
+
+    return hasil;
+}
+
+const chartUmur = new Chart(ctxUmur, {
+
+    type:'line',
+
+    data:{
+
+        labels:umurLabels,
+
+        datasets:[{
+
+            label:'Jumlah Pasien',
+
+            data:hitungUmur(),
+
+            borderColor:'#20C9C3',
+
+            backgroundColor:'#20C9C3',
+
+            tension:0.4
+        }]
+    },
+
+    options:{
+        responsive:true,
+        maintainAspectRatio:false
     }
 
 });
@@ -332,13 +504,15 @@ document
 
     kategoriAktif = this.value;
 
-    chart.data.datasets[0].data =
+    chartJK.data.datasets[0].data =
     ambilData('laki');
 
-    chart.data.datasets[1].data =
+    chartJK.data.datasets[1].data =
     ambilData('perempuan');
-    chart.data.labels = getLabels();
-    chart.update();
+
+    chartJK.data.labels = getLabels();
+
+    chartJK.update();
 
 });
 
@@ -350,13 +524,13 @@ document
 
     bulanAktif = this.value;
 
-    chart.data.datasets[0].data =
+    chartJK.data.datasets[0].data =
     ambilData('laki');
 
-    chart.data.datasets[1].data =
+    chartJK.data.datasets[1].data =
     ambilData('perempuan');
 
-    chart.update();
+    chartJK.update();
 
 });
     // ================= FILTER WILAYAH =================

@@ -1,4 +1,4 @@
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -124,79 +124,6 @@ body {
     font-size: 18px;
     margin-bottom: 15px;
 }
-.footer{
-    background:#22c1c9;
-    color:#fff;
-    padding:55px 0 20px;
-    font-family:'Poppins', sans-serif;
-}
-
-.footer-container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-}
-
-.footer-content{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:40px;
-    flex-wrap:wrap;
-}
-
-.footer-box{
-    flex:1;
-    min-width:250px;
-}
-
-/* logo */
-.footer-brand{
-    text-align:center;
-}
-
-.footer-logo{
-    width:90px;
-    margin-bottom:10px;
-}
-
-.footer-brand p{
-    font-size:14px;
-    line-height:1.7;
-    margin:0;
-}
-
-/* judul */
-.footer-title{
-    font-weight:700;
-    margin-bottom:8px;
-}
-
-/* teks kecil */
-.footer-box p{
-    font-size:14px;
-}
-
-/* icon jarak */
-.footer-box i{
-    margin-right:8px;
-}
-
-/* copyright */
-.footer-bottom{
-    text-align:center;
-    margin-top:40px;
-    font-size:14px;
-    opacity:.9;
-}
-
-/* responsive */
-@media(max-width:768px){
-    .footer-content{
-        flex-direction:column;
-        text-align:center;
-    }
-}
 </style>
 </head>
 
@@ -252,22 +179,37 @@ body {
 <?php
 
 $pertanyaan = [
-    "Apakah Anda menguras Tempat Penampungan Air?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di dalam rumah?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda menguras TPA (Tempat Penampungan Air)?",
+    
+    "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada di dalam rumah?",
+    
+    "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada di luar rumah?",
+    
     "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
+    
     "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
+    
     "Apakah Anda mendaur ulang barang bekas yang dapat menampung air hujan?",
-    "Apakah Anda menaburkan larvasida seperti abate pada tempat penampungan yang sulit dibersihkan?",
-    "Apakah Anda menaburkan abate sesuai dengan aturan pakai?",
+    
+    "Apakah Anda menaburkan larvasida (obat pembunuh jentik) seperti abate pada tempat penampungan yang sulit dibersihkan?",
+    
+    "Apakah Anda menaburkan larvasida (obat pembunuh jentik) seperti abate sesuai dengan aturan pakai?",
+    
     "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
-    "Apakah Anda menanam tanaman pengusir nyamuk?",
-    "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
-    "Apakah Anda rutin mengecek jentik di rumah?",
+    
+    "Apakah Anda menanam tanaman pengusir nyamuk seperti serai wangi, lavender, dll?",
+    
+    "Apakah Anda mengatur pencahayaan dan ventilasi di dalam rumah?",
+    
+    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
+    
     "Apakah talang air dan saluran pembuangan rutin dibersihkan?",
-    "Apakah hanya orang tertentu dalam keluarga yang melakukan 3M?",
-    "Apakah Anda menggantungkan baju di rumah?"
+    
+    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus (Menguras, Menutup, Mendaur ulang)?",
+    
+    "Apakah semua anggota keluarga Anda tidak menggantungkan baju di rumah?"
 ];
+
 
 ?>
 
@@ -278,29 +220,18 @@ $pertanyaan = [
         <b><?= $text ?></b>
     </label>
 
-    <?php
-    $nomor = $index + 1;
-    $reverse = [14, 15];
-    ?>
+ <?php
+$nomor = $index + 1;
+?>
 
-    <div class="opsi-group">
+<div class="opsi-group">
 
-        <?php if(in_array($nomor, $reverse)): ?>
+    <button type="button" class="opsi" data-value="1">Iya</button>
+    <button type="button" class="opsi" data-value="0">Tidak</button>
 
-            <button type="button" class="opsi" data-value="0">Iya</button>
-            <button type="button" class="opsi" data-value="1">Tidak</button>
+    <input type="hidden" name="p<?= $nomor ?>" value="">
 
-        <?php else: ?>
-
-            <button type="button" class="opsi" data-value="1">Iya</button>
-            <button type="button" class="opsi" data-value="0">Tidak</button>
-
-        <?php endif; ?>
-
-        <input type="hidden" name="p<?= $nomor ?>" value="">
-
-    </div>
-
+</div>
 </div>
 <?php endforeach; ?>
 
@@ -312,49 +243,7 @@ $pertanyaan = [
 </div>
 </form>
 </div>
-
-<!-- FOOTER -->
-<footer class="footer">
-
-<div class="footer-container">
-
-<div class="footer-content">
-
-    <!-- BRAND -->
-    <div class="footer-box footer-brand">
-        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
-        <p>
-            Dengue Geographic <br> Information System
-        </p>
-    </div>
-
-    <!-- SOSIAL -->
-    <div class="footer-box">
-        <h6 class="footer-title">Media Sosial</h6>
-
-        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
-    </div>
-
-    <!-- KONTAK -->
-    <div class="footer-box">
-        <h6 class="footer-title">Informasi Kontak</h6>
-
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
-    </div>
-
 </div>
-
-<div class="footer-bottom">
-    © 2026 SIGAP
-</div>
-
-</div>
-
 </footer>
 </div>
 
@@ -444,6 +333,7 @@ btnNext.addEventListener('click', function () {
         popup: 'animate__animated animate__fadeOutDown animate__faster'
     }
 });
+    return;
     }
 
     if (currentGroup < totalGroup) {
@@ -492,3 +382,4 @@ btnPrev.addEventListener('click', function () {
 
 </body>
 </html>
+<?= $this->include('layout/footer') ?>

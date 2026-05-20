@@ -75,8 +75,8 @@ html,body{
 /* MAIN */
 .main-content{
     margin-left:260px;
-    width:100%;
-    min-height:100vh;         
+    width:calc(100% - 260px);
+    min-height:100vh;
 }
 
 /* TOPBAR */
@@ -99,7 +99,10 @@ html,body{
 
 /* TOGGLE */
 .wrapper.hide .sidebar{ left:-260px; }
-.wrapper.hide .main-content{ margin-left:0; }
+.wrapper.hide .main-content{
+    margin-left:0;
+    width:100%;
+}
 
 /* ===== LOGO SIDEBAR FIX ===== */
 .logo-sidebar{
@@ -167,7 +170,6 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <a href="<?= base_url('dbd/dashboard/admin#grafik') ?>" id="nav-grafik" class="<?= ($menu == 'grafik') ? 'active' : '' ?>">
             <i class="fa-solid fa-chart-column me-2"></i> Grafik
         </a>
-        </a>
 
 <a href="<?= base_url('dbd/input_data') ?>" class="<?= ($menu == 'inputdata') ? 'active' : '' ?>">
     <i class="fa-regular fa-clipboard me-2"></i>Input Data Pasien
@@ -181,14 +183,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
 </a>
 
-        <a href="<?= base_url('dbd/pelaporan-kader/admin') ?>"
+        <a href="<?= base_url('kepala/pelaporan_kader') ?>"
             class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
             <i class="fa-regular fa-folder-open me-2"></i> Pelaporan Kader
-        </a>
-
-        <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
-            <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Export Data
         </a>
 
 <div class="menu-label">Informasi</div>
@@ -214,62 +211,58 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <a href="<?= base_url('manajemen-user') ?>" class="<?= ($menu == 'manajemen_user') ? 'active' : '' ?>">
     <i class="fa-solid fa-users me-2"></i> Manajemen User
 </a>
-
-<a href="<?= base_url('dbd/admin/manajemen_puskesmas') ?>" class="<?= ($menu == 'puskesmas') ? 'active' : '' ?>">
-  <i class="fa-solid fa-hospital me-2"></i> Manajemen Puskesmas
-</a>
-
 <a href="<?= base_url('bannerDbd') ?>" class="<?= ($menu == 'manajemen_banner') ? 'active' : '' ?>">
   <i class="fa-solid fa-hospital me-2"></i> Manajemen Banner
-</a>
-
-<a href="<?= base_url('profil_sistem') ?>" class="<?= ($menu == 'sistem') ? 'active' : '' ?>">
-  <i class="fa-solid fa-gear me-2"></i> Profil Sistem
 </a>
 
 </div>
 
 <div class="main-content">
 
-<div class="topbar d-flex justify-content-between align-items-center">
+    <div class="topbar">
 
-    <div class="d-flex align-items-center">
-        <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
+    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
 
-        <div class="fs-4 fw-bold text-dark">
-            <?= $judul ?? 'Dashboard' ?>
-        </div>
-    </div>
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-bars me-3" id="toggleSidebar" style="cursor:pointer;"></i>
 
-    <div class="d-flex align-items-center">
-        <div class="text-end me-3">
-            <div class="fw-bold text-dark">Profil</div>
-            <small class="admin-text">Admin</small>
+            <div class="fs-4 fw-bold text-dark">
+                <?= $judul ?? 'Dashboard' ?>
+            </div>
         </div>
 
-        <div class="dropdown avatar-dropdown">
-            <div class="avatar-circle"
-                data-bs-toggle="dropdown"
-                style="cursor:pointer; width:45px; height:45px; border-radius:50%; overflow:hidden;">
-                <img src="<?= $fotoNavbar; ?>" style="width:100%; height:100%; object-fit:cover;">
+        <div style="display:flex; align-items:center; flex-shrink:0;">
+
+            <div class="text-end me-3">
+                <div class="fw-bold text-dark">Profil</div>
+                <small class="admin-text">Admin</small>
             </div>
 
-            <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li>
-                            <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
-                                <i class="fa-regular fa-user me-2"></i> Profile
-                            </a>
-                </li>
-                <li>
-              <a class="dropdown-item"
-       href="javascript:void(0)"
-       onclick="confirmLogout('<?= base_url('logout') ?>')">
-       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-    </a>
-                </a>
-                </li>
-            </ul>
+            <div class="dropdown avatar-dropdown">
+                <div class="avatar-circle"
+                    data-bs-toggle="dropdown"
+                    style="cursor:pointer; width:45px; height:45px; border-radius:50%; overflow:hidden;">
+                    <img src="<?= $fotoNavbar; ?>" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li>
+                        <a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
+                            <i class="fa-regular fa-user me-2"></i> Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           href="javascript:void(0)"
+                           onclick="confirmLogout('<?= base_url('logout') ?>')">
+                           <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
+
     </div>
 
 </div>

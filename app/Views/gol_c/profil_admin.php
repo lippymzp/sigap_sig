@@ -66,6 +66,37 @@
     font-size:17px;
 }
 
+/* input email tidak bisa diedit */
+.input-readonly{
+    background-color:#e9ecef !important;
+    color:#6c757d !important;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+/* input password dengan icon mata */
+.password-wrapper{
+    position:relative;
+}
+
+.password-input{
+    padding-right:45px;
+}
+
+.toggle-password{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#6c757d;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.toggle-password:hover{
+    color:#00BBC2;
+}
+
 .btn-simpan{
     background:#00BBC2;
     color:white;
@@ -101,7 +132,7 @@ $foto = (!empty($petugas['foto_profil']))
     ? base_url('uploads/profil/' . $petugas['foto_profil'])
     : base_url('uploads/profil/default.png');
 
-$passBintang = str_repeat('*', strlen($petugas['password']));
+$passwordValue = $petugas['password'] ?? '';
 ?>
 
 <div class="profile-card">
@@ -110,7 +141,7 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
     <div class="avatar-box text-center">
 
         <!-- FORM FOTO -->
-        <form action="<?= base_url('uploadFoto_admin') ?>"
+        <form action="<?= base_url('pneumonia/uploadFoto_admin') ?>"
             method="post"
             enctype="multipart/form-data">
 
@@ -137,7 +168,7 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
     </h4>
 
     <!-- FORM UPDATE -->
-    <form action="<?= base_url('updateProfil_admin') ?>" method="post">
+    <form action="<?= base_url('pneumonia/updateProfil_admin') ?>" method="post">
 
         <div class="form-wrapper">
 
@@ -146,20 +177,31 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
                 Email
             </label>
 
-            <input class="form-control mb-3 input-form"
-                type="email"
-                name="email"
-                value="<?= $petugas['email']; ?>">
+            <input class="form-control mb-3 input-form input-readonly"
+            type="email"
+            name="email"
+            value="<?= esc($petugas['email'] ?? '-'); ?>"
+            readonly>
 
             <!-- PASSWORD -->
             <label class="fw-bold mb-2 label-form">
                 Password
             </label>
 
-            <input class="form-control mb-4 input-form"
-                type="text"
-                name="password"
-                value="<?= $passBintang; ?>">
+            <div class="password-wrapper mb-4">
+
+                <input class="form-control input-form password-input"
+                    type="password"
+                    name="password"
+                    id="passwordInput"
+                    value=""
+                    placeholder="Masukkan password baru">
+
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                </span>
+
+            </div>
 
             <!-- BUTTON SIMPAN -->
             <button type="submit"
@@ -197,6 +239,22 @@ function previewImage(event)
     };
 
     reader.readAsDataURL(event.target.files[0]);
+}
+
+function togglePassword()
+{
+    const passwordInput = document.getElementById('passwordInput');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    if(passwordInput.type === 'password'){
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    }else{
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
 }
 </script>
 

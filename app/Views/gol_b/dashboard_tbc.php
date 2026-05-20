@@ -948,6 +948,17 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </script>
 
+
+<script>
+
+var map = L.map('map').setView([-8.1727,113.7000],12);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; OpenStreetMap'
+}).addTo(map);
+
+</script>
+
 <style>
 
 .leaflet-popup-content-wrapper{

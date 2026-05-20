@@ -322,6 +322,8 @@ public function pneumonia()
         'left'
     );
 
+    $builder->where('p.id_penyakit', 3);
+
     // FILTER BULAN
     if(!empty($bulan)){
         $builder->where(
@@ -400,11 +402,13 @@ $builder->groupBy("
 
     // KASUS HARI INI
     $kasusBaru = $db->table('pasien')
-        ->where(
-            'DATE(tgl_kunjungan)',
-            date('Y-m-d')
-        )
-        ->countAllResults();
+    ->where('id_penyakit', 3)
+    ->where(
+        'DATE(tgl_kunjungan)',
+        date('Y-m-d')
+    )
+    ->where('id_penyakit', 3)
+    ->countAllResults();
 
     // =====================
     // JUMLAH KELURAHAN
@@ -417,6 +421,8 @@ $builder->groupBy("
         'w.id_wilayah = p.id_wilayah',
         'left'
     );
+
+    $builderKel->where('p.id_penyakit', 3);
 
     // FILTER BULAN
     if(!empty($bulan)){

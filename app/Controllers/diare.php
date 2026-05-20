@@ -7,11 +7,14 @@ use App\Models\SkriningModel;
 use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
+use App\Models\FunfactModelD;
+
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
 // use App\Libraries\DiareDecisionTree;
 // use App\Models\PasienSkriningModel;
 // use App\Models\BeritaModelDD;
+//
 
 class Diare extends BaseController
 {
@@ -47,24 +50,40 @@ class Diare extends BaseController
     // STEP 3 - PERTANYAAN 1-5 -> 6-10
     // =========================
     public function step3()
-    {
-        $session = session()->get('skrining_diare');
+{
+    $session = session()->get('skrining_diare');
 
-        if (!$session) {
-            return redirect()->to('/skrining-diare');
-        }
-
-        $jawabanBaru = $this->request->getPost();
-
-        $session['jawaban'] = array_merge(
-            $session['jawaban'],
-            $jawabanBaru
-        );
-
-        session()->set('skrining_diare', $session);
-
-        return view('gol_d/pertanyaan_diare_2');
+    if (!$session) {
+        return redirect()->to('/skrining-diare');
     }
+
+    $jawabanBaru = $this->request->getPost();
+
+    $session['jawaban'] = array_merge(
+        $session['jawaban'],
+        $jawabanBaru
+    );
+
+    session()->set('skrining_diare', $session);
+
+    /*
+    CEK DIARE DULU
+    */
+    $tree = new DiareDecisionTree();
+    $prediksi = $tree->predict($session['jawaban']);
+
+    /*
+    Kalau tidak diare → langsung hasil
+    */
+    if ($prediksi['diare'] === 'Tidak Diare') {
+        return redirect()->to('/skrining-diare-hasil');
+    }
+
+    /*
+    Kalau diare → lanjut dehidrasi
+    */
+    return view('gol_d/pertanyaan_diare_2');
+}
 
     // =========================
     // STEP 4 - PERTANYAAN 6-10 -> 11-15
@@ -97,40 +116,51 @@ class Diare extends BaseController
         return redirect()->to('/skrining-diare');
     }
 
-    $jawabanBaru = $this->request->getPost();
+    $jawabanBaru = $this->request->getPost() ?? [];
 
-    $semuaJawaban = array_merge(
-        $session['jawaban'],
-        $jawabanBaru
-    );
+$semuaJawaban = array_merge(
+    $session['jawaban'] ?? [],
+    $jawabanBaru
+);
 
     $identitas = $session['identitas'];
 
     // =========================
     // DECISION TREE
     // =========================
-    $tree = new DiareDecisionTree();
-    $prediksi = $tree->predict($semuaJawaban);
+   $tree = new DiareDecisionTree();
+$prediksi = $tree->predict($semuaJawaban);
 
-    switch ($prediksi) {
-        case 'tinggi':
-            $hasil = 'Risiko Tinggi Diare';
-            $warna = 'danger';
-            $rekomendasi = 'Segera periksa ke fasilitas kesehatan terdekat karena terdapat indikasi dehidrasi berat.';
-            break;
+$statusDiare = $prediksi['diare'];
+$statusDehidrasi = $prediksi['dehidrasi'];
 
-        case 'sedang':
-            $hasil = 'Risiko Sedang Diare';
-            $warna = 'warning';
-            $rekomendasi = 'Perbanyak cairan, oralit, istirahat cukup, dan pantau kondisi tubuh.';
-            break;
+$hasil = $statusDiare . ' | Dehidrasi: ' . $statusDehidrasi;
 
-        default:
-            $hasil = 'Risiko Rendah Diare';
-            $warna = 'success';
-            $rekomendasi = 'Tetap jaga pola hidup sehat, kebersihan makanan, dan hidrasi tubuh.';
-            break;
-    }
+$warna = 'info';
+
+if ($statusDiare === 'Tidak Diare') {
+    $rekomendasi = 'Gejala Anda tidak memenuhi kriteria diare. Tetap jaga hidrasi, pola makan sehat, dan pantau kondisi tubuh.';
+}
+
+elseif ($statusDehidrasi === 'Berat') {
+    $warna = 'danger';
+    $rekomendasi = 'Terdapat indikasi dehidrasi berat. Segera ke fasilitas kesehatan untuk penanganan medis dan rehidrasi intensif.';
+}
+
+elseif ($statusDehidrasi === 'Sedang') {
+    $warna = 'warning';
+    $rekomendasi = 'Terdapat indikasi dehidrasi sedang. Disarankan rehidrasi oral menggunakan oralit, banyak minum, dan observasi kondisi.';
+}
+
+elseif ($statusDehidrasi === 'Ringan') {
+    $warna = 'primary';
+    $rekomendasi = 'Terdapat indikasi dehidrasi ringan. Perbanyak cairan, istirahat cukup, dan konsumsi makanan yang mudah dicerna.';
+}
+
+else {
+    $warna = 'success';
+    $rekomendasi = 'Anda mengalami diare tanpa tanda dehidrasi signifikan. Tetap jaga cairan tubuh dan pola makan sehat.';
+}
 
 $pasienModel = new PasienSkriningModel();
 $skriningModel = new SkriningModel();
@@ -206,27 +236,20 @@ $skriningModel->insert([
     // GENERATE PDF
     // =========================
     public function pdf()
-    {
-        $session = session()->get('skrining_diare');
+{
+    $session = session()->get('skrining_diare');
 
-        if (!$session || !isset($session['identitas'])) {
-            return redirect()->to('/skrining-diare');
-        }
-
-        $dompdf = new Dompdf();
-
-        $html = view('gol_d/pdf_diare', [
-            'identitas'   => $session['identitas'],
-            'jawaban'     => $session['jawaban'],
-            'hasil'       => $session['hasil'],
-            'rekomendasi' => $session['rekomendasi']
-        ]);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("hasil-diare.pdf", ["Attachment" => false]);
+    if (!$session || !isset($session['identitas'])) {
+        return redirect()->to('/skrining-diare');
     }
+
+    return view('gol_d/pdf_diare', [
+        'identitas'   => $session['identitas'],
+        'jawaban'     => $session['jawaban'],
+        'hasil'       => $session['hasil'],
+        'rekomendasi' => $session['rekomendasi']
+    ]);
+}
 // =========================
 // LANDING PAGE DIARE
 // =========================
@@ -235,11 +258,18 @@ public function index()
     helper('text');
 
     $beritaModel = new BeritaModelDD();
+    $funfactModel = new FunfactModelD();
 
     $data['berita'] = $beritaModel
         ->where('id_penyakit', 4)
         ->where('status_berita', 'publish')
         ->orderBy('tanggal_berita', 'DESC')
+        ->findAll();
+
+    $data['funfact'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->where('status_funfact', 'published')
+        ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
     $data['diare'] = [];
@@ -329,44 +359,79 @@ public function index()
 
         echo "</table>";
     }
-    public function kalkulatorAir()
+public function kalkulatorAir()
 {
-    return view('gol_d/kalkulator_air');
+    return view('gol_d/kalkulator_air', [
+        'mode' => 'who',
+        'hasil' => 0,
+        'bolus' => 0,
+        'defisit' => 0,
+        'maintenance' => 0,
+        'perjam' => 0
+    ]);
 }
 
 public function hitungAir()
 {
-    $usia = (int)$this->request->getPost('usia');
-    $berat = (float)$this->request->getPost('berat');
+    $mode = $this->request->getPost('mode');
+
+    // =========================
+    // MODE WHO
+    // =========================
+    if ($mode === 'who') {
+
+        $berat = (float)$this->request->getPost('berat');
+        $dehidrasi = (float)$this->request->getPost('dehidrasi') / 100;
+
+        $bolus = ($dehidrasi >= 0.09) ? 20 * $berat : 0;
+
+        $defisit = $dehidrasi * $berat * 1000;
+
+        // RULE 4-2-1
+        if ($berat <= 10) {
+            $maintenance = 4 * $berat;
+        } elseif ($berat <= 20) {
+            $maintenance = 40 + (($berat - 10) * 2);
+        } else {
+            $maintenance = 60 + (($berat - 20) * 1);
+        }
+
+        $total = $defisit + ($maintenance * 24) - $bolus;
+        $perjam = $total / 24;
+
+        return view('gol_d/kalkulator_air', [
+            'mode' => 'who',
+            'hasil' => round($total),
+            'bolus' => round($bolus),
+            'defisit' => round($defisit),
+            'maintenance' => round($maintenance),
+            'perjam' => round($perjam, 1)
+        ]);
+    }
+
+    // =========================
+    // MODE AIR NORMAL
+    // =========================
+    $berat = (float)$this->request->getPost('berat_normal');
     $aktivitas = (int)$this->request->getPost('aktivitas');
-    $kondisi = $this->request->getPost('kondisi');
 
     $air = $berat * 35;
-
-    if ($usia < 18) {
-        $air = $berat * 45;
-    }
 
     if ($aktivitas > 50) {
         $air += 500;
     }
 
-    switch ($kondisi) {
-        case 'ringan':
-            $air += 500;
-            break;
-        case 'sedang':
-            $air += 1000;
-            break;
-        case 'berat':
-            $air += 1500;
-            break;
-    }
-
     return view('gol_d/kalkulator_air', [
-        'hasil' => round($air / 1000, 1)
+        'mode' => 'normal',
+        'hasil' => round($air),
+        'bolus' => 0,
+        'defisit' => 0,
+        'maintenance' => 0,
+        'perjam' => 0
     ]);
 }
+
+
 public function detailBerita($id)
 {
     $beritaModel = new \App\Models\BeritaModelDD();
@@ -383,5 +448,15 @@ public function detailBerita($id)
     return view('gol_d/detail_berita', [
         'berita' => $berita
     ]);
+}
+public function funfact()
+{
+    $funfactModel = new FunfactModelD();
+
+    $data['funfact'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->findAll();
+
+    return view('admind/funfact', $data);
 }
 }

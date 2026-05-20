@@ -199,19 +199,21 @@ input:checked + .answer-btn{
     <div class="screening-title">Informasi Gejala Klinis</div>
     <div class="screening-subtitle">Sesuaikan dengan kondisi gejala yang dialami</div>
 
-    <div class="counter">6 dari 10</div>
+  <div class="counter">9 dari 15</div>
 
     <div class="progress">
-        <div class="progress-bar" style="width:66%"></div>
+        <div class="progress-bar" style="width:100%"></div>
     </div>
 
 <?php
 $pertanyaan = [
     "Apakah bibir Anda kering?",
-    "Apakah Tugor menurun?",
-    "Apakah Nadi Anda cepat?",
-    "Apakah Mata Anda cekung?",
-    "Apakah Nafas Anda terasa cepat?"
+    "Apakah Anda oliguria / urin sedikit?",
+    "Apakah mata Anda cekung?",
+    "Apakah turgor kulit menurun?",
+    "Apakah nadi Anda cepat?",
+    "Apakah nafas Anda terasa cepat?",
+    "Apakah ubun-ubun Anda cekung?"
 ];
 ?>
 

@@ -7,6 +7,37 @@ use CodeIgniter\Controller;
 
 class BeritaPneumonia extends Controller
 {
+    private function getNotif()
+{
+    $db = \Config\Database::connect();
+
+    return $db->table('skrining s')
+
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
+
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
+
+        ->where('s.id_penyakit', 3)
+
+        ->where('s.hasil', 'Berisiko')
+
+        ->orderBy('s.id_skrining', 'DESC')
+
+        ->limit(3)
+
+        ->get()
+
+        ->getResultArray();
+}
     // =========================
     // LIST BERITA
     // =========================
@@ -50,7 +81,8 @@ class BeritaPneumonia extends Controller
             'publish'         => $publish,
             'draft'           => $draft,
             'status'          => $status,
-            'keyword'         => $keyword
+            'keyword'         => $keyword,
+            'notif' => $this->getNotif()
         ];
 
         return view('gol_c/berita/kelola_berita', $data);

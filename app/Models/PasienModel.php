@@ -11,11 +11,17 @@ class PasienModel extends Model
     protected $primaryKey = 'id_pasien';
 
     protected $allowedFields = [
-        'nama_pasien',
-        'jenis_kelamin',
-        'umur',
-        'tgl_kunjungan',
-        'id_petugas',
-        'id_wilayah'
+
+    'nik',
+    'no_rm',
+    'nama_pasien',
+    'jenis_kelamin',
+    'umur',
+    'tgl_kunjungan',
+    'status_akhir',
+    'ctt_klinis',
+    'id_petugas',
+    'id_wilayah'
+
     ];
 }

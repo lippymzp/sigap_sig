@@ -688,7 +688,6 @@ body{
                         <label class="form-label-small">Pilih Kecamatan</label>
                         <select name="kecamatan" class="form-control custom-input" id="kecamatan">
                             <option>Ajung</option>
-                            <option>Sumbersari</option>
                         </select>
                     </div>
 
@@ -696,11 +695,12 @@ body{
                         <label class="form-label-small">Pilih Kelurahan</label>
                         <select name="desa" class="form-control custom-input" id="desa">
                             <option value="">Pilih Desa/Kelurahan</option>
-                            <option>Sumbersari</option>
-                            <option>Antirogo</option>
-                            <option>Karangrejo</option>
-                            <option>Wirolegi</option>
-                            <option>Tegal gede</option>
+                            <option>Klompangan</option>
+                            <option>Mangaran</option>
+                            <option>Pancakarya</option>
+                            <option>Rowoindah</option>
+                            <option>Sukamakmur</option>
+                            <option>Wirowongso</option>
                         </select>
                     </div>
 

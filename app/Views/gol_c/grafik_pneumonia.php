@@ -12,7 +12,7 @@ $this->setVar('footer_maskot', 'cynex.png');?>
 
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 ?>
 
 
@@ -112,7 +112,7 @@ body{
 .chart-wrapper{
     position:relative;
     width:100%;
-    height:620px;
+    height:400px; 
 }
 
 
@@ -124,7 +124,7 @@ body{
 
 <?php
 
-$query = mysqli_query($conn, "
+$query = $db->query("
 
     SELECT
 
@@ -135,6 +135,8 @@ $query = mysqli_query($conn, "
 
     FROM pasien
 
+    WHERE id_penyakit = 3
+
     GROUP BY
         MONTH(tgl_kunjungan),
         YEAR(tgl_kunjungan),
@@ -142,9 +144,11 @@ $query = mysqli_query($conn, "
 
 ");
 
+$result = $query->getResultArray();
+
 $data = [];
 
-while($row = mysqli_fetch_assoc($query)){
+foreach($result as $row){
 
     $data[] = $row;
 
@@ -154,7 +158,7 @@ while($row = mysqli_fetch_assoc($query)){
    DATA GRAFIK WILAYAH
 =========================== */
 
-$queryWilayah = mysqli_query($conn, "
+$queryWilayah = $db->query("
 
 SELECT
 
@@ -170,6 +174,8 @@ FROM pasien
 JOIN wilayah
 ON pasien.id_wilayah = wilayah.id_wilayah
 
+WHERE pasien.id_penyakit = 3
+
 GROUP BY
     wilayah.kelurahan,
     pasien.jenis_kelamin,
@@ -178,13 +184,8 @@ GROUP BY
     YEAR(pasien.tgl_kunjungan)
 
 ");
-$dataWilayah = [];
 
-while($row = mysqli_fetch_assoc($queryWilayah)){
-
-    $dataWilayah[] = $row;
-
-}
+$dataWilayah = $queryWilayah->getResultArray();
 
 ?>
 

@@ -321,11 +321,36 @@ const fitur = document.querySelectorAll('.fitur-box');
 fitur.forEach(btn => {
     btn.addEventListener('click', function(e) {
 
-        if(this.getAttribute("href") === "#"){
+        const href = this.getAttribute("href");
+
+        if(href && href.startsWith("#")){
             e.preventDefault();
+
+            const target = document.querySelector(href);
+
+            if(target){
+
+                let offset = 90;
+
+                /* khusus skrining agar tampil di tengah */
+                if(href === "#skriningSection"){
+                    offset = 220;
+                }
+
+                const posisiTarget =
+                    target.getBoundingClientRect().top +
+                    window.pageYOffset -
+                    offset;
+
+                window.scrollTo({
+                    top: posisiTarget,
+                    behavior: "smooth"
+                });
+
+                history.pushState(null, null, href);
+            }
         }
 
-        // aktif efek
         fitur.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
     });
@@ -340,16 +365,18 @@ fitur.forEach(btn => {
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$beritaList = $queryBerita->getResultArray();
+
+$totalBerita = count($beritaList);
 ?>
 
 <div class="news-slider">
@@ -362,7 +389,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($beritaList as $berita): ?>
 
                 <?php
                 // CEK GAMBAR
@@ -426,7 +453,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 
@@ -871,7 +898,7 @@ prevBtn.addEventListener('click', () => {
         <span style="color:red;">skrining</span> sejak dini!
     </p>
 
-    <a href="<?= base_url('skriningpneumonia') ?>"
+    <a href="<?= base_url('pneumonia/skrining') ?>"
        class="btn btn-teal px-4 py-2 shadow">
 
         Mulai Skrining
@@ -901,7 +928,7 @@ prevBtn.addEventListener('click', () => {
 
 <?php
 
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $bulanLabels = [
     'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
@@ -911,8 +938,9 @@ $bulanLabels = [
 $laki = array_fill(0, 12, 0);
 $wanita = array_fill(0, 12, 0);
 
-$query = mysqli_query($conn, "
+$db = \Config\Database::connect();
 
+$query = $db->query("
     SELECT 
         MONTH(tgl_kunjungan) as bulan,
         jenis_kelamin,
@@ -921,14 +949,16 @@ $query = mysqli_query($conn, "
     FROM pasien
 
     WHERE YEAR(tgl_kunjungan) = 2025
+    AND id_penyakit = 3
 
     GROUP BY 
         MONTH(tgl_kunjungan),
         jenis_kelamin
-
 ");
 
-while($row = mysqli_fetch_assoc($query)){
+$result = $query->getResultArray();
+
+foreach($result as $row){
 
     $index = $row['bulan'] - 1;
 
@@ -1056,7 +1086,7 @@ new Chart(ctx, {
 
 <!-- PETA -->
 <?php
-/* QUERY DATA PETA - SAMA DENGAN DASHBOARD */
+/* QUERY DATA PETA - KHUSUS PNEUMONIA (id_penyakit = 3) */
 $db = \Config\Database::connect();
 
 $builder = $db->table('pasien p');
@@ -1074,6 +1104,9 @@ $builder->join(
     'w.id_wilayah = p.id_wilayah',
     'left'
 );
+
+/* FILTER KHUSUS PNEUMONIA */
+$builder->where('p.id_penyakit', 3);
 
 $builder->groupBy("
     w.kelurahan,
@@ -2700,7 +2733,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <?php
 /* RINGKASAN DATA PNEUMONIA  */
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $dataRingkasan = [];
 
@@ -2712,7 +2745,7 @@ $tertinggi = [
 $rataRata = 0;
 $diAtasRata = 0;
 
-$queryRingkasan = mysqli_query($conn, "
+$queryRingkasan = $db->query("
 
     SELECT 
         wilayah.kelurahan,
@@ -2723,6 +2756,8 @@ $queryRingkasan = mysqli_query($conn, "
     JOIN wilayah 
         ON wilayah.id_wilayah = pasien.id_wilayah
 
+    WHERE pasien.id_penyakit = 3
+
     GROUP BY wilayah.id_wilayah
 
     ORDER BY total DESC
@@ -2731,7 +2766,7 @@ $queryRingkasan = mysqli_query($conn, "
 
 if($queryRingkasan){
 
-    while($r = mysqli_fetch_assoc($queryRingkasan)){
+    foreach($queryRingkasan->getResultArray() as $r){
         $dataRingkasan[] = $r;
     }
 
@@ -2885,7 +2920,7 @@ document.addEventListener("DOMContentLoaded", function(){
     width:65px;
     height:65px;
     border-radius:50%;
-    background:linear-gradient(135deg,#0B5B61,#14919B);
+    background:linear-gradient(135deg,#00CED1,#40EDD0);
     color:white;
     display:flex;
     justify-content:center;
@@ -2918,10 +2953,10 @@ document.addEventListener("DOMContentLoaded", function(){
 /* POPUP */
 #chatbot-popup{
     position:fixed;
-    bottom:95px;
-    right:20px;
-    width:420px;
-    height:650px;
+    bottom:20px;
+    right:90px;
+    width: 360px;
+    height:540px;
     background:white;
     border-radius:20px;
     overflow:hidden;
@@ -2934,7 +2969,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 /* HEADER */
 .chat-popup-header{
-    background:linear-gradient(135deg,#0B5B61,#14919B);
+    background:linear-gradient(135deg,#00CED1,#40EDD0);
     color:white;
     padding:15px 20px;
     display:flex;

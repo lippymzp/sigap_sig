@@ -3,7 +3,10 @@ $banner = $banner ?? ['gambar' => '', 'judul_banner' => '', 'deskripsi' => ''];
 ?>
 
 <style>
-
+body{
+    background:#f4f7f7;
+    font-family:'Poppins', sans-serif;
+}
 /* HERO SECTION */
 .hero-banner{
     position: relative;
@@ -67,7 +70,7 @@ $banner = $banner ?? ['gambar' => '', 'judul_banner' => '', 'deskripsi' => ''];
 <div class="hero-banner">
 
     <div class="hero-content">
-        <h1><?= esc($banner['judul_banner']) ?></h1>
+        <h1><?= esc((string)($banner['judul_banner'] ?? ''))?></h1>
 
         <p>
             <?= esc($banner['deskripsi']) ?>

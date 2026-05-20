@@ -1,4 +1,7 @@
-<?= $this->extend('layout/dashboard_layout_admin') ?>
+<?php
+$layout = $layout ?? 'layout/dashboard_layout_admin';
+?>
+<?= $this->extend($layout) ?>
 <?= $this->section('content') ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -8,149 +11,121 @@
 <style>
 * { font-family: 'Poppins', sans-serif; }
 
-
-
-/* CARD */
-.custom-card {
-    border-radius: 20px;
-    background: #F4F8FA;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+.custom-card{
+    border-radius:20px;
+    background:#F4F8FA;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* SEARCH */
-.search-icon {
-    background: #20B8BE;
-    color: white;
-    width: 45px;
-    height: 45px;
-    border-radius: 10px 0 0 10px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.search-icon i {
-    color: white;
-    font-size: 16px;
+.search-icon{
+    background:#20B8BE;
+    color:white;
+    width:45px;
+    height:45px;
+    border-radius:10px 0 0 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.search-input {
-    border-radius: 0 10px 10px 0;
-    border: none;
-    background: #EEF5F7;
-    padding: 12px;
-    width: 250px;
-    height: 45px;
+.search-input{
+    border-radius:0 10px 10px 0;
+    border:none;
+    background:#EEF5F7;
+    padding:12px;
+    width:250px;
+    height:45px;
 }
 
-.filter-btn {
-    border: 2px solid #20B8BE;
-    background: white;
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
-    color: #20B8BE;
-    transition: all 0.2s ease; /* 🔥 biar halus */
+.filter-btn{
+    border:2px solid #20B8BE;
+    background:white;
+    width:45px;
+    height:45px;
+    border-radius:10px;
+    color:#20B8BE;
+    transition:0.2s;
 }
 
-/* 🔥 INI YANG KAMU BUTUH */
-.filter-btn:hover {
-    background: #169fa5;
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(32,184,190,0.4);
+.filter-btn:hover{
+    background:#169fa5;
+    color:white;
+    transform:scale(1.05);
 }
 
-/* BIAR ICON IKUT PUTIH */
-.filter-btn i {
-    font-size: 16px;
+.periode{
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-.filter-btn:hover i {
-    color: white;
+.periode a{
+    text-decoration:none;
+    font-size:40px;
+    color:#20B8BE;
+    font-weight:bold;
 }
 
-/* ================= PERIODE (FIXED) ================= */
-.periode {
-    font-size: 16px; /* samain sama teks lain */
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.periode a:hover{
+    color:#169fa5;
+    transform:scale(1.2);
 }
 
-.periode a {
-    text-decoration: none;
-    font-size: 40px; /* panah agak gede dikit */
-    color: #20B8BE;
-    font-weight: bold;
-    transition: 0.1s;
+.custom-table thead th{
+    background:#DDF8F9;
+    color:#2b2b2b;
+    font-weight:600;
+    border:1px solid #BCEAEB;
 }
 
-/* hover halus tanpa kotak */
-.periode a:hover {
-    color: #169fa5;
-    transform: scale(1.2);
+.custom-table tbody tr{
+    background:#EAF4F6;
 }
 
-/* TABLE */
-.custom-table thead th {
-    background: #DDF8F9;
-    color: #2b2b2b;
-    font-weight: 600;
-    border: none;
+.custom-table tbody tr:nth-child(even){
+    background:#F4FAFB;
 }
 
-.custom-table tbody tr {
-    background: #EAF4F6;
+.btn-export{
+    background:#20B8BE;
+    color:white;
+    padding:10px 20px;
+    border-radius:10px;
+    font-weight:500;
+    text-decoration:none !important;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
 }
 
-.custom-table tbody tr:nth-child(even) {
-    background: #F4FAFB;
+.btn-export:hover{
+    background:#169fa5;
+    color:white;
 }
 
-/* EXPORT BUTTON (DALAM CARD) */
-.btn-export {
-    background: #20B8BE;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: 500;
-
-    text-decoration: none !important; /* 🔥 hilangin garis */
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-export:hover {
-    color: white;
-    text-decoration: none !important;
-    background: #169fa5;
-}
-
-/* MODAL FILTER */
-.modal-filter {
-    display: none;
-    position: fixed;
+.modal-filter{
+    display:none;
+    position:fixed;
     top:0;
     left:0;
     width:100%;
     height:100%;
-    background: rgba(0,0,0,0.3);
+    background:rgba(0,0,0,0.3);
     justify-content:center;
     align-items:center;
     z-index:999;
 }
 
-.modal-content {
+.modal-content{
     background:white;
     padding:25px;
     border-radius:15px;
     width:400px;
 }
 
-.filter-input {
+.filter-input{
     width:100%;
     margin-bottom:10px;
     padding:10px;
@@ -159,24 +134,17 @@
     background:#EEF5F7;
 }
 
-.btn-terapkan {
-    background: #20B8BE; 
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-weight: 500;
-    transition: 0.2s;
+.btn-terapkan{
+    background:#20B8BE;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
 }
-
-.btn-terapkan:hover {
-    background: #169fa5;
-}
-
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <div></div> 
+    <div></div>
 
     <div class="periode">
         <span>Periode :</span>
@@ -197,32 +165,38 @@
         <div class="search-icon">
             <i class="fa fa-search"></i>
         </div>
-        <input type="text" id="searchInput" class="search-input" placeholder="Ketik untuk mencari...">
+
+        <input type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Ketik untuk mencari...">
+
         <button class="filter-btn" onclick="openFilter()">
             <i class="fa fa-filter"></i>
         </button>
     </div>
 
     <div class="table-responsive">
-    <table class="table text-center align-middle custom-table">
+    <table class="table text-center align-middle custom-table table-bordered">
+
         <thead>
             <tr>
                 <th rowspan="2">No</th>
                 <th rowspan="2">Bulan</th>
                 <th rowspan="2">Kelurahan</th>
 
-                <th colspan="5">Rentang Usia</th>
+                <th colspan="4">Rentang Usia</th>
 
                 <th colspan="2">Jenis Kelamin</th>
 
                 <th rowspan="2">Jumlah Kasus</th>
                 <th rowspan="2">Jumlah Kematian</th>
+                <th rowspan="2">Aksi</th>
             </tr>
 
             <tr>
-                <th>Bayi & Balita</th>
-                <th>Anak-anak</th>
-                <th>Remaja</th>
+                <th>Bayi & Anak Pra-sekolah</th>
+                <th>Sekolah & Remaja</th>
                 <th>Dewasa</th>
                 <th>Lansia</th>
 
@@ -232,32 +206,48 @@
         </thead>
 
         <tbody id="table-body">
+
         <?php if(!empty($data)): ?>
-            <?php $no=1; foreach($data as $d): ?>
+            <?php $no = 1; foreach($data as $d): ?>
+
             <tr>
                 <td><?= $no++ ?></td>
                 <td><?= $d['bulan'] ?></td>
                 <td><?= $d['kelurahan'] ?></td>
 
-                <td><?= $d['bayi'] ?? 0 ?></td>
-                <td><?= $d['anak'] ?? 0 ?></td>
-                <td><?= $d['remaja'] ?? 0 ?></td>
+                <td><?= $d['bayi_anak_prasekolah'] ?? 0 ?></td>
+                <td><?= $d['sekolah_dan_remaja'] ?? 0 ?></td>
                 <td><?= $d['dewasa'] ?? 0 ?></td>
                 <td><?= $d['lansia'] ?? 0 ?></td>
 
                 <td><?= $d['laki'] ?? 0 ?></td>
                 <td><?= $d['perempuan'] ?? 0 ?></td>
 
-                <td><?= $d['jumlah'] ?></td>
-                <td><?= $d['meninggal'] ?? 0 ?></td>
+                <td><b><?= $d['jumlah'] ?></b></td>
+
+                <td><?= $d['jumlah_kematian'] ?? 0 ?></td>
+
+                <td>
+                    <a href="<?= base_url('dbd/detail-pasien') ?>?bulan=<?= $d['bulan_angka'] ?>&kelurahan=<?= $d['kelurahan'] ?>&tahun=<?= $tahun ?>"
+                    class="btn btn-sm text-white"
+                    style="background:#20B8BE; border-radius:8px;">
+                        <i class="fa fa-eye"></i> Detail
+                    </a>
+                </td>
             </tr>
+
             <?php endforeach; ?>
+
         <?php else: ?>
+
             <tr>
                 <td colspan="12">Belum ada data</td>
             </tr>
+
         <?php endif; ?>
+
         </tbody>
+
     </table>
     </div>
 
@@ -307,8 +297,8 @@
         <label>Urutkan</label>
         <select id="filterUrut" class="filter-input">
             <option value="">Default</option>
-            <option value="asc">Tertinggi</option>
-            <option value="desc">Terendah</option>
+            <option value="asc">Terendah (Kasus Sedikit)</option>
+            <option value="desc">Tertinggi (Kasus Banyak)</option>
         </select>
 
         <div class="d-flex justify-content-between mt-4">
@@ -323,18 +313,15 @@
 <script>
 let currentTahun = <?= $tahun ?>;
 
-// =====================
-// GANTI TAHUN
-// =====================
 function gantiTahun(tahun){
     currentTahun = tahun;
     document.getElementById('tahun-text').innerText = tahun;
     loadData();
 }
 
-// =====================
-// MODAL FILTER
-// =====================
+// ===================================
+// KONTROL AKTIVITAS MODAL FILTER
+// ===================================
 function openFilter(){
     document.getElementById('filterModal').style.display = 'flex';
 }
@@ -355,9 +342,9 @@ function applyFilter(){
     loadData();
 }
 
-// =====================
-// LOAD DATA DARI DATABASE
-// =====================
+// ===================================
+// LOGIKA AMBIL & PILAH (FILTER/SORT) DATA 
+// ===================================
 function loadData(){
 
     let keyword = document.getElementById('searchInput').value.toLowerCase();
@@ -369,9 +356,7 @@ function loadData(){
     .then(res => res.json())
     .then(data => {
 
-        // =====================
-        // FILTER DATA
-        // =====================
+        // 1. FILTERING DATA (Bulan, Kelurahan, & Kotak Pencarian)
         data = data.filter(d => {
             return (
                 (bulan === "" || d.bulan === bulan) &&
@@ -383,18 +368,14 @@ function loadData(){
             );
         });
 
-        // =====================
-        // SORT DATA
-        // =====================
+        // 2. SORTING DATA (Berdasarkan jumlah kasus)
         if(urut === "asc"){
             data.sort((a,b)=> a.jumlah - b.jumlah);
         } else if(urut === "desc"){
             data.sort((a,b)=> b.jumlah - a.jumlah);
         }
 
-        // =====================
-        // RENDER TABLE
-        // =====================
+        // 3. RENDER DATA KE DALAM BODY TABEL
         let tbody = document.getElementById('table-body');
         tbody.innerHTML = "";
 
@@ -404,38 +385,43 @@ function loadData(){
         }
 
         let no = 1;
+
         data.forEach(d => {
             tbody.innerHTML += `
-                <tr>
-                    <td>${no++}</td>
-                    <td>${d.bulan}</td>
-                    <td>${d.kelurahan}</td>
-                    <td>${d.bayi ?? 0}</td>
-                    <td>${d.anak ?? 0}</td>
-                    <td>${d.remaja ?? 0}</td>
-                    <td>${d.dewasa ?? 0}</td>
-                    <td>${d.lansia ?? 0}</td>
-                    <td>${d.laki ?? 0}</td>
-                    <td>${d.perempuan ?? 0}</td>
-                    <td>${d.jumlah}</td>
-                    <td>${d.jumlah_kematian ?? 0}</td>
-                </tr>
+            <tr>
+                <td>${no++}</td>
+                <td>${d.bulan}</td>
+                <td>${d.kelurahan}</td>
+
+                <td>${d.bayi_anak_prasekolah ?? 0}</td>
+                <td>${d.sekolah_dan_remaja ?? 0}</td>
+                <td>${d.dewasa ?? 0}</td>
+                <td>${d.lansia ?? 0}</td>
+
+                <td>${d.laki ?? 0}</td>
+                <td>${d.perempuan ?? 0}</td>
+
+                <td><b>${d.jumlah}</b></td>
+
+                <td>${d.meninggal ?? 0}</td>
+
+                <td>
+                    <a href="<?= base_url('dbd/detail-pasien') ?>?bulan=${d.bulan_angka}&kelurahan=${d.kelurahan}&tahun=${currentTahun}"
+                    class="btn btn-sm text-white"
+                    style="background:#20B8BE; border-radius:8px;">
+                        <i class="fa fa-eye"></i> Detail
+                    </a>
+                </td>
+            </tr>
             `;
         });
 
     });
 }
 
-// =====================
-// SEARCH REALTIME
-// =====================
 document.getElementById('searchInput').addEventListener('keyup', loadData);
 
-// =====================
-// AUTO LOAD SAAT HALAMAN DIBUKA
-// =====================
 window.onload = loadData;
-
 </script>
 
 <?= $this->endSection() ?>

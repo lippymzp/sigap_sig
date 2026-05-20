@@ -62,7 +62,8 @@
                 <i class="fa-solid fa-file-lines me-2"></i> Rekap Skrining
             </a>
 
-            <a href="#map" class="<?= ($menu == 'peta') ? 'active' : '' ?>">
+            <a href="<?= base_url('index.php/' . $penyakit . '/dashboard/admin#petaSebaran') ?>"
+                class="<?= ($menu == 'peta') ? 'active' : '' ?>">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
             </a>
 
@@ -438,89 +439,165 @@
             <style>
             /* NOTIFICATION */
             .notification-bell {
-
                 position: relative;
-
                 width: 42px;
                 height: 42px;
-
                 border-radius: 50%;
-
                 background: #F5FBFB;
-
                 display: flex;
                 align-items: center;
                 justify-content: center;
-
                 cursor: pointer;
-
                 transition: 0.3s;
-
             }
 
             .notification-bell:hover {
-
                 background: #E9F7F7;
-
                 transform: translateY(-2px);
-
             }
 
             /* ICON */
             .notification-bell i {
-
                 font-size: 18px;
-
                 color: #0F6C73;
-
             }
 
             /* BADGE */
             .notification-badge {
-
                 position: absolute;
-
                 top: -3px;
                 right: -3px;
-
                 background: #FF4D4F;
-
                 color: white;
-
                 width: 20px;
                 height: 20px;
-
                 border-radius: 50%;
-
                 font-size: 11px;
                 font-weight: 600;
-
                 display: flex;
                 align-items: center;
                 justify-content: center;
-
                 border: 2px solid white;
+            }
 
+            /* FOOTER */
+            .notif-footer {
+                margin-top: 15px;
+                text-align: center;
+            }
+
+            /* BUTTON */
+            .notif-footer button {
+                background: linear-gradient(135deg,
+                        #E53935,
+                        #FF6B6B);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 14px;
+                font-size: 14px;
+                font-weight: 600;
+                height: 48px;
+                cursor: pointer;
+                transition: 0.3s;
+                width: 100%;
+                box-shadow:
+                    0 8px 18px rgba(229,
+                        57,
+                        53,
+                        0.18);
+            }
+
+            /* HOVER */
+            .notif-footer button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(229,
+                        57,
+                        53,
+                        0.25);
+            }
+
+            /* SUMMARY */
+            .notif-content {
+                text-align: center;
+                padding: 5px 0;
+            }
+
+            /* ICON */
+            .notif-summary-icon {
+                width: 62px;
+                height: 62px;
+                margin: 0 auto 16px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 8px 18px rgba(229,
+                        57,
+                        53,
+                        0.12);
+            }
+
+            .notif-summary-icon.warning {
+                background: linear-gradient(135deg,
+                        #FFE5E5,
+                        #FFF1F1);
+                border: 1px solid #FFD3D3;
+            }
+
+            .notif-summary-icon.warning i {
+                color: #E53935;
+            }
+
+            .notif-summary-icon i {
+                font-size: 30px;
+                color: #E53935;
+            }
+
+            /* TITLE */
+            .notif-content h4 {
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+
+            /* TEXT */
+            .notif-content p {
+                font-size: 14px;
+                line-height: 1.6;
+                margin-bottom: 6px;
+            }
+
+            /* SMALL TEXT */
+            .notif-content span {
+                font-size: 13px;
             }
             </style>
             <style>
             /* POPUP */
             #notification-popup {
 
-                position: absolute;
+                position: fixed;
 
-                top: 70px;
-                right: 90px;
+                top: 85px;
 
-                width: 420px;
+                right: 25px;
 
-                background: white;
+                width: 320px;
 
-                border-radius: 20px;
+                background: linear-gradient(180deg,
+                        #FFF7F7,
+                        #FFFDFD);
 
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+                border: 1px solid #FFE1E1;
+
+                border-radius: 24px;
 
                 padding: 22px;
+
+                box-shadow:
+                    0 10px 30px rgba(229, 57, 53, 0.08),
+                    0 2px 8px rgba(0, 0, 0, 0.04);
 
                 z-index: 9999;
 
@@ -530,33 +607,175 @@
 
             }
 
-            /* HEADER */
-            .notif-header h4 {
-
-                font-size: 24px;
-
-                font-weight: 700;
-
-                color: #111;
-
-                margin-bottom: 4px;
-
-            }
-
-            .notif-header p {
-
-                color: #666;
-
-                font-size: 14px;
-
-                margin-bottom: 20px;
-
-            }
-
             /* ITEM */
             .notif-item {
-
                 background: #FFE5E5;
+                border-radius: 18px;
+                padding: 18px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+
+            /* LEFT */
+            .notif-left {
+                display: flex;
+                gap: 15px;
+            }
+
+            /* ICON */
+            .notif-icon {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background: #FFE5E5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #E53935;
+                font-size: 18px;
+            }
+
+            /* INFO */
+            .notif-info h5 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .notif-info span {
+                display: block;
+                font-size: 14px;
+                color: #444;
+            }
+
+            .notif-info small {
+                color: #666;
+            }
+
+            /* STATUS */
+            .notif-status {
+                background: #FFB3B3;
+                color: #C62828;
+                padding: 6px 14px;
+                border-radius: 30px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            /* EMPTY */
+            .notif-empty {
+                text-align: center;
+                padding: 30px;
+                color: #777;
+            }
+
+            /* ANIMATION */
+            @keyframes fadeNotif {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+            }
+            </style>
+            <style>
+            /* =========================
+   RISK MODAL
+========================= */
+            #riskModal {
+                position: fixed;
+                inset: 0;
+                background: rgba(18, 18, 18, 0.38);
+                backdrop-filter: blur(4px);
+                z-index: 99999;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 30px;
+            }
+
+            /* CONTENT */
+            .risk-modal-content {
+                width: 100%;
+                max-width: 1050px;
+                max-height: 90vh;
+                overflow-y: auto;
+                background: white;
+                border-radius: 28px;
+                padding: 30px;
+                animation: modalFade 0.25s ease;
+                box-shadow: 0 20px 50px rgba(0,
+                        0,
+                        0,
+                        0.2);
+            }
+
+            /* HEADER */
+            .risk-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 25px;
+            }
+
+            .risk-header h2 {
+                font-size: 34px;
+                font-weight: 700;
+                color: #111;
+                margin-bottom: 5px;
+            }
+
+            .risk-header p {
+                color: #666;
+                font-size: 15px;
+            }
+
+            /* CLOSE BUTTON */
+            #closeRiskModal {
+                width: 42px;
+                height: 42px;
+                border: none;
+                border-radius: 12px;
+                background: #F5F5F5;
+                font-size: 18px;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            #closeRiskModal:hover {
+                background: #FFE5E5;
+                color: #D32F2F;
+            }
+
+            /* SUMMARY */
+            .risk-summary {
+                margin-bottom: 25px;
+            }
+
+            .risk-info-strip {
+
+                display: flex;
+
+                gap: 18px;
+
+                margin-bottom: 28px;
+
+            }
+
+            .risk-info-box {
+
+                flex: 1;
+
+                background: #FFF5F5;
+
+                border: 1px solid #FFE1E1;
 
                 border-radius: 18px;
 
@@ -564,104 +783,118 @@
 
                 display: flex;
 
-                justify-content: space-between;
-
                 align-items: center;
-
-                margin-bottom: 15px;
-
-            }
-
-            /* LEFT */
-            .notif-left {
-
-                display: flex;
 
                 gap: 15px;
 
             }
 
-            /* ICON */
-            .notif-icon {
+            .risk-info-box i {
 
-                width: 45px;
-                height: 45px;
+                width: 48px;
+                height: 48px;
 
-                border-radius: 50%;
+                border-radius: 14px;
 
-                background: #fff;
-
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                background: #FFE5E5;
 
                 color: #E53935;
 
-                font-size: 18px;
+                display: flex;
+
+                align-items: center;
+                justify-content: center;
+
+                font-size: 20px;
 
             }
 
-            /* INFO */
-            .notif-info h5 {
+            .risk-info-box h5 {
 
                 margin: 0;
 
                 font-size: 16px;
 
-                font-weight: 600;
+                font-weight: 700;
 
             }
 
-            .notif-info span {
-
-                display: block;
-
-                font-size: 14px;
-
-                color: #444;
-
-            }
-
-            .notif-info small {
+            .risk-info-box span {
 
                 color: #666;
 
+                font-size: 13px;
+
             }
 
-            /* STATUS */
-            .notif-status {
+            /* TABLE */
+            .risk-table-wrapper {
+                overflow-x: auto;
+            }
 
-                background: #FFB3B3;
+            .risk-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
 
-                color: #C62828;
+            .risk-table thead {
+                background: #F7FBFB;
+            }
 
-                padding: 6px 14px;
+            .risk-table th {
+                padding: 16px;
+                text-align: left;
+                color: #0F172A;
+                font-size: 14px;
+                font-weight: 700;
+            }
 
+            .risk-table td {
+                padding: 16px;
+                border-top: 1px solid #ECECEC;
+                font-size: 14px;
+                color: #444;
+            }
+
+            /* ROW HOVER */
+            .risk-table tbody tr:hover {
+                background: #FAFAFA;
+            }
+
+            /* BADGE */
+            .risk-badge {
+                background: #FFE5E5;
+                color: #D32F2F;
+                padding: 7px 14px;
                 border-radius: 30px;
-
                 font-size: 12px;
-
                 font-weight: 600;
-
             }
 
-            /* EMPTY */
-            .notif-empty {
+            .risk-modal-footer {
+                margin-top: 30px;
+                display: flex;
+                justify-content: flex-end;
+            }
 
-                text-align: center;
+            .risk-modal-footer button {
+                background: #F5F5F5;
+                border: none;
+                padding: 12px 26px;
+                border-radius: 14px;
+                font-weight: 600;
+                transition: 0.3s;
+            }
 
-                padding: 30px;
-
-                color: #777;
-
+            .risk-modal-footer button:hover {
+                background: #ECECEC;
             }
 
             /* ANIMATION */
-            @keyframes fadeNotif {
-
+            @keyframes modalFade {
                 from {
                     opacity: 0;
-                    transform: translateY(-10px);
+                    transform: translateY(20px);
                 }
 
                 to {
@@ -684,10 +917,8 @@
 
             <!-- AOS -->
             <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
             <script>
             document.addEventListener("DOMContentLoaded", function() {
-
                 AOS.init({
                     duration: 1000,
                     once: true
@@ -697,108 +928,248 @@
             </script>
             <!-- NOTIFICATION POPUP -->
             <div id="notification-popup">
-
-                <div class="notif-header">
-
-                    <h4>Pasien Berisiko Pneumonia</h4>
-
-                    <p>
-                        Pasien yang memerlukan perhatian lebih lanjut
-                    </p>
-
-                </div>
                 <div class="notif-content">
-
-                    <?php if(!empty($notif)): ?>
-
-                    <?php foreach($notif as $n): ?>
-
-                    <div class="notif-item">
-
-                        <div class="notif-left">
-
-                            <div class="notif-icon">
-
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                            </div>
-
-                            <div class="notif-info">
-
-                                <h5>
-                                    <?= esc($n['nama_pasien_skrining']) ?>
-                                </h5>
-
-                                <span>
-                                    <?= esc($n['jenis_kelamin']) ?>,
-                                    <?= esc($n['usia']) ?> Tahun
-                                </span>
-
-                                <small>
-                                    Tanggal Skrining:
-                                    <?= date('d M Y', strtotime($n['tanggal'])) ?>
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                        <div class="notif-status">
-
-                            Berisiko
-
-                        </div>
-
+                    <?php if(isset($notif) && count($notif) > 0): ?>
+                    <!-- ADA RISIKO -->
+                    <div class="notif-summary-icon warning">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
-
-                    <?php endforeach; ?>
-
+                    <h4>
+                        Peringatan Pneumonia
+                    </h4>
+                    <p>
+                        Telah terdeteksi
+                        <strong>
+                            <?= count($notif) ?>
+                        </strong>
+                        pasien berisiko pneumonia.
+                    </p>
+                    <span>
+                        Segera lakukan pemeriksaan lebih lanjut.
+                    </span>
                     <?php else: ?>
-
-                    <div class="notif-empty">
-
-                        Belum ada pasien berisiko pneumonia 😄
-
+                    <!-- AMAN -->
+                    <div class="notif-summary-icon safe">
+                        <i class="fa-solid fa-circle-check"></i>
                     </div>
-
+                    <h4>
+                        Tidak Ada Peringatan
+                    </h4>
+                    <p>
+                        Belum ada pasien berisiko pneumonia saat ini 😄
+                    </p>
+                    <span>
+                        Sistem monitoring berjalan normal.
+                    </span>
                     <?php endif; ?>
-
+                </div>
+                <div class="notif-footer">
+                    <button id="openRiskModal">
+                        Lihat Semua
+                    </button>
                 </div>
             </div>
             <script>
             // ELEMENT
             const notifToggle =
                 document.getElementById('notification-toggle');
-
             const notifPopup =
                 document.getElementById('notification-popup');
-
             // TOGGLE POPUP
             notifToggle.addEventListener('click', () => {
-
                 if (
                     notifPopup.style.display === 'block'
                 ) {
-
                     notifPopup.style.display = 'none';
-
                 } else {
-
                     notifPopup.style.display = 'block';
-
                 }
-
             });
-
             // KLIK LUAR = TUTUP
             document.addEventListener('click', (e) => {
-
                 if (
                     !notifToggle.contains(e.target) &&
                     !notifPopup.contains(e.target)
                 ) {
-
                     notifPopup.style.display = 'none';
+                }
+            });
+            </script>
+            <!-- MODAL RISIKO PNEUMONIA -->
+            <div id="riskModal">
+                <div class="risk-modal-content">
+                    <!-- HEADER -->
+                    <div class="risk-header">
+                        <div>
+                            <h2>
+                                Peringatan Pneumonia
+                            </h2>
+                        </div>
+                        <button id="closeRiskModal">
+                            ✕
+                        </button>
+                    </div>
+                    <!-- SUMMARY -->
+                    <div class="risk-summary">
+                    </div>
+                    <p>
+                        Daftar pasien berisiko pneumonia
+                    </p>
+                    <!-- INFO STRIP -->
+                    <div class="risk-info-strip">
+
+                        <div class="risk-info-box">
+
+                            <i class="fa-solid fa-lungs"></i>
+
+                            <div>
+
+                                <h5>
+                                    <?= isset($notif) ? count($notif) : 0 ?>
+                                </h5>
+
+                                <span>
+                                    Pasien Berisiko
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="risk-info-box">
+
+                            <i class="fa-solid fa-clock"></i>
+
+                            <div>
+
+                                <h5>
+                                    Monitoring Aktif
+                                </h5>
+
+                                <span>
+                                    Sistem berjalan normal
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE -->
+                    <div class="risk-table-wrapper">
+                        <table class="risk-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Pasien</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Usia</th>
+                                    <th>Tanggal Skrining</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if(isset($notif) && !empty($notif)): ?>
+                                <?php foreach($notif as $n): ?>
+                                <tr>
+                                    <td>
+                                        <?= esc($n['nama_pasien_skrining']) ?>
+                                    </td>
+                                    <td>
+                                        <?= esc($n['jenis_kelamin']) ?>
+                                    </td>
+                                    <td>
+                                        <?= esc($n['usia']) ?> Tahun
+                                    </td>
+                                    <td>
+                                        <?= date(
+                                    'd M Y',
+                                    strtotime($n['tanggal'])
+                                ) ?>
+                                    </td>
+                                    <td>
+                                        <span class="risk-badge">
+                                            Berisiko
+                                        </span>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                                <?php else: ?>
+                                <tr>
+                                    <td colspan="5">
+                                        Tidak ada pasien berisiko 😄
+                                    </td>
+                                </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- FOOTER -->
+                    <div class="risk-modal-footer">
+                        <button id="closeRiskModalFooter">
+                            Tutup
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            <script>
+            // =========================
+            // RISK MODAL
+            // =========================
+
+            const openRiskModal =
+                document.getElementById('openRiskModal');
+
+            const riskModal =
+                document.getElementById('riskModal');
+
+            const closeRiskModal =
+                document.getElementById('closeRiskModal');
+            const closeRiskModalFooter =
+                document.getElementById(
+                    'closeRiskModalFooter'
+                );
+
+            // OPEN MODAL
+            openRiskModal.addEventListener('click', () => {
+
+                riskModal.style.display = 'flex';
+
+            });
+
+            window.addEventListener('load', () => {
+
+                <?php if(
+        isset($menu) &&
+        $menu == 'dashboard' &&
+        isset($notif) &&
+        count($notif) > 0
+    ): ?>
+
+                setTimeout(() => {
+
+                    riskModal.style.display = 'flex';
+
+                }, 500);
+
+                <?php endif; ?>
+
+            });
+
+            // CLOSE BUTTON
+            closeRiskModal.addEventListener('click', () => {
+                riskModal.style.display = 'none';
+            });
+            closeRiskModalFooter.addEventListener(
+                'click',
+                () => {
+                    riskModal.style.display = 'none';
+                }
+            );
+            // CLICK OUTSIDE
+            riskModal.addEventListener('click', (e) => {
+
+                if (e.target === riskModal) {
+
+                    riskModal.style.display = 'none';
 
                 }
 

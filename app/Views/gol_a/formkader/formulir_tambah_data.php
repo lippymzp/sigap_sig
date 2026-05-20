@@ -53,9 +53,24 @@
     .calendar-table tr.week-row { border-radius: 10px; transition: background 0.2s; }
     .calendar-table tr.week-row td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
     .calendar-table tr.week-row td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-    .calendar-table tr.week-row:hover { background-color: #F0FCFC; }
-    .calendar-table tr.selected-week { background-color: #E6F4F1; }
-    .calendar-table td.selected-day { background-color: #00CED1 !important; color: white !important; font-weight: bold; border-radius: 8px !important; }
+    
+    /* Menghapus background default per baris agar tidak tabrakan dengan rentang Jumat-Kamis */
+    .calendar-table tr.selected-week { background-color: transparent !important; }
+
+    /* Warna background hijau/biru muda untuk rentang Jumat - Kamis */
+    .calendar-table td.range-highlight { 
+        background-color: #E6F4F1 !important; 
+        color: #333;
+    }
+
+    /* Warna bulat toska tua khusus untuk tanggal aktif yang diklik */
+    .calendar-table td.selected-day { 
+        background-color: #00CED1 !important; 
+        color: white !important; 
+        font-weight: bold; 
+        border-radius: 8px !important; 
+    }
+
     .grid-view { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 0; }
     .grid-item { text-align: center; padding: 12px 0; background: #F4F6F8; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: #333; transition: 0.2s; }
     .grid-item:hover { background: #00CED1; color: white; }
@@ -159,7 +174,7 @@
             <div class="input-icon-wrap">
                 <select name="id_puskesmas" class="form-input" required>
                     <option value="" disabled selected>Pilih puskesmas</option>
-                    <option value="1">PKM Sumbersari</option>
+                    <option value="1">Puskesmas Sumbersari</option>
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
@@ -406,7 +421,7 @@
     function decrement(id) { var input = document.getElementById(id); var value = parseInt(input.value, 10) || 0; if (value > 0) { input.value = value - 1; validateJentik(); } }
     function increment(id) { var input = document.getElementById(id); var value = parseInt(input.value, 10) || 0; input.value = value + 1; validateJentik(); }
 
-    /* ----- 4. LOGIKA KALENDER MINGGUAN KUSTOM ----- */
+    /* ----- 4. LOGIKA KALENDER MINGGUAN KUSTOM (JUMAT - KAMIS) ----- */
     let currentDate = new Date(); let activeMonth = currentDate.getMonth(); let activeYear = currentDate.getFullYear();
     const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     const shortMonths = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
@@ -426,8 +441,32 @@
         let daysInMonth = new Date(year, month + 1, 0).getDate(); let daysInPrevMonth = new Date(year, month, 0).getDate();
         let dateCount = 1; let nextMonthDate = 1;
 
+        // Hitung batas awal dan akhir dalam milidetik untuk mewarnai rentang Jumat - Kamis yang dipilih
+        let startSelectedTime = null;
+        let endSelectedTime = null;
+        if (selectedGlobal) {
+            let selDate = new Date(selectedGlobal.year, selectedGlobal.month, selectedGlobal.day);
+            let dayOfWeek = selDate.getDay(); 
+            
+            // Hitung mundur untuk menemukan hari Jumat terdekat
+            let diffToFriday = dayOfWeek - 5;
+            if (diffToFriday < 0) { diffToFriday += 7; }
+            
+            let friday = new Date(selDate);
+            friday.setDate(selDate.getDate() - diffToFriday);
+            friday.setHours(0,0,0,0);
+            
+            let thursday = new Date(friday);
+            thursday.setDate(friday.getDate() + 6);
+            thursday.setHours(23,59,59,999);
+            
+            startSelectedTime = friday.getTime();
+            endSelectedTime = thursday.getTime();
+        }
+
         for (let i = 0; i < 6; i++) {
             let row = document.createElement('tr'); row.className = 'week-row';
+
             for (let j = 0; j < 7; j++) {
                 let cell = document.createElement('td'); let cellDay = 0, cellMonth = month, cellYear = year;
                 if (i === 0 && j < offset) { cell.innerText = daysInPrevMonth - offset + j + 1; cell.className = 'muted'; cellMonth = month - 1; if(cellMonth < 0) { cellMonth = 11; cellYear--; } cellDay = parseInt(cell.innerText); } 
@@ -435,10 +474,28 @@
                 else { cell.innerText = dateCount; cellDay = dateCount; dateCount++; }
 
                 let currentCellDate = new Date(cellYear, cellMonth, cellDay);
+                let currentCellTime = currentCellDate.getTime();
+
                 if (currentCellDate > todayLimit) { cell.classList.add('disabled-day'); } 
                 else {
-                    if (selectedGlobal && cellYear === selectedGlobal.year && cellMonth === selectedGlobal.month && cellDay === selectedGlobal.day) { row.classList.add('selected-week'); cell.classList.add('selected-day'); }
-                    cell.onclick = function(e) { e.stopPropagation(); selectedGlobal = { year: cellYear, month: cellMonth, day: cellDay }; processWeekSelection(cellYear, cellMonth, cellDay); renderCalendar(activeMonth, activeYear); };
+                    if (selectedGlobal) {
+                        // 1. Berikan class warna muda (range-highlight) jika berada dalam rentang Jumat s.d Kamis
+                        if (currentCellTime >= startSelectedTime && currentCellTime <= endSelectedTime) {
+                            cell.classList.add('range-highlight');
+                        }
+                        // 2. Berikan warna bulat toska tua jika ini adalah hari yang diklik aktif
+                        if (cellYear === selectedGlobal.year && cellMonth === selectedGlobal.month && cellDay === selectedGlobal.day) {
+                            cell.classList.remove('range-highlight');
+                            cell.classList.add('selected-day');
+                        }
+                    }
+                    
+                    cell.onclick = function(e) { 
+                        e.stopPropagation(); 
+                        selectedGlobal = { year: cellYear, month: cellMonth, day: cellDay }; 
+                        processWeekSelection(cellYear, cellMonth, cellDay); 
+                        renderCalendar(activeMonth, activeYear); 
+                    };
                 }
                 row.appendChild(cell);
             }
@@ -480,12 +537,27 @@
 
     function processWeekSelection(year, month, day) {
         let selectedDate = new Date(year, month, day); let dayOfWeek = selectedDate.getDay(); 
-        let diffToMonday = selectedDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); let monday = new Date(selectedDate.setDate(diffToMonday));
-        let sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
-        let firstDayOfMonth = new Date(year, month, 1); let firstDayWeekday = firstDayOfMonth.getDay();
-        let offset = (firstDayWeekday === 0 ? 6 : firstDayWeekday - 1); let weekOfMonth = Math.ceil((day + offset) / 7);
+        
+        // Cari hari Jumat pembuka pekan
+        let diffToFriday = dayOfWeek - 5;
+        if (diffToFriday < 0) { diffToFriday += 7; }
+        
+        let friday = new Date(selectedDate);
+        friday.setDate(selectedDate.getDate() - diffToFriday);
+        
+        // Hari Kamis penutup pekan (6 hari setelah jumat)
+        let thursday = new Date(friday);
+        thursday.setDate(friday.getDate() + 6);
+        
+        // Penomoran minggu ke- berapa diambil berdasarkan posisi hari Jumatnya di bulan tersebut
+        let firstDayOfMonth = new Date(friday.getFullYear(), friday.getMonth(), 1); 
+        let firstDayWeekday = firstDayOfMonth.getDay();
+        let offset = (firstDayWeekday === 0 ? 6 : firstDayWeekday - 1); 
+        let weekOfMonth = Math.ceil((friday.getDate() + offset) / 7);
 
-        let startD = monday.getDate(); let endD = sunday.getDate(); let startM = monthNames[monday.getMonth()]; let endM = monthNames[sunday.getMonth()]; let endY = sunday.getFullYear();
+        let startD = friday.getDate(); let endD = thursday.getDate(); 
+        let startM = monthNames[friday.getMonth()]; let endM = monthNames[thursday.getMonth()]; let endY = thursday.getFullYear();
+        
         let dateStr = (startM === endM) ? `${startD}-${endD} ${startM} ${endY}` : `${startD} ${startM} - ${endD} ${endM} ${endY}`;
         document.getElementById('periode_input').value = `Minggu ke-${weekOfMonth} (${dateStr})`;
         setTimeout(() => { document.getElementById('calendarPopup').style.display = 'none'; }, 150);

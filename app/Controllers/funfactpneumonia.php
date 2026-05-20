@@ -7,6 +7,37 @@ use App\Models\FunfactPneumoniaModel;
 
 class funfactpneumonia extends BaseController
 {
+    private function getNotif()
+{
+    $db = \Config\Database::connect();
+
+    return $db->table('skrining s')
+
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
+
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
+
+        ->where('s.id_penyakit', 3)
+
+        ->where('s.hasil', 'Berisiko')
+
+        ->orderBy('s.id_skrining', 'DESC')
+
+        ->limit(3)
+
+        ->get()
+
+        ->getResultArray();
+}
     public function index()
     {
         $model = new FunfactPneumoniaModel();
@@ -52,7 +83,8 @@ class funfactpneumonia extends BaseController
             'draft'   => $draft,
             'arsip'   => $arsip,
             'status'  => $status,
-            'funfact' => $funfact
+            'funfact' => $funfact,
+            'notif' => $this->getNotif()
         ]);
     }
 

@@ -37,14 +37,62 @@ class Auth extends BaseController
         $penyakitModel = new \App\Models\PenyakitModel();
         $penyakitDB = $penyakitModel->find($user['id_penyakit']);
 
-        if (
-            !$penyakitDB ||
-            strtolower(trim((string) ($penyakitDB['nama_penyakit'] ?? ''))) != strtolower(trim($penyakit_login))
-        ) {
-            return redirect()->back()->with('error', 'Akun tidak punya akses ke halaman ini!');
+        // =========================
+        // CEK AKSES PENYAKIT
+        // =========================
+
+        // superadmin bebas login dari mana saja
+        if ($user['id_jabatan'] != 4) {
+
+            if (
+                strtolower(trim($penyakitDB['nama_penyakit']))
+                != strtolower(trim($penyakit_login))
+            ) {
+
+                return redirect()->back()->with(
+                    'error',
+                    'Akun tidak punya akses ke halaman ini!'
+                );
+            }
         }
 
         // lanjut OTP
+        // AMBIL JABATAN
+        $jabatanModel = new \App\Models\JabatanModel();
+        $jabatan = $jabatanModel->find($user['id_jabatan']);
+
+
+        if (!$jabatan) {
+            return redirect()->back()
+                ->with('error', 'Jabatan tidak ditemukan!');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN KHUSUS KADER TANPA OTP
+        |--------------------------------------------------------------------------
+        */
+        if (strtolower($jabatan['nama_jabatan']) == 'kader') {
+
+            session()->set([
+                'logged_in'   => true,
+                'id_petugas'  => $user['id_petugas'],
+                'email'       => $user['email'],
+                'id_jabatan'  => $user['id_jabatan'],
+                'id_penyakit' => $user['id_penyakit']
+            ]);
+
+            return redirect()->to(
+                '/' . strtolower($penyakitDB['nama_penyakit']) .
+                '/dashboard/' . strtolower($jabatan['nama_jabatan'])
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SELAIN KADER → WAJIB OTP
+        |--------------------------------------------------------------------------
+        */
         $otp = rand(100000, 999999);
 
         session()->set([
@@ -162,6 +210,18 @@ class Auth extends BaseController
             return redirect()->to('/login')->with('error', 'Penyakit tidak ditemukan!');
         }
 
+        // =========================
+        // SUPERADMIN
+        // =========================
+
+        if (
+            strtolower(trim($jabatan['nama_jabatan']))
+            == 'superadmin'
+        ){
+
+            return redirect()->to('/superadmin');
+        }
+
         return redirect()->to(
             '/' . strtolower($penyakit['nama_penyakit']) .
             '/dashboard/' . strtolower($jabatan['nama_jabatan'])
@@ -240,7 +300,7 @@ class Auth extends BaseController
         $emailService = \Config\Services::email();
 
         $emailService->setTo($email);
-        $emailService->setFrom('lutfirizalul06@gmail.com', 'SIGAP');
+        $emailService->setFrom('medixatechnology@gmail.com', 'SIGAP');
         $emailService->setSubject('OTP Code');
         $emailService->setMessage("OTP kamu: $otp");
 

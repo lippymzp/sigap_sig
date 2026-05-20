@@ -1,5 +1,5 @@
 <?php $this->setVar('penyakit', 'dbd'); ?>
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 
 <style>
 /* ================= HERO SLIDER ================= */
@@ -144,23 +144,50 @@
         font-size:24px;
     }
     .slider-item{
-        min-width:100%;
+        min-width:260px;
         flex-direction:column;
         text-align:center;
-        padding:24px;
+        padding:16px;
+        border-radius: 22px;
+        height: auto !important;
     }
 
     .slider-item img{
-        width:100%;
-        height:220px;
+        width:120px;
+        height:120px;
+        object-fit: cover;
+        margin-bottom: 12px;
+    }
+    .funfact-content{
+        width: 100%;
+        overflow: visible !important;
     }
 
     .funfact-content h5{
-        font-size:22px;
+        font-size:18px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .funfact-content p{
-        font-size:15px;
+        font-size:13px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .funfact-link{
+        font-size: 13px;
+    }
+
+    .slider-track{
+        gap: 16px;
     }
 
     .slider-btn{
@@ -425,7 +452,7 @@
 .slider-item{
     min-width:420px;
     min-height:220px;
-    background:#fff;
+    background:#00BBC2;
     border-radius:24px;
     padding:22px;
     display:flex;
@@ -583,21 +610,21 @@
     justify-content:center;
 }
 .funfact-content h5{
-    font-size:24px;
+    font-size:20px;
     font-weight:700;
-    color:#222;
+    color:white;
     margin-bottom:12px;
     line-height:1.4;
 }
 .funfact-content p{
-    font-size:16px;
+    font-size:14px;
     line-height:1.8;
-    color:#666;
+    color:white;
     margin-bottom:16px;
 }
 .funfact-link{
-    color:#00BBC2;
-    font-size:16px;
+    color:#fff;
+    font-size:14px;
     font-weight:700;
     text-decoration:none;
     transition:0.25s ease;
@@ -658,7 +685,7 @@
     max-width:220px;
     min-height:160px;
     padding:26px 18px;
-    background:#fff;
+    background:#00BBC2;
     border-radius:24px;
     display:flex;
     flex-direction:column;
@@ -666,7 +693,7 @@
     justify-content:center;
     gap:16px;
     text-align:center;
-    color:#00aeb5;
+    color:#fff;
     font-size:16px;
     font-weight:700;
     border:1px solid rgba(0,187,194,.15);
@@ -681,8 +708,8 @@
 }
 .fitur-box:hover{
     transform:translateY(-6px);
-    background:#00BBC2;
-    color:#fff;
+    background:#fff;
+    color:#00BBC2;
     box-shadow:0 15px 35px rgba(0,187,194,.25);
 }
 .fitur-box:hover i{
@@ -833,6 +860,37 @@
     .ringkasan-left p{ font-size: 15px; }
     .ringkasan-right img{ width: 180px; }
 }
+
+/* ================= CHATBOT FAB & WINDOW ================= */
+@keyframes floatBobbing { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+@keyframes chatFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.chatbot-fab { position: fixed; bottom: 30px; right: 30px; z-index: 9999; cursor: pointer; background: transparent; border: none; box-shadow: none; padding: 0; }
+.fab-content { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: floatBobbing 3s ease-in-out infinite; filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.25)); transition: transform 0.3s ease; }
+.fab-logo { width: 85px; height: auto; object-fit: contain; margin-bottom: 8px; transition: none; }
+.fab-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; color: #00BBC2; text-transform: uppercase; letter-spacing: 1px; display: block; background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 10px; }
+.chatbot-fab:hover .fab-content { transform: scale(1.1); }
+
+.chatbot-window { position: fixed; bottom: 130px; right: 30px; width: 350px; height: 480px; max-height: calc(100vh - 150px); background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 9999; overflow: hidden; border: 1px solid #eee; font-family: 'Poppins', sans-serif; animation: chatFadeIn 0.3s ease; }
+.chat-header { background: #00BBC2; color: white; padding: 18px 20px; font-weight: 700; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+.header-logo { width: 35px; height: 35px; object-fit: contain; background-color: white; border-radius: 50%; padding: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.close-chat { cursor: pointer; font-size: 22px; }
+.chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+.chat-body::-webkit-scrollbar { width: 5px; }
+.chat-body::-webkit-scrollbar-thumb { background: #00BBC2; border-radius: 10px; }
+.chat-msg { max-width: 85%; padding: 12px 16px; border-radius: 15px; font-size: 14px; line-height: 1.6; word-wrap: break-word; white-space: pre-wrap; }
+.msg-bot { background: #ffffff; color: #333; border: 1px solid #e0e0e0; align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg-user { background: #00BBC2; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+.chat-footer { padding: 12px 15px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; }
+.chat-input { flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 10px 15px; outline: none; font-size: 14px; transition: 0.3s; }
+.chat-input:focus { border-color: #00BBC2; }
+.chat-send { background: #00BBC2; color: white; border: none; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 16px; }
+.chat-send:hover { background: #009ca3; }
+
+@media (max-width: 400px) {
+    .chatbot-window { width: calc(100% - 40px); right: 20px; left: 20px; bottom: 130px; height: 400px; max-height: calc(100vh - 150px); }
+}
+
 </style>
 
 <section class="dbd-hero">
@@ -973,15 +1031,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                     <h4 class="fw-bold mb-1" style="color: #222;">Peta Interaktif Penyebaran</h4>
                     <p class="sub text-muted" style="font-size: 14px; margin-bottom: 0;">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
                 </div>
-                <div class="filter mt-2 mt-md-0">
-                    <span class="fw-bold me-2">Periode:</span>
-                    <?php $tahunMap = $_GET['tahun_map'] ?? date('Y'); ?>
-                    <select id="periodeMap" class="form-select d-inline-block w-auto shadow-sm" style="border-radius: 10px; cursor: pointer;" onchange="updateMap()">
-                        <?php for($t = 2024; $t <= date('Y'); $t++): ?>
-                            <option value="<?= $t ?>" <?= ($t == $tahunMap ? 'selected' : '') ?>><?= $t ?></option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
+                <div class="filter mt-2 mt-md-0 d-flex align-items-center">
+                <span class="me-2" style="color: #007680; font-size: 16px; font-weight: 500;">Periode:</span>
+    <?php $tahunMap = $_GET['tahun_map'] ?? date('Y'); ?>
+    <select id="periodeMap" class="form-select d-inline-block w-auto" style="border-radius: 20px; border: 1px solid #d1d5db; padding: 4px 32px 4px 16px; font-size: 15px; cursor: pointer; box-shadow: none; background-color: #fff;" onchange="updateMap()">
+        <?php for($t = 2024; $t <= date('Y'); $t++): ?>
+            <option value="<?= $t ?>" <?= ($t == $tahunMap ? 'selected' : '') ?>><?= $t ?></option>
+        <?php endfor; ?>
+    </select>
+</div>
             </div>
             
             <div class="inner-card position-relative">
@@ -1304,6 +1362,48 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     // =========================================================================
     $dbMap = \Config\Database::connect();
     $tahunMapFilter = $_GET['tahun_map'] ?? date('Y');
+    $id_penyakit = 1;
+    $idPetugas = session()->get('id_petugas');
+
+    $desa_diizinkan = [
+        'sumbersari',
+        'antirogo',
+        'karangrejo',
+        'wirolegi',
+        'tegalgede'
+    ];
+
+    // 1. Ambil Pasien (Usia, Gender, Daerah, Status Akhir)
+    $bPasien = $dbMap->table('pasien');
+
+    $bPasien->select('
+        pasien.umur,
+        pasien.jenis_kelamin,
+        pasien.status_akhir,
+        wilayah.kelurahan as nama_kelurahan
+    ');
+
+    $bPasien->join(
+        'wilayah',
+        'wilayah.id_wilayah = pasien.id_wilayah',
+        'left'
+    );
+
+    $bPasien->where('YEAR(pasien.tgl_kunjungan)', $tahunMapFilter);
+
+    $bPasien->where('pasien.id_penyakit', 1);
+
+    $bPasien->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    );
+        $pasienDetail = $bPasien->get()->getResultArray();
+        $bPasien->where('pasien.id_penyakit', 1);
+
+        $bPasien->whereIn(
+            'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+            $desa_diizinkan
+    );
 
     // 1. Ambil Pasien (Usia, Gender, Daerah, Status Akhir)
     $bPasien = $dbMap->table('pasien');
@@ -1388,38 +1488,42 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         }
     }
 
-    // Menghitung data Ringkasan
-    $maxKasusRingkasan = 0;
-    $desaTertinggiVal = '-';
     $totalKasusRingkasan = 0;
-    $totalDesaTinggi = 0;
+$totalSembuhRingkasan = 0;
+$totalMeninggalRingkasan = 0;
 
-    foreach($detailMap as $k => &$d) {
-        // Tentukan Usia Tertinggi
-        $mU = max($d['anak'], $d['dewasa'], $d['lansia']);
-        if ($mU == 0) $d['usia_tertinggi'] = '-';
-        else if ($mU == $d['anak']) $d['usia_tertinggi'] = 'Anak-anak';
-        else if ($mU == $d['dewasa']) $d['usia_tertinggi'] = 'Dewasa';
-        else $d['usia_tertinggi'] = 'Lansia';
+$maxKasusRingkasan = 0;
+$desaTertinggiVal = '-';
 
-        $jumlahKasus = (int)($d['jumlah_kasus'] ?? 0);
-        $totalKasusRingkasan += $jumlahKasus;
-        
-        // Set Desa dengan Kasus Terbanyak
-        if ($jumlahKasus > $maxKasusRingkasan) {
-            $maxKasusRingkasan = $jumlahKasus;
-            $desaTertinggiVal = $d['nama'];
-        }
+$totalDesaValid = 0;
+$totalDesaTinggi = 0;
+
+foreach ($detailMap as $desa => $d) {
+
+    $jumlahKasus = (int)($d['jumlah_kasus'] ?? 0);
+
+    $totalKasusRingkasan += $jumlahKasus;
+    $totalSembuhRingkasan += (int)($d['sembuh'] ?? 0);
+    $totalMeninggalRingkasan += (int)($d['meninggal'] ?? 0);
+
+    $totalDesaValid++;
+
+    if ($jumlahKasus > $maxKasusRingkasan) {
+        $maxKasusRingkasan = $jumlahKasus;
+        $desaTertinggiVal = $d['nama'];
     }
+}
 
-    $totalDesa = count($detailMap);
-    $rataDesa = $totalDesa > 0 ? round($totalKasusRingkasan / $totalDesa) : 0;
+$rataDesa = $totalDesaValid > 0
+    ? round($totalKasusRingkasan / $totalDesaValid)
+    : 0;
 
-    foreach ($detailMap as $d) {
-        if ((int)($d['jumlah_kasus'] ?? 0) > $rataDesa) {
-            $totalDesaTinggi++;
-        }
+foreach ($detailMap as $d) {
+
+    if (($d['jumlah_kasus'] ?? 0) > $rataDesa) {
+        $totalDesaTinggi++;
     }
+}
 ?>
 
 <section class="container mt-5 mb-5">
@@ -1452,6 +1556,29 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     </div>
 </section>
 
+<div class="chatbot-fab" id="chatbotFab" onclick="toggleChat()">
+    <div class="fab-content">
+        <img src="<?= base_url('img/figoodpn.png') ?>" alt="ChaGoo" class="fab-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712010.png'">
+        <span class="fab-text">ChaGoo Bot</span>
+    </div>
+</div>
+
+<div class="chatbot-window" id="chatbotWindow">
+    <div class="chat-header">
+        <span style="display: flex; align-items: center; gap: 10px;">
+            <img src="<?= base_url('img/figoo.png') ?>" alt="ChaGoo" class="header-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712010.png'"> 
+            ChaGoo Bot
+        </span>
+        <span class="close-chat" onclick="toggleChat()">&times;</span>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-msg msg-bot">Halo! Saya ChaGoo, asisten edukasi Demam Berdarah Dengue Anda. Ada yang ingin ditanyakan seputar DBD?</div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pertanyaan..." onkeypress="handleChatEnter(event)">
+        <button class="chat-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1778,6 +1905,84 @@ function slideVideo(direction){
     let track = document.getElementById('videoTrack');
     if (track) track.scrollBy({ left: direction * 350, behavior:'smooth' });
 }
+
+// ================= JAVASCRIPT CHATBOT CHAGOO (FIXED CSRF) =================
+let csrfTokenName = '<?= csrf_token() ?>';
+let csrfTokenHash = '<?= csrf_hash() ?>';
+
+function toggleChat() {
+    var chatWindow = document.getElementById('chatbotWindow');
+    if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+        chatWindow.style.display = 'flex';
+        document.getElementById('chatInput').focus();
+    } else {
+        chatWindow.style.display = 'none';
+    }
+}
+
+function handleChatEnter(event) {
+    if (event.key === 'Enter') sendMessage();
+}
+
+function appendMessage(sender, text, id = null) {
+    var chatBody = document.getElementById('chatBody');
+    var msgDiv = document.createElement('div');
+    msgDiv.className = 'chat-msg ' + (sender === 'user' ? 'msg-user' : 'msg-bot');
+    if (id) msgDiv.id = id;
+    msgDiv.textContent = text;
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function sendMessage() {
+    var input = document.getElementById('chatInput');
+    var message = input.value.trim();
+    if (message === '') return;
+
+    appendMessage('user', message);
+    input.value = '';
+
+    var loadingId = 'loading-' + Date.now();
+    appendMessage('bot', 'Mengetik...', loadingId);
+
+    var formData = new URLSearchParams();
+    formData.append('message', message);
+    formData.append(csrfTokenName, csrfTokenHash);
+
+    fetch("<?= base_url('chagoo/send') ?>", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+        var loadingEl = document.getElementById(loadingId);
+        if (loadingEl) loadingEl.remove();
+
+        if (data.csrf_token) {
+            csrfTokenHash = data.csrf_token;
+        }
+
+        if (data.reply) {
+            appendMessage('bot', data.reply.trim());
+        } else if (data.messages && data.messages.error) {
+            appendMessage('bot', 'Sistem keamanan memblokir pesan. Silakan muat ulang (Refresh) halaman ini.');
+        } else {
+            appendMessage('bot', 'Maaf, sistem tidak dapat memproses jawaban saat ini.');
+            console.log('Isi error dari server:', data);
+        }
+    })
+    .catch(error => {
+        var loadingEl = document.getElementById(loadingId);
+        if (loadingEl) loadingEl.remove();
+        appendMessage('bot', 'Gagal terhubung ke server. Silakan coba lagi.');
+        console.error('Error:', error);
+    });
+}
+// =======================================================================
 </script>
 
 <?= $this->include('layout/footer') ?>

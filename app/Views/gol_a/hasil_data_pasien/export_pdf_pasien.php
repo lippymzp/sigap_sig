@@ -58,7 +58,7 @@
             <th>No</th>
             <th>NIK</th>
             <th>Nama</th>
-            <th>Tgl Kunjungan</th>
+            <th>Tgl Pemeriksaan</th>
             <th>JK</th>
             <th>Usia</th>
             <th>Catatan Klinis</th>

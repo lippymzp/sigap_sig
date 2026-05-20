@@ -215,6 +215,101 @@
     height: 100% !important;
 }
 
+/* =========================================================
+   TAMBAHAN PERBAIKAN RESPONSIVE UNTUK KONTEN DASHBOARD (MAX 768PX)
+   Dipaksa !important agar layout flexbox menyusun baris ke bawah
+   ========================================================= */
+@media (max-width: 768px) {
+    /* Welcome Box - Tumpuk Vertikal */
+    .welcome-box {
+        display: flex !important;
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 20px 15px !important;
+    }
+    .welcome-icon {
+        margin-top: 20px !important;
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+    .welcome-icon img {
+        width: 100% !important;
+        max-width: 220px !important;
+        height: auto !important;
+    }
+
+    /* Stat Card - Tumpuk Vertikal 1 baris */
+    .stat-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    .stat-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 15px !important;
+    }
+
+    /* Filter Map Header */
+    .section-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+    }
+    .filter {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    /* Map Size */
+    #map {
+        height: 300px !important; /* Kurangi tinggi di HP */
+    }
+
+    /* Tabel & Filter Grafik - Tumpuk Vertikal Penuh */
+    .filter-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    .filter-col {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    /* Slide Toggle */
+    .slide-toggle-container {
+        height: 38px !important;
+        max-width: 100% !important;
+    }
+    .btn-toggle {
+        font-size: 11px !important;
+        padding: 0 5px !important;
+    }
+
+    /* Chart Wrapper */
+    .bg-white.shadow-sm {
+        padding: 25px 15px !important;
+    }
+    #chartWrapper {
+        height: 250px !important;
+    }
+
+    /* Modal Mobile */
+    .custom-modal-content {
+        width: 95% !important;
+        padding: 25px 20px !important;
+    }
+    .info-table tr td.label {
+        width: 40% !important;
+    }
+}
 </style>
 
 <div class="welcome-box">
@@ -229,22 +324,55 @@
 </div>
 
 <?php
-    $dbStat = \Config\Database::connect();
-    
-    // 1. Total Kasus Pasien
-    $totalKasus = $dbStat->table('pasien')->countAllResults();
+    $db = \Config\Database::connect();
 
-    // 2. Pasien Baru Hari Ini
-    $hariIni = date('Y-m-d');
-    $kasusHariIni = $dbStat->table('pasien')
-                           ->where('DATE(tgl_kunjungan)', $hariIni)
-                           ->countAllResults();
+    $idPetugas  = session()->get('id_petugas');
+    $idPenyakit = session()->get('id_penyakit');
 
-    // 3. Kelurahan Terdampak
-    $kelurahanTerdampak = $dbStat->table('pasien')
-                                 ->select('id_wilayah')
-                                 ->distinct()
-                                 ->countAllResults();
+    $builder = $db->table('pasien')
+    ->where('id_petugas', $idPetugas)
+    ->where('id_penyakit', $idPenyakit);
+    $desa_diizinkan = [
+        'sumbersari',
+        'wirolegi',
+        'antirogo',
+        'tegalgede',
+        'karangrejo'
+    ];
+
+// Total kasus
+$totalKasus = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
+
+// Kasus hari ini
+$kasusHariIni = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
+
+// Kelurahan terdampak
+$kelurahanTerdampak = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->select('COUNT(DISTINCT wilayah.kelurahan) as total')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->get()
+    ->getRow()
+    ->total;
 ?>
 
 <div class="stat-row">
@@ -1081,7 +1209,43 @@ document.addEventListener("DOMContentLoaded", function() {
             scales: { y: { min: 0, max: 100, ticks: { stepSize: 25, callback: function(value) { return value + '%'; } }, grid: { borderDash: [5, 5] } }, x: { grid: { display: false } } }
         }
     });
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const footerDesc = document.querySelector(".footer-desc");
+
+    if(footerDesc){
+
+        footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    AIGON
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Gerak Cepat, Solusi Tepat 
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+});
 });
 </script>
-
 <?= $this->endSection() ?>

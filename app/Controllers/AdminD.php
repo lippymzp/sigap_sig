@@ -2,8 +2,10 @@
 
 namespace App\Controllers;
 use App\Models\BeritaModelDD;
+use App\Models\FunfactModelD;
 class AdminD extends BaseController
 {
+    
     public function __construct()
     {
         helper('text');
@@ -84,11 +86,133 @@ public function berita()
         return view('gol_d/admin/skrining', $data);
     }
 
-    public function funfact()
-    {
-        echo "halaman funfact";
+public function funfact()
+{
+    $funfactModel = new FunfactModelD();
+
+    $status = $this->request->getGet('status') ?? 'publish';
+    $keyword = $this->request->getGet('keyword');
+
+    $query = $funfactModel
+        ->where('id_penyakit', 4)
+        ->where('status_funfact', $status);
+
+    if (!empty($keyword)) {
+        $query->groupStart()
+            ->like('judul_funfact', $keyword)
+            ->orLike('deskripsi_funfact', $keyword)
+            ->orLike('isi_funfact', $keyword)
+            ->groupEnd();
     }
 
+    $data['status'] = $status;
+    $data['keyword'] = $keyword;
+
+    $data['funfact'] = $query
+        ->orderBy('id_funfact', 'DESC')
+        ->findAll();
+
+    $data['totalPublish'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->where('status_funfact', 'publish')
+        ->countAllResults();
+
+    $data['totalDraft'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->where('status_funfact', 'draft')
+        ->countAllResults();
+
+    return view('gol_d/admin/funfact', $data);
+}
+
+public function tambahFunfact()
+{
+    return view('gol_d/admin/tambah_funfact');
+}
+
+public function simpanFunfact()
+{
+    $model = new FunfactModelD();
+
+    $gambar = $this->request->getFile('gambar_funfact');
+    $namaGambar = '';
+
+    if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+        $namaGambar = $gambar->getRandomName();
+        $gambar->move('uploads/funfact', $namaGambar);
+    }
+
+    $status = $this->request->getPost('status_funfact') ?? 'draft';
+
+    $model->save([
+        'id_penyakit'        => 4,
+        'judul_funfact'      => $this->request->getPost('judul_funfact'),
+        'deskripsi_funfact'  => $this->request->getPost('deskripsi_funfact'),
+        'isi_funfact'        => $this->request->getPost('isi_funfact'),
+        'gambar_funfact'     => $namaGambar,
+        'tanggal_funfact'    => date('Y-m-d H:i:s'),
+        'status_funfact'     => $status,
+        'penulis'            => 'Admin'
+    ]);
+
+    session()->setFlashdata('success', 'Funfact berhasil disimpan');
+
+    return redirect()->to('/admind/funfact?status=' . $status);
+}
+
+public function editFunfact($id)
+{
+    $model = new FunfactModelD();
+
+    $data['funfact'] = $model->find($id);
+
+    return view('gol_d/admin/edit_funfact', $data);
+}
+
+public function updateFunfact($id)
+{
+    $model = new FunfactModelD();
+
+    $dataUpdate = [
+        'judul_funfact'     => $this->request->getPost('judul_funfact'),
+        'deskripsi_funfact' => $this->request->getPost('deskripsi_funfact'),
+        'isi_funfact'       => $this->request->getPost('isi_funfact'),
+    ];
+
+    $gambar = $this->request->getFile('gambar_funfact');
+
+    if ($gambar && $gambar->isValid()) {
+        $namaGambar = $gambar->getRandomName();
+        $gambar->move('uploads/funfact', $namaGambar);
+        $dataUpdate['gambar_funfact'] = $namaGambar;
+    }
+
+    $model->update($id, $dataUpdate);
+
+    return redirect()->to('/admind/funfact');
+}
+
+public function hapusFunfact($id)
+{
+    $model = new FunfactModelD();
+
+    $model->delete($id);
+
+    return redirect()->to('/admind/funfact');
+}
+
+public function publishFunfact($id)
+{
+    $funfactModel = new FunfactModelD();
+
+    $funfactModel->update($id, [
+        'status_funfact' => 'publish'
+    ]);
+
+    session()->setFlashdata('success', 'Funfact berhasil dipublish');
+
+    return redirect()->to('/admind/funfact?status=published');
+}
     public function profil()
     {
         echo "halaman profil";
@@ -214,4 +338,18 @@ public function detailBerita($id)
         'berita' => $berita
     ]);
 }
+
+public function draftFunfact($id)
+{
+    $funfactModel = new \App\Models\FunfactModelD();
+
+    $funfactModel->update($id, [
+        'status_funfact' => 'draft'
+    ]);
+
+    session()->setFlashdata('success', 'Funfact dipindah ke draft');
+
+    return redirect()->to('/admind/funfact?status=draft');
+}
+
 }
