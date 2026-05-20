@@ -220,7 +220,6 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
-    
     helper('text');
 
     $beritaModel = new BeritaModelDD();
