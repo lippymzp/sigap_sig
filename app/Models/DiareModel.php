@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class DiareModel extends Model
 {
-    protected $table = 'data_diare_1';
+    protected $table = 'data_diare';
 
     protected $primaryKey = 'id';
 
