@@ -215,6 +215,38 @@
     height: 100% !important;
 }
 
+/* =========================================================
+   MEDIA QUERY RESPONSIVE (TANPA MERUBAH DESAIN ASLI)
+   Memastikan layout melipat dengan rapi di perangkat HP
+========================================================= */
+@media (max-width: 992px) {
+    .welcome-box { flex-direction: column !important; text-align: center; }
+    .welcome-icon { margin-top: 20px; justify-content: center !important; }
+    .stat-row { flex-wrap: wrap !important; justify-content: center; }
+    .stat-card { min-width: 45% !important; margin-bottom: 15px; }
+}
+
+@media (max-width: 768px) {
+    .stat-card { min-width: 100% !important; }
+    .section-header { flex-direction: column; align-items: flex-start !important; gap: 15px; }
+    .filter-row { gap: 10px; justify-content: flex-start; }
+    .filter-col { max-width: calc(50% - 10px) !important; flex: 1 1 calc(50% - 10px) !important; min-width: 130px; }
+    
+    /* Penyesuaian Modal agar pas di HP */
+    .custom-modal-content { width: 95% !important; padding: 25px 20px !important; }
+    .info-box { padding: 15px !important; }
+    .info-table tr td { display: block; width: 100% !important; padding: 2px 0; }
+    .info-table tr td.colon { display: none; }
+    .info-table tr td.value { font-weight: bold; padding-bottom: 8px; border-bottom: 1px solid #eaeaea; margin-bottom: 8px; }
+    .info-table tr.sub td.label { padding-left: 0; }
+}
+
+@media (max-width: 576px) {
+    .filter-col { max-width: 100% !important; flex: 1 1 100% !important; }
+    .slide-toggle-container { max-width: 100%; height: 40px; }
+    .btn-toggle { font-size: 11px; padding: 0; }
+    #chartWrapper { height: 250px !important; }
+}
 </style>
 
 <div class="welcome-box">
