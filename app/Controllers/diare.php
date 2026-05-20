@@ -8,8 +8,6 @@ use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
 use App\Models\FunfactModelD;
-use App\Models\DiareModel;
-use App\Models\DataDiareModel;
 
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
@@ -33,21 +31,25 @@ class Diare extends BaseController
     // STEP 2 - IDENTITAS -> PERTANYAAN 1
     // =========================
     public function step2()
-{
-    $identitas = $this->request->getPost();
+    {
+        $identitas = $this->request->getPost();
 
-    if (empty($identitas)) {
-        return redirect()->back()->with('error', 'Data identitas belum diisi');
+        if (empty($identitas)) {
+            return redirect()->back()->with('error', 'Data identitas belum diisi');
+        }
+
+        session()->set('skrining_diare', [
+            'identitas' => $identitas,
+            'jawaban'   => []
+        ]);
+
+        return view('gol_d/pertanyaan_diare_1');
     }
 
-    session()->set('skrining_diare', [
-        'identitas' => $identitas,
-        'jawaban'   => []
-    ]);
-
-    return view('gol_d/pertanyaan_diare');
-}
-public function step3()
+    // =========================
+    // STEP 3 - PERTANYAAN 1-5 -> 6-10
+    // =========================
+ public function step3()
 {
     $session = session()->get('skrining_diare');
 
@@ -64,17 +66,47 @@ public function step3()
 
     session()->set('skrining_diare', $session);
 
+    /*
+    CEK DIARE DULU
+    */
+    $tree = new DiareDecisionTree();
+    $prediksi = $tree->predict($session['jawaban']);
+
+    /*
+    Kalau tidak diare → langsung hasil
+    */
+    if ($prediksi['diare'] === 'Tidak Diare') {
+        return redirect()->to('/skrining-diare-hasil');
+    }
+
+    /*
+    Kalau diare → lanjut dehidrasi
+    */
     return view('gol_d/pertanyaan_diare_2');
 }
-    // =========================
-    // STEP 3 - PERTANYAAN 1-5 -> 6-10
-    // =========================
-    
 
     // =========================
     // STEP 4 - PERTANYAAN 6-10 -> 11-15
     // =========================
-    
+    public function step4()
+    {
+        $session = session()->get('skrining_diare');
+
+        if (!$session) {
+            return redirect()->to('/skrining-diare');
+        }
+
+        $jawabanBaru = $this->request->getPost();
+
+        $session['jawaban'] = array_merge(
+            $session['jawaban'],
+            $jawabanBaru
+        );
+
+        session()->set('skrining_diare', $session);
+
+        return view('gol_d/pertanyaan_diare_3');
+    }
 
     public function hasil()
 {
@@ -84,48 +116,52 @@ public function step3()
         return redirect()->to('/skrining-diare');
     }
 
-    $jawabanBaru = $this->request->getPost() ?? [];
+    $jawabanBaru = $this->request->getPost();
 
-$semuaJawaban = array_merge(
-    $session['jawaban'] ?? [],
-    $jawabanBaru
-);
+    $semuaJawaban = array_merge(
+        $session['jawaban'],
+        $jawabanBaru
+    );
 
     $identitas = $session['identitas'];
 
     // =========================
     // DECISION TREE
     // =========================
-   $tree = new DiareDecisionTree();
-$tree = new DiareDecisionTree();
+    $tree = new DiareDecisionTree();
 $prediksi = $tree->predict($semuaJawaban);
 
 $statusDiare = $prediksi['diare'];
 $statusDehidrasi = $prediksi['dehidrasi'];
 
-$hasil = $statusDiare;
-$dehidrasi = $statusDehidrasi;
+$hasil = $statusDiare . ' | Dehidrasi: ' . $statusDehidrasi;
 
-if ($statusDiare === 'Tidak') {
-    $warna = 'success';
-    $rekomendasi = 'Tidak ditemukan indikasi diare. Tetap jaga pola hidup sehat dan hidrasi tubuh.';
+$warna = 'info';
+
+if ($statusDiare === 'Tidak Diare') {
+    $rekomendasi = 'Gejala Anda tidak memenuhi kriteria diare. Tetap jaga hidrasi, pola makan sehat, dan pantau kondisi tubuh.';
 }
-elseif ($statusDiare === 'Ringan') {
-    $warna = 'info';
-    $rekomendasi = 'Gejala mengarah ke diare ringan. Perbanyak minum, istirahat, dan konsumsi makanan ringan.';
-}
-elseif ($statusDiare === 'Sedang') {
-    $warna = 'warning';
-    $rekomendasi = 'Gejala mengarah ke diare sedang. Disarankan oralit, hidrasi cukup, dan observasi kondisi.';
-}
-else {
+
+elseif ($statusDehidrasi === 'Berat') {
     $warna = 'danger';
-    $rekomendasi = 'Gejala mengarah ke diare berat. Segera ke fasilitas kesehatan.';
+    $rekomendasi = 'Terdapat indikasi dehidrasi berat. Segera ke fasilitas kesehatan untuk penanganan medis dan rehidrasi intensif.';
 }
 
-if ($dehidrasi === 'Iya') {
-    $rekomendasi .= ' Terdapat tanda dehidrasi, segera tingkatkan asupan cairan.';
+elseif ($statusDehidrasi === 'Sedang') {
+    $warna = 'warning';
+    $rekomendasi = 'Terdapat indikasi dehidrasi sedang. Disarankan rehidrasi oral menggunakan oralit, banyak minum, dan observasi kondisi.';
 }
+
+elseif ($statusDehidrasi === 'Ringan') {
+    $warna = 'primary';
+    $rekomendasi = 'Terdapat indikasi dehidrasi ringan. Perbanyak cairan, istirahat cukup, dan konsumsi makanan yang mudah dicerna.';
+}
+
+else {
+    $warna = 'success';
+    $rekomendasi = 'Anda mengalami diare tanpa tanda dehidrasi signifikan. Tetap jaga cairan tubuh dan pola makan sehat.';
+}
+
 $pasienModel = new PasienSkriningModel();
 $skriningModel = new SkriningModel();
 /*
@@ -188,13 +224,14 @@ $skriningModel->insert([
     ]);
 
     return view('gol_d/hasil_diare', [
-    'identitas'   => $identitas,
-    'jawaban'     => $semuaJawaban,
-    'hasil'       => $hasil,
-    'dehidrasi'   => $dehidrasi,
-    'warna'       => $warna,
-    'rekomendasi' => $rekomendasi
-]);
+    'identitas'        => $identitas,
+    'jawaban'          => $semuaJawaban,
+    'hasil'            => $hasil,
+    'statusDiare'      => $statusDiare,
+    'statusDehidrasi'  => $statusDehidrasi,
+    'warna'            => $warna,
+    'rekomendasi'      => $rekomendasi
+]); 
 }
 
     // =========================
@@ -220,7 +257,6 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
-    die('INDEX KEBACA BRO');
     helper('text');
 
     $beritaModel = new BeritaModelDD();
@@ -239,7 +275,7 @@ public function index()
         ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
-   dd($diareModel->findAll());
+    $data['diare'] = $diareModel->findAll();
 
     return view('gol_d/diare', $data);
 }
@@ -326,7 +362,7 @@ public function index()
 
         echo "</table>";
     }
-public function kalkulatorAir()
+    public function kalkulatorAir()
 {
     return view('gol_d/kalkulator_air', [
         'mode' => 'who',
@@ -397,8 +433,6 @@ public function hitungAir()
         'perjam' => 0
     ]);
 }
-
-
 public function detailBerita($id)
 {
     $beritaModel = new \App\Models\BeritaModelDD();
