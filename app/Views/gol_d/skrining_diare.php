@@ -110,7 +110,7 @@ span{
 /* BUTTON */
 .btn-next{
     width:100%;
-    background:#5a5a5a;
+    background:#00BBC2;
     color:white;
     border:none;
     height:52px;
