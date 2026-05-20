@@ -130,7 +130,8 @@ class Chagoo extends BaseController
             }
 
             // Jika ada error lainnya
-            return "Terjadi kendala pada server Groq (Kode: $httpCode). Bantuan teknis: " . $response;
+    
+            //return "Terjadi kendala pada server Groq (Kode: $httpCode). Bantuan teknis: " . $response;
         }
 
         return "Maaf, ChaGoo tidak dapat memproses jawaban saat ini.";
