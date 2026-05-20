@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class DataDiareModel extends Model
 {
-    protected $table = 'data_diare';
+    protected $table = 'data_diare_1';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 
