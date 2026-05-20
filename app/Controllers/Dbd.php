@@ -876,8 +876,8 @@ public function manajemen_pkm()
         s.tanggal
     ');
 
-    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining', 'inner');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'inner');
+    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining', 'left');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
     
     // ==========================================
     // ⚡ FILTER DEFAULT (WAJIB)
@@ -887,13 +887,16 @@ public function manajemen_pkm()
     
     // 2. Pastikan HANYA menampilkan hasil yang relevan (Baik, Cukup, Buruk)
     // Menggunakan groupStart() dan like() agar fleksibel meskipun ada perbedaan spasi/kata awalan di database
+    /*
     $builder->groupStart()
             ->like('s.hasil', 'Baik')
             ->orLike('s.hasil', 'Cukup')
             ->orLike('s.hasil', 'Buruk')
             ->groupEnd();
 
+    */
     $builder->groupBy('s.id_skrining');
+    
 
     // ==========================================
     // ⚡ SERVER-SIDE FILTERING (DARI INPUT USER)
