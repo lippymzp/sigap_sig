@@ -652,7 +652,7 @@ class Dbd extends BaseController
         $wilayah = $this->request->getGet('wilayah');
         
         $bulan = $this->request->getGet('bulan');
-        $tahun = $this->request->getGet('tahun');
+        $tahun = $this->request->getGet('tahun_map');
         $usia  = $this->request->getGet('usia');
         $jk    = $this->request->getGet('jk');
 
