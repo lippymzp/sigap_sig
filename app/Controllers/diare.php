@@ -45,7 +45,25 @@ class Diare extends BaseController
 
     return view('gol_d/pertanyaan_diare');
 }
+public function step3()
+{
+    $session = session()->get('skrining_diare');
 
+    if (!$session) {
+        return redirect()->to('/skrining-diare');
+    }
+
+    $jawabanBaru = $this->request->getPost();
+
+    $session['jawaban'] = array_merge(
+        $session['jawaban'],
+        $jawabanBaru
+    );
+
+    session()->set('skrining_diare', $session);
+
+    return view('gol_d/pertanyaan_diare_2');
+}
     // =========================
     // STEP 3 - PERTANYAAN 1-5 -> 6-10
     // =========================
