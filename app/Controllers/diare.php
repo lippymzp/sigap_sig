@@ -339,44 +339,79 @@ public function index()
 
         echo "</table>";
     }
-    public function kalkulatorAir()
+public function kalkulatorAir()
 {
-    return view('gol_d/kalkulator_air');
+    return view('gol_d/kalkulator_air', [
+        'mode' => 'who',
+        'hasil' => 0,
+        'bolus' => 0,
+        'defisit' => 0,
+        'maintenance' => 0,
+        'perjam' => 0
+    ]);
 }
 
 public function hitungAir()
 {
-    $usia = (int)$this->request->getPost('usia');
-    $berat = (float)$this->request->getPost('berat');
+    $mode = $this->request->getPost('mode');
+
+    // =========================
+    // MODE WHO
+    // =========================
+    if ($mode === 'who') {
+
+        $berat = (float)$this->request->getPost('berat');
+        $dehidrasi = (float)$this->request->getPost('dehidrasi') / 100;
+
+        $bolus = ($dehidrasi >= 0.09) ? 20 * $berat : 0;
+
+        $defisit = $dehidrasi * $berat * 1000;
+
+        // RULE 4-2-1
+        if ($berat <= 10) {
+            $maintenance = 4 * $berat;
+        } elseif ($berat <= 20) {
+            $maintenance = 40 + (($berat - 10) * 2);
+        } else {
+            $maintenance = 60 + (($berat - 20) * 1);
+        }
+
+        $total = $defisit + ($maintenance * 24) - $bolus;
+        $perjam = $total / 24;
+
+        return view('gol_d/kalkulator_air', [
+            'mode' => 'who',
+            'hasil' => round($total),
+            'bolus' => round($bolus),
+            'defisit' => round($defisit),
+            'maintenance' => round($maintenance),
+            'perjam' => round($perjam, 1)
+        ]);
+    }
+
+    // =========================
+    // MODE AIR NORMAL
+    // =========================
+    $berat = (float)$this->request->getPost('berat_normal');
     $aktivitas = (int)$this->request->getPost('aktivitas');
-    $kondisi = $this->request->getPost('kondisi');
 
     $air = $berat * 35;
-
-    if ($usia < 18) {
-        $air = $berat * 45;
-    }
 
     if ($aktivitas > 50) {
         $air += 500;
     }
 
-    switch ($kondisi) {
-        case 'ringan':
-            $air += 500;
-            break;
-        case 'sedang':
-            $air += 1000;
-            break;
-        case 'berat':
-            $air += 1500;
-            break;
-    }
-
     return view('gol_d/kalkulator_air', [
-        'hasil' => round($air / 1000, 1)
+        'mode' => 'normal',
+        'hasil' => round($air),
+        'bolus' => 0,
+        'defisit' => 0,
+        'maintenance' => 0,
+        'perjam' => 0
     ]);
 }
+
+
 public function detailBerita($id)
 {
     $beritaModel = new \App\Models\BeritaModelDD();

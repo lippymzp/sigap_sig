@@ -43,6 +43,9 @@
 
         @media (max-width: 768px) {
             .footer .col-md-4 { text-align: center !important; margin-bottom: 15px; }
+            /* Tambahan agar teks profil dan topbar tidak menabrak di HP */
+            .topbar .text-end { display: none !important; }
+            .topbar .fs-4 { font-size: 1.2rem !important; }
         }
 
         /* =========================================
@@ -114,21 +117,21 @@
         .contact-item span {
             flex: 1;
         }
-.sidebar .logo {
-    padding: 15px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
+        .sidebar .logo {
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
 
-.sidebar .logo img {
-    max-width: 115px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    object-fit: contain;
-}
+        .sidebar .logo img {
+            max-width: 115px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
