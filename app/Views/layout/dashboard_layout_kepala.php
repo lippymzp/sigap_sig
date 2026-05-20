@@ -97,7 +97,7 @@ html,body{
     scroll-behavior: smooth; /* Menambahkan efek smooth scroll */
 }
 
-/* 🔥 SIDEBAR FIX SCROLL */
+/* 🔥 SIDEBAR FIX SCROLL & RESPONSIVE */
 .sidebar{
     width:260px;
     height:100vh;
@@ -108,6 +108,9 @@ html,body{
     overflow-y:auto;
     overflow-x:hidden;
     box-shadow:2px 0 10px rgba(0,0,0,0.05);
+    background: #fff; /* Tambahan agar tidak transparan di HP */
+    z-index: 1040; /* Tambahan agar di atas konten saat di HP */
+    transition: all 0.3s ease; /* Tambahan transisi halus */
 }
 
 /* WRAPPER */
@@ -119,8 +122,9 @@ html,body{
 /* MAIN */
 .main-content{
     margin-left:260px;
-    width:100%;
+    width: calc(100% - 260px); /* Perbaikan width agar tidak overflow */
     min-height:100vh;
+    transition: all 0.3s ease; /* Tambahan transisi halus */
 }
 
 /* TOPBAR */
@@ -138,27 +142,28 @@ html,body{
     background:#f8f9fc;
 }
 
-/* TOGGLE */
+/* TOGGLE DEFAULT (DESKTOP) */
 .wrapper.hide .sidebar{
     left:-260px;
 }
 .wrapper.hide .main-content{
     margin-left:0;
+    width: 100%;
 }
+
 /* ===== LOGO SIDEBAR FIX ===== */
 .logo-sidebar{
-    width: 110px;     /* ukuran logo */
+    width: 110px;     
     max-width: 100%;
     height: auto;
-
     display: block;
-    margin: 0 auto;   /* center */
+    margin: 0 auto;   
 }
 
-/* kalau masih terasa besar */
 .sidebar .logo{
     padding: 5px 0 10px;
 }
+
 .contact-item {
     display: flex;
     align-items: flex-start;
@@ -178,6 +183,45 @@ html,body{
 
 .contact-item span {
     flex: 1;
+}
+
+/* ===== RESPONSIVE MOBILE FIX (BARU) ===== */
+@media (max-width: 768px) {
+    /* 1. Sembunyikan sidebar secara default di layar kecil */
+    .sidebar {
+        left: -260px; 
+    }
+
+    /* 2. Konten utama penuhi layar */
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* 3. Balik logika tombol toggle untuk HP: Saat ditekan, sidebar muncul */
+    .wrapper.hide .sidebar {
+        left: 0;
+    }
+
+    .wrapper.hide .main-content {
+        margin-left: 0; 
+        width: 100%;
+    }
+
+    /* 4. Sembunyikan teks profil di Topbar agar tidak menumpuk dengan judul */
+    .topbar .text-end {
+        display: none; 
+    }
+
+    /* 5. Perkecil sedikit ukuran judul dashboard di HP */
+    .topbar .fs-4 {
+        font-size: 1.2rem !important;
+    }
+
+    /* 6. Atur padding konten agar tidak terlalu mepet ke pinggir layar HP */
+    .content-body {
+        padding: 15px;
+    }
 }
 </style>
 </head>
@@ -278,17 +322,17 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li>
-                            <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
-                                <i class="fa-regular fa-user me-2"></i> Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item"
-       href="javascript:void(0)"
-       onclick="confirmLogout('<?= base_url('logout') ?>')">
-       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-    </a>
-                       
+                    <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
+                        <i class="fa-regular fa-user me-2"></i> Profile
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       href="javascript:void(0)"
+                       onclick="confirmLogout('<?= base_url('logout') ?>')">
+                       <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
+                    </a>
+                </li>       
             </ul>
         </div>
     </div>
@@ -351,13 +395,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(updateActiveNav, 100);
     }
 });
-
-// FUNGSI LOGOUT KUSTOM
-function confirmLogout(url) {
-    document.getElementById('btnConfirmLogout').href = url;
-    var logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
-    logoutModal.show();
-}
 </script>
 <div class="footer-dashboard">
     <?= $this->include('layout/footer') ?>
@@ -380,3 +417,5 @@ function confirmLogout(url) {
     });
 }
 </script>
+</body>
+</html>
