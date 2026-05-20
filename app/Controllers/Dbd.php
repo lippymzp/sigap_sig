@@ -657,10 +657,39 @@ class Dbd extends BaseController
         $jk    = $this->request->getGet('jk');
 
 
-        $builder = $db->table('pasien p');
-        $builder->where('p.id_penyakit', 1);
-        $builder->select('w.kelurahan, COUNT(DISTINCT p.id_pasien) as total');
-        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+$builder = $db->table('pasien p');
+
+$builder->select("
+    w.kelurahan as wilayah,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur <= 14 
+        THEN p.id_pasien 
+    END) as anak,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur BETWEEN 15 AND 24 
+        THEN p.id_pasien 
+    END) as remaja,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur BETWEEN 25 AND 59 
+        THEN p.id_pasien 
+    END) as dewasa,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur >= 60 
+        THEN p.id_pasien 
+    END) as lansia
+");
+
+$builder->join(
+    'wilayah w',
+    'w.id_wilayah = p.id_wilayah',
+    'left'
+);
+
+$builder->where('p.id_penyakit', 1);
 
         // 2. TAMBAH LOGIKA FILTER WILAYAH (DAN FIX SPASI TEGAL GEDE)
         if (!empty($wilayah)) {
@@ -710,7 +739,15 @@ class Dbd extends BaseController
         $builder->groupBy('w.kelurahan');
 
         $grafik = $builder->get()->getResultArray();
+// DEBUG TOTAL
+foreach ($grafik as &$g) {
 
+    $g['total'] =
+        $g['anak'] +
+        $g['remaja'] +
+        $g['dewasa'] +
+        $g['lansia'];
+}
         // ======================
         // 🔥 DATA PETA
         // ======================
