@@ -12,7 +12,7 @@ $this->setVar('footer_maskot', 'cynex.png');?>
 
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 ?>
 
 
@@ -124,7 +124,7 @@ body{
 
 <?php
 
-$query = mysqli_query($conn, "
+$query = $db->query("
 
     SELECT
 
@@ -144,9 +144,11 @@ $query = mysqli_query($conn, "
 
 ");
 
+$result = $query->getResultArray();
+
 $data = [];
 
-while($row = mysqli_fetch_assoc($query)){
+foreach($result as $row){
 
     $data[] = $row;
 
@@ -156,7 +158,7 @@ while($row = mysqli_fetch_assoc($query)){
    DATA GRAFIK WILAYAH
 =========================== */
 
-$queryWilayah = mysqli_query($conn, "
+$queryWilayah = $db->query("
 
 SELECT
 
@@ -182,13 +184,8 @@ GROUP BY
     YEAR(pasien.tgl_kunjungan)
 
 ");
-$dataWilayah = [];
 
-while($row = mysqli_fetch_assoc($queryWilayah)){
-
-    $dataWilayah[] = $row;
-
-}
+$dataWilayah = $queryWilayah->getResultArray();
 
 ?>
 
