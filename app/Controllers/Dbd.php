@@ -883,7 +883,7 @@ public function manajemen_pkm()
     // ⚡ FILTER DEFAULT (WAJIB)
     // ==========================================
     // 1. Pastikan hanya penyakit DBD (id_penyakit = 1)
-    $builder->where('s.id_penyakit', 1);
+    $builder->where('s.id_penyakit', 2);
     
     // 2. Pastikan HANYA menampilkan hasil yang relevan (Baik, Cukup, Buruk)
     // Menggunakan groupStart() dan like() agar fleksibel meskipun ada perbedaan spasi/kata awalan di database
