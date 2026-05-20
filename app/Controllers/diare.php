@@ -8,6 +8,7 @@ use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
 use App\Models\FunfactModelD;
+use App\Models\DataDiareModel;
 
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
@@ -222,6 +223,7 @@ public function index()
 
     $beritaModel = new BeritaModelDD();
     $funfactModel = new FunfactModelD();
+    $dataDiareModel = new DataDiareModel();
 
     $data['berita'] = $beritaModel
         ->where('id_penyakit', 4)
@@ -235,7 +237,8 @@ public function index()
         ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
-    $data['diare'] = [];
+    // DATA DIARE DARI DATABASE
+    $data['diare'] = $dataDiareModel->findAll();
 
     return view('gol_d/diare', $data);
 }
