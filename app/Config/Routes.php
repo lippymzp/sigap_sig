@@ -352,6 +352,7 @@ $routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
 $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
 
 
+
 // ================= Berita DBD =================
 $routes->get('/berita/tambah', 'BeritaDbd::tambah');
 $routes->post('/berita/simpan', 'BeritaDbd::simpan');
@@ -529,7 +530,6 @@ $routes->get('tentangkamiDBD', 'Dashboard::tentangkamiDBD');
 $routes->get('skrining-diare', 'Diare::skrining');
 $routes->post('skrining-diare-step2', 'Diare::step2');
 $routes->post('skrining-diare-step3', 'Diare::step3');
-$routes->post('skrining-diare-step4', 'Diare::step4');
 $routes->post('skrining-diare-hasil', 'Diare::hasil');
 $routes->get('skrining-diare-pdf', 'Diare::pdf');
 $routes->get('pdf-diare', 'Diare::pdf');
@@ -540,7 +540,7 @@ $routes->get('admind/skrining', 'AdminD::skrining');
 $routes->get('admind/funfact', 'AdminD::funfact');
 $routes->get('admind/profil', 'AdminD::profil');
 $routes->get('admind/export', 'AdminD::export');
-
+$routes->get('ping', 'AI::ping');
 
 $routes->get('admind/berita', 'AdminD::berita');
 $routes->get('admind/berita/tambah', 'AdminD::tambahBerita');
@@ -582,14 +582,6 @@ $routes->get('superadmin/iklan/edit/(:num)', 'SuperAdmin::editIklan/$1');
 $routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
 
 $routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
-
-//Manajemen Puskesmas
-$routes->get('/superadmin-user', 'SuperAdmin::index');          // halaman list
-$routes->get('/superadmin-user/create', 'SuperAdmin::create');   // halaman tambah
-$routes->post('/superadmin-user/store', 'SuperAdmin::store');    // simpan data
-$routes->get('/superadmin-user/edit/(:num)', 'SuperAdmin::edit/$1'); // edit
-$routes->post('/superadmin-user/update/(:num)', 'SuperAdmin::update/$1'); // update
-$routes->get('/superadmin-user/delete/(:num)', 'SuperAdmin::delete/$1'); // hapus
 
 ///* FUNFACT DIARE */
 $routes->get('admind/funfact', 'AdminD::funfact');

@@ -69,4 +69,11 @@ class AI extends BaseController
             'answer' => '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>'
         ]);
     }
+       public function ping()
+    {
+        return $this->response->setJSON([
+            'status' => 'alive'
+        ]);
+    }
+
 }

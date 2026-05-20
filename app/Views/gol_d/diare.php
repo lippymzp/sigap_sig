@@ -1571,4 +1571,12 @@ async function sendMessage(){
     </div>
 
 </section>
+<script>
+setInterval(function() {
+    fetch("<?= base_url('ping') ?>")
+        .then(res => res.json())
+        .then(data => console.log('DOXY keep alive:', data.status))
+        .catch(err => console.log('Ping error:', err));
+}, 300000);
+</script>
 <?= $this->include('layout/footer') ?>
