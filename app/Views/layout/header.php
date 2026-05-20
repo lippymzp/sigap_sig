@@ -274,14 +274,12 @@ body .nav-link{
 }
 
 .diagis-text-logo{
-    width:280px;
+    width:230px;
     height:auto;
     object-fit:contain;
     display:block;
 }
-.diagis-text-logo{
-    width:250px;
-}
+
 }
 </style>
 
