@@ -1226,161 +1226,183 @@ for(var key in dataFinal){
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-let bulanan = {};
+    const filterDesa = document.getElementById('filterDesa');
+    const filterDiagnosis = document.getElementById('filterDiagnosis');
+    const filterTahun = document.getElementById('filterTahun');
 
-dataDiare.forEach(item => {
-    let bulan = new Date(item.tanggal_kunjungan)
-        .toLocaleString('id-ID', { month: 'short' });
+    let chartDiare;
+    let map = L.map('mapDiare').setView([-8.1,113.5], 12);
+    let geoLayer;
 
-    if(!bulanan[bulan]){
-        bulanan[bulan] = 0;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+    .addTo(map);
+
+    function populateFilters(){
+        let desaSet = new Set();
+        let diagnosisSet = new Set();
+        let tahunSet = new Set();
+
+        dataDiare.forEach(item => {
+            desaSet.add(item.desa);
+            diagnosisSet.add(item.diagnosis);
+
+            let tahun = item.tanggal_kunjungan.substring(0,4);
+            tahunSet.add(tahun);
+        });
+
+        desaSet.forEach(d => {
+            filterDesa.innerHTML += `<option value="${d}">${d}</option>`;
+        });
+
+        diagnosisSet.forEach(d => {
+            filterDiagnosis.innerHTML += `<option value="${d}">${d}</option>`;
+        });
+
+        tahunSet.forEach(t => {
+            filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
+        });
     }
 
-    bulanan[bulan]++;
-});
+    function renderChart(filteredData){
 
-let chartDiare;
+        let bulanan = {};
 
-function renderChart(filteredData){
+        filteredData.forEach(item => {
+            let bulan = new Date(item.tanggal_kunjungan)
+                .toLocaleString('id-ID', { month: 'short' });
 
-    let bulanan = {};
-
-    filteredData.forEach(item => {
-
-        let bulan = new Date(item.tanggal_kunjungan)
-            .toLocaleString('id-ID', { month: 'short' });
-
-        if(!bulanan[bulan]){
-            bulanan[bulan] = 0;
-        }
-
-        bulanan[bulan]++;
-    });
-
-    if(chartDiare){
-        chartDiare.destroy();
-    }
-
-    chartDiare = let chartDiare;
-
-function renderChart(filteredData){
-
-    let bulanan = {};
-
-    filteredData.forEach(item => {
-
-        let bulan = new Date(item.tanggal_kunjungan)
-            .toLocaleString('id-ID', { month: 'short' });
-
-        if(!bulanan[bulan]){
-            bulanan[bulan] = 0;
-        }
-
-        bulanan[bulan]++;
-    });
-
-    if(chartDiare){
-        chartDiare.destroy();
-    }
-
-    chartDiare = new Chart(document.getElementById('chartDiare'), {
-        type: 'bar',
-        data: {
-            labels: Object.keys(bulanan),
-            datasets: [{
-                label: 'Kasus Diare',
-                data: Object.values(bulanan),
-                backgroundColor: '#219ebc'
-            }]
-        }
-    });
-}
-}
-
-var map = L.map('mapDiare').setView([-8.1,113.5], 12);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-.addTo(map);
-
-let geoLayer;
-
-function buildMap(filteredData){
-
-    let finalData = {};
-
-    filteredData.forEach(item => {
-
-        let desa = fixNama(item.desa);
-
-        if(aliasDesa[desa]){
-            desa = aliasDesa[desa];
-        }
-
-        if(!finalData[desa]){
-            finalData[desa] = 0;
-        }
-
-        finalData[desa]++;
-    });
-
-    if(geoLayer){
-        map.removeLayer(geoLayer);
-    }
-
-    fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
-    .then(res => res.json())
-    .then(data => {
-
-        geoLayer = L.geoJSON(data, {
-
-            style: function(feature){
-
-                let nama = fixNama(feature.properties.NAMOBJ);
-
-                if(aliasDesa[nama]){
-                    nama = aliasDesa[nama];
-                }
-
-                let total = finalData[nama] || 0;
-
-                let warna = "#28a745";
-
-                if(total >= 20){
-                    warna = "#dc3545";
-                }else if(total >= 10){
-                    warna = "#ffc107";
-                }
-
-                return {
-                    color:"#00CED1",
-                    weight:2,
-                    fillColor:warna,
-                    fillOpacity:0.7
-                };
-            },
-
-            onEachFeature: function(feature, layer){
-
-                let nama = fixNama(feature.properties.NAMOBJ);
-
-                if(aliasDesa[nama]){
-                    nama = aliasDesa[nama];
-                }
-
-                let total = finalData[nama] || 0;
-
-                layer.bindPopup(`
-                    <b>${feature.properties.NAMOBJ}</b>
-                    <br>Total Kasus: ${total}
-                `);
+            if(!bulanan[bulan]){
+                bulanan[bulan] = 0;
             }
 
-        }).addTo(map);
-    });
-}
-filterDesa.addEventListener('change', applyFilters);
-filterDiagnosis.addEventListener('change', applyFilters);
-filterTahun.addEventListener('change', applyFilters);
+            bulanan[bulan]++;
+        });
+
+        if(chartDiare){
+            chartDiare.destroy();
+        }
+
+        chartDiare = new Chart(document.getElementById('chartDiare'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(bulanan),
+                datasets: [{
+                    label: 'Kasus Diare',
+                    data: Object.values(bulanan),
+                    backgroundColor: '#219ebc'
+                }]
+            }
+        });
+    }
+
+    function buildMap(filteredData){
+
+        let finalData = {};
+
+        filteredData.forEach(item => {
+
+            let desa = fixNama(item.desa);
+
+            if(aliasDesa[desa]){
+                desa = aliasDesa[desa];
+            }
+
+            if(!finalData[desa]){
+                finalData[desa] = 0;
+            }
+
+            finalData[desa]++;
+        });
+
+        if(geoLayer){
+            map.removeLayer(geoLayer);
+        }
+
+        fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
+        .then(res => res.json())
+        .then(data => {
+
+            geoLayer = L.geoJSON(data, {
+
+                style: function(feature){
+
+                    let nama = fixNama(feature.properties.NAMOBJ);
+
+                    if(aliasDesa[nama]){
+                        nama = aliasDesa[nama];
+                    }
+
+                    let total = finalData[nama] || 0;
+
+                    let warna = "#28a745";
+
+                    if(total >= 20){
+                        warna = "#dc3545";
+                    } else if(total >= 10){
+                        warna = "#ffc107";
+                    }
+
+                    return {
+                        color:"#00CED1",
+                        weight:2,
+                        fillColor:warna,
+                        fillOpacity:0.7
+                    };
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    let nama = fixNama(feature.properties.NAMOBJ);
+
+                    if(aliasDesa[nama]){
+                        nama = aliasDesa[nama];
+                    }
+
+                    let total = finalData[nama] || 0;
+
+                    layer.bindPopup(`
+                        <b>${feature.properties.NAMOBJ}</b>
+                        <br>Total Kasus: ${total}
+                    `);
+                }
+
+            }).addTo(map);
+
+            map.fitBounds(geoLayer.getBounds());
+        });
+    }
+
+    function applyFilters(){
+
+        let desa = filterDesa.value;
+        let diagnosis = filterDiagnosis.value;
+        let tahun = filterTahun.value;
+
+        let filtered = dataDiare.filter(item => {
+
+            let cocokDesa =
+                !desa || item.desa === desa;
+
+            let cocokDiagnosis =
+                !diagnosis || item.diagnosis === diagnosis;
+
+            let cocokTahun =
+                !tahun || item.tanggal_kunjungan.startsWith(tahun);
+
+            return cocokDesa && cocokDiagnosis && cocokTahun;
+        });
+
+        renderChart(filtered);
+        buildMap(filtered);
+    }
+
+    filterDesa.addEventListener('change', applyFilters);
+    filterDiagnosis.addEventListener('change', applyFilters);
+    filterTahun.addEventListener('change', applyFilters);
+
+    populateFilters();
+    renderChart(dataDiare);
+    buildMap(dataDiare);
 });
 </script>
 
