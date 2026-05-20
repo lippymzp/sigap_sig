@@ -158,6 +158,209 @@
     margin-left: 10px;
 }
 
+/* =========================
+MODAL NOTIF PUSKESMAS
+========================= */
+.modal-puskesmas{
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    background: rgba(238,244,244,0.75);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 99999;
+
+    backdrop-filter: blur(2px);
+}
+
+.modal-puskesmas-box{
+    width: 255px;
+
+    background: #fff;
+
+    border-radius: 8px;
+
+    padding: 34px 24px 18px;
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.16),
+        0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* ICON */
+.icon-success-puskesmas{
+    width: 42px;
+    height: 42px;
+
+    margin: auto;
+    margin-bottom: 16px;
+
+    background: #59c57b;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-success-puskesmas i{
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* TITLE */
+.modal-puskesmas-title{
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #1f1f1f;
+
+    line-height: 1.45;
+
+    margin-bottom: 10px;
+}
+
+/* SUBTITLE */
+.modal-puskesmas-subtitle{
+    font-size: 13px;
+    color: #8f8f8f;
+
+    margin-bottom: 20px;
+}
+
+/* BUTTON LIHAT DETAIL */
+.btn-detail-puskesmas{
+    width: 100%;
+
+    height: 30px;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background: #16c2cf;
+
+    color: white;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    margin-bottom: 10px;
+
+    transition: all .25s ease;
+
+    box-shadow:
+        0 3px 6px rgba(0,0,0,0.12);
+}
+
+.btn-detail-puskesmas:hover{
+    background: #00acc1;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.18),
+        0 3px 8px rgba(38,198,218,0.35);
+}
+
+/* BUTTON SELESAI */
+.btn-selesai-puskesmas{
+    width: 100%;
+
+    height: 30px;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background: #f4f4f4;
+
+    color: #7b7b7b;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: all .25s ease;
+
+    box-shadow:
+        0 3px 6px rgba(0,0,0,0.10);
+}
+
+.btn-selesai-puskesmas:hover{
+    background: #ebebeb;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.15),
+        0 3px 8px rgba(0,0,0,0.10);
+}
+
+.pagination{
+    display:flex;
+    gap:6px;
+}
+
+.page-link{
+    padding:8px 14px;
+    border-radius:8px;
+    background:#f1f5f9;
+    color:#333;
+    text-decoration:none;
+    font-size:14px;
+    border:none;
+}
+
+.page-link:hover{
+    background:#26c6da;
+    color:white;
+}
+
+.page-link.active{
+    background:#26c6da;
+    color:white;
+}
+
+.table-wrapper{
+    overflow-x: auto;
+    width: 100%;
+}
+
+.table{
+    min-width: 900px;
+}
+
+th:last-child,
+td:last-child{
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* HEADER TABEL RATA TENGAH */
+.table thead th{
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* ISI TABEL JANGAN TURUN */
+.table td{
+    white-space: nowrap;
+    vertical-align: middle;
+}
 @keyframes popIn {
     from {
         transform: scale(0.8);
@@ -182,13 +385,13 @@
     </div>
 </div>
 
-<!-- ALERT SUKSES -->
+<!-- ALERT SUKSES 
 <?php if (session()->getFlashdata('success')): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Berhasil!</strong> <?= session()->getFlashdata('success') ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-<?php endif; ?>
+<?php endif; ?>-->
 
 <!-- CARD -->
 <div class="card shadow-sm" style="border-radius:10px;">
@@ -196,22 +399,116 @@
 
         <!-- SEARCH + TAMBAH DATA -->
         <div class="d-flex justify-content-between mb-3">
-            <form method="get" action="/superadmin-user" style="max-width:500px;">
+            <form method="get" action="/superadmin/puskesmas" style="max-width:500px;">
                 <div class="input-group">
                     <span class="input-group-text search-icon">
                         <i class="bi bi-search"></i>
                     </span>
-                    <input type="text" name="keyword" class="form-control" placeholder="Ketik untuk mencari..." value="<?= $keyword ?? '' ?>">
+
+                    <input
+                        type="text"
+                        name="keyword"
+                        class="form-control"
+                        placeholder="Ketik untuk mencari..."
+                        value="<?= $keyword ?? '' ?>">
+                    <button type="submit" class="btn btn-navy">
+                        Cari
+                    </button>
                 </div>
             </form>
 
-            <a href="/superadmin-user/create" class="btn btn-navy">
+            <a href="/superadmin/puskesmas/create" class="btn btn-navy">
                 <i class="bi bi-plus-circle"></i> Tambah Data
             </a>
         </div>
 
+        <?php if(session()->getFlashdata('success')): ?>
+
+        <div class="modal-puskesmas" id="modal-puskesmas"
+        style="display:flex;">
+
+            <div class="modal-puskesmas-box">
+
+                <div class="icon-success-puskesmas">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <div class="modal-puskesmas-title">
+                    Input Data Puskesmas<br>
+                    Berhasil
+                </div>
+
+                <div class="modal-puskesmas-subtitle">
+                    Data berhasil disimpan
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-detail-puskesmas"
+                    onclick="window.location.href='/superadmin/puskesmas/view/<?= session()->getFlashdata('id_puskesmas') ?>'">
+
+                    Lihat Detail
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-selesai-puskesmas"
+                    onclick="document.getElementById('modal-puskesmas').style.display='none'">
+
+                    Selesai
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <?php endif; ?>
+        <!-- =========================
+        MODAL DELETE BERHASIL
+        ========================= -->
+        <?php if(session()->getFlashdata('success_delete')): ?>
+
+        <div class="modal-puskesmas"
+        id="modal-delete-success"
+        style="display:flex;">
+
+            <div class="modal-puskesmas-box">
+
+                <div
+                    class="icon-success-puskesmas"
+                    style="background:#ef5350;">
+
+                    <i class="bi bi-trash"></i>
+
+                </div>
+
+                <div class="modal-puskesmas-title">
+                    Hapus Data Puskesmas<br>
+                    Berhasil
+                </div>
+
+                <div class="modal-puskesmas-subtitle">
+                    Data berhasil dihapus
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-selesai-puskesmas"
+                    onclick="document.getElementById('modal-delete-success').style.display='none'">
+
+                    Selesai
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <?php endif; ?>
         <!-- TABLE -->
-        <div class="table-responsive">
+        <div class="table-wrapper">
             <table class="table align-middle table-hover">
                 <thead class="table-light">
                     <tr>
@@ -225,18 +522,19 @@
                 </thead>
                 <tbody>
                     <?php if (!empty($users) && count($users) > 0): ?>
-                        <?php $no = ($currentPage ?? 1 - 1) * ($perPage ?? 10) + 1; ?>
+                        <?php $no = (($currentPage ?? 1) - 1) * ($perPage ?? 5) + 1;?>
                         <?php foreach ($users as $user): ?>
                             <tr>
                                 <td><?= $no++ ?></td>
                                 <td><?= esc($user['nama_puskesmas']) ?></td>
-                                <td><?= esc($user['kecamatan']) ?></td>
-                                <td><?= esc($user['telepon']) ?></td>
-                                <td><?= esc($user['email']) ?></td>
+                                <td><?= esc($user['nama_kecamatan']) ?></td>                                
+                                <td><?= esc($user['no_telpon_puskesmas']) ?></td>
+                                <td><?= esc($user['email_puskesmas']) ?></td>
                                 <td class="text-center">
-                                    <a href="/superadmin-user/view/<?= $user['id'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></a>
-                                    <a href="/superadmin-user/edit/<?= $user['id'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="/superadmin-user/delete/<?= $user['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')"><i class="bi bi-trash"></i></a>
+                                    <a href="/superadmin/puskesmas/view/<?= $user['id_manajemen_puskesmas'] ?>" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></a>
+                                    <a href="/superadmin/puskesmas/edit/<?= $user['id_manajemen_puskesmas'] ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <!-- <a href="/superadmin/puskesmas/delete/<?= $user['id_manajemen_puskesmas'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')"><i class="bi bi-trash"></i></a> -->
+                                     <a href="#" class="btn btn-sm btn-danger" onclick="showDeleteModal(<?= $user['id_manajemen_puskesmas'] ?>)"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -252,13 +550,133 @@
         <!-- PAGINATION -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="text-muted" style="font-size: 14px;">
-                Menampilkan <?= count($users ?? []) ?> dari <?= $pager->getTotal() ?? 0 ?> data
+                <!--Menampilkan <?= count($users ?? []) ?> dari <?= count($users ?? []) ?> data-->
+                Menampilkan <?= count($users ?? []) ?> dari <?= $totalData ?> data
             </div>
-            <div>
-<?= $pager->links() ?>            </div>
+        <div class="pagination">
+
+            <!-- PREV -->
+            <?php if($currentPage > 1): ?>
+
+                <a class="page-link"
+                href="?page=<?= $currentPage - 1 ?>&keyword=<?= $keyword ?>">
+                    Prev
+                </a>
+
+            <?php endif; ?>
+
+            <!-- ANGKA -->
+            <?php for($i = 1; $i <= $totalPage; $i++): ?>
+
+                <a
+                    class="page-link <?= $i == $currentPage ? 'active' : '' ?>"
+                    href="?page=<?= $i ?>&keyword=<?= $keyword ?>">
+
+                    <?= $i ?>
+
+                </a>
+
+            <?php endfor; ?>
+
+            <!-- NEXT -->
+            <?php if($currentPage < $totalPage): ?>
+
+                <a class="page-link"
+                href="?page=<?= $currentPage + 1 ?>&keyword=<?= $keyword ?>">
+                    Next
+                </a>
+
+            <?php endif; ?>
+
+        </div>
         </div>
 
     </div>
 </div>
+<!-- =========================
+MODAL DELETE PUSKESMAS
+========================= -->
+<div class="modal-puskesmas" id="modal-delete-puskesmas">
 
-    <?= $this->endSection() ?>
+    <div class="modal-puskesmas-box">
+
+        <!-- ICON -->
+        <div
+            class="icon-success-puskesmas"
+            style="background:#ef5350;">
+
+            <i class="bi bi-trash"></i>
+
+        </div>
+
+        <!-- TITLE -->
+        <div class="modal-puskesmas-title">
+            Hapus Data Puskesmas
+        </div>
+
+        <!-- SUBTITLE -->
+        <div class="modal-puskesmas-subtitle">
+            Yakin ingin menghapus data ini?
+        </div>
+
+        <!-- BUTTON HAPUS -->
+        <button
+            type="button"
+            class="btn-detail-puskesmas"
+            id="btn-confirm-delete"
+            style="background:#ef5350;">
+
+            Ya, Hapus
+
+        </button>
+
+        <!-- BUTTON BATAL -->
+        <button
+            type="button"
+            class="btn-selesai-puskesmas"
+            onclick="closeDeleteModal()">
+
+            Batal
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+// ===============================
+// SHOW MODAL DELETE
+// ===============================
+function showDeleteModal(id){
+
+    document.getElementById(
+        'modal-delete-puskesmas'
+    ).style.display = 'flex';
+
+    document.getElementById(
+        'btn-confirm-delete'
+    ).onclick = function(){
+
+        window.location.href =
+        "/superadmin/puskesmas/delete/" + id;
+
+    };
+
+}
+
+// ===============================
+// CLOSE MODAL
+// ===============================
+function closeDeleteModal(){
+
+    document.getElementById(
+        'modal-delete-puskesmas'
+    ).style.display = 'none';
+
+}
+
+</script>
+
+<?= $this->endSection() ?>

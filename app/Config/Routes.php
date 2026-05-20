@@ -583,6 +583,18 @@ $routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
 
 $routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
 
+
+// MANAJEMEN PUSKESMAS
+$routes->get('/superadmin/puskesmas/create', 'SuperAdmin::create');  
+$routes->post('/superadmin/puskesmas/store', 'SuperAdmin::storePuskesmas'); 
+$routes->post('/superadmin/puskesmas/update/(:num)', 'SuperAdmin::updatePkm/$1'); 
+$routes->get('/superadmin/puskesmas/delete/(:num)', 'SuperAdmin::deletePkm/$1'); 
+$routes->get('/superadmin/get-kodepos/(:num)', 'SuperAdmin::getKodePos/$1'); 
+$routes->get('/superadmin/puskesmas/view/(:num)', 'SuperAdmin::viewPkm/$1');
+$routes->get('/superadmin/puskesmas/edit/(:num)', 'SuperAdmin::editPkm/$1');
+$routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
+
+
 ///* FUNFACT DIARE */
 $routes->get('admind/funfact', 'AdminD::funfact');
 $routes->get('admind/funfact/tambah', 'AdminD::tambahFunfact');
