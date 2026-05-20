@@ -148,7 +148,9 @@ $routes->get('pneumonia-funfact', 'FunfactPneumoniaLanding::index');
 /* ========================= */
 
 $routes->get('/diare-detail', 'Home::diare_detail');
-$routes->get('/diare', 'Diare::index');
+$routes->get('/diare', function() {
+    die('ROUTE INI KEBACA');
+});
 
 /* ========================= */
 /* LOGIN */
