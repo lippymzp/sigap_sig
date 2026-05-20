@@ -8,7 +8,7 @@ use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
 use App\Models\FunfactModelD;
-
+use App\Models\DataDiareModel;
 
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
