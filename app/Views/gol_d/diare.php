@@ -1041,9 +1041,25 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 <h4 class="text-teal mb-3 fw-bold">Grafik Diare</h4>
 
 <div class="row mb-3">
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kelurahan</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kategori</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Tahun</option></select></div>
+
+<div class="col-md-4">
+    <select id="filterDesa" class="form-control shadow-sm">
+        <option value="">Semua Desa</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <select id="filterDiagnosis" class="form-control shadow-sm">
+        <option value="">Semua Diagnosis</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <select id="filterTahun" class="form-control shadow-sm">
+        <option value="">Semua Tahun</option>
+    </select>
+</div>
+
 </div>
 
 <div class="row">
@@ -1098,6 +1114,55 @@ var aliasDesa = {
 };
 
 var dataDiare = <?= json_encode($diare ?? []) ?>;
+function populateFilters(){
+
+    let desaSet = new Set();
+    let diagnosisSet = new Set();
+    let tahunSet = new Set();
+
+    dataDiare.forEach(item => {
+        desaSet.add(item.desa);
+        diagnosisSet.add(item.diagnosis);
+
+        let tahun = item.tanggal_kunjungan.substring(0,4);
+        tahunSet.add(tahun);
+    });
+
+    desaSet.forEach(d => {
+        filterDesa.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+
+    diagnosisSet.forEach(d => {
+        filterDiagnosis.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+
+    tahunSet.forEach(t => {
+        filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
+    });
+}
+function applyFilters(){
+
+    let desa = document.getElementById('filterDesa').value;
+    let diagnosis = document.getElementById('filterDiagnosis').value;
+    let tahun = document.getElementById('filterTahun').value;
+
+    let filtered = dataDiare.filter(item => {
+
+        let cocokDesa =
+            !desa || item.desa === desa;
+
+        let cocokDiagnosis =
+            !diagnosis || item.diagnosis === diagnosis;
+
+        let cocokTahun =
+            !tahun || item.tanggal_kunjungan.startsWith(tahun);
+
+        return cocokDesa && cocokDiagnosis && cocokTahun;
+    });
+
+    buildMap(filtered);
+    renderChart(filtered);
+}
 
 var dataFinal = {};
 
@@ -1174,91 +1239,148 @@ dataDiare.forEach(item => {
     bulanan[bulan]++;
 });
 
-new Chart(document.getElementById('chartDiare'), {
-    type: 'bar',
-    data: {
-        labels: Object.keys(bulanan),
-        datasets: [{
-            label: 'Kasus Diare',
-            data: Object.values(bulanan),
-            backgroundColor: '#219ebc'
-        }]
+let chartDiare;
+
+function renderChart(filteredData){
+
+    let bulanan = {};
+
+    filteredData.forEach(item => {
+
+        let bulan = new Date(item.tanggal_kunjungan)
+            .toLocaleString('id-ID', { month: 'short' });
+
+        if(!bulanan[bulan]){
+            bulanan[bulan] = 0;
+        }
+
+        bulanan[bulan]++;
+    });
+
+    if(chartDiare){
+        chartDiare.destroy();
     }
-});
+
+    chartDiare = let chartDiare;
+
+function renderChart(filteredData){
+
+    let bulanan = {};
+
+    filteredData.forEach(item => {
+
+        let bulan = new Date(item.tanggal_kunjungan)
+            .toLocaleString('id-ID', { month: 'short' });
+
+        if(!bulanan[bulan]){
+            bulanan[bulan] = 0;
+        }
+
+        bulanan[bulan]++;
+    });
+
+    if(chartDiare){
+        chartDiare.destroy();
+    }
+
+    chartDiare = new Chart(document.getElementById('chartDiare'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(bulanan),
+            datasets: [{
+                label: 'Kasus Diare',
+                data: Object.values(bulanan),
+                backgroundColor: '#219ebc'
+            }]
+        }
+    });
+}
+}
 
 var map = L.map('mapDiare').setView([-8.1,113.5], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
-.then(res => res.json())
-.then(data => {
+let geoLayer;
 
-    var geo = L.geoJSON(data, {
+function buildMap(filteredData){
 
-        style: function(feature){
+    let finalData = {};
 
-            var nama = fixNama(feature.properties.NAMOBJ);
+    filteredData.forEach(item => {
 
-            if(aliasDesa[nama]){
-                nama = aliasDesa[nama];
-            }
+        let desa = fixNama(item.desa);
 
-            var item = dataFinal[nama];
-
-            var warna = "#cccccc";
-
-            if(item){
-                if(item.kategori == "tinggi") warna = "#dc3545";
-                else if(item.kategori == "sedang") warna = "#ffc107";
-                else if(item.kategori == "rendah") warna = "#28a745";
-            }
-
-            return {
-                color: "#00CED1",
-                weight: 2,
-                fillColor: warna,
-                fillOpacity: 0.7
-            };
-        },
-
-        onEachFeature: function(feature, layer){
-
-            var namaAsli = feature.properties.NAMOBJ || "Desa";
-            var namaFix  = fixNama(namaAsli);
-
-            if(aliasDesa[namaFix]){
-                namaFix = aliasDesa[namaFix];
-            }
-
-            var item = dataFinal[namaFix];
-
-            var isi = "<b>Desa: " + namaAsli + "</b>";
-
-            if(item){
-                isi += "<br>Total Kasus: " + item.total;
-                isi += "<br>Kategori: " + item.kategori;
-            } else {
-                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-            }
-
-            layer.bindPopup(isi);
-
-            layer.bindTooltip(namaAsli, {
-                permanent: true,
-                direction: "center",
-                className: "label-desa"
-            });
-
+        if(aliasDesa[desa]){
+            desa = aliasDesa[desa];
         }
 
-    }).addTo(map);
+        if(!finalData[desa]){
+            finalData[desa] = 0;
+        }
 
-    map.fitBounds(geo.getBounds());
+        finalData[desa]++;
+    });
 
-});
+    if(geoLayer){
+        map.removeLayer(geoLayer);
+    }
 
+    fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
+    .then(res => res.json())
+    .then(data => {
+
+        geoLayer = L.geoJSON(data, {
+
+            style: function(feature){
+
+                let nama = fixNama(feature.properties.NAMOBJ);
+
+                if(aliasDesa[nama]){
+                    nama = aliasDesa[nama];
+                }
+
+                let total = finalData[nama] || 0;
+
+                let warna = "#28a745";
+
+                if(total >= 20){
+                    warna = "#dc3545";
+                }else if(total >= 10){
+                    warna = "#ffc107";
+                }
+
+                return {
+                    color:"#00CED1",
+                    weight:2,
+                    fillColor:warna,
+                    fillOpacity:0.7
+                };
+            },
+
+            onEachFeature: function(feature, layer){
+
+                let nama = fixNama(feature.properties.NAMOBJ);
+
+                if(aliasDesa[nama]){
+                    nama = aliasDesa[nama];
+                }
+
+                let total = finalData[nama] || 0;
+
+                layer.bindPopup(`
+                    <b>${feature.properties.NAMOBJ}</b>
+                    <br>Total Kasus: ${total}
+                `);
+            }
+
+        }).addTo(map);
+    });
+}
+filterDesa.addEventListener('change', applyFilters);
+filterDiagnosis.addEventListener('change', applyFilters);
+filterTahun.addEventListener('change', applyFilters);
 });
 </script>
 
@@ -1640,4 +1762,5 @@ document.addEventListener("DOMContentLoaded", function(){
         <span class="highlight-red">${totalSemuaKasus} kasus</span>`;
 });
 </script>
+
 <?= $this->include('layout/footer') ?>
