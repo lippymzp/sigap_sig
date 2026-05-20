@@ -251,6 +251,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-regular fa-user me-2"></i> Profil
 </a>
 
+</div>
 
 <div class="main-content">
 
