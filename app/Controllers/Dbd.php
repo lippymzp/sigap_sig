@@ -977,15 +977,23 @@ public function manajemen_pkm()
 
 public function hapus_skrining($id = null)
 {
-    // Pengaman: Jika ID kosong atau 0, kembalikan ke halaman sebelumnya
-    if (empty($id) || $id == 0) {
-        return redirect()->back()->with('error', 'ID Skrining tidak valid!');
+    // 1. Ambil paksa potongan URL PALING TERAKHIR (Pasti berisi angka ID)
+    if (empty($id)) {
+        $uri = $this->request->getUri();
+        $id = $uri->getSegment($uri->getTotalSegments());
     }
 
-    $model = new \App\Models\SkriningdbdModel();
-    
-    // Hapus data berdasarkan ID
-    $model->delete($id);
+    // 2. Paksa konversi menjadi angka (integer)
+    $id = (int) $id;
+
+    // 3. Pengaman jika ID tetap 0
+    if ($id === 0) {
+        return redirect()->back()->with('error', 'Gagal: ID tidak terbaca oleh sistem!');
+    }
+
+    // 4. Tebas data langsung di database
+    $db = \Config\Database::connect();
+    $db->table('skrining')->where('id_skrining', $id)->delete();
 
     return redirect()->back()->with('success', 'Data berhasil dihapus');
 }
