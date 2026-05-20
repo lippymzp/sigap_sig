@@ -602,6 +602,10 @@ $routes->get('diare', 'Diare::index');
 $routes->get('diare-detail', 'Home::diare_detail');
 $routes->get('diare-detail/(:num)', 'Home::diare_detail/$1');
 
+$routes->match(['get','post'], '/skrining-diare-hasil', 'Diare::hasil');
+
+
+
 //
 $routes->get('diare/dashboard/(:any)', function () {
     return redirect()->to('/diare/dashboardd');

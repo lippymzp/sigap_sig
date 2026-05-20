@@ -116,12 +116,12 @@ class Diare extends BaseController
         return redirect()->to('/skrining-diare');
     }
 
-    $jawabanBaru = $this->request->getPost();
+    $jawabanBaru = $this->request->getPost() ?? [];
 
-    $semuaJawaban = array_merge(
-        $session['jawaban'],
-        $jawabanBaru
-    );
+$semuaJawaban = array_merge(
+    $session['jawaban'] ?? [],
+    $jawabanBaru
+);
 
     $identitas = $session['identitas'];
 
