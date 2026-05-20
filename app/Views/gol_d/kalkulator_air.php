@@ -111,12 +111,6 @@ onclick="showMode('normal')">
         <input type="number" class="form-control" name="usia">
     </div>
 
-    <div class="col-6">
-        <label>Berat</label>
-        <input type="number" class="form-control" name="berat">
-    </div>
-</div>
-
   <div id="whoForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:none;' : '' ?>">
 
     <h4 class="mb-4">Kalkulator Rehidrasi WHO</h4>
