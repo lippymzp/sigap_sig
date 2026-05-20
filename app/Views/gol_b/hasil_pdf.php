@@ -173,7 +173,7 @@ body{
 
 
 <img src="<?= $logo ?>" width="150">
-</
+
 
 
 <!-- JUDUL -->

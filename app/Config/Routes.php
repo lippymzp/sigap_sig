@@ -556,3 +556,12 @@ $routes->get('superadmin/iklan/edit/(:num)', 'SuperAdmin::editIklan/$1');
 $routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
 
 $routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
+
+
+//Manajemen Puskesmas
+$routes->get('/superadmin-user', 'SuperAdmin::index');          // halaman list
+$routes->get('/superadmin-user/create', 'SuperAdmin::create');   // halaman tambah
+$routes->post('/superadmin-user/store', 'SuperAdmin::store');    // simpan data
+$routes->get('/superadmin-user/edit/(:num)', 'SuperAdmin::edit/$1'); // edit
+$routes->post('/superadmin-user/update/(:num)', 'SuperAdmin::update/$1'); // update
+$routes->get('/superadmin-user/delete/(:num)', 'SuperAdmin::delete/$1'); // hapus

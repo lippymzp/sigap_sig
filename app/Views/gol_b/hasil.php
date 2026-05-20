@@ -382,6 +382,98 @@ BUTTON CETAK
     box-shadow:0 8px 20px rgba(0,206,209,.25);
 }
 
+ /* === PUSKESMAS CARD === */
+        .puskesmas-card{
+            border-radius:12px;
+            background:white;
+            width:100%;
+            display:flex;
+            flex-direction:column;
+            height:100%;
+        }
+        .puskesmas-header{
+            background:#1fc7d4;
+            color:white;
+            padding:10px;
+            font-weight:700;
+            font-size:15px;
+            border-top-left-radius:12px;
+            border-top-right-radius:12px;
+            text-align:center;
+        }
+        .puskesmas-subheader{
+            background:#b2eef2;
+            color:#0e7490;
+            padding:5px;
+            text-align:center;
+            font-size:13px;
+            font-weight:600;
+        }
+        .puskesmas-body{
+            display:flex;
+            align-items:flex-start;
+            gap:12px;
+            padding:12px;
+            flex:1;
+        }
+        .puskesmas-body img{
+            width:80px;
+            height:60px;
+            object-fit:cover;
+            border-radius:8px;
+            flex-shrink:0;
+        }
+        .puskesmas-info{
+            font-size:13px;
+            flex:1;
+        }
+
+        .pkm-row {
+            display: flex;
+            flex-direction: column;  /* ← ubah dari row ke column */
+            gap: 2px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .pkm-row-header {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .pkm-row img {
+            width: 14px !important;
+            height: 14px !important;
+            flex-shrink: 0;
+            border-radius: 0 !important;
+        }
+        .pkm-label {
+            font-weight: 600;
+            color: #6b807f;
+        }
+        .pkm-value {
+            color: #374151;
+            padding-left: 19px; /* sejajar dengan teks label (lebar ikon + gap) */
+        }
+        .puskesmas-footer{
+            display:flex;
+            justify-content:flex-end;
+            padding:8px 12px 12px;
+        }
+        .btn-maps{
+            background:#00CED1;
+            color:white;
+            border:none;
+            padding:7px 18px;
+            border-radius:6px;
+            font-size:13px;
+            font-weight:600;
+            text-decoration:none;
+            display:inline-block;
+        }
+        .btn-maps:hover{ background:#12aaa2; color:white; }
+         
+
+
     </style>
 
 </head>
@@ -697,19 +789,111 @@ if($jawaban[4] == 1){
 
         <?php if($hasil == 'TB'): ?>
 
-            Segera lakukan pemeriksaan lebih lanjut ke fasilitas kesehatan terdekat dan konsultasikan kondisi Anda kepada tenaga kesehatan.
-
+Berdasarkan hasil skrining, Anda memiliki risiko Tuberkulosis (TB). Disarankan untuk segera melakukan pemeriksaan lebih lanjut di fasilitas pelayanan kesehatan (fasyankes) terdekat untuk memastikan diagnosis dan mendapatkan penanganan yang tepat.
         <?php else: ?>
 
-            Pertahankan pola hidup sehat dan lakukan pemeriksaan rutin apabila mengalami gejala tertentu.
-
+Berdasarkan hasil skrining, saat ini Anda tidak menunjukkan risiko Tuberkulosis (TB). Tetap pertahankan kondisi kesehatan Anda dan lakukan pemantauan mandiri terhadap gejala yang mungkin muncul di kemudian hari.
         <?php endif; ?>
 
     </div>
 
 </div>
 
-<!-- TIPS -->
+<?php if($hasil == 'TB' && strtolower($kecamatan) == 'kaliwates'): ?>
+<!-- Daftar Puskesmas -->
+<label class="section-title" style="margin-top: 20px;">
+       Daftar Puskesmas Terdekat Anda Yang Menangani Kasus Tuberkulosis
+</label>
+<?php
+$puskesmas = [
+    [
+        'nama'       => 'Puskesmas Kaliwates',
+        'gambar'     => base_url('img/puskesmas_kaliwates.png'),
+        'alamat'     => 'Jl. Basuki Rahmat No.199, Tumpengsari, Tegal Besar, Kec. Kaliwates, Kabupaten Jember',
+        'telepon'    => '083133505348',
+        'jam'        => '08:00 s.d 15:00',
+        'akreditasi' => 'Terakreditasi Paripurna',
+        'gmaps'      => 'https://maps.app.goo.gl/3xMcd68Qiyu6bPdz6'
+    ],
+    [
+        'nama'       => 'Puskesmas Jember Kidul',
+        'gambar'     => base_url('img/pkm_jember_kidul.png'),
+        'alamat'     => 'Jl. KH Shiddiq, Kelurahan Jember Kidul, Kec. Kaliwates, Kabupaten Jember',
+        'telepon'    => '(0331) 424744',
+        'jam'        => '07:30 s.d 13:30',
+        'akreditasi' => 'Terakreditasi Paripurna',
+        'gmaps'      => 'https://maps.app.goo.gl/qpNXdf11JatmnPWeA'
+    ],
+    [
+        'nama'       => 'Puskesmas Mangli',
+        'gambar'     => base_url('img/pkm_mangli.png'),
+        'alamat'     => 'Jl. Otto Iskandardinata No.82, Krajan, Ajung, Kec. Ajung, Kabupaten Jember',
+        'telepon'    => '0331487619',
+        'jam'        => '07:00 s.d 12:00',
+        'akreditasi' => 'Terakreditasi Paripurna',
+        'gmaps'      => 'https://maps.app.goo.gl/gAp7SJpYGKKavMKZ8'
+    ],
+];
+?>
+
+<div class="row">
+<?php foreach($puskesmas as $pk): ?>
+    <div class="col-md-4 mb-3 d-flex">
+        <div class="puskesmas-card shadow-sm">
+
+            <!-- Header -->
+            <div class="puskesmas-header">
+                <?= $pk['nama'] ?>
+            </div>
+
+            <!-- Subheader -->
+            <div class="puskesmas-subheader">
+                <?= $pk['akreditasi'] ?>
+            </div>
+
+            <!-- Body -->
+            <div class="puskesmas-body">
+                <!-- Gambar -->
+                <img src="<?= $pk['gambar'] ?>" alt="<?= $pk['nama'] ?>">
+
+                <!-- Info -->
+                <div class="puskesmas-info">
+                    <div class="pkm-row">
+                        <div class="pkm-row-header">
+                            <img src="<?= base_url('img/pkm.png') ?>" alt="">
+                            <span class="pkm-label">Alamat:</span>
+                        </div>
+                        <span class="pkm-value"><?= $pk['alamat'] ?></span>
+                    </div>
+                        <div class="pkm-row">
+                            <div class="pkm-row-header">
+                                <img src="<?= base_url('img/pkm.png') ?>" alt="">
+                                <span class="pkm-label">Telepon:</span>
+                            </div>
+                            <span class="pkm-value"><?= $pk['telepon'] ?></span>
+                        </div>
+                        <div class="pkm-row">
+                            <div class="pkm-row-header">
+                                <img src="<?= base_url('img/pkm.png') ?>" alt="">
+                                <span class="pkm-label">Jam Operasional:</span>
+                            </div>
+                            <span class="pkm-value"><?= $pk['jam'] ?></span>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Footer: tombol Lokasi pojok kanan bawah -->
+            <div class="puskesmas-footer">
+                <a href="<?= $pk['gmaps'] ?>" target="_blank" class="btn-maps">Lokasi</a>
+            </div>
+
+        </div>
+    </div>
+
+<?php endforeach; ?>
+</div>
+
+<!-- Tips Kesehatan Umum -->
 <div class="tips-wrapper">
 
     <div class="tips-icon">
@@ -721,19 +905,40 @@ if($jawaban[4] == 1){
         <div class="tips-header">
             Tips Kesehatan
         </div>
-
-        <div class="tips-body">
-
-            <ul>
-                <li>Konsumsi makanan bergizi seimbang setiap hari</li>
-                <li>Rutin berolahraga minimal 30 menit</li>
-                <li>Istirahat yang cukup</li>
-                <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
-            </ul>
-
-        </div>
-
+    <div class="tips-body">
+        <ul>
+            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
+            <li>Rutin berolahraga minimal 30 menit</li>
+            <li>Istirahat yang cukup</li>
+            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
+        </ul>
     </div>
+</div>
+
+<?php else: ?>
+
+<!-- TIPS -->
+<div class="tips-wrapper">
+
+    <div class="tips-icon">
+        📖
+    </div>
+
+    <div class="tips-box">
+
+        <div class="tips-header">
+            Tips Sementara Sebelum Pemeriksaan
+        </div>
+    <div class="tips-body">
+        <ul>
+            <li>Gunakan masker saat berinteraksi dengan orang lain</li>
+            <li>Terapkan etika batuk (menutup mulut dan hidung saat batuk/bersin)</li>
+            <li>Hindari kontak dekat dengan anak-anak, lansia, atau orang dengan daya tahan tubuh rendah</li>
+            <li>Jaga daya tahan tubuh dengan makan bergizi dan istirahat cukup</li>
+        </ul>
+    </div>
+</div>
+<?php endif; ?>
 
     <div class="text-center mt-4">
 
