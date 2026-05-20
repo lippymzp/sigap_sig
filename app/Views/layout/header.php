@@ -326,7 +326,13 @@ body .nav-link{
     padding:10px 24px !important;
     border-radius:14px;
 }
-
+/* KHUSUS TEXT LOGO DIARE DESKTOP */
+.diagis-text-logo{
+    width: 180px !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+}
 }
 </style>
 
