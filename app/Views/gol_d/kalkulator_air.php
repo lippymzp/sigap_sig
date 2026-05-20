@@ -81,101 +81,82 @@ option,
 </style>
 
 <div class="container kalkulator-wrap">
-<div class="row g-4">
+    <div class="row g-4">
 
-<div class="col-md-5">
-<div class="panel">
-<div class="mode-switch mb-4">
-   <button
-type="button"
-class="mode-btn <?= (($mode ?? 'who') === 'who') ? 'active' : '' ?>"
-onclick="showMode('who')">  
-        💧 Rehidrasi WHO
-    </button>
+        <!-- KIRI -->
+        <div class="col-md-5">
+            <div class="panel">
 
-   <button
-type="button"
-class="mode-btn <?= (($mode ?? 'who') === 'normal') ? 'active' : '' ?>"
-onclick="showMode('normal')">
-        🥤 Air Harian
-    </button>
-</div>
-<form action="<?= base_url('diare/hitung-air') ?>" method="post">
-    <input type="hidden" name="mode" id="mode" value="who">
+                <div class="mode-switch mb-4">
+                    <button
+                        type="button"
+                        class="mode-btn <?= (($mode ?? 'who') === 'who') ? 'active' : '' ?>"
+                        onclick="showMode('who')">
+                        💧 Rehidrasi WHO
+                    </button>
 
+                    <button
+                        type="button"
+                        class="mode-btn <?= (($mode ?? 'who') === 'normal') ? 'active' : '' ?>"
+                        onclick="showMode('normal')">
+                        🥤 Air Harian
+                    </button>
+                </div>
 
+                <form action="<?= base_url('diare/hitung-air') ?>" method="post">
+                    <input type="hidden" name="mode" id="mode" value="<?= $mode ?? 'who' ?>">
 
-<div class="row">
-    <div class="col-6">
-        <label>Usia</label>
-        <input type="number" class="form-control" name="usia">
-    </div>
+                    <div id="whoForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:none;' : '' ?>">
+                        <label>Usia</label>
+                        <input type="number" class="form-control mb-3" name="usia">
 
-    <div class="col-6">
-        <label>Berat</label>
-        <input type="number" class="form-control" name="berat">
-    </div>
-</div>
+                        <h4 class="mb-4">Kalkulator Rehidrasi WHO</h4>
 
-  <div id="whoForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:none;' : '' ?>">
+                        <label>Berat Badan (kg)</label>
+                        <input type="number" step="0.1" class="form-control mb-3" name="berat">
 
-    <h4 class="mb-4">Kalkulator Rehidrasi WHO</h4>
+                        <label>Tingkat Dehidrasi</label>
+                        <select class="form-control mb-4" name="dehidrasi">
+                            <option value="">Pilih Tingkat Dehidrasi</option>
+                            <option value="3">Ringan (3%)</option>
+                            <option value="6">Sedang (6%)</option>
+                            <option value="9">Berat (9%)</option>
+                        </select>
+                    </div>
 
-    <label>Berat Badan (kg)</label>
-    <input
-        type="number"
-        step="0.1"
-        class="form-control mb-3"
-        name="berat"
-    >
+                    <div id="normalForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:block;' : 'display:none;' ?>">
+                        <h4 class="mb-4">Kebutuhan Air Harian</h4>
 
-    <label>Tingkat Dehidrasi</label>
-    <select class="form-control mb-4" name="dehidrasi">
-        <option value="">Pilih Tingkat Dehidrasi</option>
-        <option value="3">Ringan (3%)</option>
-        <option value="6">Sedang (6%)</option>
-        <option value="9">Berat (9%)</option>
-    </select>
+                        <label>Jenis Kelamin</label>
+                        <select class="form-control mb-3" name="jk">
+                            <option>Laki-laki</option>
+                            <option>Perempuan</option>
+                        </select>
 
-</div>
+                        <label>Usia</label>
+                        <input type="number" class="form-control mb-3" name="usia">
 
-<div id="normalForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:block;' : 'display:none;' ?>">
+                        <label>Berat Badan (kg)</label>
+                        <input type="number" step="0.1" class="form-control mb-3" name="berat_normal">
 
-    <h4 class="mb-4">Kebutuhan Air Harian</h4>
+                        <label>Tingkat Aktivitas</label>
+                        <input type="range" name="aktivitas" class="form-range" min="0" max="100">
+                    </div>
 
-    <label>Jenis Kelamin</label>
-    <select class="form-control mb-3" name="jk">
-        <option>Laki-laki</option>
-        <option>Perempuan</option>
-    </select>
+                    <button class="btn-calc">Hitung Sekarang</button>
+                </form>
 
-    <label>Usia</label>
-    <input type="number" class="form-control mb-3" name="usia">
+            </div>
+        </div>
 
-    <label>Berat Badan (kg)</label>
-    <input type="number" step="0.1" class="form-control mb-3" name="berat_normal">
-
-    <label>Tingkat Aktivitas</label>
-    <input type="range" name="aktivitas" class="form-range" min="0" max="100">
-
-</div>
-   <button class="btn-calc">
-    Hitung Sekarang
-</button>
-
-
-</form>
-
-</div>
-</div>
-
-<div class="col-md-7">
-
-<div class="result">
+        <!-- KANAN -->
+        <div class="col-md-7">
+            <div class="result">
     <h4>Estimasi Total Kebutuhan Air</h4>
 
     <div class="big-number">
     <?= isset($hasil) ? $hasil : '--' ?>
+</div>
      <?php if(($mode ?? 'who') === 'who'): ?>
 
 <div class="mt-4 p-3 rounded" style="background:rgba(255,255,255,.15)">

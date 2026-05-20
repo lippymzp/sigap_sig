@@ -185,28 +185,57 @@ class SuperAdmin extends BaseController
     }
 
     public function puskesmas()
-    {
-        $userModel = new SuperAdminModel();
+{
+    $db = \Config\Database::connect();
+    $builder = $db->table('manajemen_puskesmas mp');
+    $builder->select("
+        mp.*,
+        k.nama_kecamatan
+    ");
+    $builder->join(
+        'kecamatan k',
+        'k.id_kecamatan = mp.id_kecamatan',
+        'left'
+    );
 
-        $keyword = $this->request->getVar('keyword');
-        if ($keyword) {
-            $userModel = $userModel->search($keyword);
-        }
-
-        $perPage = 10;
-        $currentPage = $this->request->getVar('page') ?? 1;
-
-        $data = [
-            'users' => $userModel->paginate($perPage, 'default'),
-            'pager' => $userModel->pager,
-            'currentPage' => $currentPage,
-            'perPage' => $perPage,
-            'keyword' => $keyword,
-            'menu' => 'puskesmas', // <--- tambahkan ini
-        ];
-
-        return view('superadmin/manajemen_puskesmas', $data);
+    // SEARCH
+    $keyword = $this->request->getVar('keyword');
+    if ($keyword) {
+        $builder->like('k.nama_kecamatan', $keyword);
     }
+
+    $builder->orderBy(
+        'mp.id_manajemen_puskesmas',
+        'DESC'
+    );
+
+    // PAGINATION
+    $perPage = 5;
+    $currentPage =
+        $this->request->getVar('page') ?? 1;
+    $totalData =
+        $builder->countAllResults(false);
+    $users = $builder
+        ->limit($perPage,
+            ($currentPage - 1) * $perPage)
+        ->get()
+        ->getResultArray();
+    $data = [
+        'users' => $users,
+        'currentPage' => $currentPage,
+        'perPage' => $perPage,
+        'totalData' => $totalData,
+        'totalPage' =>
+            ceil($totalData / $perPage),
+        'keyword' => $keyword,
+        'menu' => 'puskesmas'
+    ];
+
+    return view(
+        'superadmin/manajemen_puskesmas',
+        $data
+    );
+}
 
     public function store()
     {
@@ -223,13 +252,18 @@ class SuperAdmin extends BaseController
         return redirect()->to('/superadmin-user')->with('success', 'User berhasil ditambahkan');
     }
 
-    public function create()
-    {
-        return view('superadmin/create_pkm', [  // <-- ganti nama view di sini
-            'judul' => 'Tambah User',
-            'menu' => 'admin'
-        ]);
-    }
+  public function create()
+{
+    $db = \Config\Database::connect();
+
+    $data = [
+        'instansiList' => $db->table('instansi')->like('nama_instansi', 'Puskesmas')->get()->getResultArray(),
+        'kecamatanList' => $db->table('kecamatan')->get()->getResultArray(),
+        'menu' => 'puskesmas'
+    ];
+
+    return view('superadmin/create_pkm', $data);
+}
 
 
     /* ==========================================
@@ -583,4 +617,512 @@ class SuperAdmin extends BaseController
                 'Data admin berhasil dihapus'
             );
     }
+
+    public function storePuskesmas()
+{
+    $db = \Config\Database::connect();
+    $model = new \App\Models\SuperAdmin();
+
+    // Ambil data dari form
+    $id_instansi   = $this->request->getPost('id_instansi');
+    $id_kecamatan  = $this->request->getPost('id_kecamatan');
+    $alamat        = $this->request->getPost('alamat');
+    $email         = $this->request->getPost('email_puskesmas');
+    $latitude      = $this->request->getPost('latitude');
+    $longitude     = $this->request->getPost('longitude');
+    $no_telpon     = '+62' . $this->request->getPost('no_telpon_puskesmas');
+
+    //$kelurahanArray = array_filter($this->request->getPost('kelurahan'));
+    $kelurahanArray = array_filter($this->request->getPost('kelurahan') ?? []);
+    //$posyanduArray  = $this->request->getPost('posyandu');
+    $posyanduArray = $this->request->getPost('posyandu') ?? [];
+    // Ambil kode pos & nama puskesmas dari tabel terkait
+    $kecamatan = $db->table('kecamatan')->where('id_kecamatan', $id_kecamatan)->get()->getRowArray();
+    $kode_pos = $kecamatan['kode_pos'] ?? '';
+
+    $instansi = $db->table('instansi')->where('id_instansi', $id_instansi)->get()->getRowArray();
+    $nama_puskesmas = $instansi['nama_instansi'] ?? '';
+
+    // Simpan data Puskesmas
+   $model->insert([
+    'id_instansi' => $id_instansi,
+    'nama_puskesmas' => $nama_puskesmas,
+    'id_kecamatan' => $id_kecamatan,
+    'alamat' => $alamat,
+    'kode_pos' => $kode_pos,
+    'email_puskesmas' => $email,
+    'latitude' => $latitude,
+    'longitude' => $longitude,
+    'no_telpon_puskesmas' => $no_telpon,
+    'created_at' => date('Y-m-d H:i:s'),
+    'update_at' => date('Y-m-d H:i:s')
+]);
+$puskesmasId = $db->insertID(); // ID Puskesmas yang baru
+
+    // Simpan Kelurahan dan Posyandu
+   /*foreach ($kelurahanArray as $i => $kel) {
+
+    $db->table('kelurahan')->insert([
+        'id_kecamatan' => $id_kecamatan,
+        'nama_kelurahan' => $kel
+    ]); */
+    foreach ($kelurahanArray as $i => $kel) {
+
+    // cek apakah kelurahan sudah ada
+    $cekKel = $db->table('kelurahan')
+        ->where('nama_kelurahan', $kel)
+        ->where('id_kecamatan', $id_kecamatan)
+        ->get()
+        ->getRowArray();
+
+    // kalau belum ada → insert
+    if(!$cekKel){
+
+        $db->table('kelurahan')->insert([
+            'id_kecamatan' => $id_kecamatan,
+            'id_manajemen_puskesmas' => $puskesmasId,
+            'nama_kelurahan' => $kel
+        ]);
+
+        $kelurahanId = $db->insertID();
+
+    } else {
+
+        // kalau sudah ada → pakai ID lama
+        $kelurahanId = $cekKel['id_kelurahan'];
+
+    }
+
+    // $kelurahanId = $db->insertID();
+
+    if(isset($posyanduArray[$i]) && count($posyanduArray[$i]) > 0){
+
+        foreach($posyanduArray[$i] as $pos){
+
+            if(trim($pos) !== ''){
+
+                $db->table('kelurahan_posyandu')->insert([
+                    'id_manajemen_puskesmas' => $puskesmasId,
+                    'id_kelurahan' => $kelurahanId,
+                    'nama_posyandu' => $pos,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'update_at' => date('Y-m-d H:i:s')
+                ]);
+
+            }
+        }
+
+    } else {
+
+        // simpan kelurahan walau tanpa posyandu
+        $db->table('kelurahan_posyandu')->insert([
+            'id_manajemen_puskesmas' => $puskesmasId,
+            'id_kelurahan' => $kelurahanId,
+            'nama_posyandu' => '',
+            'created_at' => date('Y-m-d H:i:s'),
+            'update_at' => date('Y-m-d H:i:s')
+        ]);
+
+    }
+}
+
+    return redirect()->to('/superadmin/puskesmas')
+    ->with('success', 'Puskesmas berhasil ditambahkan')
+    ->with('id_puskesmas', $puskesmasId);
+}
+
+public function getKodePos($id_kecamatan)
+{
+    $db = \Config\Database::connect();
+    $kecamatan = $db->table('kecamatan')->where('id_kecamatan', $id_kecamatan)->get()->getRowArray();
+
+    // kirim kode pos sebagai JSON
+    return $this->response->setJSON(['kode_pos' => $kecamatan['kode_pos'] ?? '']);
+}
+
+public function viewPkm($id)
+{
+    $db = \Config\Database::connect();
+
+    // =========================
+    // DATA PUSKESMAS
+    // =========================
+    $puskesmas = $db->table('manajemen_puskesmas')
+        ->where('id_manajemen_puskesmas', $id)
+        ->get()
+        ->getRowArray();
+
+    // =========================
+    // AMBIL KELURAHAN + POSYANDU
+    // =========================
+    $posyanduData = $db->table('kelurahan k')
+
+        ->select('
+            k.id_kelurahan,
+            k.nama_kelurahan,
+            kp.nama_posyandu
+        ')
+
+        ->join(
+            'kelurahan_posyandu kp',
+            'kp.id_kelurahan = k.id_kelurahan',
+            'left'
+        )
+
+        ->where(
+            'k.id_manajemen_puskesmas',
+            $id
+        )
+
+        ->get()
+        ->getResultArray();
+
+    // =========================
+    // GROUPING KELURAHAN
+    // =========================
+    $kelurahanData = [];
+
+    foreach ($posyanduData as $row) {
+
+        $idKel = $row['id_kelurahan'];
+
+        // =====================
+        // BUAT ARRAY KELURAHAN
+        // =====================
+        if (!isset($kelurahanData[$idKel])) {
+
+            $kelurahanData[$idKel] = [
+
+                'id_kelurahan'   => $idKel,
+
+                'nama_kelurahan' =>
+                    $row['nama_kelurahan'],
+
+                'posyandu'       => []
+
+            ];
+
+        }
+
+        // =====================
+        // MASUKKAN POSYANDU
+        // JIKA TIDAK KOSONG
+        // =====================
+        if (
+            isset($row['nama_posyandu']) &&
+            trim($row['nama_posyandu']) != ''
+        ) {
+
+            $kelurahanData[$idKel]['posyandu'][] =
+                $row['nama_posyandu'];
+
+        }
+
+    }
+
+    // =========================
+    // KIRIM KE VIEW
+    // =========================
+    $data = [
+
+        'menu' => 'puskesmas',
+
+        'puskesmas' => $puskesmas,
+
+        'instansiList' => $db->table('instansi')
+            ->like('nama_instansi', 'Puskesmas')
+            ->get()
+            ->getResultArray(),
+
+        'kecamatanList' => $db->table('kecamatan')
+            ->get()
+            ->getResultArray(),
+
+        'kelurahanData' =>
+            array_values($kelurahanData)
+
+    ];
+
+    return view(
+        'superadmin/view_pkm',
+        $data
+    );
+}
+
+public function editPkm($id)
+{
+    $db = \Config\Database::connect();
+
+    $puskesmas = $db->table('manajemen_puskesmas')
+        ->where('id_manajemen_puskesmas', $id)
+        ->get()
+        ->getRowArray();
+
+    $posyanduData = $db->table('kelurahan_posyandu kp')
+        ->select('kp.*, k.nama_kelurahan')
+        ->join('kelurahan k', 'k.id_kelurahan = kp.id_kelurahan')
+        ->where('kp.id_manajemen_puskesmas', $id)
+        ->get()
+        ->getResultArray();
+
+    // grouping data
+    $kelurahanData = [];
+
+    foreach ($posyanduData as $row) {
+
+        $idKel = $row['id_kelurahan'];
+
+        if (!isset($kelurahanData[$idKel])) {
+
+            $kelurahanData[$idKel] = [
+                'id_kelurahan' => $idKel,
+                'nama_kelurahan' => $row['nama_kelurahan'],
+                'posyandu' => []
+            ];
+        }
+
+        $kelurahanData[$idKel]['posyandu'][] =
+            $row['nama_posyandu'];
+    }
+
+    $data = [
+        'menu' => 'puskesmas',
+        'puskesmas' => $puskesmas,
+
+        'instansiList' => $db->table('instansi')
+            ->like('nama_instansi', 'Puskesmas')
+            ->get()
+            ->getResultArray(),
+
+        'kecamatanList' => $db->table('kecamatan')
+            ->get()
+            ->getResultArray(),
+
+        'kelurahanList' => $db->table('kelurahan')
+            ->get()
+            ->getResultArray(),
+
+        'kelurahanData' =>
+            array_values($kelurahanData)
+    ];
+
+    return view('superadmin/edit_pkm', $data);
+}
+
+public function updatePkm($id)
+{
+    $db = \Config\Database::connect();
+
+    $puskesmasId = $id;
+
+    // =========================
+    // AMBIL DATA FORM
+    // =========================
+    $id_instansi  = $this->request->getPost('id_instansi');
+    $id_kecamatan = $this->request->getPost('id_kecamatan');
+
+    $alamat    = $this->request->getPost('alamat');
+    $email     = $this->request->getPost('email_puskesmas');
+    $latitude  = $this->request->getPost('latitude');
+    $longitude = $this->request->getPost('longitude');
+
+    $no_telpon = '+62' .
+        $this->request->getPost('no_telpon_puskesmas');
+
+    // =========================
+    // AMBIL INSTANSI
+    // =========================
+    $instansi = $db->table('instansi')
+        ->where('id_instansi', $id_instansi)
+        ->get()
+        ->getRowArray();
+
+    $nama_puskesmas =
+        $instansi['nama_instansi'] ?? '';
+
+    // =========================
+    // AMBIL KODE POS
+    // =========================
+    $kecamatan = $db->table('kecamatan')
+        ->where('id_kecamatan', $id_kecamatan)
+        ->get()
+        ->getRowArray();
+
+    $kode_pos =
+        $kecamatan['kode_pos'] ?? '';
+
+    // =========================
+    // UPDATE PUSKESMAS
+    // =========================
+    $db->table('manajemen_puskesmas')
+        ->where('id_manajemen_puskesmas', $id)
+        ->update([
+
+            'id_instansi'         => $id_instansi,
+            'nama_puskesmas'      => $nama_puskesmas,
+            'id_kecamatan'        => $id_kecamatan,
+            'alamat'              => $alamat,
+            'kode_pos'            => $kode_pos,
+            'email_puskesmas'     => $email,
+            'latitude'            => $latitude,
+            'longitude'           => $longitude,
+            'no_telpon_puskesmas' => $no_telpon,
+            'update_at'           => date('Y-m-d H:i:s')
+
+        ]);
+
+    // =========================
+    // HAPUS POSYANDU LAMA
+    // =========================
+    $db->table('kelurahan_posyandu')
+        ->where('id_manajemen_puskesmas', $id)
+        ->delete();
+
+    // =========================
+    // AMBIL INPUT
+    // =========================
+    $kelurahanArray =
+        array_filter(
+            $this->request->getPost('kelurahan') ?? []
+        );
+
+    $posyanduArray =
+        $this->request->getPost('posyandu') ?? [];
+
+    // =========================
+    // LOOP KELURAHAN
+    // =========================
+    foreach ($kelurahanArray as $i => $kel) {
+
+        // =====================
+        // CEK KELURAHAN
+        // =====================
+        $cekKel = $db->table('kelurahan')
+            ->where('nama_kelurahan', $kel)
+            ->where('id_kecamatan', $id_kecamatan)
+            ->where('id_manajemen_puskesmas', $puskesmasId)
+            ->get()
+            ->getRowArray();
+
+        // =====================
+        // INSERT KELURAHAN
+        // =====================
+        if (!$cekKel) {
+
+            $db->table('kelurahan')->insert([
+
+                'id_kecamatan'            => $id_kecamatan,
+                'id_manajemen_puskesmas' => $puskesmasId,
+                'nama_kelurahan'         => $kel
+
+            ]);
+
+            $kelurahanId = $db->insertID();
+
+        } else {
+
+            $kelurahanId =
+                $cekKel['id_kelurahan'];
+
+        }
+
+        // =====================
+        // INSERT POSYANDU
+        // =====================
+        if (
+            isset($posyanduArray[$i]) &&
+            count($posyanduArray[$i]) > 0
+        ) {
+
+            foreach ($posyanduArray[$i] as $pos) {
+
+                // skip kalau kosong
+                if (trim($pos) == '') {
+                    continue;
+                }
+
+                $db->table('kelurahan_posyandu')
+                    ->insert([
+
+                    'id_manajemen_puskesmas'
+                        => $puskesmasId,
+
+                    'id_kelurahan'
+                        => $kelurahanId,
+
+                    'nama_posyandu'
+                        => $pos,
+
+                    'created_at'
+                        => date('Y-m-d H:i:s'),
+
+                    'update_at'
+                        => date('Y-m-d H:i:s')
+
+                ]);
+
+            }
+
+        }
+
+    }
+
+    return redirect()
+        ->to('/superadmin/puskesmas/edit/' . $id)
+        ->with('success_update', true)
+        ->with('id_puskesmas', $id);
+}
+
+public function deletePkm($id)
+{
+    $db = \Config\Database::connect();
+
+    // =========================
+    // AMBIL SEMUA ID KELURAHAN
+    // =========================
+    $kelurahan = $db->table('kelurahan_posyandu')
+        ->select('id_kelurahan')
+        ->where('id_manajemen_puskesmas', $id)
+        ->get()
+        ->getResultArray();
+
+    // =========================
+    // HAPUS POSYANDU
+    // =========================
+    $db->table('kelurahan_posyandu')
+        ->where('id_manajemen_puskesmas', $id)
+        ->delete();
+
+    // =========================
+    // HAPUS KELURAHAN
+    // =========================
+    foreach($kelurahan as $k){
+
+        // cek apakah kelurahan masih dipakai
+        $cek = $db->table('kelurahan_posyandu')
+            ->where('id_kelurahan', $k['id_kelurahan'])
+            ->countAllResults();
+
+        // kalau sudah tidak dipakai
+        if($cek == 0){
+
+            $db->table('kelurahan')
+                ->where('id_kelurahan', $k['id_kelurahan'])
+                ->delete();
+
+        }
+
+    }
+
+    // =========================
+    // HAPUS PUSKESMAS
+    // =========================
+    $db->table('manajemen_puskesmas')
+        ->where('id_manajemen_puskesmas', $id)
+        ->delete();
+
+    return redirect()->to('/superadmin/puskesmas')
+        ->with('success_delete', true);
+}
+
 }

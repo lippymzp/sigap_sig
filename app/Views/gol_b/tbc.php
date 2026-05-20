@@ -1497,7 +1497,7 @@ setInterval(()=>{
 
             </div>
 
-            <a href="#" class="gejala-btn">
+            <a href="skrining-tbc" class="gejala-btn">
                 <i class="fas fa-arrow-right"></i>
             </a>
 

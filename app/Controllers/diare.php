@@ -8,6 +8,8 @@ use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
 use App\Models\FunfactModelD;
+use App\Models\DiareModel;
+use App\Models\DataDiareModel;
 
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
@@ -218,10 +220,12 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
+    die('INDEX KEBACA BRO');
     helper('text');
 
     $beritaModel = new BeritaModelDD();
     $funfactModel = new FunfactModelD();
+    $diareModel = new DataDiareModel();
 
     $data['berita'] = $beritaModel
         ->where('id_penyakit', 4)
@@ -235,7 +239,7 @@ public function index()
         ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
-    $data['diare'] = [];
+   dd($diareModel->findAll());
 
     return view('gol_d/diare', $data);
 }
