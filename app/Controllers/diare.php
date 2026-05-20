@@ -258,7 +258,7 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
-    die('INDEX KEBACA BRO');
+    
     helper('text');
 
     $beritaModel = new BeritaModelDD();
@@ -277,7 +277,7 @@ public function index()
         ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
-   dd($diareModel->findAll());
+   dd($diareModel->findAll());  
 
     return view('gol_d/diare', $data);
 }
