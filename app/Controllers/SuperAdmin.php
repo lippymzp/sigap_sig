@@ -252,13 +252,18 @@ class SuperAdmin extends BaseController
         return redirect()->to('/superadmin-user')->with('success', 'User berhasil ditambahkan');
     }
 
-    public function create()
-    {
-        return view('superadmin/create_pkm', [  // <-- ganti nama view di sini
-            'judul' => 'Tambah User',
-            'menu' => 'admin'
-        ]);
-    }
+  public function create()
+{
+    $db = \Config\Database::connect();
+
+    $data = [
+        'instansiList' => $db->table('instansi')->like('nama_instansi', 'Puskesmas')->get()->getResultArray(),
+        'kecamatanList' => $db->table('kecamatan')->get()->getResultArray(),
+        'menu' => 'puskesmas'
+    ];
+
+    return view('superadmin/create_pkm', $data);
+}
 
 
     /* ==========================================
