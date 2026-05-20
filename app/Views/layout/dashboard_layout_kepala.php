@@ -251,14 +251,6 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-regular fa-user me-2"></i> Profil
 </a>
 
-<div class="menu-label">Master Data</div>
-
-<a href="<?= base_url('kepala/manajemen_user') ?>"
-    class="<?= ($menu == 'manajemen_user_kepala') ? 'active' : '' ?>">
-    <i class="fa-solid fa-users me-2"></i> Manajemen User
-</a>
-
-</div>
 
 <div class="main-content">
 
