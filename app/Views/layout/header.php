@@ -45,11 +45,6 @@
     gap:12px;
 }
 
-.diare-logo{
-    width:120px;
-    height:120px;
-    object-fit:contain;
-}
 
 .diare-title{
     font-family:'Baloo 2', cursive !important;
@@ -261,11 +256,7 @@ body .nav-link{
         margin-top: 10px;
     }
 /* HEADER DIARE */
-.brand-diare{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
+
 
 .diare-logo{
     width:85px;
@@ -273,13 +264,44 @@ body .nav-link{
     object-fit:contain;
 }
 
+
+/* ===== HEADER KHUSUS DIARE ===== */
+.brand-diare{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.diare-logo{
+    width:48px !important;
+    height:48px !important;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
 .diagis-text-logo{
-    width:230px;
+    width:180px !important;
     height:auto;
     object-fit:contain;
     display:block;
 }
 
+/* navbar lebih ramping */
+.navbar-custom{
+    padding:8px 0 !important;
+    border-top:4px solid #0d5b5b;
+}
+
+/* spacing menu */
+.nav-link{
+    font-size:15px !important;
+}
+
+/* tombol login */
+.btn-login{
+    padding:10px 24px !important;
+    border-radius:14px;
+}
 }
 </style>
 
