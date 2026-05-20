@@ -220,6 +220,7 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
+    die('CONTROLLER DIARE KEBACA');
     helper('text');
 
     $beritaModel = new BeritaModelDD();
