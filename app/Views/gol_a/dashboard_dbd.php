@@ -306,9 +306,35 @@ $kelurahanTerdampak = $db->table('pasien')
             <div>
                 <h5>Peta Interaktif Penyebaran</h5>
                 <p class="sub">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
-            </div>
-            <div class="filter">
-                <span>Periode:</span>
+                        </div>
+<div class="filter" style="display:flex; gap:10px; align-items:center;">
+
+    <span>Periode:</span>
+
+    <!-- FILTER BULAN -->
+   <select id="bulanMap" onchange="updateMap()">
+    <option value="">Semua Bulan</option>
+
+    <?php
+    $bulanDipilih = $_GET['bulan_map'] ?? '';
+    $namaBulan = [
+        1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',
+        5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',
+        9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
+    ];
+
+    foreach($namaBulan as $id => $nama):
+    ?>
+        <option value="<?= $id ?>" <?= ($bulanDipilih == $id ? 'selected' : '') ?>>
+            <?= $nama ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
+    <!-- FILTER TAHUN -->
+<?php $tahunMapDipilih = $_GET['tahun_map'] ?? $tahunSekarang; ?>
+
+
                 <select id="periodeMap" onchange="updateMap()">
                     <?php for($t = 2024; $t <= $tahunSekarang; $t++): ?>
                         <option value="<?= $t ?>" <?= ($t == $tahunSekarang ? 'selected' : '') ?>>
@@ -480,9 +506,14 @@ $kelurahanTerdampak = $db->table('pasien')
                                 <td class="value"></td>
                             </tr>
                             <tr class="sub">
-                                <td class="label">Anak-anak</td>
+                                <td class="label">Bayi dan Anak-anak</tr>/td>
                                 <td class="colon">:</td>
                                 <td class="value" id="modalAnak">0</td>
+                            </tr>
+                             <tr class="sub">
+                                <td class="label">Sekolah dan Remaja</tr>/td>
+                                <td class="colon">:</td>
+                                <td class="value" id="modalRemaja">0</td>
                             </tr>
                             <tr class="sub">
                                 <td class="label">Dewasa</td>
@@ -585,10 +616,10 @@ $kelurahanTerdampak = $db->table('pasien')
                 dataFinal[desa].jumlah++;
             });
 
-           /* =========================
-   KATEGORI RISIKO DBD
-========================= */
 
+/* =========================================
+   KATEGORI RISIKO DBD (WAJIB 3 INDIKATOR)
+========================================= */
 for (var key in detailDesa) {
 
     let d = detailDesa[key];
@@ -597,56 +628,50 @@ for (var key in detailDesa) {
     let penduduk = parseInt(d.jumlah_penduduk ?? 0);
     let meninggal = parseInt(d.meninggal ?? 0);
     let abj = parseFloat(d.abj ?? 0);
+    let rumahDiperiksa = parseInt(d.rumah_diperiksa ?? 0);
 
-    // =====================
-    // HITUNG IR
-    // =====================
+    // default
     let ir = 0;
-
-    if (penduduk > 0) {
-        ir = (kasus / penduduk) * 100000;
-    }
-
-    // =====================
-    // HITUNG CFR
-    // =====================
     let cfr = 0;
 
-    if (kasus > 0) {
-        cfr = (meninggal / kasus) * 100;
+    if (
+    kasus === 0 ||
+    penduduk === 0 ||
+    rumahDiperiksa === 0 ||
+    abj === 0
+) {
+
+    detailDesa[key].kategori = "Belum ada Data";
+
+    } else {
+
+        ir = (kasus / penduduk) * 100000;
+
+        if (kasus > 0) {
+            cfr = (meninggal / kasus) * 100;
+        }
+
+        let indikatorBaik = 0;
+
+        if (ir <= 10) indikatorBaik++;
+        if (cfr < 1) indikatorBaik++;
+        if (abj >= 95) indikatorBaik++;
+
+        if (indikatorBaik === 3) {
+            detailDesa[key].kategori = "rendah";
+        } 
+        else if (indikatorBaik === 1 || indikatorBaik === 2) {
+            detailDesa[key].kategori = "sedang";
+        } 
+        else {
+            detailDesa[key].kategori = "tinggi";
+        }
     }
 
-    // =====================
-    // PENILAIAN INDIKATOR
-    // =====================
-    let indikatorBaik = 0;
-
-    // IR ≤ 10
-    if (ir <= 10) indikatorBaik++;
-
-    // CFR < 1%
-    if (cfr < 1) indikatorBaik++;
-
-    // ABJ ≥ 95%
-    if (abj >= 95) indikatorBaik++;
-
-    // =====================
-    // KATEGORI WARNA
-    // =====================
-    if (indikatorBaik === 3) {
-        detailDesa[key].kategori = "rendah"; // hijau
-    }
-    else if (indikatorBaik >= 1) {
-        detailDesa[key].kategori = "sedang"; // kuning
-    }
-    else {
-        detailDesa[key].kategori = "tinggi"; // merah
-    }
-
-    // simpan biar bisa ditampilkan di modal
     detailDesa[key].ir = ir.toFixed(2);
     detailDesa[key].cfr = cfr.toFixed(2);
-        }
+}
+
 
             document.addEventListener("DOMContentLoaded", function() {
 
@@ -702,7 +727,7 @@ for (var key in detailDesa) {
                                 var detail = detailDesa[namaFix] || {};
                                 var kategori = detail.kategori || '-';
                                 isi += "<br>Total Kasus: " + item.total;
-                                isi += "<br>Kategori: " + item.kategori;
+                                isi += "<br>Kategori: " + kategori;
 
                                 isi += `
                                     <br><br>
@@ -874,10 +899,10 @@ d = d || {};
                             <div class="pill-select-wrapper">
                                 <select name="usia" class="pill-select" onchange="this.form.submit()">
                                     <option value="">All</option>
-                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-14</option>
-                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>15-24</option>
-                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>25-59</option>
-                                    <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>60+</option>
+                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>Bayi dan Anak Pra-sekolah (0–6 Tahun)</</option>
+                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>Anak Sekolah dan Remaja (>6–18 Tahun)</option>
+                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>2Dewasa (>18–59 Tahun)</option>
+                                    <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>Lansia (≥60 Tahun)</option>
                                 </select>
                             </div>
                         </div>
@@ -1132,9 +1157,18 @@ d = d || {};
     }
 
     .filter-col {
-        flex: 1 1 calc(50% - 12px);
-        max-width: unset;
-    }
+    flex: 1;
+    min-width: 160px;
+    max-width: 200px;
+}
+
+.pill-select {
+    white-space: normal;
+    height: auto;
+    min-height: 42px;
+    line-height: 1.3;
+}
+
 
     .berita-card {
         min-width: 85%;
@@ -1680,8 +1714,11 @@ d = d || {};
 <script>
 function updateMap(){
     let tahun = document.getElementById("periodeMap").value;
+    let bulan = document.getElementById("bulanMap").value;
     let url = new URL(window.location.href);
+
     url.searchParams.set('tahun_map', tahun);
+    url.searchParams.set('bulan_map', bulan);
     window.location.href = url.toString();
 }
 
@@ -1737,36 +1774,181 @@ function switchTab(type) {
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // --- LOGIKA AUTO SCROLL SETELAH REFRESH/FILTER ---
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasFilter = urlParams.has('wilayah') || urlParams.has('usia') || urlParams.has('jk') || 
-                      urlParams.has('bulan') || urlParams.has('tahun') || urlParams.has('tab') ||
-                      urlParams.has('wilayah_abj') || urlParams.has('bulan_abj') || urlParams.has('tahun_abj') ||
-                      urlParams.has('wilayah_mort') || urlParams.has('tahun_mort') || urlParams.has('jk_mort');
+   // --- LOGIKA AUTO SCROLL SETELAH REFRESH/FILTER ---
+const urlParams = new URLSearchParams(window.location.search);
 
-    if (hasFilter) {
-        const grafikSection = document.getElementById('grafik');
-        if (grafikSection) {
-            grafikSection.scrollIntoView({ behavior: 'auto', block: 'start' });
+const hasFilter =
+    urlParams.has('wilayah') ||
+    urlParams.has('usia') ||
+    urlParams.has('jk') ||
+    urlParams.has('bulan') ||
+    urlParams.has('tahun') ||
+    urlParams.has('tab') ||
+    urlParams.has('wilayah_abj') ||
+    urlParams.has('bulan_abj') ||
+    urlParams.has('tahun_abj') ||
+    urlParams.has('wilayah_mort') ||
+    urlParams.has('tahun_mort') ||
+    urlParams.has('jk_mort');
+
+// cek apakah cuma filter map
+const hanyaFilterMap =
+    (urlParams.has('tahun_map') || urlParams.has('bulan_map')) &&
+    !hasFilter;
+
+// AUTO SCROLL hanya untuk grafik
+if (hasFilter && !hanyaFilterMap) {
+    const grafikSection = document.getElementById('grafik');
+
+    if (grafikSection) {
+        grafikSection.scrollIntoView({
+            behavior: 'auto',
+            block: 'start'
+        });
+    }
+}
+// ================= GRAFIK KASUS =================
+const ctxKasus = document.getElementById('chartKasus').getContext('2d');
+
+const grafik = <?= json_encode($grafik) ?>;
+
+const labels = grafik.map(item => item.wilayah);
+
+const dataAnak = grafik.map(item => item.anak);
+const dataRemaja = grafik.map(item => item.remaja);
+const dataDewasa = grafik.map(item => item.dewasa);
+const dataLansia = grafik.map(item => item.lansia);
+
+const usiaFilter = "<?= request()->getGet('usia') ?>";
+
+let datasetsKasus = [];
+
+if (usiaFilter === 'anak') {
+
+    datasetsKasus.push({
+        label: 'Anak',
+        data: dataAnak,
+        backgroundColor: '#4285F4'
+    });
+
+} else if (usiaFilter === 'remaja') {
+
+    datasetsKasus.push({
+        label: 'Remaja',
+        data: dataRemaja,
+        backgroundColor: '#06B6D4'
+    });
+
+} else if (usiaFilter === 'dewasa') {
+
+    datasetsKasus.push({
+        label: 'Dewasa',
+        data: dataDewasa,
+        backgroundColor: '#7DD3FC'
+    });
+
+} else if (usiaFilter === 'lansia') {
+
+    datasetsKasus.push({
+        label: 'Lansia',
+        data: dataLansia,
+        backgroundColor: '#14B8A6'
+    });
+
+} else {
+
+    // kalau ALL tampil semua
+    datasetsKasus = [
+        {
+            label: 'Anak',
+            data: dataAnak,
+            backgroundColor: '#0F766E'
+        },
+        {
+            label: 'Remaja',
+            data: dataRemaja,
+            backgroundColor: '#06B6D4'
+        },
+        {
+            label: 'Dewasa',
+            data: dataDewasa,
+            backgroundColor: '#7DD3FC'
+        },
+        {
+            label: 'Lansia',
+            data: dataLansia,
+            backgroundColor: '#14B8A6'
         }
+    ];
+
+}
+
+new Chart(ctxKasus, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: datasetsKasus
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    plugins: {
+        legend: {
+            position: 'top',
+            labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: 20,
+                font: {
+                    size: 13,
+                    weight: '600'
+                }
+            }
+        },
+
+        tooltip: {
+            backgroundColor: '#1e293b',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            cornerRadius: 12,
+            padding: 12
+            
+        }
+        
+    },
+
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: 'rgba(0,0,0,0.05)',
+                drawBorder: false
+            },
+            ticks: {
+                padding: 10
+            }
+        },
+
+        x: {
+            grid: {
+                display: false
+            },
+            ticks: {
+                padding: 8
+            }
+        }
+    },
+
+    animation: {
+        duration: 1200,
+        easing: 'easeOutQuart'
     }
 
-
-    // --- INISIALISASI SLIDING TAB ---
-    const currentTab = "<?= $_GET['tab'] ?? 'kasus' ?>";
-    switchTab(currentTab);
-
-    // --- GRAFIK KASUS ---
-    const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
-    let labelsKasus = []; let totalKasus = [];
-   dataGrafikKasus.forEach(item => {
-    labelsKasus.push(item.desa);
-    totalKasus.push(item.kasus);
+    }
 });
-    new Chart(document.getElementById('chartKasus').getContext('2d'), {
-        type: 'bar', data: { labels: labelsKasus, datasets: [{ label: 'Total Kasus', data: totalKasus, backgroundColor: '#00BBC2', borderRadius: 8 }] },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
+
+
 
     // --- GRAFIK MORTALITAS ---
     const rawDataMort = <?= json_encode($dataFinalMort) ?>;
