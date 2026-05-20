@@ -260,6 +260,31 @@ body .nav-link{
     .btn-login{
         margin-top: 10px;
     }
+    .diagis-full-logo{
+    width: 420px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+/* HEADER DIARE */
+.brand-diare{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.diare-logo{
+    width:85px;
+    height:85px;
+    object-fit:contain;
+}
+
+.diagis-text-logo{
+    width:280px;
+    height:auto;
+    object-fit:contain;
+    display:block;
+}
 }
 </style>
 
@@ -320,20 +345,19 @@ $showLoginPages = [
 
     <a href="<?= base_url('/') ?>" class="brand-wrapper <?= (($penyakit ?? '') == 'diare') ? 'brand-diare' : '' ?>">
 
-    <?php if ($isDiarePage): ?>
+   <?php if ($isDiarePage): ?>
 
-        <img src="<?= base_url('img/logo_diare.png') ?>" 
-             alt="diagis"
-             class="brand-logo diare-logo">
+    <!-- LOGO DIARE TETAP -->
+    <img src="<?= base_url('img/logo_diare.png') ?>" 
+         alt="diagis"
+         class="brand-logo diare-logo">
 
-        <div class="brand-text">
-            <h1 class="brand-name diare-title">diagis</h1>
-            <p class="brand-subtitle diare-subtitle">
-                Diarrhea Geographic Information System
-            </p>
-        </div>
+    <!-- NAMA DIGANTI GAMBAR -->
+    <img src="<?= base_url('img/nama.png') ?>" 
+         alt="Diagis Text"
+         class="diagis-text-logo">
 
-    <?php elseif ($isPneumoniaPage): ?>
+<?php elseif ($isPneumoniaPage): ?>
 
         <img src="<?= base_url('img/pulmora.png') ?>" 
             alt="Pulmora"
