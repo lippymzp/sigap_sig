@@ -977,17 +977,27 @@ public function manajemen_pkm()
 
 public function hapus_skrining($id = null)
 {
-    // Pengaman: Jika ID kosong atau 0, kembalikan ke halaman sebelumnya
-    if (empty($id) || $id == 0) {
-        return redirect()->back()->with('error', 'ID Skrining tidak valid!');
+    // 1. Tangkap ID dari URL (URI Segment)
+    // Jika URL-nya adalah "dbd/hapus_skrining/15", maka angka 15 ada di segment ke-3
+    if (empty($id)) {
+        $id = $this->request->uri->getSegment(3);
     }
 
-    $model = new \App\Models\SkriningdbdModel();
-    
-    // Hapus data berdasarkan ID
-    $model->delete($id);
+    // 2. Pengaman ganda
+    if (empty($id)) {
+        return redirect()->back()->with('error', 'Gagal: ID Skrining tidak terdeteksi!');
+    }
 
-    return redirect()->back()->with('success', 'Data berhasil dihapus');
+    // 3. Eksekusi hapus langsung ke database (Bypass Model agar lebih kuat)
+    $db = \Config\Database::connect();
+    $hapus = $db->table('skrining')->where('id_skrining', $id)->delete();
+
+    // 4. Kembali ke halaman rekap
+    if ($hapus) {
+        return redirect()->back()->with('success', 'Data berhasil dihapus');
+    } else {
+        return redirect()->back()->with('error', 'Data gagal dihapus dari database');
+    }
 }
 
 // ==================================
