@@ -73,27 +73,88 @@ public function index()
             }
         }
 
-        $allFilters = " $bulanMapFilter $tahunMapFilter $jkFilter $usiaFilter";
-        
-        $builderMape->select("
-            w.kelurahan as desa,
-            COUNT(DISTINCT CASE WHEN p.id_pasien IS NOT NULL $allFilters THEN p.id_pasien END) as kasus,
-            COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Laki-laki' $allFilters THEN p.id_pasien END) as laki,
-            COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Perempuan' $allFilters THEN p.id_pasien END) as perempuan,
-            
-            
-            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 $allFilters THEN p.id_pasien END) as anak,
-            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 $allFilters THEN p.id_pasien END) as remaja,
-            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 $allFilters THEN p.id_pasien END) as dewasa,
-            COUNT(DISTINCT CASE WHEN p.umur >= 60 $allFilters THEN p.id_pasien END) as lansia,
-            
-            COUNT(DISTINCT CASE WHEN p.status_akhir = 'Sembuh' $allFilters THEN p.id_pasien END) as sembuh,
-            COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' $allFilters THEN p.id_pasien END) as meninggal,
-            
-            COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
-COALESCE(rp.rumah_diperiksa, 0) as rumah_diperiksa,
-COALESCE(rp.rumah_positif, 0) as rumah_positif
-        ");
+$builderMape->select("
+    w.kelurahan as desa,
+
+    COUNT(DISTINCT CASE
+        WHEN p.id_pasien IS NOT NULL
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        $usiaFilter
+        THEN p.id_pasien
+    END) as kasus,
+
+    COUNT(DISTINCT CASE
+        WHEN p.jenis_kelamin = 'Laki-laki'
+        $bulanMapFilter
+        $tahunMapFilter
+        $usiaFilter
+        THEN p.id_pasien
+    END) as laki,
+
+    COUNT(DISTINCT CASE
+        WHEN p.jenis_kelamin = 'Perempuan'
+        $bulanMapFilter
+        $tahunMapFilter
+        $usiaFilter
+        THEN p.id_pasien
+    END) as perempuan,
+
+    COUNT(DISTINCT CASE
+        WHEN p.umur BETWEEN 0 AND 6
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        THEN p.id_pasien
+    END) as anak,
+
+    COUNT(DISTINCT CASE
+        WHEN p.umur BETWEEN 7 AND 18
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        THEN p.id_pasien
+    END) as remaja,
+
+    COUNT(DISTINCT CASE
+        WHEN p.umur BETWEEN 19 AND 59
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        THEN p.id_pasien
+    END) as dewasa,
+
+    COUNT(DISTINCT CASE
+        WHEN p.umur >= 60
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        THEN p.id_pasien
+    END) as lansia,
+
+    COUNT(DISTINCT CASE
+        WHEN p.status_akhir = 'Sembuh'
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        $usiaFilter
+        THEN p.id_pasien
+    END) as sembuh,
+
+    COUNT(DISTINCT CASE
+        WHEN p.status_akhir = 'Meninggal'
+        $bulanMapFilter
+        $tahunMapFilter
+        $jkFilter
+        $usiaFilter
+        THEN p.id_pasien
+    END) as meninggal,
+
+    COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
+    COALESCE(rp.rumah_diperiksa, 0) as rumah_diperiksa,
+    COALESCE(rp.rumah_positif, 0) as rumah_positif
+");
 
 $builderMape->join(
     'pasien p',
@@ -185,7 +246,6 @@ if (!empty($wilayah)) {
 
     $builderGrafik->where('w.kelurahan', $namaWilayah);
 }
-$builderGrafik->where('p.id_penyakit', 1);
 $builderGrafik->groupBy('w.kelurahan');
 
 $grafik = $builderGrafik->get()->getResultArray();
@@ -200,7 +260,15 @@ $grafik = $builderGrafik->get()->getResultArray();
             $namaKel = $row['desa'];
             $jumlahKasus = (int)$row['kasus'];
 
-            $kategori = 'Belum ada data';
+            if ($jumlahKasus >= 20) {
+    $kategori = 'tinggi';
+} elseif ($jumlahKasus >= 10) {
+    $kategori = 'sedang';
+} elseif ($jumlahKasus > 0) {
+    $kategori = 'rendah';
+} else {
+    $kategori = 'Belum ada data';
+}
 
            // Memasukkan 4 kategori baru untuk mencari mana kelompok usia yang paling mendominasi
             $usiaData = [

@@ -89,24 +89,34 @@ $grafik = $builderGrafik->get()->getResultArray();
         // ======================
         $tahunMap = $this->request->getGet('tahun_map');
 
-        $builderDbd = $db->table('pasien p');
-        $builderDbd->select('w.kelurahan as desa, COUNT(DISTINCT p.id_pasien) as kasus');
-        $builderDbd->join(
-    'wilayah w',
-    'w.id_wilayah = p.id_wilayah',
+$builderDbd = $db->table('wilayah w');
+
+$builderDbd->select("
+    w.kelurahan as desa,
+    COUNT(DISTINCT p.id_pasien) as kasus
+");
+
+$builderDbd->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
     'left'
 );
-        $builderDbd->where('p.id_penyakit', 1);
 
-        // 🔥 FILTER HARUS DI SINI (SEBELUM get)
-        if (!empty($tahunMap)) {
-            $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
-        }
+$builderDbd->whereIn('w.kelurahan', [
+    'Sumbersari',
+    'Wirolegi',
+    'Antirogo',
+    'Tegal Gede',
+    'Karangrejo'
+]);
 
-        $builderDbd->groupBy('w.kelurahan');
+if (!empty($tahunMap)) {
+    $builderDbd->where('YEAR(p.tgl_kunjungan)', $tahunMap);
+}
 
-        // 🔥 BARU AMBIL DATA
-        $dbd = $builderDbd->get()->getResultArray();
+$builderDbd->groupBy('w.kelurahan');
+
+$dbd = $builderDbd->get()->getResultArray();
         // ======================
         // 🔥 DETAIL DATA MODAL
         // ======================
@@ -114,16 +124,16 @@ $grafik = $builderGrafik->get()->getResultArray();
 
 $builderDetail->select("
     w.kelurahan,
-    COUNT(*) as jumlah_kasus,
-    SUM(CASE WHEN p.umur <= 14 THEN 1 ELSE 0 END) as anak,
-    SUM(CASE WHEN p.umur BETWEEN 15 AND 59 THEN 1 ELSE 0 END) as dewasa,
-    SUM(CASE WHEN p.umur >= 60 THEN 1 ELSE 0 END) as lansia,
-    SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
-    SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
+    COUNT(DISTINCT p.id_pasien) as jumlah_kasus,
+    COUNT(DISTINCT CASE WHEN p.umur <= 14 THEN p.id_pasien END) as anak,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 15 AND 59 THEN p.id_pasien END) as dewasa,
+    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia,
+    COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN p.id_pasien END) as laki,
+    COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Perempuan' THEN p.id_pasien END) as perempuan,
 COALESCE(r.rumah_diperiksa, 0) as rumah_diperiksa,
 COALESCE(r.rumah_positif, 0) as rumah_positif,
-    SUM(CASE WHEN p.status_akhir = 'Sembuh' THEN 1 ELSE 0 END) as sembuh,
-    SUM(CASE WHEN p.status_akhir = 'Meninggal' THEN 1 ELSE 0 END) as meninggal,
+    COUNT(DISTINCT CASE WHEN p.status_akhir = 'Sembuh' THEN p.id_pasien END) as sembuh,
+    COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' THEN p.id_pasien END) as meninggal,
 ");
 
 $builderDetail->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
