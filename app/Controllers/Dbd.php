@@ -21,6 +21,25 @@ class Dbd extends BaseController
         $this->db = \Config\Database::connect();
     }
 
+    private function getDashboardLayout()
+    {
+        // Mengambil id_jabatan dari session login petugas
+        $id_jabatan = session()->get('id_jabatan');
+
+        // Melakukan mapping layout berdasarkan id_jabatan dari tabel petugas/jabatan
+        switch ($id_jabatan) {
+            case 1:
+                return 'layout/dashboard_layout_kepala';   // id_jabatan 1 -> Admin
+            case 2:
+                return 'layout/dashboard_layout_kader';   // id_jabatan 2 -> Kader
+            case 3:
+                return 'layout/dashboard_layout_admin';  // id_jabatan 3 -> Kepala
+            default:
+                // Fallback jika id_jabatan berupa superadmin (4) atau belum login
+                return 'layout/dashboard_layout_admin'; 
+        }
+    }
+
     public function inputData()
     {
             $db = \Config\Database::connect();
@@ -834,6 +853,7 @@ public function manajemen_pkm()
 
 public function rekap_skrining()
 {
+    $layout_dinamis = $this->getDashboardLayout();
     $db = \Config\Database::connect();
     $builder = $db->table('skrining as s');
 
@@ -858,6 +878,7 @@ public function rekap_skrining()
     $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
     $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
     $builder->where('s.id_penyakit', 1);
+    $builder->groupBy('s.id_skrining');
     // ==========================================
     // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
     // ==========================================
@@ -937,6 +958,7 @@ public function rekap_skrining()
     $pagerLinks = $pager->makeLinks($page, $perPage, $total, 'default_full');
 
     $data = [
+        'layout'   => $layout_dinamis, 
         'menu'       => 'skrining',
         'judul'      => 'Rekap Skrining',   
         'skrining'   => $skriningData,
