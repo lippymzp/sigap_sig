@@ -260,12 +260,6 @@ body .nav-link{
     .btn-login{
         margin-top: 10px;
     }
-    .diagis-full-logo{
-    width: 420px;
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
 /* HEADER DIARE */
 .brand-diare{
     display:flex;
