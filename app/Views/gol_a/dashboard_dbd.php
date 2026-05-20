@@ -1666,6 +1666,7 @@ d = d || {};
     // ================= DATA GRAFIK MORTALITAS =================
     $builderMort = $db->table('pasien');
     $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
+    $builderMort->where('pasien.id_penyakit', 1);
     $builderMort->where('pasien.status_akhir', 'Meninggal');
     
     $reqWilayahMort = $_GET['wilayah_mort'] ?? '';

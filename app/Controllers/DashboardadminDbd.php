@@ -137,9 +137,18 @@ $builderGrafik->select("
     ");
 
 $builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
+$builderGrafik->whereIn('w.kelurahan', [
+    'Sumbersari',
+    'Wirolegi',
+    'Antirogo',
+    'Tegal Gede',
+    'Karangrejo'
+]);
+
+$builderGrafik->where('p.id_penyakit', 1);
 
 if (!empty($id_penyakit)) {
-    $builderGrafik->where('p.id_penyakit', $id_penyakit);
+    $builderGrafik->where('p.id_penyakit', 1);
 }
 
 if (!empty($bulan)) {
