@@ -857,7 +857,6 @@ public function rekap_skrining()
     $db = \Config\Database::connect();
     $builder = $db->table('skrining as s');
 
-    $builder->distinct();
 
     $builder->select('
         s.id_skrining,
@@ -877,9 +876,10 @@ public function rekap_skrining()
         s.tanggal
     ');
 
-    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining', 'inner');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'inner');
     $builder->where('s.id_penyakit', 1);
+    $builder->groupBy('s.id_skrining');
 
     // ==========================================
     // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
@@ -950,7 +950,7 @@ public function rekap_skrining()
 
     // Hitung total data setelah difilter
     $totalBuilder = clone $builder;
-    $total = $totalBuilder->countAllResults(true);
+    $total = $totalBuilder->countAllResults();
 
     $skriningData = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
 
