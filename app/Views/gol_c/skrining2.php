@@ -184,7 +184,7 @@ body {
     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background:#00BBC2;"></div>
 </div>
 
-<form method="post" action="/skriningpneumonia/skriningpneumonia3">
+<form method="post" action="pneumonia/skriningpneumonia/skriningpneumonia3">
 
 <!-- DATA HIDDEN -->
 <input type="hidden" name="nik" value="<?= $nik ?? '' ?>">
