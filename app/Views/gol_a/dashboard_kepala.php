@@ -396,11 +396,9 @@ $kelurahanTerdampak = $db->table('pasien')
                     <td class="value" id="modalKategori">-</td>
                 </tr>
 
-                <tr>
-                    <td class="label">Rentang usia</td>
-                    <td class="colon">:</td>
-                    <td class="value"></td>
-                </tr>
+<tr>
+    <td colspan="3" style="padding-top:14px; font-weight:700; color:#1f2937;">Rentang Usia</td>
+</tr>
                 <tr class="sub">
                     <td class="label">Anak-anak</td>
                     <td class="colon">:</td>
@@ -428,11 +426,9 @@ $kelurahanTerdampak = $db->table('pasien')
                     <td class="value" id="modalDesaTertinggi">-</td>
                 </tr>
 
-                <tr>
-                    <td class="label">Jenis kelamin terinfeksi</td>
-                    <td class="colon">:</td>
-                    <td class="value" id="modalJkTotal">0</td>
-                </tr>
+<tr>
+    <td colspan="3" style="padding-top:14px; font-weight:700; color:#1f2937;">Rentang Usia</td>
+</tr>
                 <tr class="sub">
                     <td class="label">Laki-laki</td>
                     <td class="colon">:</td>
@@ -698,6 +694,7 @@ $kelurahanTerdampak = $db->table('pasien')
     // ================= DATA GRAFIK MORTALITAS =================
     $builderMort = $db->table('pasien');
     $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
+    $builderMort->where('pasien.id_penyakit', 1);
     $builderMort->where('pasien.status_akhir', 'Meninggal');
     
     $reqWilayahMort = $_GET['wilayah_mort'] ?? '';
@@ -850,7 +847,7 @@ function showDetailPopup(namaFix, namaAsli){
 
     var lk = parseInt(d.laki ?? 0);
     var pr = parseInt(d.perempuan ?? 0);
-    document.getElementById("modalJkTotal").innerText      = (lk > 0 ? 1 : 0) + (pr > 0 ? 1 : 0);
+    document.getElementById("modalJkTotal").innerText = lk + pr;
     document.getElementById("modalLaki").innerText         = lk;
     document.getElementById("modalPerempuan").innerText    = pr;
     document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
