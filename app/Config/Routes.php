@@ -148,7 +148,7 @@ $routes->get('pneumonia-funfact', 'FunfactPneumoniaLanding::index');
 /* ========================= */
 
 $routes->get('/diare-detail', 'Home::diare_detail');
-$routes->get('/diare', 'Diare::index');
+
 
 /* ========================= */
 /* LOGIN */

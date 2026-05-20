@@ -8,7 +8,7 @@ use App\Libraries\DiareDecisionTree;
 use App\Models\PasienSkriningModel;
 use App\Models\BeritaModelDD;
 use App\Models\FunfactModelD;
-
+use App\Models\DataDiareModel;
 
 // use Dompdf\Dompdf;
 // use App\Models\SkriningModel;
@@ -258,8 +258,29 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
-    die('CONTROLLER DIARE YANG INI KEBACA');
+    helper('text');
+
+    $beritaModel = new BeritaModelDD();
+    $funfactModel = new FunfactModelD();
+    $diareModel = new DataDiareModel();
+
+    $data['berita'] = $beritaModel
+        ->where('id_penyakit', 4)
+        ->where('status_berita', 'publish')
+        ->orderBy('tanggal_berita', 'DESC')
+        ->findAll();
+
+    $data['funfact'] = $funfactModel
+        ->where('id_penyakit', 4)
+        ->where('status_funfact', 'published')
+        ->orderBy('tanggal_funfact', 'DESC')
+        ->findAll();
+
+    $data['diare'] = $diareModel->findAll();
+
+    return view('gol_d/diare', $data);
 }
+
    
 
     // =========================
