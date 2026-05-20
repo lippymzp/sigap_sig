@@ -238,7 +238,7 @@ public function index()
         ->orderBy('tanggal_funfact', 'DESC')
         ->findAll();
 
-    $data['diare'] = $diareModel->findAll();
+   dd($diareModel->findAll());
 
     return view('gol_d/diare', $data);
 }
