@@ -279,6 +279,9 @@ body .nav-link{
     object-fit:contain;
     display:block;
 }
+.diagis-text-logo{
+    width:250px;
+}
 }
 </style>
 
@@ -347,7 +350,7 @@ $showLoginPages = [
          class="brand-logo diare-logo">
 
     <!-- NAMA DIGANTI GAMBAR -->
-    <img src="<?= base_url('img/nama.png') ?>" 
+    <img src="<?= base_url('img/namaa.png') ?>" 
          alt="Diagis Text"
          class="diagis-text-logo">
 
