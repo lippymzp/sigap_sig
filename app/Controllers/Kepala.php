@@ -39,57 +39,71 @@ class Kepala extends Controller
         $usia    = $this->request->getGet('usia');
         $jk      = $this->request->getGet('jk');
 
-       $builderGrafik = $db->table('wilayah w');
+// ======================
+// DATA GRAFIK
+// ======================
+
+$builderGrafik = $db->table('pasien p');
 
 $builderGrafik->select("
-    w.kelurahan as wilayah,
-    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 THEN p.id_pasien END) as anak,
-    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 THEN p.id_pasien END) as remaja,
-    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
-    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
+    w.kelurahan,
+    COUNT(DISTINCT p.id_pasien) as total
 ");
+
 $builderGrafik->join(
-    'pasien p',
-    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'wilayah w',
+    'w.id_wilayah = p.id_wilayah',
     'left'
 );
+
+$builderGrafik->where('p.id_penyakit', 1);
+
+$builderGrafik->whereIn('w.kelurahan', [
+    'Sumbersari',
+    'Wirolegi',
+    'Antirogo',
+    'Tegal Gede',
+    'Karangrejo'
+]);
 
 if (!empty($bulan)) {
     $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
 }
+
 if (!empty($tahun)) {
     $builderGrafik->where('YEAR(p.tgl_kunjungan)', $tahun);
 }
+
 if (!empty($jk)) {
-    $builderGrafik->where('p.jenis_kelamin', ($jk == 'L' ? 'Laki-laki' : 'Perempuan'));
+    $builderGrafik->where(
+        'p.jenis_kelamin',
+        ($jk == 'L' ? 'Laki-laki' : 'Perempuan')
+    );
 }
+
 if (!empty($usia)) {
     if ($usia == 'anak') {
-        $builderGrafik->where('p.umur BETWEEN 0 AND 6');
+        $builderGrafik->where('p.umur <=', 14);
     } elseif ($usia == 'remaja') {
-        $builderGrafik->where('p.umur BETWEEN 7 AND 18');
+        $builderGrafik->where('p.umur >=', 15);
+        $builderGrafik->where('p.umur <=', 24);
     } elseif ($usia == 'dewasa') {
-        $builderGrafik->where('p.umur BETWEEN 19 AND 59');
+        $builderGrafik->where('p.umur >=', 25);
+        $builderGrafik->where('p.umur <=', 59);
     } elseif ($usia == 'lansia') {
         $builderGrafik->where('p.umur >=', 60);
     }
 }
-if (!empty($wilayah)) {
-    $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
-    $builderGrafik->where('w.kelurahan', $namaWilayah);
-} else {
-    $builderGrafik->whereIn('w.kelurahan', ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo']);
-}
 
 $builderGrafik->groupBy('w.kelurahan');
+
 $grafik = $builderGrafik->get()->getResultArray();
 
-        // ======================
-        // 🔥 DATA PETA
-        // ======================
-        $tahunMap = $this->request->getGet('tahun_map');
 
-$builderDbd = $db->table('wilayah w');
+
+$tahunMap = $this->request->getGet('tahun_map');
+
+$builderDbd = $db->table('pasien p');
 
 $builderDbd->select("
     w.kelurahan as desa,
@@ -97,10 +111,12 @@ $builderDbd->select("
 ");
 
 $builderDbd->join(
-    'pasien p',
-    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'wilayah w',
+    'w.id_wilayah = p.id_wilayah',
     'left'
 );
+
+$builderDbd->where('p.id_penyakit', 1);
 
 $builderDbd->whereIn('w.kelurahan', [
     'Sumbersari',
