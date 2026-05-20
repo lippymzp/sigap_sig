@@ -1,7 +1,6 @@
 <script>
-// Menyimpan Hash CSRF CodeIgniter secara dinamis
 let currentCsrfToken = "<?= csrf_hash() ?>";
-let isChatInitialized = false; // FLAG BARU: Untuk mengecek apakah chat sudah pernah dibuka
+let isChatInitialized = false; 
 
 function toggleChat() {
     var chatWindow = document.getElementById('chatbotWindow');
@@ -9,7 +8,6 @@ function toggleChat() {
         chatWindow.style.display = 'flex';
         document.getElementById('chatInput').focus();
         
-        // JIKA PERTAMA KALI DIBUKA: Pancing pesan sambutan dari bot
         if (!isChatInitialized) {
             triggerInitialGreeting();
             isChatInitialized = true;
@@ -19,13 +17,12 @@ function toggleChat() {
     }
 }
 
-// FUNGSI BARU: Untuk memancing sapaan awal beserta tombol dari backend
 function triggerInitialGreeting() {
     var loadingId = 'loading-' + Date.now();
     appendMessage('bot', 'Mengetik...', loadingId);
 
     var formData = new URLSearchParams();
-    formData.append('message', 'halo'); // Otomatis mengirim sapaan agar memicu default options
+    formData.append('message', 'halo'); 
     formData.append('<?= csrf_token() ?>', currentCsrfToken); 
 
     fetch("<?= base_url('chagoo/send') ?>", {
@@ -47,7 +44,6 @@ function triggerInitialGreeting() {
         if (data.reply) {
             appendMessage('bot', data.reply.trim());
             
-            // Render tombol jika tersedia
             if (data.options && data.options.length > 0) {
                 renderChatOptions(data.options);
             }
@@ -68,10 +64,19 @@ function appendMessage(sender, text, id = null) {
     msgDiv.className = 'chat-msg ' + (sender === 'user' ? 'msg-user' : 'msg-bot');
     if (id) msgDiv.id = id;
     
-    msgDiv.textContent = text;
+    if (sender === 'bot') {
+        // Konversi markdown sederhana dari Gemini ke HTML (Tebal & Miring)
+        let formattedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); // Mencegah XSS
+        formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"); // Bold
+        formattedText = formattedText.replace(/\*(.*?)\*/g, "<em>$1</em>"); // Italic
+        
+        msgDiv.innerHTML = formattedText;
+    } else {
+        msgDiv.textContent = text;
+    }
     
     chatBody.appendChild(msgDiv);
-    chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll ke pesan terbaru
+    chatBody.scrollTop = chatBody.scrollHeight; 
 }
 
 function sendOptionMessage(text) {
@@ -80,7 +85,6 @@ function sendOptionMessage(text) {
     sendMessage();      
 }
 
-// FUNGSI BARU YANG DIEKSTRAK: Agar logika pembuatan tombol lebih rapi dan bisa dipakai berulang
 function renderChatOptions(options) {
     var chatBody = document.getElementById('chatBody');
     var optionsDiv = document.createElement('div');
@@ -95,7 +99,6 @@ function renderChatOptions(options) {
         var btn = document.createElement('button');
         btn.textContent = opt;
         
-        // Desain Inline CSS
         btn.style.padding = '5px 12px';
         btn.style.border = '1px solid #007bff';
         btn.style.backgroundColor = '#f8f9fa';
@@ -114,7 +117,7 @@ function renderChatOptions(options) {
         };
 
         btn.onclick = function() {
-            optionsDiv.remove(); // Pembersihan otomatis agar chatbox tidak penuh dengan tombol
+            optionsDiv.remove(); 
             sendOptionMessage(opt);
         };
 
@@ -160,7 +163,6 @@ function sendMessage() {
         if (data.reply) {
             appendMessage('bot', data.reply.trim());
             
-            // Panggil fungsi renderChatOptions jika ada balasan tombol
             if (data.options && data.options.length > 0) {
                 renderChatOptions(data.options);
             }
