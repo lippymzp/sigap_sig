@@ -1354,9 +1354,11 @@ function scrollCardRight() {
 
 .figma-slider{
     display: flex;
+    gap: 28px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    align-items: stretch;
 }
 
 .slider-card{
@@ -1526,8 +1528,8 @@ function scrollCardRight() {
 /* CARD */
 .figma-card{
     flex: 0 0 100%;
-    max-width: 100%;
-    min-height: 330px;
+    display: flex;
+    min-height: 420px;
 
     display: flex;
     align-items: center;
@@ -1719,22 +1721,27 @@ function scrollCardRight() {
 
 .figma-content{
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
 
-    background: linear-gradient(90deg,#0EB8C7,#72D8D8);
-    border-radius: 24px;
+    background: linear-gradient(90deg,#11b8c7,#6ed6d8);
+    border-radius: 28px;
 
-    padding: 38px;
-    min-height: 280px;
-
+    padding: 40px;
+    width: 100%;
+    min-height: 420px; /* samain */
+    height: 420px;     /* FIX */
     box-shadow: 0 14px 35px rgba(0,0,0,0.08);
 }
 
 /* TEKS */
 .figma-text{
-    width: 58%;
+    width: 56%;
     color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .figma-text h3{
@@ -1747,14 +1754,15 @@ function scrollCardRight() {
 }
 
 .figma-text p{
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.8;
-    margin-bottom: 25px;
+    margin: 18px 0;
+
+    overflow: hidden;
 
     display: -webkit-box;
-    -webkit-line-clamp: 5;
+    -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 /* META */
@@ -1768,16 +1776,17 @@ function scrollCardRight() {
 /* IMAGE */
 .figma-image{
     width: 38%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    height: 100%;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .figma-image img{
     width: 100%;
-    height: 170px;
+    height: 220px;
     object-fit: cover;
-    border-radius: 18px;
+    border-radius: 20px;
 }
 
 /* BUTTON */
