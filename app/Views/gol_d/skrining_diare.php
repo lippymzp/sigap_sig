@@ -160,7 +160,7 @@ span{
 
 </div>
 
-<form action="<?= base_url('skrining-diare-step2') ?>" method="post">
+<form action="<?= base_url('skrining-diare-step2') ?>" method="post" id="formSkrining">
 
 <div class="skrining-card">
 
@@ -173,7 +173,12 @@ span{
         <div class="col-md-6">
 
             <label class="form-label">NIK</label>
-            <input name="nik" class="form-control modern-input" required>
+          <input
+    name="nik"
+    class="form-control modern-input"
+    placeholder="Masukkan Nomor Induk Kependudukan"
+    required
+>
 
             <label class="form-label mt-3">Nama Lengkap</label>
             <input name="nama" class="form-control modern-input">
@@ -186,13 +191,25 @@ span{
             </select>
 
             <label class="form-label mt-3">Tanggal Lahir</label>
-            <input type="date" name="tgl" class="form-control modern-input">
+           <input type="date" id="tgl_lahir" name="tgl" class="form-control modern-input">
 
             <label class="form-label mt-3">Kategori Usia</label>
-            <input name="usia" class="form-control modern-input">
+            <input
+    type="text"
+    id="kategori_usia"
+    class="form-control modern-input"
+    placeholder="Otomatis sesuai tanggal lahir"
+    readonly
+>
+
+<input type="hidden" id="usia" name="usia">
 
             <label class="form-label mt-3">Nomor Telepon</label>
-            <input name="hp" class="form-control modern-input">
+          <input
+    name="hp"
+    class="form-control modern-input"
+    placeholder="Masukkan Nomor Telepon"
+>
 
         </div>
 
@@ -200,27 +217,34 @@ span{
         <div class="col-md-6">
 
             <label class="form-label">Provinsi</label>
-            <select name="prov" class="form-control modern-input">
+            <select name="prov" id="provinsi" class="form-control modern-input" required></select>
                 <option>Pilih Provinsi</option>
             </select>
 
             <label class="form-label mt-3">Kabupaten</label>
-            <select name="kab" class="form-control modern-input">
+          <select name="kab" id="kabupaten" class="form-control modern-input" required></select>
                 <option></option>
             </select>
 
             <label class="form-label mt-3">Kecamatan</label>
-            <select name="kec" class="form-control modern-input">
+         <select name="kec" id="kecamatan" class="form-control modern-input" required></select>
                 <option></option>
             </select>
 
             <label class="form-label mt-3">Kelurahan</label>
-            <select name="kel" class="form-control modern-input">
+           <select name="kel" id="kelurahan" class="form-control modern-input" required></select>
                 <option></option>
             </select>
-
+<input type="hidden" name="prov_nama" id="provinsi_nama">
+<input type="hidden" name="kab_nama" id="kabupaten_nama">
+<input type="hidden" name="kec_nama" id="kecamatan_nama">
             <label class="form-label mt-3">RT/RW</label>
-            <input name="rtrw" class="form-control modern-input">
+         <input
+    name="kodepos"
+    id="rt_rw"
+    class="form-control modern-input"
+    placeholder="Masukkan RT/RW"
+>
 
             <label class="form-label mt-3">Tanggal Skrining</label>
             <input 
@@ -243,5 +267,124 @@ span{
 
 </form>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+const API = "https://www.emsifa.com/api-wilayah-indonesia/api";
 
+// PROVINSI
+fetch(`${API}/provinces.json`)
+.then(res => res.json())
+.then(data => {
+    let prov = document.getElementById('provinsi');
+    prov.innerHTML = `<option value="">Pilih Provinsi</option>`;
+
+    data.forEach(d => {
+        prov.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`;
+    });
+});
+
+// KABUPATEN
+document.getElementById('provinsi').addEventListener('change', function(){
+    fetch(`${API}/regencies/${this.value}.json`)
+    .then(res => res.json())
+    .then(data => {
+        let kab = document.getElementById('kabupaten');
+        kab.innerHTML = `<option value="">Pilih Kabupaten</option>`;
+
+        data.forEach(d => {
+            kab.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`;
+        });
+    });
+
+    document.getElementById('provinsi_nama').value =
+        this.options[this.selectedIndex].dataset.name || '';
+});
+
+// KECAMATAN
+document.getElementById('kabupaten').addEventListener('change', function(){
+    fetch(`${API}/districts/${this.value}.json`)
+    .then(res => res.json())
+    .then(data => {
+        let kec = document.getElementById('kecamatan');
+        kec.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+
+        data.forEach(d => {
+            kec.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`;
+        });
+    });
+
+    document.getElementById('kabupaten_nama').value =
+        this.options[this.selectedIndex].dataset.name || '';
+});
+
+// KELURAHAN
+document.getElementById('kecamatan').addEventListener('change', function(){
+    fetch(`${API}/villages/${this.value}.json`)
+    .then(res => res.json())
+    .then(data => {
+        let kel = document.getElementById('kelurahan');
+        kel.innerHTML = `<option value="">Pilih Kelurahan</option>`;
+
+        data.forEach(d => {
+            kel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+        });
+    });
+
+    document.getElementById('kecamatan_nama').value =
+        this.options[this.selectedIndex].dataset.name || '';
+});
+
+// AUTO USIA
+document.getElementById('tgl_lahir').addEventListener('change', function(){
+    const tgl = new Date(this.value);
+    const now = new Date();
+
+    let umur = now.getFullYear() - tgl.getFullYear();
+    let bulan = now.getMonth() - tgl.getMonth();
+
+    if (bulan < 0 || (bulan === 0 && now.getDate() < tgl.getDate())) {
+        umur--;
+    }
+
+    let kategori =
+        umur <= 6 ? 'Bayi dan Anak Pra-sekolah' :
+        umur <= 18 ? 'Sekolah dan Remaja' :
+        umur <= 59 ? 'Dewasa' :
+        'Lansia';
+
+    document.getElementById('kategori_usia').value = kategori;
+    document.getElementById('usia').value = umur;
+});
+
+// LIMIT NIK
+document.querySelector('[name="nik"]').addEventListener('input', function(){
+    this.value = this.value.replace(/\D/g, '').slice(0,16);
+});
+
+// VALIDASI
+document.getElementById('formSkrining').addEventListener('submit', function(e){
+
+    let wajib = [
+        'nik','nama','jk','tgl','usia','hp','prov','kab','kec','kel','kodepos'
+    ];
+
+    for(let n of wajib){
+        let field = document.querySelector(`[name="${n}"]`);
+
+        if(!field || field.value.trim() === "" || field.value.includes("Pilih")){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'info',
+                title:'Lengkapi data dulu 🌟',
+                text:'Semua informasi wajib diisi sebelum lanjut skrining',
+                confirmButtonColor:'#00BBC2'
+            });
+
+            field.focus();
+            return;
+        }
+    }
+});
+</script>
 <?= $this->include('layout/footer') ?>
