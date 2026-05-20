@@ -1282,16 +1282,208 @@ function scrollCardRight() {
 ========================= */
 
 
-
-.figma-slider-container{
-    position: relative;
+.figma-card-text{
+    width: 52%;
+    padding: 36px 30px;
+    color: white;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 
-.figma-slider::-webkit-scrollbar{
-    display:none;
+.figma-arrow.left{
+    left:-26px;
+}
+
+.figma-arrow.right{
+    right:-26px;
+}
+
+
+
+
+.figma-card-text h3{
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1.08;
+    margin-bottom: 22px;
+    text-transform: uppercase;
+}
+
+.figma-card-text p{
+    font-size: 21px;
+    line-height: 1.8;
+    font-weight: 500;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+
+.figma-card-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 24px;
+    background: #f7f7f7;
+}
+
+/* ===============================
+   PREMIUM SLIDER
+=============================== */
+
+
+.slider-wrapper{
+    position: relative;
+    width: 100%;
+}
+
+.figma-slider{
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.slider-card{
+    min-width: 100%;
+    height: 430px;
+    display: flex;
+    border-radius: 34px;
+    overflow: hidden;
+    background: linear-gradient(135deg,#18C7D3,#14B8C8);
+    box-shadow: 0 18px 45px rgba(0,0,0,.12);
+    flex-shrink: 0;
+}
+
+/* TEXT */
+.slider-text{
+    width: 58%;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+}
+
+.slider-text h2{
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    color: white !important;
+}
+
+.slider-text p{
+    font-size: 22px;
+    line-height: 1.7;
+    font-weight: 500;
+    color: white !important;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* IMAGE */
+.slider-image{
+    width: 42%;
+    background: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 26px;
+}
+
+/* BUTTON */
+.slider-btn{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 72px;
+    height: 72px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    z-index: 999;
+    font-size: 28px;
+    color: #17C4D2;
+    cursor: pointer;
+}
+
+.slider-btn.prev{
+    left: -35px;
+}
+
+.slider-btn.next{
+    right: -35px;
+}
+
+.slider-btn:hover{
+    transform: translateY(-50%) scale(1.08);
+}
+
+/* MOBILE */
+@media(max-width:992px){
+    .slider-card{
+        flex-direction: column;
+        height: auto;
+    }
+
+    .slider-text,
+    .slider-image{
+        width:100%;
+    }
+
+    .slider-text{
+        padding:30px;
+    }
+
+    .slider-text h2{
+        font-size:30px;
+    }
+
+    .slider-text p{
+        font-size:16px;
+    }
+
+    .slider-image{
+        height:260px;
+    }
+}
+
+.figma-arrow.left{
+    left: -18px;
+}
+
+.figma-arrow.right{
+    right: -18px;
+}
+
+@media(max-width:992px){
+
+
+    .figma-card-text h3{
+        font-size: 30px;
+    }
+
+    .figma-card-text p{
+        font-size: 16px;
+    }
 }
 
 /* =========================
@@ -1463,279 +1655,6 @@ function scrollCardRight() {
         max-height: 220px;
     }
 }
-.figma-card-text{
-    width: 52%;
-    padding: 36px 30px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.figma-card-text h3{
-    font-size: 30px;
-    font-weight: 800;
-    line-height: 1.25;
-    margin-bottom: 16px;
-    color: white;
-}
-
-.figma-card-text p{
-    font-size: 18px;
-    line-height: 1.7;
-    margin: 0;
-    color: rgba(255,255,255,0.96);
-}
-
-.figma-card-image{
-    width: 48%;
-    height: 100%;
-    background: #ffffff;
-    padding: 14px;              /* pembatas putih */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.figma-card-image img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;        /* semua gambar terlihat */
-    border-radius: 14px;
-    background: #f7f7f7;
-}
-.figma-arrow.left{
-    left:-26px;
-}
-
-.figma-arrow.right{
-    right:-26px;
-}
-
-
-
-.figma-slider{
-    display: flex;
-    gap: 28px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    padding: 20px 40px;
-    width: 100%;
-}
-
-.figma-slider::-webkit-scrollbar{
-    display: none;
-}
-
-
-
-
-.figma-card-text h3{
-    font-size: 48px;
-    font-weight: 900;
-    line-height: 1.08;
-    margin-bottom: 22px;
-    text-transform: uppercase;
-}
-
-.figma-card-text p{
-    font-size: 21px;
-    line-height: 1.8;
-    font-weight: 500;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-
-
-.figma-card-image img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 24px;
-    background: #f7f7f7;
-}
-
-/* ===============================
-   PREMIUM SLIDER
-=============================== */
-.figma-slider-section{
-    margin: 80px 0;
-}
-
-.slider-wrapper{
-    position: relative;
-    width: 100%;
-}
-
-.figma-slider{
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-}
-
-.figma-slider::-webkit-scrollbar{
-    display:none;
-}
-
-.slider-card{
-    min-width: 100%;
-    height: 430px;
-    display: flex;
-    border-radius: 34px;
-    overflow: hidden;
-    background: linear-gradient(135deg,#18C7D3,#14B8C8);
-    box-shadow: 0 18px 45px rgba(0,0,0,.12);
-    flex-shrink: 0;
-}
-
-/* TEXT */
-.slider-text{
-    width: 58%;
-    padding: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: white;
-}
-
-.slider-text h2{
-    font-size: 52px;
-    font-weight: 900;
-    line-height: 1.05;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    color: white !important;
-}
-
-.slider-text p{
-    font-size: 22px;
-    line-height: 1.7;
-    font-weight: 500;
-    color: white !important;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* IMAGE */
-.slider-image{
-    width: 42%;
-    background: white;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.slider-image img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 26px;
-}
-
-/* BUTTON */
-.slider-btn{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 72px;
-    height: 72px;
-    border: none;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 10px 25px rgba(0,0,0,.15);
-    z-index: 999;
-    font-size: 28px;
-    color: #17C4D2;
-    cursor: pointer;
-}
-
-.slider-btn.prev{
-    left: -35px;
-}
-
-.slider-btn.next{
-    right: -35px;
-}
-
-.slider-btn:hover{
-    transform: translateY(-50%) scale(1.08);
-}
-
-/* MOBILE */
-@media(max-width:992px){
-    .slider-card{
-        flex-direction: column;
-        height: auto;
-    }
-
-    .slider-text,
-    .slider-image{
-        width:100%;
-    }
-
-    .slider-text{
-        padding:30px;
-    }
-
-    .slider-text h2{
-        font-size:30px;
-    }
-
-    .slider-text p{
-        font-size:16px;
-    }
-
-    .slider-image{
-        height:260px;
-    }
-}
-
-.figma-arrow.left{
-    left: -18px;
-}
-
-.figma-arrow.right{
-    right: -18px;
-}
-
-@media(max-width:992px){
-    .figma-card{
-        flex-direction: column;
-        height: auto;
-        min-height: 560px;
-    }
-
-    .figma-card-text,
-    .figma-card-image{
-        width: 100%;
-    }
-
-    .figma-card-image{
-        height: 260px;
-    }
-
-    .figma-card-text h3{
-        font-size: 30px;
-    }
-
-    .figma-card-text p{
-        font-size: 16px;
-    }
-}
-
-.figma-arrow:hover{
-    transform: scale(1.08);
-}
-
 .figma-arrow.left{
     left: -5px;
 }
@@ -1753,34 +1672,16 @@ function scrollCardRight() {
         flex-direction: column;
     }
 
-    .figma-card-text{
-        width: 100%;
-        padding: 24px;
-    }
-
+   
     .figma-card-text h3{
         font-size: 24px;
     }
 
-    .figma-card-image{
-        width: 100%;
-        height: 220px;
-    }
 
-    .figma-arrow{
-        display:none;
-    }
 
 
 }
 
-.figma-arrow.left{
-    left: 8px;
-}
-
-.figma-arrow.right{
-    right: 8px;
-}
 </style>
 </div>
 <?= $this->include('layout/footer') ?>
