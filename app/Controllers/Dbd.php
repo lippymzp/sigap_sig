@@ -975,14 +975,19 @@ public function manajemen_pkm()
 }
 
 
-public function hapus_skrining(int $id)
+public function hapus_skrining($id = null)
 {
-    $model = new \App\Models\SkriningdbdModel();
+    // Pengaman: Jika ID kosong atau 0, kembalikan ke halaman sebelumnya
+    if (empty($id) || $id == 0) {
+        return redirect()->back()->with('error', 'ID Skrining tidak valid!');
+    }
 
+    $model = new \App\Models\SkriningdbdModel();
+    
+    // Hapus data berdasarkan ID
     $model->delete($id);
 
-    return redirect()->back()
-                     ->with('success', 'Data berhasil dihapus');
+    return redirect()->back()->with('success', 'Data berhasil dihapus');
 }
 
 // ==================================
