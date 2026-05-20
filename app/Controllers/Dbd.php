@@ -652,7 +652,12 @@ class Dbd extends BaseController
         $wilayah = $this->request->getGet('wilayah');
         
         $bulan = $this->request->getGet('bulan');
-        $tahun = $this->request->getGet('tahun_map');
+        $tahun = $this->request->getGet('tahun');
+
+// Default ke tahun sekarang biar match dengan peta yang juga default tahun sekarang
+if ($tahun === null) {
+    $tahun = date('Y');
+}
         $usia  = $this->request->getGet('usia');
         $jk    = $this->request->getGet('jk');
 
@@ -739,15 +744,6 @@ $builder->where('p.id_penyakit', 1);
         $builder->groupBy('w.kelurahan');
 
         $grafik = $builder->get()->getResultArray();
-// DEBUG TOTAL
-foreach ($grafik as &$g) {
-
-    $g['total'] =
-        $g['anak'] +
-        $g['remaja'] +
-        $g['dewasa'] +
-        $g['lansia'];
-}
         // ======================
         // 🔥 DATA PETA
         // ======================
