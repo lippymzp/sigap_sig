@@ -75,6 +75,7 @@
     </div>
 </section>
 
+<!-- SLIDER IKLAN FIGMA FIX -->
 <section class="figma-slider-section">
     <div class="container">
 
@@ -89,15 +90,22 @@
                 <?php if(!empty($iklan)): ?>
                     <?php foreach($iklan as $item): ?>
 
-                        <div class="slider-card">
+                        <div class="figma-card">
 
-                            <div class="slider-text">
-                                <h2><?= esc($item['judul']) ?></h2>
-                                <p><?= esc($item['deskripsi']) ?></p>
-                            </div>
+                            <div class="figma-content">
+                                <div class="figma-text">
+                                    <h3><?= esc($item['judul']) ?></h3>
+                                    <p><?= esc($item['deskripsi']) ?></p>
 
-                            <div class="slider-image">
-                                <img src="<?= base_url('uploads/iklan/' . $item['gambar']) ?>">
+                                    <div class="figma-meta">
+                                        <span>SIGAP</span>
+                                        <span><?= date('d M Y') ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="figma-image">
+                                    <img src="<?= base_url('uploads/iklan/' . $item['gambar']) ?>">
+                                </div>
                             </div>
 
                         </div>
@@ -590,15 +598,17 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function scrollCardLeft() {
-    document.getElementById('cardSlider').scrollBy({
-        left: -1200,
+    const slider = document.getElementById('cardSlider');
+    slider.scrollBy({
+        left: -slider.offsetWidth,
         behavior: 'smooth'
     });
 }
 
 function scrollCardRight() {
-    document.getElementById('cardSlider').scrollBy({
-        left: 1200,
+    const slider = document.getElementById('cardSlider');
+    slider.scrollBy({
+        left: slider.offsetWidth,
         behavior: 'smooth'
     });
 }
@@ -1487,8 +1497,9 @@ function scrollCardRight() {
 }
 
 /* =========================
-   SLIDER IKLAN FIGMA FIX
+   FIGMA STYLE SLIDER FINAL
 ========================= */
+
 .figma-slider-section{
     margin: 70px 0;
 }
@@ -1496,101 +1507,96 @@ function scrollCardRight() {
 .figma-slider-container{
     position: relative;
     width: 100%;
-    overflow: hidden;
     padding: 0 70px;
+    overflow: hidden;
 }
 
 .figma-slider{
     display: flex;
-    gap: 28px;
+    gap: 30px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
-    padding: 10px 0;
 }
 
 .figma-slider::-webkit-scrollbar{
-    display: none;
+    display:none;
 }
 
 /* CARD */
 .figma-card{
     flex: 0 0 100%;
     max-width: 100%;
-    min-height: 320px;
+    min-height: 330px;
 
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: space-between;
 
-    border-radius: 24px;
-    overflow: hidden;
+    padding: 28px 36px;
 
     background: linear-gradient(
         90deg,
-        #10B9C8 0%,
-        #6FD8D8 100%
+        #11B9C8 0%,
+        #78D8D9 100%
     );
 
-    box-shadow: 0 14px 35px rgba(0,0,0,0.08);
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+
+    overflow: hidden;
 }
 
 /* TEKS */
 .figma-card-text{
-    width: 58%;
-    padding: 42px;
+    width: 55%;
+    color: white;
+    padding-right: 30px;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .figma-card-text h3{
-    color: white;
-    font-size: 42px;
+    font-size: 46px;
     font-weight: 800;
     line-height: 1.15;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 
-    /* AGAR TIDAK MELEBAR */
     word-break: break-word;
     overflow-wrap: break-word;
 }
 
 .figma-card-text p{
-    color: white;
-    font-size: 22px;
-    line-height: 1.7;
+    font-size: 21px;
     font-weight: 500;
+    line-height: 1.7;
+    margin: 0;
 
-    /* WRAP */
     word-break: break-word;
     overflow-wrap: break-word;
 
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    max-width: 100%;
 }
 
 /* GAMBAR */
 .figma-card-image{
-    width: 42%;
-    padding: 28px;
+    width: 40%;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .figma-card-image img{
     width: 100%;
-    height: 100%;
-    max-height: 260px;
+    height: 230px;
 
     object-fit: cover;
     object-position: center;
 
     border-radius: 22px;
-    background: white;
+    display:block;
 }
 
 /* ARROW */
@@ -1598,35 +1604,39 @@ function scrollCardRight() {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 62px;
-    height: 62px;
+    z-index: 50;
+
+    width: 64px;
+    height: 64px;
     border: none;
     border-radius: 50%;
+
     background: white;
-    color: #12B6C6;
+    color: #11B9C8;
     font-size: 26px;
-    z-index: 50;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 .figma-arrow.left{
-    left: 0;
+    left: 10px;
 }
 
 .figma-arrow.right{
-    right: 0;
+    right: 10px;
 }
 
 .figma-arrow:hover{
     transform: translateY(-50%) scale(1.08);
 }
 
-/* MOBILE */
-@media(max-width: 992px){
+/* RESPONSIVE */
+@media(max-width:992px){
 
     .figma-card{
         flex-direction: column;
         min-height: auto;
+        padding: 24px;
     }
 
     .figma-card-text,
@@ -1635,7 +1645,8 @@ function scrollCardRight() {
     }
 
     .figma-card-text{
-        padding: 28px;
+        padding-right: 0;
+        margin-bottom: 20px;
     }
 
     .figma-card-text h3{
@@ -1644,15 +1655,10 @@ function scrollCardRight() {
 
     .figma-card-text p{
         font-size: 16px;
-        -webkit-line-clamp: unset;
-    }
-
-    .figma-card-image{
-        padding: 0 28px 28px;
     }
 
     .figma-card-image img{
-        max-height: 220px;
+        height: 220px;
     }
 }
 .figma-arrow.left{
@@ -1681,7 +1687,151 @@ function scrollCardRight() {
 
 
 }
+/* =========================
+   SLIDER FIX FIGMA
+========================= */
 
+.figma-slider-section{
+    margin: 70px 0;
+}
+
+.slider-wrapper{
+    position: relative;
+    padding: 0 50px;
+}
+
+.figma-slider{
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.figma-slider::-webkit-scrollbar{
+    display:none;
+}
+
+.figma-card{
+    flex: 0 0 100%;
+    background: transparent;
+}
+
+.figma-content{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: linear-gradient(90deg,#0EB8C7,#72D8D8);
+    border-radius: 24px;
+
+    padding: 38px;
+    min-height: 280px;
+
+    box-shadow: 0 14px 35px rgba(0,0,0,0.08);
+}
+
+/* TEKS */
+.figma-text{
+    width: 58%;
+    color: white;
+}
+
+.figma-text h3{
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 18px;
+
+    word-wrap: break-word;
+}
+
+.figma-text p{
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 25px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* META */
+.figma-meta{
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
+    opacity: .95;
+}
+
+/* IMAGE */
+.figma-image{
+    width: 38%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.figma-image img{
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+/* BUTTON */
+.slider-btn{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+
+    width: 58px;
+    height: 58px;
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+    color: #10B8C7;
+    font-size: 22px;
+
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.slider-btn.prev{
+    left: -5px;
+}
+
+.slider-btn.next{
+    right: -5px;
+}
+
+.slider-btn:hover{
+    transform: translateY(-50%) scale(1.08);
+}
+
+/* MOBILE */
+@media(max-width: 992px){
+
+    .figma-content{
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .figma-text,
+    .figma-image{
+        width: 100%;
+    }
+
+    .figma-image{
+        margin-top: 25px;
+    }
+
+    .figma-text h3{
+        font-size: 24px;
+    }
+}
 </style>
 </div>
 <?= $this->include('layout/footer') ?>
