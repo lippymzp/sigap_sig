@@ -158,7 +158,7 @@ class Dashboard extends BaseController
 
             'id_pasien_skrining' => $id_pasien_skrining,
 
-            'id_penyakit' => 1,
+            'id_penyakit' => 2,
 
             'tanggal' => date('Y-m-d'),
 

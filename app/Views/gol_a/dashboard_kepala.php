@@ -249,33 +249,55 @@ $tahunMap = $tahunMap ?? [
 </div>
 
 <?php
-    $dbStat = \Config\Database::connect();
+    $db = \Config\Database::connect();
 
     $idPetugas  = session()->get('id_petugas');
     $idPenyakit = session()->get('id_penyakit');
 
-    $totalKasus = $dbStat->table('pasien')
-        ->where('id_petugas', $idPetugas)
-        ->where('id_penyakit', $idPenyakit)
-        ->countAllResults();
+    $builder = $db->table('pasien')
+    ->where('id_petugas', $idPetugas)
+    ->where('id_penyakit', $idPenyakit);
+    $desa_diizinkan = [
+        'sumbersari',
+        'wirolegi',
+        'antirogo',
+        'tegalgede',
+        'karangrejo'
+    ];
 
-    $hariIni = date('Y-m-d');
-    $kasusHariIni = $dbStat->table('pasien')
-        ->where('DATE(tgl_kunjungan)', $hariIni)
-        ->where('id_petugas', $idPetugas)
-        ->where('id_penyakit', $idPenyakit)
-        ->countAllResults();
+// Total kasus
+$totalKasus = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
-    // 3. Kelurahan Terdampak
-    $idPetugas  = session()->get('id_petugas');
-        $idPenyakit = session()->get('id_penyakit');
+// Kasus hari ini
+$kasusHariIni = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
-        $kelurahanTerdampak = $dbStat->table('pasien')
-            ->select('id_wilayah')
-            ->where('id_petugas', $idPetugas)
-            ->where('id_penyakit', $idPenyakit)
-            ->distinct()
-            ->countAllResults();
+// Kelurahan terdampak
+$kelurahanTerdampak = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->select('COUNT(DISTINCT wilayah.kelurahan) as total')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->get()
+    ->getRow()
+    ->total;
 ?>
 
 <div class="stat-row">
@@ -989,19 +1011,56 @@ document.addEventListener("DOMContentLoaded", function() {
     // Init Sliding Tab
     switchTab("<?= $_GET['tab'] ?? 'kasus' ?>");
 
-    // ================= 1. GRAFIK KASUS =================
-    const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
-    let labelsKasus = []; let totalKasus = [];
-    dataGrafikKasus.forEach(item => { 
-        labelsKasus.push(item.kelurahan || item.desa); 
-        totalKasus.push(item.total || item.kasus); 
-    });
-    
-    new Chart(document.getElementById('chartKasus').getContext('2d'), {
-        type: 'bar', 
-        data: { labels: labelsKasus, datasets: [{ label: 'Total Kasus', data: totalKasus, backgroundColor: '#00BBC2', borderRadius: 8 }] },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
+// ================= 1. GRAFIK KASUS =================
+const ctxKasus = document.getElementById('chartKasus').getContext('2d');
+const grafik = <?= json_encode($grafik ?? []) ?>;
+
+const labels = grafik.map(item => item.wilayah);
+const dataAnak = grafik.map(item => item.anak);
+const dataRemaja = grafik.map(item => item.remaja);
+const dataDewasa = grafik.map(item => item.dewasa);
+const dataLansia = grafik.map(item => item.lansia);
+
+const usiaFilter = "<?= request()->getGet('usia') ?>";
+
+let datasetsKasus = [];
+
+if (usiaFilter === 'anak') {
+    datasetsKasus.push({ label: 'Anak', data: dataAnak, backgroundColor: '#4285F4' });
+} else if (usiaFilter === 'remaja') {
+    datasetsKasus.push({ label: 'Remaja', data: dataRemaja, backgroundColor: '#06B6D4' });
+} else if (usiaFilter === 'dewasa') {
+    datasetsKasus.push({ label: 'Dewasa', data: dataDewasa, backgroundColor: '#7DD3FC' });
+} else if (usiaFilter === 'lansia') {
+    datasetsKasus.push({ label: 'Lansia', data: dataLansia, backgroundColor: '#14B8A6' });
+} else {
+    datasetsKasus = [
+        { label: 'Anak', data: dataAnak, backgroundColor: '#0F766E' },
+        { label: 'Remaja', data: dataRemaja, backgroundColor: '#06B6D4' },
+        { label: 'Dewasa', data: dataDewasa, backgroundColor: '#7DD3FC' },
+        { label: 'Lansia', data: dataLansia, backgroundColor: '#14B8A6' }
+    ];
+}
+
+new Chart(ctxKasus, {
+    type: 'bar',
+    data: { labels: labels, datasets: datasetsKasus },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 13, weight: '600' } } },
+            tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#fff', cornerRadius: 12, padding: 12 }
+        },
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { padding: 10 } },
+            x: { grid: { display: false }, ticks: { padding: 8 } }
+        },
+        animation: { duration: 1200, easing: 'easeOutQuart' }
+    }
+});
+
+
 
     // ================= 2. GRAFIK MORTALITAS =================
     const rawDataMort = <?= json_encode($dataFinalMort) ?>;

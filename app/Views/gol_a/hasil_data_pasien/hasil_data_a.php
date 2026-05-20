@@ -225,7 +225,7 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
 
                 <td><b><?= $d['jumlah'] ?></b></td>
 
-                <td><?= $d['meninggal'] ?? 0 ?></td>
+                <td><?= $d['jumlah_kematian'] ?? 0 ?></td>
 
                 <td>
                     <a href="<?= base_url('dbd/detail-pasien') ?>?bulan=<?= $d['bulan_angka'] ?>&kelurahan=<?= $d['kelurahan'] ?>&tahun=<?= $tahun ?>"

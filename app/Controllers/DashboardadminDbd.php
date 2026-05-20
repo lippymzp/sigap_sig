@@ -25,275 +25,217 @@ public function index()
         $tahun   = $this->request->getGet('tahun');
         $usia    = $this->request->getGet('usia');
         $jk      = $this->request->getGet('jk');
+        $bulanMap = $this->request->getGet('bulan_map');
+        $tahunMap = $this->request->getGet('tahun_map');
+    // ==========================================
+        // 1. QUERY UTAMA: DATA PETA & DETAIL DESA (TERFILTER)
+        // ==========================================
+        $builderMape = $db->table('wilayah w');
 
-        // =========================
-        // QUERY GRAFIK
-        // =========================
-        $builder = $db->table('pasien p');
+        $penyakitFilter = !empty($id_penyakit) ? "AND p.id_penyakit = " . $db->escape($id_penyakit) : "";
+        // FILTER GLOBAL
+        $bulanFilter = !empty($bulan)
+            ? "AND MONTH(p.tgl_kunjungan) = " . $db->escape($bulan)
+            : "";
 
-        $builder->select('
-            w.kelurahan as desa,
-            COUNT(*) as kasus
-        ');
+        $tahunFilter = !empty($tahun)
+            ? "AND YEAR(p.tgl_kunjungan) = " . $db->escape($tahun)
+            : "";
 
-        $builder->join(
-            'wilayah w',
-            'w.id_wilayah = p.id_wilayah',
-            'left'
-        );
-        $builder->where('p.id_penyakit', $id_penyakit);
+        // FILTER KHUSUS PETA
+        $bulanMapFilter = !empty($bulanMap)
+            ? "AND MONTH(p.tgl_kunjungan) = " . $db->escape($bulanMap)
+            : "";
 
-        // 2. Logika Filter Wilayah
-        if (!empty($wilayah)) {
-            // Menyesuaikan value 'Tegalgede' dari View agar cocok dengan 'Tegal Gede' di DB
-            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
-            $builder->where('w.kelurahan', $namaWilayah);
-        } else {
-            // Tampilkan semua (5 kelurahan) jika filter wilayah tidak dipilih (opsi 'All')
-            $builder->whereIn('w.kelurahan', [
-                'Sumbersari',
-                'Wirolegi',
-                'Antirogo',
-                'Tegal Gede',
-                'Karangrejo'
-            ]);
-        }
+        $tahunMapFilter = !empty($tahunMap)
+            ? "AND YEAR(p.tgl_kunjungan) = " . $db->escape($tahunMap)
+            : "";
 
-        // Filter lainnya tetap sama...
-        if (!empty($bulan)) {
-            $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
-        }
-
-        if (!empty($tahun)) {
-            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-        }
-
+       
+        $jkFilter = "";
         if (!empty($jk)) {
-            if ($jk == 'L') {
-                $builder->where('p.jenis_kelamin', 'Laki-laki');
-            } elseif ($jk == 'P') {
-                $builder->where('p.jenis_kelamin', 'Perempuan');
-            }
+            $gender   = ($jk == 'L') ? 'Laki-laki' : 'Perempuan';
+            $jkFilter = "AND p.jenis_kelamin = " . $db->escape($gender);
         }
 
+       $usiaFilter = "";
         if (!empty($usia)) {
             if ($usia == 'anak') {
-                $builder->where('p.umur <=', 14);
+                // Bayi dan Anak Pra-sekolah 0–6 Tahun
+                $usiaFilter = "AND p.umur BETWEEN 0 AND 6";
             } elseif ($usia == 'remaja') {
-                $builder->where('p.umur >=', 15);
-                $builder->where('p.umur <=', 24);
+                // Sekolah dan Remaja >6–18 Tahun (7 sampai 18 tahun)
+                $usiaFilter = "AND p.umur BETWEEN 7 AND 18";
             } elseif ($usia == 'dewasa') {
-                $builder->where('p.umur >=', 25);
-                $builder->where('p.umur <=', 59);
+                // Dewasa >18–59 Tahun (19 sampai 59 tahun)
+                $usiaFilter = "AND p.umur BETWEEN 19 AND 59";
             } elseif ($usia == 'lansia') {
-                $builder->where('p.umur >=', 60);
+                // Lansia >=60 Tahun
+                $usiaFilter = "AND p.umur >= 60";
             }
         }
 
-        $builder->groupBy('w.kelurahan');
-
-        $grafik = $builder->get()->getResultArray();
-
-        // ... (Lanjutkan dengan kode DATA PETA dan sisa kode kamu ke bawah) ...
-
-        // =========================
-        // DATA PETA
-        // =========================
-        $builderPeta = $db->table('wilayah w');
-        $builderPeta->whereIn('w.kelurahan', [
-            'Sumbersari',
-            'Wirolegi',
-            'Antirogo',
-            'Tegal Gede',
-            'Karangrejo'
-        ]);
-
-        $builderPeta->select("
+        $allFilters = "$penyakitFilter $bulanMapFilter $tahunMapFilter $jkFilter $usiaFilter";
+        
+        $builderMape->select("
             w.kelurahan as desa,
-
-            COUNT(DISTINCT p.id_pasien) as kasus,
-
-            SUM(CASE 
-                WHEN p.jenis_kelamin = 'Laki-laki'
-                THEN 1 ELSE 0
-            END) as laki,
-
-            SUM(CASE 
-                WHEN p.jenis_kelamin = 'Perempuan'
-                THEN 1 ELSE 0
-            END) as perempuan,
-
-            SUM(CASE 
-                WHEN p.umur <= 14
-                THEN 1 ELSE 0
-            END) as anak,
-
-            SUM(CASE 
-                WHEN p.umur BETWEEN 15 AND 59
-                THEN 1 ELSE 0
-            END) as dewasa,
-
-            SUM(CASE 
-                WHEN p.umur >= 60
-                THEN 1 ELSE 0
-            END) as lansia,
-
-            COALESCE(SUM(rp.diperiksa),0) as rumah_diperiksa,
-            COALESCE(SUM(rp.positif),0) as rumah_positif
+            COUNT(DISTINCT CASE WHEN p.id_pasien IS NOT NULL $allFilters THEN p.id_pasien END) as kasus,
+            COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Laki-laki' $allFilters THEN p.id_pasien END) as laki,
+            COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Perempuan' $allFilters THEN p.id_pasien END) as perempuan,
+            
+            
+            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 $allFilters THEN p.id_pasien END) as anak,
+            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 $allFilters THEN p.id_pasien END) as remaja,
+            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 $allFilters THEN p.id_pasien END) as dewasa,
+            COUNT(DISTINCT CASE WHEN p.umur >= 60 $allFilters THEN p.id_pasien END) as lansia,
+            
+            COUNT(DISTINCT CASE WHEN p.status_akhir = 'Sembuh' $allFilters THEN p.id_pasien END) as sembuh,
+            COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' $allFilters THEN p.id_pasien END) as meninggal,
+            
+            COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
+            COALESCE(SUM(DISTINCT rp.diperiksa), 0) as rumah_diperiksa,
+            COALESCE(SUM(DISTINCT rp.positif), 0) as rumah_positif
         ");
 
-        $builderPeta->join(
-            'pasien p',
-            'p.id_wilayah = w.id_wilayah',
-            'left'
-        );
-        $builderPeta->where('p.id_penyakit', $id_penyakit);
+        // Join standar ke pasien (menggunakan LEFT JOIN agar kelurahan tetap muncul walau kasus 0)
+        $builderMape->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
 
-        // FIX JOIN JENTIK
-        $builderPeta->join(
-    'rekap_pelaporan_kader rp',
-    'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))',
-    'left'
-);
+        // Join Rekap Jentik (Kader)
+        $builderMape->join('rekap_pelaporan_kader rp', 'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
 
-$builderPeta->groupBy('w.kelurahan');
+        // Join Total Penduduk per Kelurahan (Subquery) - Menggunakan $id_penyakit dari session
+        $subQueryPenduduk = $db->table('data_penduduk')
+            ->select('kelurahan, SUM(total_penduduk) as total_penduduk')
+            ->where('id_penyakit', $id_penyakit)
+            ->groupBy('kelurahan')
+            ->getCompiledSelect();
 
-        $dbd = $builderPeta->get()->getResultArray();
+        $builderMape->join("($subQueryPenduduk) dp", 'LOWER(REPLACE(dp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
 
-        // =========================
-        // DETAIL DESA
-        // =========================
+        // Filter Wilayah Utama
+        if (!empty($wilayah)) {
+            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+            $builderMape->where('w.kelurahan', $namaWilayah);
+        } else {
+            $builderMape->whereIn('w.kelurahan', ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo']);
+        }
+
+        $builderMape->groupBy('w.kelurahan, dp.total_penduduk');
+        $dbd = $builderMape->get()->getResultArray();
+// ==========================================
+        // 2. QUERY GRAFIK (DIUBAH MENJADI 4 KATEGORI USIA)
+        // ==========================================
+      $builderGrafik = $db->table('wilayah w');
+
+$builderGrafik->select("
+    w.kelurahan as wilayah,
+
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 THEN p.id_pasien END) as anak,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 THEN p.id_pasien END) as remaja,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
+    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
+    ");
+
+$builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
+$builderGrafik->whereIn('w.kelurahan', [
+    'Sumbersari',
+    'Wirolegi',
+    'Antirogo',
+    'Tegal Gede',
+    'Karangrejo'
+]);
+
+$builderGrafik->where('p.id_penyakit', 1);
+
+if (!empty($id_penyakit)) {
+    $builderGrafik->where('p.id_penyakit', 1);
+}
+
+if (!empty($bulan)) {
+    $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
+}
+
+if (!empty($tahun)) {
+    $builderGrafik->where('YEAR(p.tgl_kunjungan)', $tahun);
+}
+
+if (!empty($jk)) {
+    $builderGrafik->where(
+        'p.jenis_kelamin',
+        ($jk == 'L' ? 'Laki-laki' : 'Perempuan')
+    );
+}
+if (!empty($wilayah)) {
+
+    $namaWilayah = ($wilayah === 'Tegalgede')
+        ? 'Tegal Gede'
+        : $wilayah;
+
+    $builderGrafik->where('w.kelurahan', $namaWilayah);
+}
+$builderGrafik->groupBy('w.kelurahan');
+
+$grafik = $builderGrafik->get()->getResultArray();
+
+ // ==========================================
+        // 3. PEMROSESAN DATA DETAIL DESA
+        // ==========================================
         $detailDesa = [];
         $desaTertinggi = '-';
 
         foreach ($dbd as $row) {
-
             $namaKel = $row['desa'];
             $jumlahKasus = (int)$row['kasus'];
 
-            if ($jumlahKasus >= 20) {
-                $kategori = 'tinggi';
-            }
+            $kategori = 'Belum ada data';
 
-            elseif ($jumlahKasus >= 10) {
-                $kategori = 'sedang';
-            }
-
-            else {
-                $kategori = 'rendah';
-            }
-
+           // Memasukkan 4 kategori baru untuk mencari mana kelompok usia yang paling mendominasi
             $usiaData = [
-                'Anak-anak' => (int)$row['anak'],
-                'Dewasa'    => (int)$row['dewasa'],
-                'Lansia'    => (int)$row['lansia'],
+                'Anak-anak (0-6)'   => (int)$row['anak'],
+                'Remaja (7-18)'     => (int)$row['remaja'],
+                'Dewasa (19-59)'    => (int)$row['dewasa'],
+                'Lansia (>=60)'     => (int)$row['lansia'],
             ];
-
             arsort($usiaData);
-
             $usiaTertinggi = array_key_first($usiaData);
 
-            $key = preg_replace(
-                '/[^a-z0-9]/',
-                '',
-                strtolower($namaKel)
-            );
-
-            $totalPenduduk = $db->table('data_penduduk')
-            ->selectSum('total_penduduk')
-            ->where("
-                LOWER(REPLACE(kelurahan,' ','')) = 
-                LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
-            ")
-            ->get()
-            ->getRow()
-            ->total_penduduk ?? 0;
-
-
-
-            $jumlahSembuh = $db->table('pasien p')
-                ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
-                ->where("
-                    LOWER(REPLACE(w.kelurahan,' ','')) = 
-                    LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
-                ")
-                ->where('p.id_penyakit', $id_penyakit)
-                ->where('p.status_akhir', 'Sembuh')
-                ->countAllResults();
-
-            $jumlahMeninggal = $db->table('pasien p')
-                ->join('wilayah w', 'w.id_wilayah = p.id_wilayah')
-                ->where("
-                    LOWER(REPLACE(w.kelurahan,' ','')) = 
-                    LOWER(REPLACE(" . $db->escape($namaKel) . ",' ',''))
-                ")
-                ->where('p.id_penyakit', $id_penyakit)
-                ->where('p.status_akhir', 'Meninggal')
-                ->countAllResults();
+            $key = preg_replace('/[^a-z0-9]/', '', strtolower($namaKel));
 
             $detailDesa[$key] = [
-
-                'jumlah_penduduk' => (int)$totalPenduduk,
-
-                'jumlah_kasus' => $jumlahKasus,
-
-                'sembuh' => $jumlahSembuh,
-                'meninggal' => $jumlahMeninggal,
-
-                'kategori' => $kategori,
-
-                'anak' => (int)$row['anak'],
+                'jumlah_penduduk' => (int)$row['jumlah_penduduk'],
+                'jumlah_kasus'    => $jumlahKasus,
+                'sembuh'          => (int)$row['sembuh'],
+                'meninggal'       => (int)$row['meninggal'],
+                'kategori'        => $kategori,
+                'anak'   => (int)$row['anak'],
+                'remaja' => (int)$row['remaja'],
                 'dewasa' => (int)$row['dewasa'],
                 'lansia' => (int)$row['lansia'],
-
-                'usia_tertinggi' => $usiaTertinggi,
-
-                'laki' => (int)$row['laki'],
-                'perempuan' => (int)$row['perempuan'],
-
+                'usia_tertinggi'  => $usiaTertinggi,
+                'laki'            => (int)$row['laki'],
+                'perempuan'       => (int)$row['perempuan'],
                 'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
-                'rumah_jentik' => (int)$row['rumah_positif'],
-                'abj' => ((int)$row['rumah_diperiksa'] > 0)
-                ? round((((int)$row['rumah_diperiksa']-(int)$row['rumah_positif'])
-                        / (int)$row['rumah_diperiksa']) * 100, 2)
-                : 0,
+                'rumah_jentik'    => (int)$row['rumah_positif'],
+                'abj'             => ((int)$row['rumah_diperiksa'] > 0)
+                    ? round((((int)$row['rumah_diperiksa'] - (int)$row['rumah_positif']) / (int)$row['rumah_diperiksa']) * 100, 2)
+                    : 0,
             ];
         }
 
-        // =========================
-        // DESA TERTINGGI
-        // =========================
+        // Tentukan desa tertinggi kasusnya menggunakan array duplikat agar urutan asli $dbd aman
         if (!empty($dbd)) {
-
-            usort($dbd, function($a, $b) {
+            $tempDbd = $dbd;
+            usort($tempDbd, function($a, $b) {
                 return $b['kasus'] <=> $a['kasus'];
             });
-
-            $desaTertinggi = $dbd[0]['desa'];
+            $desaTertinggi = $tempDbd[0]['desa'];
         }
-            // BERITA
-            // ======================
-            $berita = $db->table('berita')
-                ->where('id_penyakit', $id_penyakit)
-                ->whereIn('status_berita', ['publish', 'upload'])
-                ->get()
-                ->getResultArray();
 
-            // ======================
-            // FUNFACT
-            $funfact = $db->table('funfact')
-                ->where('id_penyakit', $id_penyakit)
-                ->orderBy('id_funfact', 'DESC')
-                ->get()
-                ->getResultArray();
+        // Ambil Data Pendukung Lainnya (Mengembalikan filter id_penyakit asli)
+        $berita = $db->table('berita')->where('id_penyakit', $id_penyakit)->whereIn('status_berita', ['publish', 'upload'])->get()->getResultArray();
+        $funfact = $db->table('funfact')->where('id_penyakit', $id_penyakit)->orderBy('id_funfact', 'DESC')->get()->getResultArray();
+        $penduduk = $db->table('data_penduduk')->where('id_penyakit', $id_penyakit)->get()->getResultArray();
 
-            // ======================
-            // DATA PENDUDUK
-            // ======================
-            $penduduk = $db->table('data_penduduk')
-            ->where('id_penyakit', 1)
-            ->get()
-            ->getResultArray();
                 // =========================
                 // RETURN VIEW
                 // =========================
@@ -319,8 +261,7 @@ public function simpanPenduduk()
     $kelurahan = $this->request->getPost('kelurahan');
     $laki      = (int)$this->request->getPost('laki');
     $perempuan = (int)$this->request->getPost('perempuan');
-    
-    $id_penyakit = 1; // Set id_penyakit khusus untuk DBD
+    $id_penyakit = 1;
 
     // 1. Hapus data lama kelurahan ini TAPI HANYA untuk DBD (id_penyakit = 1)
     $db->table('data_penduduk')

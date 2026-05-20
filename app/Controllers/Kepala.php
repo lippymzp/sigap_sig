@@ -39,58 +39,48 @@ class Kepala extends Controller
         $usia    = $this->request->getGet('usia');
         $jk      = $this->request->getGet('jk');
 
-        $builder = $db->table('pasien p');
-        $builder->select('w.kelurahan, COUNT(*) as total');
-        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+       $builderGrafik = $db->table('wilayah w');
 
-        // <-- TAMBAHAN LOGIKA FILTER WILAYAH -->
-        if (!empty($wilayah)) {
-            // Mengubah 'Tegalgede' (dari HTML) menjadi 'Tegal Gede' (agar cocok di Database)
-            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
-            $builder->where('w.kelurahan', $namaWilayah);
-        } else {
-            // Tampilkan 5 kelurahan utama jika 'All' dipilih
-            $builder->whereIn('w.kelurahan', [
-                'Sumbersari',
-                'Wirolegi',
-                'Antirogo',
-                'Tegal Gede',
-                'Karangrejo'
-            ]);
-        }
-        
-        if (!empty($bulan)) {
-            $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
-        }
+$builderGrafik->select("
+    w.kelurahan as wilayah,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 THEN p.id_pasien END) as anak,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 THEN p.id_pasien END) as remaja,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
+    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
+");
 
-        if (!empty($tahun)) {
-            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-        }
+$builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
+$builderGrafik->where('p.id_penyakit', 1);
 
-        if (!empty($jk)) {
-            if ($jk == 'L') {
-                $builder->where('p.jenis_kelamin', 'Laki-laki');
-            } elseif ($jk == 'P') {
-                $builder->where('p.jenis_kelamin', 'Perempuan');
-            }
-        }
+if (!empty($bulan)) {
+    $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
+}
+if (!empty($tahun)) {
+    $builderGrafik->where('YEAR(p.tgl_kunjungan)', $tahun);
+}
+if (!empty($jk)) {
+    $builderGrafik->where('p.jenis_kelamin', ($jk == 'L' ? 'Laki-laki' : 'Perempuan'));
+}
+if (!empty($usia)) {
+    if ($usia == 'anak') {
+        $builderGrafik->where('p.umur BETWEEN 0 AND 6');
+    } elseif ($usia == 'remaja') {
+        $builderGrafik->where('p.umur BETWEEN 7 AND 18');
+    } elseif ($usia == 'dewasa') {
+        $builderGrafik->where('p.umur BETWEEN 19 AND 59');
+    } elseif ($usia == 'lansia') {
+        $builderGrafik->where('p.umur >=', 60);
+    }
+}
+if (!empty($wilayah)) {
+    $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+    $builderGrafik->where('w.kelurahan', $namaWilayah);
+} else {
+    $builderGrafik->whereIn('w.kelurahan', ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo']);
+}
 
-        if (!empty($usia)) {
-            if ($usia == 'anak') {
-                $builder->where('p.umur <=', 14);
-            } elseif ($usia == 'remaja') {
-                $builder->where('p.umur >=', 15);
-                $builder->where('p.umur <=', 24);
-            } elseif ($usia == 'dewasa') {
-                $builder->where('p.umur >=', 25);
-                $builder->where('p.umur <=', 59);
-            } elseif ($usia == 'lansia') {
-                $builder->where('p.umur >=', 60);
-            }
-        }
-        $builder->groupBy('w.kelurahan');
-
-        $grafik = $builder->get()->getResultArray();
+$builderGrafik->groupBy('w.kelurahan');
+$grafik = $builderGrafik->get()->getResultArray();
 
         // ======================
         // 🔥 DATA PETA
@@ -100,6 +90,7 @@ class Kepala extends Controller
         $builderDbd = $db->table('pasien p');
         $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
         $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        $builderDbd->where('p.id_penyakit', 1);
 
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
         if (!empty($tahunMap)) {
@@ -113,30 +104,29 @@ class Kepala extends Controller
         // ======================
         // 🔥 DETAIL DATA MODAL
         // ======================
-        $builderDetail = $db->table('pasien p');
+ $builderDetail = $db->table('pasien p');
 
-        $builderDetail->select("
+$builderDetail->select("
     w.kelurahan,
-
     COUNT(*) as jumlah_kasus,
-
     SUM(CASE WHEN p.umur <= 14 THEN 1 ELSE 0 END) as anak,
     SUM(CASE WHEN p.umur BETWEEN 15 AND 59 THEN 1 ELSE 0 END) as dewasa,
     SUM(CASE WHEN p.umur >= 60 THEN 1 ELSE 0 END) as lansia,
-
     SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
     SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
-
     SUM(r.diperiksa) as rumah_diperiksa,
-    SUM(r.positif) as rumah_positif
+    SUM(r.positif) as rumah_positif,
+    SUM(CASE WHEN p.status_akhir = 'Sembuh' THEN 1 ELSE 0 END) as sembuh,
+    SUM(CASE WHEN p.status_akhir = 'Meninggal' THEN 1 ELSE 0 END) as meninggal,
 ");
 
-        $builderDetail->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
-        $builderDetail->join(
-            'rekap_pelaporan_kader r',
-            'r.kelurahan = w.kelurahan',
-            'left'
-        );
+$builderDetail->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+$builderDetail->join(
+    'rekap_pelaporan_kader r',
+    'r.kelurahan = w.kelurahan',
+    'left'
+);
+$builderDetail->where('p.id_penyakit', 1);
 
         if (!empty($tahunMap)) {
             $builderDetail->where('YEAR(p.tgl_kunjungan)', $tahunMap);
@@ -179,7 +169,14 @@ class Kepala extends Controller
 
             $key = strtolower(str_replace(' ', '', $row['kelurahan']));
 
+            $rumahDiperiksa = (int)($row['rumah_diperiksa'] ?? 0);
+            $rumahPositif   = (int)($row['rumah_positif'] ?? 0);
+            $abj = ($rumahDiperiksa > 0)
+                ? round((($rumahDiperiksa - $rumahPositif) / $rumahDiperiksa) * 100, 2)
+                : 0;
+
             $detailDesa[$key] = [
+                'nama'            => $row['kelurahan'],
                 'jumlah_penduduk' => 0,
                 'jumlah_kasus'    => $jumlahKasus,
                 'kategori'        => $kategori,
@@ -193,9 +190,18 @@ class Kepala extends Controller
                 'laki'            => (int)$row['laki'],
                 'perempuan'       => (int)$row['perempuan'],
 
-                'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
-                'rumah_positif'   => (int)$row['rumah_positif']
-            ];
+                'rumah_diperiksa' => $rumahDiperiksa,
+                'rumah_positif'   => $rumahPositif,
+                'abj'             => $abj,
+
+                'sembuh'    => (int)($row['sembuh'] ?? 0),
+                'meninggal' => (int)($row['meninggal'] ?? 0)
+                ];
+            $penduduk = $db->table('data_penduduk')
+                ->where('id_penyakit', 1)
+                ->get()
+                ->getResultArray();
+
         }   // ======================
         // 🔥 KIRIM KE VIEW
         // ======================
@@ -214,6 +220,7 @@ class Kepala extends Controller
             // TAMBAHAN
             'detailDesa' => $detailDesa,
             'desaTertinggi' => $desaTertinggi,
+            'penduduk' => $penduduk,
             'show_footer_maskot' => true,
             'footer_maskot' => 'logo_denggis.png'
         ]);
