@@ -1113,7 +1113,7 @@ var aliasDesa = {
     "kemuningsarilor": "kemuning sari lor"
 };
 
-var dataDiare = <?= json_encode($diare ?? []) ?>;
+<?php dd($diare); ?>
 function populateFilters(){
 
     let desaSet = new Set();
