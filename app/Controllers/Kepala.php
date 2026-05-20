@@ -489,7 +489,7 @@ $builderDetail->where('p.id_penyakit', 1);
         ');
         $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
-        $builder->orderBy('s.id_skrining', 'DESC');
+        $builder->where('s.id_penyakit', 1);
 
         $perPage = 10;
         $page = $this->request->getVar('page') ?? 1;
