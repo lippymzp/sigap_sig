@@ -81,91 +81,77 @@ option,
 </style>
 
 <div class="container kalkulator-wrap">
-<div class="row g-4">
+    <div class="row g-4">
 
-<div class="col-md-5">
-<div class="panel">
-<div class="mode-switch mb-4">
-   <button
-type="button"
-class="mode-btn <?= (($mode ?? 'who') === 'who') ? 'active' : '' ?>"
-onclick="showMode('who')">  
-        💧 Rehidrasi WHO
-    </button>
+        <!-- KIRI -->
+        <div class="col-md-5">
+            <div class="panel">
 
-   <button
-type="button"
-class="mode-btn <?= (($mode ?? 'who') === 'normal') ? 'active' : '' ?>"
-onclick="showMode('normal')">
-        🥤 Air Harian
-    </button>
-</div>
-<form action="<?= base_url('diare/hitung-air') ?>" method="post">
-    <input type="hidden" name="mode" id="mode" value="who">
+                <div class="mode-switch mb-4">
+                    <button
+                        type="button"
+                        class="mode-btn <?= (($mode ?? 'who') === 'who') ? 'active' : '' ?>"
+                        onclick="showMode('who')">
+                        💧 Rehidrasi WHO
+                    </button>
 
+                    <button
+                        type="button"
+                        class="mode-btn <?= (($mode ?? 'who') === 'normal') ? 'active' : '' ?>"
+                        onclick="showMode('normal')">
+                        🥤 Air Harian
+                    </button>
+                </div>
 
+                <form action="<?= base_url('diare/hitung-air') ?>" method="post">
+                    <input type="hidden" name="mode" id="mode" value="<?= $mode ?? 'who' ?>">
 
-<div class="row">
-    <div class="col-6">
-        <label>Usia</label>
-        <input type="number" class="form-control" name="usia">
-    </div>
+                    <div id="whoForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:none;' : '' ?>">
+                        <label>Usia</label>
+                        <input type="number" class="form-control mb-3" name="usia">
 
-  <div id="whoForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:none;' : '' ?>">
+                        <h4 class="mb-4">Kalkulator Rehidrasi WHO</h4>
 
-    <h4 class="mb-4">Kalkulator Rehidrasi WHO</h4>
+                        <label>Berat Badan (kg)</label>
+                        <input type="number" step="0.1" class="form-control mb-3" name="berat">
 
-    <label>Berat Badan (kg)</label>
-    <input
-        type="number"
-        step="0.1"
-        class="form-control mb-3"
-        name="berat"
-    >
+                        <label>Tingkat Dehidrasi</label>
+                        <select class="form-control mb-4" name="dehidrasi">
+                            <option value="">Pilih Tingkat Dehidrasi</option>
+                            <option value="3">Ringan (3%)</option>
+                            <option value="6">Sedang (6%)</option>
+                            <option value="9">Berat (9%)</option>
+                        </select>
+                    </div>
 
-    <label>Tingkat Dehidrasi</label>
-    <select class="form-control mb-4" name="dehidrasi">
-        <option value="">Pilih Tingkat Dehidrasi</option>
-        <option value="3">Ringan (3%)</option>
-        <option value="6">Sedang (6%)</option>
-        <option value="9">Berat (9%)</option>
-    </select>
+                    <div id="normalForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:block;' : 'display:none;' ?>">
+                        <h4 class="mb-4">Kebutuhan Air Harian</h4>
 
-</div>
+                        <label>Jenis Kelamin</label>
+                        <select class="form-control mb-3" name="jk">
+                            <option>Laki-laki</option>
+                            <option>Perempuan</option>
+                        </select>
 
-<div id="normalForm" style="<?= (($mode ?? 'who') === 'normal') ? 'display:block;' : 'display:none;' ?>">
+                        <label>Usia</label>
+                        <input type="number" class="form-control mb-3" name="usia">
 
-    <h4 class="mb-4">Kebutuhan Air Harian</h4>
+                        <label>Berat Badan (kg)</label>
+                        <input type="number" step="0.1" class="form-control mb-3" name="berat_normal">
 
-    <label>Jenis Kelamin</label>
-    <select class="form-control mb-3" name="jk">
-        <option>Laki-laki</option>
-        <option>Perempuan</option>
-    </select>
+                        <label>Tingkat Aktivitas</label>
+                        <input type="range" name="aktivitas" class="form-range" min="0" max="100">
+                    </div>
 
-    <label>Usia</label>
-    <input type="number" class="form-control mb-3" name="usia">
+                    <button class="btn-calc">Hitung Sekarang</button>
+                </form>
 
-    <label>Berat Badan (kg)</label>
-    <input type="number" step="0.1" class="form-control mb-3" name="berat_normal">
+            </div>
+        </div>
 
-    <label>Tingkat Aktivitas</label>
-    <input type="range" name="aktivitas" class="form-range" min="0" max="100">
-
-</div>
-   <button class="btn-calc">
-    Hitung Sekarang
-</button>
-
-
-</form>
-
-</div>
-</div>
-
-<div class="col-md-7">
-
-<div class="result">
+        <!-- KANAN -->
+        <div class="col-md-7">
+            <div class="result">
     <h4>Estimasi Total Kebutuhan Air</h4>
 
     <div class="big-number">
