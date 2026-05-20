@@ -1362,6 +1362,48 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     // =========================================================================
     $dbMap = \Config\Database::connect();
     $tahunMapFilter = $_GET['tahun_map'] ?? date('Y');
+    $id_penyakit = 1;
+    $idPetugas = session()->get('id_petugas');
+
+    $desa_diizinkan = [
+        'sumbersari',
+        'antirogo',
+        'karangrejo',
+        'wirolegi',
+        'tegalgede'
+    ];
+
+    // 1. Ambil Pasien (Usia, Gender, Daerah, Status Akhir)
+    $bPasien = $dbMap->table('pasien');
+
+    $bPasien->select('
+        pasien.umur,
+        pasien.jenis_kelamin,
+        pasien.status_akhir,
+        wilayah.kelurahan as nama_kelurahan
+    ');
+
+    $bPasien->join(
+        'wilayah',
+        'wilayah.id_wilayah = pasien.id_wilayah',
+        'left'
+    );
+
+    $bPasien->where('YEAR(pasien.tgl_kunjungan)', $tahunMapFilter);
+
+    $bPasien->where('pasien.id_penyakit', 1);
+
+    $bPasien->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    );
+        $pasienDetail = $bPasien->get()->getResultArray();
+        $bPasien->where('pasien.id_penyakit', 1);
+
+        $bPasien->whereIn(
+            'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+            $desa_diizinkan
+    );
 
     // 1. Ambil Pasien (Usia, Gender, Daerah, Status Akhir)
     $bPasien = $dbMap->table('pasien');
@@ -1446,84 +1488,42 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         }
     }
 
-    // Kunci ID Penyakit untuk DBD
-    $id_penyakit_dbd = 1;
-
-    // Kunci 5 nama desa yang ingin ditampilkan (di-set ke lowercase/huruf kecil semua agar pencarian aman)
-    $desa_diizinkan = ['sumbersari', 'antirogo', 'karangrejo', 'wirolegi', 'tegalgede', 'tegal gede'];
-
-    // Menghitung data Ringkasan
-    $maxKasusRingkasan = 0;
-    $desaTertinggiVal = '-';
     $totalKasusRingkasan = 0;
-    $totalDesaTinggi = 0;
-    $totalDesaValid = 0; 
+$totalSembuhRingkasan = 0;
+$totalMeninggalRingkasan = 0;
 
-    foreach($detailMap as $k => &$d) {
-        // FILTER 1: Cek apakah nama desa masuk dalam list 5 desa di atas
-        $namaDesaData = trim(strtolower($d['nama'] ?? $d['nama_desa'] ?? ''));
-        if (!in_array($namaDesaData, $desa_diizinkan)) {
-            continue; // Lewati jika desanya bukan salah satu dari 5 desa tersebut
-        }
+$maxKasusRingkasan = 0;
+$desaTertinggiVal = '-';
 
-        // FILTER 2: Cek ID Penyakit DBD
-        // (Pastikan key 'id_penyakit' benar-benar ada di dalam array $detailMap)
-        $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
-        if ($idPenyakitData !== $id_penyakit_dbd) {
-            continue; 
-        }
+$totalDesaValid = 0;
+$totalDesaTinggi = 0;
 
-        // Jika lolos kedua filter, baru dihitung:
-        $totalDesaValid++; 
+foreach ($detailMap as $desa => $d) {
 
-        // Tentukan Usia Tertinggi (berikan nilai default 0 jika key tidak ada untuk mencegah error)
-        $anak = (int)($d['anak'] ?? 0);
-        $dewasa = (int)($d['dewasa'] ?? 0);
-        $lansia = (int)($d['lansia'] ?? 0);
-        
-        $mU = max($anak, $dewasa, $lansia);
-        if ($mU == 0) {
-            $d['usia_tertinggi'] = '-';
-        } else if ($mU == $anak) {
-            $d['usia_tertinggi'] = 'Anak-anak';
-        } else if ($mU == $dewasa) {
-            $d['usia_tertinggi'] = 'Dewasa';
-        } else {
-            $d['usia_tertinggi'] = 'Lansia';
-        }
+    $jumlahKasus = (int)($d['jumlah_kasus'] ?? 0);
 
-        $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
-        $totalKasusRingkasan += $jumlahKasus;
-        
-        // Set Desa dengan Kasus Terbanyak
-        if ($jumlahKasus > $maxKasusRingkasan) {
-            $maxKasusRingkasan = $jumlahKasus;
-            $desaTertinggiVal = $d['nama'] ?? $d['nama_desa'] ?? '-';
-        }
+    $totalKasusRingkasan += $jumlahKasus;
+    $totalSembuhRingkasan += (int)($d['sembuh'] ?? 0);
+    $totalMeninggalRingkasan += (int)($d['meninggal'] ?? 0);
+
+    $totalDesaValid++;
+
+    if ($jumlahKasus > $maxKasusRingkasan) {
+        $maxKasusRingkasan = $jumlahKasus;
+        $desaTertinggiVal = $d['nama'];
     }
-    // SANGAT PENTING: Hapus referensi $d sebelum memulai loop baru
-    unset($d); 
+}
 
-    // Hitung rata-rata khusus dari desa yang valid DBD dan masuk 5 besar wilayah tersebut
-    $rataDesa = $totalDesaValid > 0 ? round($totalKasusRingkasan / $totalDesaValid) : 0;
+$rataDesa = $totalDesaValid > 0
+    ? round($totalKasusRingkasan / $totalDesaValid)
+    : 0;
 
-    foreach ($detailMap as $d) {
-        // Terapkan filter yang sama untuk hitungan desa di atas rata-rata
-        $namaDesaData = trim(strtolower($d['nama'] ?? $d['nama_desa'] ?? ''));
-        if (!in_array($namaDesaData, $desa_diizinkan)) {
-            continue;
-        }
+foreach ($detailMap as $d) {
 
-        $idPenyakitData = (int)($d['id_penyakit'] ?? 0);
-        if ($idPenyakitData !== $id_penyakit_dbd) {
-            continue;
-        }
-
-        $jumlahKasus = (int)($d['jumlah_cases'] ?? $d['jumlah_kasus'] ?? 0);
-        if ($jumlahKasus > $rataDesa) {
-            $totalDesaTinggi++;
-        }
+    if (($d['jumlah_kasus'] ?? 0) > $rataDesa) {
+        $totalDesaTinggi++;
     }
+}
 ?>
 
 <section class="container mt-5 mb-5">
