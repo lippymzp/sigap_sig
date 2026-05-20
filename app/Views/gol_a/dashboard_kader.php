@@ -774,6 +774,7 @@ $kelurahanTerdampak = $db->table('pasien')
     // ================= DATA GRAFIK MORTALITAS =================
     $builderMort = $db->table('pasien');
     $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
+    $builderMort->where('pasien.id_penyakit', 1);
     $builderMort->where('pasien.status_akhir', 'Meninggal');
     
     $reqWilayahMort = $_GET['wilayah_mort'] ?? '';
@@ -827,6 +828,7 @@ $kelurahanTerdampak = $db->table('pasien')
     $bPasien->select('pasien.umur, pasien.jenis_kelamin, pasien.status_akhir, wilayah.kelurahan as nama_kelurahan');
     $bPasien->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah', 'left');
     $bPasien->where('YEAR(pasien.tgl_kunjungan)', $tahunMapFilter);
+    $bPasien->where('pasien.id_penyakit', 1);
     $pasienDetail = $bPasien->get()->getResultArray();
 
     // 2. Ambil Rekap Jentik
