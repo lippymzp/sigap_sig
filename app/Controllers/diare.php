@@ -31,82 +31,30 @@ class Diare extends BaseController
     // STEP 2 - IDENTITAS -> PERTANYAAN 1
     // =========================
     public function step2()
-    {
-        $identitas = $this->request->getPost();
+{
+    $identitas = $this->request->getPost();
 
-        if (empty($identitas)) {
-            return redirect()->back()->with('error', 'Data identitas belum diisi');
-        }
-
-        session()->set('skrining_diare', [
-            'identitas' => $identitas,
-            'jawaban'   => []
-        ]);
-
-        return view('gol_d/pertanyaan_diare_1');
+    if (empty($identitas)) {
+        return redirect()->back()->with('error', 'Data identitas belum diisi');
     }
+
+    session()->set('skrining_diare', [
+        'identitas' => $identitas,
+        'jawaban'   => []
+    ]);
+
+    return view('gol_d/pertanyaan_diare');
+}
 
     // =========================
     // STEP 3 - PERTANYAAN 1-5 -> 6-10
     // =========================
-    public function step3()
-{
-    $session = session()->get('skrining_diare');
-
-    if (!$session) {
-        return redirect()->to('/skrining-diare');
-    }
-
-    $jawabanBaru = $this->request->getPost();
-
-    $session['jawaban'] = array_merge(
-        $session['jawaban'],
-        $jawabanBaru
-    );
-
-    session()->set('skrining_diare', $session);
-
-    /*
-    CEK DIARE DULU
-    */
-    $tree = new DiareDecisionTree();
-    $prediksi = $tree->predict($session['jawaban']);
-
-    /*
-    Kalau tidak diare → langsung hasil
-    */
-    if ($prediksi['diare'] === 'Tidak Diare') {
-        return redirect()->to('/skrining-diare-hasil');
-    }
-
-    /*
-    Kalau diare → lanjut dehidrasi
-    */
-    return view('gol_d/pertanyaan_diare_2');
-}
+    
 
     // =========================
     // STEP 4 - PERTANYAAN 6-10 -> 11-15
     // =========================
-    public function step4()
-    {
-        $session = session()->get('skrining_diare');
-
-        if (!$session) {
-            return redirect()->to('/skrining-diare');
-        }
-
-        $jawabanBaru = $this->request->getPost();
-
-        $session['jawaban'] = array_merge(
-            $session['jawaban'],
-            $jawabanBaru
-        );
-
-        session()->set('skrining_diare', $session);
-
-        return view('gol_d/pertanyaan_diare_3');
-    }
+    
 
     public function hasil()
 {
