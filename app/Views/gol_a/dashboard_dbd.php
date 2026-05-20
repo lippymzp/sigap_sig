@@ -201,7 +201,48 @@ $penduduk = $penduduk ?? [];
 .kategori-sedang { color: #d39e00; font-weight: 600; }
 .kategori-rendah { color: #28a745; font-weight: 600; }
 
-
+.info-table tr td {
+    padding: 8px 6px;
+    vertical-align: top;
+    line-height: 1.5;
+    font-size: 14px;
+}
+.info-table tr td.label {
+    width: 55%;
+    color: #2b2b2b;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: normal;
+    word-break: break-word;
+}
+.info-table tr td.colon {
+    width: 14px;
+    text-align: center;
+    color: #555;
+    font-weight: 400;
+}
+.info-table tr td.value {
+    color: #111;
+    font-weight: 500;
+    font-size: 14px;
+    word-break: break-word;
+}
+.info-table tr.sub td.label {
+    padding-left: 22px;
+    color: #555;
+    font-weight: 400;
+    font-size: 13.5px;
+}
+.info-table tr.sub td.value {
+    font-size: 13.5px;
+}
+@media (max-width: 480px) {
+    .info-table tr td,
+    .info-table tr td.label,
+    .info-table tr td.value { font-size: 12.5px; }
+    .info-table tr.sub td.label,
+    .info-table tr.sub td.value { font-size: 12px; }
+}
 
 </style>
 
@@ -235,26 +276,32 @@ $penduduk = $penduduk ?? [];
         'karangrejo'
     ];
 
-// Total kasus
-$totalKasus = $db->table('pasien')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->where('pasien.id_penyakit', 1)
-    ->whereIn(
-        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
-        $desa_diizinkan
-    )
-    ->countAllResults();
+$desaList = "'" . implode("','", $desa_diizinkan) . "'";
 
-// Kasus hari ini
-$kasusHariIni = $db->table('pasien')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->where('pasien.id_penyakit', 1)
-    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
-    ->whereIn(
-        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
-        $desa_diizinkan
-    )
-    ->countAllResults();
+// Total kasus DBD (unik per NIK + tgl_kunjungan)
+$totalKasus = (int) $db->query("
+    SELECT COUNT(*) AS total FROM (
+        SELECT p.nik, p.tgl_kunjungan
+        FROM pasien p
+        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
+        WHERE p.id_penyakit = 1
+          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
+        GROUP BY p.nik, p.tgl_kunjungan
+    ) t
+")->getRow()->total;
+
+// Kasus baru hari ini (unik per NIK + tgl_kunjungan)
+$kasusHariIni = (int) $db->query("
+    SELECT COUNT(*) AS total FROM (
+        SELECT p.nik, p.tgl_kunjungan
+        FROM pasien p
+        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
+        WHERE p.id_penyakit = 1
+          AND DATE(p.tgl_kunjungan) = '" . date('Y-m-d') . "'
+          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
+        GROUP BY p.nik, p.tgl_kunjungan
+    ) t
+")->getRow()->total;
 
 // Kelurahan terdampak
 $kelurahanTerdampak = $db->table('pasien')

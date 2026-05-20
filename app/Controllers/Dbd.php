@@ -657,59 +657,34 @@ class Dbd extends BaseController
         $jk    = $this->request->getGet('jk');
 
 
-        $builder = $db->table('pasien p');
-        $builder->where('p.id_penyakit', 1);
-        $builder->select('w.kelurahan, COUNT(DISTINCT p.id_pasien) as total');
-        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+$subGrafik = $db->table('pasien')
+    ->select('MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah, umur, jenis_kelamin')
+    ->where('id_penyakit', 1)
+    ->groupBy('nik, tgl_kunjungan')
+    ->getCompiledSelect();
 
-        // 2. TAMBAH LOGIKA FILTER WILAYAH (DAN FIX SPASI TEGAL GEDE)
-        if (!empty($wilayah)) {
-            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
-            $builder->where('w.kelurahan', $namaWilayah);
-        } else {
-            // Tampilkan 5 kelurahan utama jika 'All' dipilih
-            $builder->whereIn('w.kelurahan', [
-                'Sumbersari',
-                'Wirolegi',
-                'Antirogo',
-                'Tegal Gede',
-                'Karangrejo'
-            ]);
-        }
+$builderG = $db->table('wilayah w');
+$builderG->select("
+    w.kelurahan as wilayah,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 THEN p.id_pasien END) as anak,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 THEN p.id_pasien END) as remaja,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
+    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
+");
+$builderG->join("($subGrafik) p", 'p.id_wilayah = w.id_wilayah', 'left');
 
-        // --- Sisa kode di bawah ini biarkan sama seperti aslinya ---
-        if (!empty($bulan)) {
-            $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
-        }
+if (!empty($wilayah)) {
+    $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+    $builderG->where('w.kelurahan', $namaWilayah);
+} else {
+    $builderG->whereIn('w.kelurahan', ['Sumbersari','Wirolegi','Antirogo','Tegal Gede','Karangrejo']);
+}
+if (!empty($bulan)) $builderG->where('MONTH(p.tgl_kunjungan)', $bulan);
+if (!empty($tahun)) $builderG->where('YEAR(p.tgl_kunjungan)', $tahun);
+if (!empty($jk))    $builderG->where('p.jenis_kelamin', $jk == 'L' ? 'Laki-laki' : 'Perempuan');
 
-        if (!empty($tahun)) {
-            $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-        }
-
-        if (!empty($jk)) {
-            if ($jk == 'L') {
-                $builder->where('p.jenis_kelamin', 'Laki-laki');
-            } elseif ($jk == 'P') {
-                $builder->where('p.jenis_kelamin', 'Perempuan');
-            }
-        }
-
-        if (!empty($usia)) {
-            if ($usia == 'anak') {
-                $builder->where('p.umur <=', 14);
-            } elseif ($usia == 'remaja') {
-                $builder->where('p.umur >=', 15);
-                $builder->where('p.umur <=', 24);
-            } elseif ($usia == 'dewasa') {
-                $builder->where('p.umur >=', 25);
-                $builder->where('p.umur <=', 59);
-            } elseif ($usia == 'lansia') {
-                $builder->where('p.umur >=', 60);
-            }
-        }
-        $builder->groupBy('w.kelurahan');
-
-        $grafik = $builder->get()->getResultArray();
+$builderG->groupBy('w.kelurahan');
+$grafik = $builderG->get()->getResultArray();
 
         // ======================
         // 🔥 DATA PETA
