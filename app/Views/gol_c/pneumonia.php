@@ -898,7 +898,7 @@ prevBtn.addEventListener('click', () => {
         <span style="color:red;">skrining</span> sejak dini!
     </p>
 
-    <a href="<?= base_url('pneumonia/skriningpneumonia') ?>"
+    <a href="<?= base_url('pneumonia/skrining') ?>"
        class="btn btn-teal px-4 py-2 shadow">
 
         Mulai Skrining

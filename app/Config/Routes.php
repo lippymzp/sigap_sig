@@ -31,19 +31,19 @@ $routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
 /* SKRINING Pneumonia */
 /* ========================= */
 $routes->get(
-    'pneumonia/skriningpneumonia',
+    'pneumonia/skrining',
     'Pneumonia::skriningpneumonia'
 );
 
 $routes->match(
     ['get', 'post'],
-    'pneumonia/skriningpneumonia/skriningpneumonia2',
+    'pneumonia/skrining/step2',
     'Pneumonia::skriningpneumonia2'
 );
 
 $routes->match(
     ['get', 'post'],
-    'pneumonia/skriningpneumonia/skriningpneumonia3',
+    'pneumonia/skrining/step3',
     'Pneumonia::skriningpneumonia3'
 );
 
