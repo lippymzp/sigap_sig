@@ -216,36 +216,99 @@
 }
 
 /* =========================================================
-   MEDIA QUERY RESPONSIVE (TANPA MERUBAH DESAIN ASLI)
-   Memastikan layout melipat dengan rapi di perangkat HP
-========================================================= */
-@media (max-width: 992px) {
-    .welcome-box { flex-direction: column !important; text-align: center; }
-    .welcome-icon { margin-top: 20px; justify-content: center !important; }
-    .stat-row { flex-wrap: wrap !important; justify-content: center; }
-    .stat-card { min-width: 45% !important; margin-bottom: 15px; }
-}
-
+   TAMBAHAN PERBAIKAN RESPONSIVE UNTUK KONTEN DASHBOARD (MAX 768PX)
+   Dipaksa !important agar layout flexbox menyusun baris ke bawah
+   ========================================================= */
 @media (max-width: 768px) {
-    .stat-card { min-width: 100% !important; }
-    .section-header { flex-direction: column; align-items: flex-start !important; gap: 15px; }
-    .filter-row { gap: 10px; justify-content: flex-start; }
-    .filter-col { max-width: calc(50% - 10px) !important; flex: 1 1 calc(50% - 10px) !important; min-width: 130px; }
-    
-    /* Penyesuaian Modal agar pas di HP */
-    .custom-modal-content { width: 95% !important; padding: 25px 20px !important; }
-    .info-box { padding: 15px !important; }
-    .info-table tr td { display: block; width: 100% !important; padding: 2px 0; }
-    .info-table tr td.colon { display: none; }
-    .info-table tr td.value { font-weight: bold; padding-bottom: 8px; border-bottom: 1px solid #eaeaea; margin-bottom: 8px; }
-    .info-table tr.sub td.label { padding-left: 0; }
-}
+    /* Welcome Box - Tumpuk Vertikal */
+    .welcome-box {
+        display: flex !important;
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 20px 15px !important;
+    }
+    .welcome-icon {
+        margin-top: 20px !important;
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+    .welcome-icon img {
+        width: 100% !important;
+        max-width: 220px !important;
+        height: auto !important;
+    }
 
-@media (max-width: 576px) {
-    .filter-col { max-width: 100% !important; flex: 1 1 100% !important; }
-    .slide-toggle-container { max-width: 100%; height: 40px; }
-    .btn-toggle { font-size: 11px; padding: 0; }
-    #chartWrapper { height: 250px !important; }
+    /* Stat Card - Tumpuk Vertikal 1 baris */
+    .stat-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    .stat-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 15px !important;
+    }
+
+    /* Filter Map Header */
+    .section-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+    }
+    .filter {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    /* Map Size */
+    #map {
+        height: 300px !important; /* Kurangi tinggi di HP */
+    }
+
+    /* Tabel & Filter Grafik - Tumpuk Vertikal Penuh */
+    .filter-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    .filter-col {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    /* Slide Toggle */
+    .slide-toggle-container {
+        height: 38px !important;
+        max-width: 100% !important;
+    }
+    .btn-toggle {
+        font-size: 11px !important;
+        padding: 0 5px !important;
+    }
+
+    /* Chart Wrapper */
+    .bg-white.shadow-sm {
+        padding: 25px 15px !important;
+    }
+    #chartWrapper {
+        height: 250px !important;
+    }
+
+    /* Modal Mobile */
+    .custom-modal-content {
+        width: 95% !important;
+        padding: 25px 20px !important;
+    }
+    .info-table tr td.label {
+        width: 40% !important;
+    }
 }
 </style>
 

@@ -17,6 +17,10 @@
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 180px; 
+            overflow-x: hidden; /* Mencegah layar geser ke samping */
+        }
+        body {
+            overflow-x: hidden;
         }
 
         /* 2. Pastikan Topbar dan Sidebar selalu berada di lapisan paling atas */
@@ -40,13 +44,6 @@
         .footer h6 { font-weight: 600; font-size: 15px; margin-bottom: 10px; }
         .footer p { font-size: 13px; margin-bottom: 5px; }
         .footer hr { border-color: rgba(255,255,255,0.2); margin: 15px 0; }
-
-        @media (max-width: 768px) {
-            .footer .col-md-4 { text-align: center !important; margin-bottom: 15px; }
-            /* Tambahan agar teks profil dan topbar tidak menabrak di HP */
-            .topbar .text-end { display: none !important; }
-            .topbar .fs-4 { font-size: 1.2rem !important; }
-        }
 
         /* =========================================
            STYLE MODAL KONFIRMASI LOGOUT 
@@ -131,6 +128,44 @@
             display: block;
             margin: 0 auto;
             object-fit: contain;
+        }
+
+        /* =========================================================
+           TAMBAHAN PERBAIKAN RESPONSIVE UNTUK HANDPHONE (MAX 768PX)
+           Sidebar disembunyikan secara default, muncul jika tombol ditekan
+           ========================================================= */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed !important;
+                left: -300px !important; /* Sembunyikan di luar layar kiri */
+                width: 260px !important;
+                height: 100vh !important;
+                transition: left 0.3s ease-in-out !important;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            /* Saat tombol ditekan (menambah class hide di wrapper) */
+            .wrapper.hide .sidebar {
+                left: 0 !important; /* Tampilkan Sidebar */
+            }
+            .main-content {
+                width: 100% !important;
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+            }
+            .topbar {
+                padding: 15px !important;
+            }
+            .topbar .fs-4 {
+                font-size: 1.1rem !important; /* Perkecil teks judul */
+            }
+            .topbar .text-end {
+                display: none !important; /* Sembunyikan tulisan nama di profil */
+            }
+            .avatar-circle {
+                width: 35px !important;
+                height: 35px !important;
+            }
+            .footer .col-md-4 { text-align: center !important; margin-bottom: 15px; }
         }
     </style>
 
@@ -311,6 +346,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Berikan sedikit jeda agar URL di browser sempat terupdate
                 setTimeout(updateActiveSidebarMenu, 50);
             }
+            // Tambahan opsional: Jika di layar kecil (HP), tutup sidebar saat menu diklik
+            if (window.innerWidth <= 768 && wrapper) {
+                wrapper.classList.remove("hide");
+            }
         });
     });
 });
@@ -325,11 +364,15 @@ function closeLogoutModal() {
     document.getElementById('modalLogoutOverlay').classList.remove('show');
 }
 
-document.getElementById('modalLogoutOverlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeLogoutModal();
-    }
-});
+// Antisipasi jika modalLogoutOverlay ada
+var modalOverlay = document.getElementById('modalLogoutOverlay');
+if(modalOverlay) {
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLogoutModal();
+        }
+    });
+}
 </script>
   <div class="footer-dashboard">
     <?= $this->include('layout/footer') ?>
@@ -352,3 +395,5 @@ function confirmLogout(url) {
     });
 }
 </script>
+</body>
+</html>
