@@ -214,19 +214,22 @@ input:checked + .answer-btn{
         Sesuaikan dengan kondisi gejala yang dialami
     </div>
 
-    <div class="counter">1 dari 5</div>
+   <div class="counter">1 dari 8</div>
 
     <div class="progress">
-        <div class="progress-bar" style="width:33%"></div>
+      <div class="progress-bar" style="width:50%"></div>
     </div>
 
 <?php
 $pertanyaan = [
-    "Apakah Anda BAB lebih dari 5 kali sehari?",
+    "Apakah Anda BAB lebih dari 3 kali sehari?",
     "Apakah konsistensi feses Anda cair?",
     "Apakah konsistensi feses Anda lembek?",
+    "Apakah Anda merasa mual?",
+    "Apakah Anda muntah?",
+    "Apakah Anda demam lebih dari 37°C?",
     "Apakah Anda merasa lemas?",
-    "Apakah ubun-ubun Anda cekung?"
+    "Apakah Anda mengalami disentri (BAB berdarah/lendir)?"
 ];
 ?>
 

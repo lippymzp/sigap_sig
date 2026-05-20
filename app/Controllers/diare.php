@@ -50,24 +50,40 @@ class Diare extends BaseController
     // STEP 3 - PERTANYAAN 1-5 -> 6-10
     // =========================
     public function step3()
-    {
-        $session = session()->get('skrining_diare');
+{
+    $session = session()->get('skrining_diare');
 
-        if (!$session) {
-            return redirect()->to('/skrining-diare');
-        }
-
-        $jawabanBaru = $this->request->getPost();
-
-        $session['jawaban'] = array_merge(
-            $session['jawaban'],
-            $jawabanBaru
-        );
-
-        session()->set('skrining_diare', $session);
-
-        return view('gol_d/pertanyaan_diare_2');
+    if (!$session) {
+        return redirect()->to('/skrining-diare');
     }
+
+    $jawabanBaru = $this->request->getPost();
+
+    $session['jawaban'] = array_merge(
+        $session['jawaban'],
+        $jawabanBaru
+    );
+
+    session()->set('skrining_diare', $session);
+
+    /*
+    CEK DIARE DULU
+    */
+    $tree = new DiareDecisionTree();
+    $prediksi = $tree->predict($session['jawaban']);
+
+    /*
+    Kalau tidak diare → langsung hasil
+    */
+    if ($prediksi['diare'] === 'Tidak Diare') {
+        return redirect()->to('/skrining-diare-hasil');
+    }
+
+    /*
+    Kalau diare → lanjut dehidrasi
+    */
+    return view('gol_d/pertanyaan_diare_2');
+}
 
     // =========================
     // STEP 4 - PERTANYAAN 6-10 -> 11-15
@@ -112,28 +128,39 @@ class Diare extends BaseController
     // =========================
     // DECISION TREE
     // =========================
-    $tree = new DiareDecisionTree();
-    $prediksi = $tree->predict($semuaJawaban);
+   $tree = new DiareDecisionTree();
+$prediksi = $tree->predict($semuaJawaban);
 
-    switch ($prediksi) {
-        case 'tinggi':
-            $hasil = 'Risiko Tinggi Diare';
-            $warna = 'danger';
-            $rekomendasi = 'Segera periksa ke fasilitas kesehatan terdekat karena terdapat indikasi dehidrasi berat.';
-            break;
+$statusDiare = $prediksi['diare'];
+$statusDehidrasi = $prediksi['dehidrasi'];
 
-        case 'sedang':
-            $hasil = 'Risiko Sedang Diare';
-            $warna = 'warning';
-            $rekomendasi = 'Perbanyak cairan, oralit, istirahat cukup, dan pantau kondisi tubuh.';
-            break;
+$hasil = $statusDiare . ' | Dehidrasi: ' . $statusDehidrasi;
 
-        default:
-            $hasil = 'Risiko Rendah Diare';
-            $warna = 'success';
-            $rekomendasi = 'Tetap jaga pola hidup sehat, kebersihan makanan, dan hidrasi tubuh.';
-            break;
-    }
+$warna = 'info';
+
+if ($statusDiare === 'Tidak Diare') {
+    $rekomendasi = 'Gejala Anda tidak memenuhi kriteria diare. Tetap jaga hidrasi, pola makan sehat, dan pantau kondisi tubuh.';
+}
+
+elseif ($statusDehidrasi === 'Berat') {
+    $warna = 'danger';
+    $rekomendasi = 'Terdapat indikasi dehidrasi berat. Segera ke fasilitas kesehatan untuk penanganan medis dan rehidrasi intensif.';
+}
+
+elseif ($statusDehidrasi === 'Sedang') {
+    $warna = 'warning';
+    $rekomendasi = 'Terdapat indikasi dehidrasi sedang. Disarankan rehidrasi oral menggunakan oralit, banyak minum, dan observasi kondisi.';
+}
+
+elseif ($statusDehidrasi === 'Ringan') {
+    $warna = 'primary';
+    $rekomendasi = 'Terdapat indikasi dehidrasi ringan. Perbanyak cairan, istirahat cukup, dan konsumsi makanan yang mudah dicerna.';
+}
+
+else {
+    $warna = 'success';
+    $rekomendasi = 'Anda mengalami diare tanpa tanda dehidrasi signifikan. Tetap jaga cairan tubuh dan pola makan sehat.';
+}
 
 $pasienModel = new PasienSkriningModel();
 $skriningModel = new SkriningModel();

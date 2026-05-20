@@ -187,21 +187,21 @@ $identitas = $identitas ?? [];
 $jawaban   = $jawaban ?? [];
 
 $pertanyaan = [
-    "Apakah Anda BAB lebih dari 5 kali sehari?",
+    "Apakah Anda BAB lebih dari 3 kali sehari?",
     "Apakah konsistensi feses Anda cair?",
     "Apakah konsistensi feses Anda lembek?",
-    "Apakah Anda merasa lemas?",
-    "Apakah ubun-ubun Anda cekung?",
-    "Apakah bibir Anda kering?",
-    "Apakah Tugor menurun?",
-    "Apakah Nadi Anda cepat?",
-    "Apakah Mata Anda cekung?",
-    "Apakah Nafas Anda terasa cepat?",
-    "Apakah Anda Oliguria?",
-    "Apakah feses Anda bercampur darah?",
     "Apakah Anda merasa mual?",
     "Apakah Anda muntah?",
-    "Apakah Anda demam > 37°C?"
+    "Apakah Anda demam lebih dari 37°C?",
+    "Apakah Anda merasa lemas?",
+    "Apakah Anda mengalami disentri?",
+    "Apakah bibir Anda kering?",
+    "Apakah Anda oliguria / urin sedikit?",
+    "Apakah mata Anda cekung?",
+    "Apakah turgor kulit menurun?",
+    "Apakah nadi Anda cepat?",
+    "Apakah nafas Anda terasa cepat?",
+    "Apakah ubun-ubun Anda cekung?"
 ];
 ?>
 
@@ -272,14 +272,14 @@ $pertanyaan = [
 
             <tbody>
                 <?php foreach($pertanyaan as $i => $p): ?>
-                <?php $nilai = $jawaban["q".$i] ?? 0; ?>
+            <?php $nilai = isset($jawaban["q".$i]) ? $jawaban["q".$i] : null; ?>
 
                 <tr>
                     <td><?= $i+1 ?></td>
                     <td><?= $p ?></td>
                     <td>
-                        <span class="badge-modern <?= $nilai ? 'badge-yes' : 'badge-no' ?>">
-                            <?= $nilai ? 'Ya' : 'Tidak' ?>
+                        <span class="badge-modern <?= $nilai === null ? '' : ($nilai ? 'badge-yes' : 'badge-no') ?>">
+                       <?= $nilai === null ? '-' : ($nilai ? 'Ya' : 'Tidak') ?>
                         </span>
                     </td>
                 </tr>
@@ -292,9 +292,27 @@ $pertanyaan = [
     <!-- HASIL -->
     <h3 class="section-title">Hasil</h3>
 
-    <div class="result-box mb-5">
-        <?= $hasil ?>
+    <div class="row g-4 mb-5">
+
+    <div class="col-md-6">
+        <div class="result-box">
+            Status Diare
+            <div style="font-size:30px; margin-top:10px;">
+                <?= $statusDiare ?>
+            </div>
+        </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="result-box">
+            Status Dehidrasi
+            <div style="font-size:30px; margin-top:10px;">
+                <?= $statusDehidrasi ?>
+            </div>
+        </div>
+    </div>
+
+</div>
 
     <!-- REKOMENDASI -->
     <h3 class="section-title">Rekomendasi</h3>
