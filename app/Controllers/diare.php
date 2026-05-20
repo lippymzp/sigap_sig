@@ -220,6 +220,7 @@ $skriningModel->insert([
 // =========================
 public function index()
 {
+    die('INDEX KEBACA BRO');
     helper('text');
 
     $beritaModel = new BeritaModelDD();
