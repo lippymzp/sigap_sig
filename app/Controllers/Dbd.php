@@ -854,8 +854,6 @@ public function manajemen_pkm()
 
     public function rekap_skrining()
 {
-    $layout_dinamis = $this->getDashboardLayout();
-
     $db = \Config\Database::connect();
     $builder = $db->table('skrining as s');
 
@@ -880,7 +878,6 @@ public function manajemen_pkm()
     $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
     $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
     $builder->where('s.id_penyakit', 1);
-
     // ==========================================
     // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
     // ==========================================
@@ -960,7 +957,6 @@ public function manajemen_pkm()
     $pagerLinks = $pager->makeLinks($page, $perPage, $total, 'default_full');
 
     $data = [
-        'layout'   => $layout_dinamis, 
         'menu'       => 'skrining',
         'judul'      => 'Rekap Skrining',   
         'skrining'   => $skriningData,
@@ -974,28 +970,14 @@ public function manajemen_pkm()
     return view('gol_a/rekap_skrining', $data);
 }
 
-
-public function hapus_skrining($id = null)
+public function hapus_skrining(int $id)
 {
-    // 1. Ambil paksa potongan URL PALING TERAKHIR (Pasti berisi angka ID)
-    if (empty($id)) {
-        $uri = $this->request->getUri();
-        $id = $uri->getSegment($uri->getTotalSegments());
-    }
+    $model = new \App\Models\SkriningdbdModel();
 
-    // 2. Paksa konversi menjadi angka (integer)
-    $id = (int) $id;
+    $model->delete($id);
 
-    // 3. Pengaman jika ID tetap 0
-    if ($id === 0) {
-        return redirect()->back()->with('error', 'Gagal: ID tidak terbaca oleh sistem!');
-    }
-
-    // 4. Tebas data langsung di database
-    $db = \Config\Database::connect();
-    $db->table('skrining')->where('id_skrining', $id)->delete();
-
-    return redirect()->back()->with('success', 'Data berhasil dihapus');
+    return redirect()->back()
+                     ->with('success', 'Data berhasil dihapus');
 }
 
 // ==================================

@@ -195,7 +195,10 @@ onclick="showMode('normal')">
 </div>
 
 <?php endif; ?>
-   <?= isset($hasil) ? '<span style="font-size:36px;">mL</span>' : '' ?>
+   <?= isset($hasil)
+    ? '<span style="font-size:36px;">' . ((($mode ?? 'who') === 'who') ? 'mL' : 'mL/Hari') . '</span>'
+    : ''
+?>
     </div>
 
     <div class="mt-4 p-3 rounded" style="background:rgba(255,255,255,.15)">
