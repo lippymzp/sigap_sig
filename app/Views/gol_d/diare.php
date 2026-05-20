@@ -10,9 +10,7 @@ $this->setVar('show_footer_maskot', true);
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <div class="diare-page">
-    <pre>
-<?= print_r($diare, true) ?>
-</pre>
+    
 <style>
 .diare-page,
 .diare-page *{
@@ -1118,7 +1116,7 @@ dataDiare.forEach(item => {
         };
     }
 
-    dataFinal[desa].total += parseInt(item.kasus);
+   dataFinal[desa].total += 1;
     dataFinal[desa].jumlah++;
 });
 
@@ -1129,21 +1127,62 @@ for(var key in dataFinal){
     else if(rata >= 10) dataFinal[key].kategori = "sedang";
     else dataFinal[key].kategori = "rendah";
 }
+// =========================
+// RINGKASAN DINAMIS
+// =========================
+var desaTertinggi = '-';
+var kasusTertinggi = 0;
+var totalSemuaKasus = 0;
+var jumlahDesa = 0;
+var desaDiAtasRata = 0;
+
+for(var key in dataFinal){
+    totalSemuaKasus += dataFinal[key].total;
+    jumlahDesa++;
+
+    if(dataFinal[key].total > kasusTertinggi){
+        kasusTertinggi = dataFinal[key].total;
+        desaTertinggi = key;
+    }
+}
+
+var rataKasus = jumlahDesa > 0
+    ? Math.round(totalSemuaKasus / jumlahDesa)
+    : 0;
+
+for(var key in dataFinal){
+    if(dataFinal[key].total > rataKasus){
+        desaDiAtasRata++;
+    }
+}
 
 </script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
+let bulanan = {};
+
+dataDiare.forEach(item => {
+    let bulan = new Date(item.tanggal_kunjungan)
+        .toLocaleString('id-ID', { month: 'short' });
+
+    if(!bulanan[bulan]){
+        bulanan[bulan] = 0;
+    }
+
+    bulanan[bulan]++;
+});
+
 new Chart(document.getElementById('chartDiare'), {
     type: 'bar',
     data: {
-        labels: ['Jan','Feb','Mar','Apr','Mei'],
-        datasets: [
-            { label:'Sembuh', data:[100,80,70,60,150], backgroundColor:'#8ecae6' },
-            { label:'Pengobatan', data:[90,150,120,90,95], backgroundColor:'#219ebc' },
-            { label:'Meninggal', data:[40,20,40,40,60], backgroundColor:'#90dbf4' }
-        ]
+        labels: Object.keys(bulanan),
+        datasets: [{
+            label: 'Kasus Diare',
+            data: Object.values(bulanan),
+            backgroundColor: '#219ebc'
+        }]
     }
 });
 
@@ -1308,27 +1347,24 @@ slider.addEventListener("touchend", e=>{
 
     <h4 class="fw-bold mb-3">Ringkasan Data</h4>
 
-    <p>
-        Kasus diare tertinggi terjadi di Desa 
-        <span class="highlight-red">Panti</span> 
-        yang masuk kategori sangat tinggi dibanding wilayah lain
+    <p id="ringkasan1">
+        Memuat data...
     </p>
 
-    <p>
-        Terdapat <b>2 desa</b> dengan kasus di atas rata-rata
+    <p id="ringkasan2">
+        Memuat data...
     </p>
 
-    <p>
-        Rata-rata kasus diare di tiap desa adalah 
-        <span class="highlight-red">60 kasus</span>
+    <p id="ringkasan3">
+        Memuat data...
     </p>
 
-    <p>
-        Rata-rata kasus diare di kecamatan Panti adalah 
-        <span class="highlight-red">120 kasus</span>
+    <p id="ringkasan4">
+        Memuat data...
     </p>
 
 </div>
+
 </section>
 <!-- TOMBOL AI -->
 <!-- TOMBOL AI -->
@@ -1581,5 +1617,27 @@ setInterval(function() {
         .then(data => console.log('DOXY keep alive:', data.status))
         .catch(err => console.log('Ping error:', err));
 }, 300000);
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    document.getElementById('ringkasan1').innerHTML =
+        `Kasus diare tertinggi terjadi di Desa 
+        <span class="highlight-red">${desaTertinggi}</span> 
+        dengan total <b>${kasusTertinggi}</b> kasus`;
+
+    document.getElementById('ringkasan2').innerHTML =
+        `Terdapat <b>${desaDiAtasRata}</b> desa dengan kasus di atas rata-rata`;
+
+    document.getElementById('ringkasan3').innerHTML =
+        `Rata-rata kasus diare tiap desa adalah 
+        <span class="highlight-red">${rataKasus} kasus</span>`;
+
+    document.getElementById('ringkasan4').innerHTML =
+        `Total seluruh kasus diare tercatat sebanyak 
+        <span class="highlight-red">${totalSemuaKasus} kasus</span>`;
+});
 </script>
 <?= $this->include('layout/footer') ?>
