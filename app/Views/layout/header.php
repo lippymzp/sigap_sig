@@ -277,15 +277,8 @@ body .nav-link{
     gap:10px;
 }
 
-.diare-logo{
-    width:52px !important;
-    height:52px !important;
-    object-fit:contain;
-    flex-shrink:0;
-}
-
 .diagis-text-logo{
-    width:250px !important;
+    width:150px !important;
     height:auto !important;
     object-fit:contain;
     display:block;
@@ -403,7 +396,7 @@ $showLoginPages = [
 
     <!-- NAMA DIGANTI GAMBAR -->
     <img src="<?= base_url('img/namaa.png') ?>" 
-         alt="Diagis Text"
+         alt="Diagis Text"  
          class="diagis-text-logo">
 
 <?php elseif ($isPneumoniaPage): ?>
