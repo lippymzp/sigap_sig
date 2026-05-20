@@ -401,9 +401,10 @@ $showLoginPages = [
          class="brand-logo diare-logo">
 
     <!-- NAMA DIGANTI GAMBAR -->
-    <img src="<?= base_url('img/namaa.png') ?>" 
-         alt="Diagis Text"  
-         class="diagis-text-logo">
+   <img src="<?= base_url('img/namaa.png') ?>" 
+     alt="Diagis Text"
+     class="diagis-text-logo"
+     style="width:180px !important; height:auto !important;">
 
 <?php elseif ($isPneumoniaPage): ?>
 
