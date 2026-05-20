@@ -192,7 +192,7 @@ input:checked + .answer-btn{
     </div>
 </div>
 
-<form action="<?= base_url('skrining-diare-step4') ?>" method="post">
+<form action="<?= base_url('skrining-diare-hasil') ?>" method="post">
 
 <div class="screening-card">
 
@@ -223,11 +223,11 @@ $pertanyaan = [
     <div class="question-text"><?= $p ?></div>
 
     <div class="answer-group">
-        <input type="radio" id="ya<?= $i+5 ?>" name="q<?= $i+5 ?>" value="1" required>
-        <label for="ya<?= $i+5 ?>" class="answer-btn">Iya</label>
+        <input type="radio" id="ya<?= $i+8 ?>" name="q<?= $i+8 ?>" value="1" required>
+        <label for="ya<?= $i+8 ?>" class="answer-btn">Iya</label>
 
-        <input type="radio" id="tidak<?= $i+5 ?>" name="q<?= $i+5 ?>" value="0">
-        <label for="tidak<?= $i+5 ?>" class="answer-btn">Tidak</label>
+        <input type="radio" id="tidak<?= $i+8 ?>" name="q<?= $i+8 ?>" value="0">
+        <label for="tidak<?= $i+8 ?>" class="answer-btn">Tidak</label>
     </div>
 
 </div>

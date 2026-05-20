@@ -99,11 +99,15 @@ class Pneumonia extends BaseController
         12 => 'Desember'
     ];
 
-    foreach ($data as &$d) {
+    $hasil = $builder->get()->getResultArray();
+    
+    foreach ($hasil as &$d) {
         $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
     }
 
-    return view('gol_c/hasil_data_pasien/hasil_data_c', [
+    return $this->response->setJSON($hasil);
+
+    return view('gol_c/hasil_data_pasien/hasil_data_c', [                   
         'menu' => 'hasil',
         'penyakit' => 'pneumonia',
         'judul' => 'Hasil Data Pasien',
@@ -171,9 +175,11 @@ class Pneumonia extends BaseController
             12 => 'Desember'
         ];
 
-        foreach ($data as &$d) {
+        foreach ($hasil as &$d) {
             $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
         }
+
+return $this->response->setJSON($hasil);
 
         return $this->response->setJSON($data);
     }
