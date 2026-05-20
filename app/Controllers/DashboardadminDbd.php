@@ -91,8 +91,8 @@ public function index()
             COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' $allFilters THEN p.id_pasien END) as meninggal,
             
             COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
-            COALESCE(SUM(DISTINCT rp.diperiksa), 0) as rumah_diperiksa,
-            COALESCE(SUM(DISTINCT rp.positif), 0) as rumah_positif
+COALESCE(rp.rumah_diperiksa, 0) as rumah_diperiksa,
+COALESCE(rp.rumah_positif, 0) as rumah_positif
         ");
 
 $builderMape->join(
@@ -101,8 +101,20 @@ $builderMape->join(
     'left'
 );
 
-        // Join Rekap Jentik (Kader)
-        $builderMape->join('rekap_pelaporan_kader rp', 'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
+$subJentik = $db->table('rekap_pelaporan_kader')
+    ->select('
+        kelurahan,
+        SUM(diperiksa) as rumah_diperiksa,
+        SUM(positif) as rumah_positif
+    ')
+    ->groupBy('kelurahan')
+    ->getCompiledSelect();
+
+$builderMape->join(
+    "($subJentik) rp",
+    'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))',
+    'left'
+);
 
         // Join Total Penduduk per Kelurahan (Subquery) - Menggunakan $id_penyakit dari session
         $subQueryPenduduk = $db->table('data_penduduk')

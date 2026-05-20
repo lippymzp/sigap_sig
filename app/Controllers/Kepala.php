@@ -120,16 +120,25 @@ $builderDetail->select("
     SUM(CASE WHEN p.umur >= 60 THEN 1 ELSE 0 END) as lansia,
     SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
     SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
-    SUM(r.diperiksa) as rumah_diperiksa,
-    SUM(r.positif) as rumah_positif,
+COALESCE(r.rumah_diperiksa, 0) as rumah_diperiksa,
+COALESCE(r.rumah_positif, 0) as rumah_positif,
     SUM(CASE WHEN p.status_akhir = 'Sembuh' THEN 1 ELSE 0 END) as sembuh,
     SUM(CASE WHEN p.status_akhir = 'Meninggal' THEN 1 ELSE 0 END) as meninggal,
 ");
 
 $builderDetail->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+$subJentik = $db->table('rekap_pelaporan_kader')
+    ->select('
+        kelurahan,
+        SUM(diperiksa) as rumah_diperiksa,
+        SUM(positif) as rumah_positif
+    ')
+    ->groupBy('kelurahan')
+    ->getCompiledSelect();
+
 $builderDetail->join(
-    'rekap_pelaporan_kader r',
-    'r.kelurahan = w.kelurahan',
+    "($subJentik) r",
+    'LOWER(REPLACE(r.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))',
     'left'
 );
 $builderDetail->where('p.id_penyakit', 1);
