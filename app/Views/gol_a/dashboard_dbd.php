@@ -506,12 +506,12 @@ $kelurahanTerdampak = $db->table('pasien')
                                 <td class="value"></td>
                             </tr>
                             <tr class="sub">
-                                <td class="label">Bayi dan Anak-anak</tr>/td>
+                                <td class="label">Bayi dan Anak-anak</td>
                                 <td class="colon">:</td>
                                 <td class="value" id="modalAnak">0</td>
                             </tr>
                              <tr class="sub">
-                                <td class="label">Sekolah dan Remaja</tr>/td>
+                                <td class="label">Sekolah dan Remaja</td>
                                 <td class="colon">:</td>
                                 <td class="value" id="modalRemaja">0</td>
                             </tr>

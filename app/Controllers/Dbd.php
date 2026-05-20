@@ -728,11 +728,6 @@ class Dbd extends BaseController
 
         // 🔥 BARU AMBIL DATA
         $dbd = $builderDbd->get()->getResultArray();
-
-    // 🔥 BARU AMBIL DATA
-    $dbd = $builderDbd->get()->getResultArray();    // ======================
-    // 🔥 KIRIM KE VIEW
-    // ======================
     
     return view('gol_a/dashboard_kader', [
         'menu' => 'dashboard',
