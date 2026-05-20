@@ -139,7 +139,7 @@ $builderGrafik->select("
 $builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
 
 if (!empty($id_penyakit)) {
-    $builderGrafik->where('p.id_penyakit', $id_penyakit);
+    $builderGrafik->where('p.id_penyakit', 1);
 }
 
 if (!empty($bulan)) {
