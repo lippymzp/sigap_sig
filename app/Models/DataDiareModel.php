@@ -8,8 +8,6 @@ class DataDiareModel extends Model
 {
     protected $table = 'data_diare';
     protected $primaryKey = 'id';
-    protected $returnType = 'array';
-
     protected $allowedFields = [
         'nama_pasien',
         'desa',
