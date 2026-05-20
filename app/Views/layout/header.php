@@ -76,10 +76,7 @@
     line-height:1.1;
     letter-spacing:-0.2px;
 }
-.brand-diare{
-    gap:14px;
-    align-items:center;
-}
+
 
 
 /* navbar lebih figma */
@@ -254,36 +251,6 @@ body .nav-link{
 /* HEADER DIARE */
 
 
-
-
-/* ===== HEADER KHUSUS DIARE ===== */
-.brand-diare{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
-.diare-logo{
-    width:48px !important;
-    height:48px !important;
-    object-fit:contain;
-    flex-shrink:0;
-}
-
-/* ===== HEADER KHUSUS DIARE ===== */
-.brand-diare{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.diagis-text-logo{
-    width:150px !important;
-    height:auto !important;
-    object-fit:contain;
-    display:block;
-}
-
 /* navbar */
 .navbar-custom{
     background:#fff;
@@ -326,7 +293,50 @@ body .nav-link{
     padding:10px 24px !important;
     border-radius:14px;
 }
+/* =========================================
+   KHUSUS HEADER DIARE SAJA
+========================================= */
+<?php if ($isDiarePage): ?>
 
+.navbar-custom{
+    padding:8px 0 !important;
+}
+
+.navbar-custom .container{
+    max-width:1200px;
+    align-items:center;
+}
+
+.brand-diare{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+}
+
+.brand-diare .diare-logo{
+    width:48px !important;
+    height:48px !important;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+.brand-diare .diagis-text-logo{
+    width:180px !important;
+    height:auto !important;
+    object-fit:contain;
+    display:block;
+}
+
+.navbar-custom .nav-link{
+    font-size:15px !important;
+}
+
+.navbar-custom .btn-login{
+    padding:10px 26px !important;
+    border-radius:12px !important;
+}
+
+<?php endif; ?>
 }
 </style>
 
