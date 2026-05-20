@@ -302,6 +302,32 @@ body .nav-link{
     padding:10px 24px !important;
     border-radius:14px;
 }
+/* FIX HEADER DIARE */
+body .brand-diare{
+    display:flex;
+    align-items:center;
+    gap:10px !important;
+}
+
+body .brand-diare .brand-logo.diare-logo{
+    width:55px !important;
+    height:55px !important;
+    max-width:55px !important;
+    max-height:55px !important;
+    min-width:55px !important;
+    object-fit:contain;
+}
+
+body .brand-diare .diagis-text-logo{
+    width:300px !important;
+    max-width:300px !important;
+    height:auto !important;
+    display:block;
+}
+
+body .navbar-custom{
+    padding:10px 0 !important;
+}
 }
 </style>
 
@@ -365,14 +391,11 @@ $showLoginPages = [
    <?php if ($isDiarePage): ?>
 
     <!-- LOGO DIARE TETAP -->
-    <img src="<?= base_url('img/logo_diare.png') ?>" 
-         alt="diagis"
-         class="brand-logo diare-logo">
+    <div class="brand-diare">
+    <img src="<?= base_url('img/logo_diare.png') ?>" alt="diagis" class="diare-logo">
 
-    <!-- NAMA DIGANTI GAMBAR -->
-    <img src="<?= base_url('img/namaa.png') ?>" 
-         alt="Diagis Text"
-         class="diagis-text-logo">
+    <img src="<?= base_url('img/namaa.png') ?>" alt="Diagis Text" class="diagis-text-logo">
+</div>
 
 <?php elseif ($isPneumoniaPage): ?>
 
@@ -460,7 +483,4 @@ $showLoginPages = [
 
 </nav>
 
-<!-- SPACING NAVBAR -->
-<div style="margin-top:55px"></div>
-<!-- SPACING -->
-<div style="margin-top:100px;"></div>
+<div style="margin-top:90px;"></div>
