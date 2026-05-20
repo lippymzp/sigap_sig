@@ -851,13 +851,12 @@ public function manajemen_pkm()
         return redirect()->to(base_url('manajemen_puskesmas'))->with('success', 'Data berhasil dihapus!');
     }
 
-public function rekap_skrining()
+
+    public function rekap_skrining()
 {
     $layout_dinamis = $this->getDashboardLayout();
     $db = \Config\Database::connect();
     $builder = $db->table('skrining as s');
-
-    $builder->distinct();
 
     $builder->select('
         s.id_skrining,
@@ -877,12 +876,30 @@ public function rekap_skrining()
         s.tanggal
     ');
 
-    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah');
+    $builder->join('pasien_skrining p', 'p.id_pasien_skrining = s.id_pasien_skrining', 'left');
+    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+    
+    // ==========================================
+    // ⚡ FILTER DEFAULT (WAJIB)
+    // ==========================================
+    // 1. Pastikan hanya penyakit DBD (id_penyakit = 1)
     $builder->where('s.id_penyakit', 1);
+    
+    // 2. Pastikan HANYA menampilkan hasil yang relevan (Baik, Cukup, Buruk)
+    // Menggunakan groupStart() dan like() agar fleksibel meskipun ada perbedaan spasi/kata awalan di database
+    /*
+    $builder->groupStart()
+            ->like('s.hasil', 'Baik')
+            ->orLike('s.hasil', 'Cukup')
+            ->orLike('s.hasil', 'Buruk')
+            ->groupEnd();
+
+    */
+    $builder->groupBy('s.id_skrining');
+    
 
     // ==========================================
-    // ⚡ SERVER-SIDE FILTERING (MENYARING SEMUA DATA)
+    // ⚡ SERVER-SIDE FILTERING (DARI INPUT USER)
     // ==========================================
     
     // 1. Ambil Parameter dari URL
@@ -906,7 +923,7 @@ public function rekap_skrining()
             $builder->where('s.tanggal', date('Y-m-d'));
         }
 
-        // Filter Hasil/Risiko Lingkungan
+        // Filter Hasil/Risiko Lingkungan Spesifik
         $hasilFilter = [];
         if (in_array('baik', $filter)) $hasilFilter[] = 'Kategori Lingkungan Baik';
         if (in_array('cukup', $filter)) $hasilFilter[] = 'Kategori Lingkungan Cukup';
@@ -950,7 +967,7 @@ public function rekap_skrining()
 
     // Hitung total data setelah difilter
     $totalBuilder = clone $builder;
-    $total = $totalBuilder->countAllResults(true);
+    $total = $totalBuilder->countAllResults();
 
     $skriningData = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
 
@@ -973,6 +990,8 @@ public function rekap_skrining()
 
     return view('gol_a/rekap_skrining', $data);
 }
+
+
 
 public function hapus_skrining(int $id)
 {
