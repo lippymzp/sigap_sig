@@ -48,12 +48,11 @@ $builderGrafik->select("
     COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
     COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
 ");
-$subGrafik = $db->table('pasien')
-    ->select('MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah, umur, jenis_kelamin')
-    ->where('id_penyakit', 1)
-    ->groupBy('nik, tgl_kunjungan')
-    ->getCompiledSelect();
-$builderGrafik->join("($subGrafik) p", 'p.id_wilayah = w.id_wilayah', 'left');
+$builderGrafik->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'left'
+);
 
 if (!empty($bulan)) {
     $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
@@ -90,15 +89,14 @@ $grafik = $builderGrafik->get()->getResultArray();
         // ======================
         $tahunMap = $this->request->getGet('tahun_map');
 
-$subDbd = $db->table('pasien')
-    ->select('MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah')
-    ->where('id_penyakit', 1)
-    ->groupBy('nik, tgl_kunjungan')
-    ->getCompiledSelect();
-
-$builderDbd = $db->table("($subDbd) p", true);
-$builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
-$builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        $builderDbd = $db->table('pasien p');
+        $builderDbd->select('w.kelurahan as desa, COUNT(DISTINCT p.id_pasien) as kasus');
+        $builderDbd->join(
+    'wilayah w',
+    'w.id_wilayah = p.id_wilayah',
+    'left'
+);
+        $builderDbd->where('p.id_penyakit', 1);
 
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
         if (!empty($tahunMap)) {

@@ -91,17 +91,15 @@ public function index()
             COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' $allFilters THEN p.id_pasien END) as meninggal,
             
             COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
-COALESCE(MAX(rp.total_diperiksa), 0) as rumah_diperiksa,
-COALESCE(MAX(rp.total_positif), 0) as rumah_positif
+            COALESCE(SUM(DISTINCT rp.diperiksa), 0) as rumah_diperiksa,
+            COALESCE(SUM(DISTINCT rp.positif), 0) as rumah_positif
         ");
 
-$subPasien = $db->table('pasien')
-    ->select('MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah, umur, jenis_kelamin, status_akhir')
-    ->where('id_penyakit', 1)
-    ->groupBy('nik, tgl_kunjungan')
-    ->getCompiledSelect();
-
-$builderMape->join("($subPasien) p", 'p.id_wilayah = w.id_wilayah', 'left');
+$builderMape->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'left'
+);
 
         // Join Rekap Jentik (Kader)
         $builderMape->join('rekap_pelaporan_kader rp', 'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
@@ -129,11 +127,7 @@ $builderMape->join("($subPasien) p", 'p.id_wilayah = w.id_wilayah', 'left');
         // 2. QUERY GRAFIK (DIUBAH MENJADI 4 KATEGORI USIA)
         // ==========================================
       $builderGrafik = $db->table('wilayah w');
-$subGrafik = $db->table('pasien')
-    ->select('MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah, umur, jenis_kelamin')
-    ->where('id_penyakit', 1)
-    ->groupBy('nik, tgl_kunjungan')
-    ->getCompiledSelect();
+
 $builderGrafik->select("
     w.kelurahan as wilayah,
 
@@ -143,7 +137,11 @@ $builderGrafik->select("
     COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
     ");
 
-$builderGrafik->join("($subGrafik) p", 'p.id_wilayah = w.id_wilayah', 'left');
+$builderGrafik->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'left'
+);
 
 $builderGrafik->whereIn('w.kelurahan', [
     'Sumbersari',
