@@ -907,22 +907,22 @@ body{
 <div class="row g-4 justify-content-center">
 
     <div class="col-lg col-md-4 col-6">
-        <div class="fitur-box shadow-sm">
-            📊 Grafik Kesehatan
-        </div>
-    </div>
+    <a href="#grafik" class="fitur-box shadow-sm">
+        📊 Grafik Kesehatan
+    </a>
+</div>
 
     <div class="col-lg col-md-4 col-6">
-        <div class="fitur-box shadow-sm">
-            🗺️ Peta Persebaran
-        </div>
-    </div>
+    <a href="#peta" class="fitur-box shadow-sm">
+        🗺️ Peta Persebaran
+    </a>
+</div>
 
     <div class="col-lg col-md-4 col-6">
-        <div class="fitur-box shadow-sm">
-            📄 Artikel Kesehatan
-        </div>
-    </div>
+    <a href="#artikel" class="fitur-box shadow-sm">
+        📄 Artikel Kesehatan
+    </a>
+</div>
 
     <div class="col-lg col-md-4 col-6">
         <a href="<?= base_url('skrining-diare') ?>"
@@ -940,7 +940,7 @@ body{
 
 </div>
 </section>
-<section class="container mt-5 insight-premium" data-aos="fade-up">
+<section id="artikel" class="container mt-5 insight-premium" data-aos="fade-up">
 
     <div class="section-head">
         <span>INSIGHTS</span>
@@ -1066,7 +1066,7 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 </section>
 
 <!-- MAP -->
-<section class="container mt-5" data-aos="fade-up">
+<section id="peta" class="container mt-5" data-aos="fade-up">
 
 <h4 class="text-teal mb-3 fw-bold">Peta Persebaran Penyakit</h4>
 
@@ -1571,4 +1571,12 @@ async function sendMessage(){
     </div>
 
 </section>
+<script>
+setInterval(function() {
+    fetch("<?= base_url('ping') ?>")
+        .then(res => res.json())
+        .then(data => console.log('DOXY keep alive:', data.status))
+        .catch(err => console.log('Ping error:', err));
+}, 300000);
+</script>
 <?= $this->include('layout/footer') ?>

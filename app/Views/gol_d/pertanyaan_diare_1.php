@@ -204,7 +204,6 @@ input:checked + .answer-btn{
         <div class="step-title">Pertanyaan Skrining</div>
     </div>
 </div>
-
 <form action="<?= base_url('skrining-diare-step3') ?>" method="post">
 
 <div class="screening-card">

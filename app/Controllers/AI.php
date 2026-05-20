@@ -6,38 +6,44 @@ class AI extends BaseController
 {
     public function chat()
     {
-        $message = $this->request->getPost('message');
+        $message = trim($this->request->getPost('message'));
 
-        // GANTI DENGAN API KEY BARU
-        $apiKey = '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';
+        if (!$message) {
+            return $this->response->setJSON([
+                'answer' => 'Pesan kosong.'
+            ]);
+        }
 
-        $data = [
-            "model" => "meta-llama/llama-3.1-8b-instruct:free",
+        // API KEY GROQ
+        $apiKey = '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';
+
+        $payload = [
+            "model" => "llama-3.1-8b-instant",
             "messages" => [
                 [
                     "role" => "system",
-                    "content" => "Kamu adalah SIGAP AI, asisten kesehatan khusus penyakit diare. Jawab singkat, jelas, ramah, dalam bahasa Indonesia."
+                    "content" => "Kamu adalah DOXY AI, asisten kesehatan yang HANYA menjawab tentang penyakit diare, gejala diare, penyebab, pencegahan, pengobatan dasar. Jika ditanya di luar topik, tolak dengan sopan."
                 ],
                 [
                     "role" => "user",
                     "content" => $message
                 ]
-            ]
+            ],
+            "temperature" => 0.7,
+            "max_tokens" => 500
         ];
 
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => 'https://openrouter.ai/api/v1/chat/completions',
+            CURLOPT_URL => 'https://api.groq.com/openai/v1/chat/completions',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_TIMEOUT => 60,
             CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
                 'Authorization: Bearer ' . $apiKey,
-                'HTTP-Referer: https://sigapcoba.mikpolije.com',
-                'X-Title: SIGAP AI'
+                'Content-Type: application/json'
             ]
         ]);
 
@@ -54,13 +60,20 @@ class AI extends BaseController
         $response = json_decode($result, true);
 
         if (isset($response['choices'][0]['message']['content'])) {
-            $answer = $response['choices'][0]['message']['content'];
-        } else {
-            $answer = '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>';
+            return $this->response->setJSON([
+                'answer' => nl2br($response['choices'][0]['message']['content'])
+            ]);
         }
 
         return $this->response->setJSON([
-            'answer' => nl2br($answer)
+            'answer' => '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>'
         ]);
     }
+       public function ping()
+    {
+        return $this->response->setJSON([
+            'status' => 'alive'
+        ]);
+    }
+
 }
