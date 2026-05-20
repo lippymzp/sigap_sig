@@ -229,33 +229,55 @@
 </div>
 
 <?php
-    $dbStat = \Config\Database::connect();
+    $db = \Config\Database::connect();
 
     $idPetugas  = session()->get('id_petugas');
     $idPenyakit = session()->get('id_penyakit');
 
-    $totalKasus = $dbStat->table('pasien')
-        ->where('id_petugas', $idPetugas)
-        ->where('id_penyakit', $idPenyakit)
-        ->countAllResults();
+    $builder = $db->table('pasien')
+    ->where('id_petugas', $idPetugas)
+    ->where('id_penyakit', $idPenyakit);
+    $desa_diizinkan = [
+        'sumbersari',
+        'wirolegi',
+        'antirogo',
+        'tegalgede',
+        'karangrejo'
+    ];
 
-    $hariIni = date('Y-m-d');
-    $kasusHariIni = $dbStat->table('pasien')
-        ->where('DATE(tgl_kunjungan)', $hariIni)
-        ->where('id_petugas', $idPetugas)
-        ->where('id_penyakit', $idPenyakit)
-        ->countAllResults();
+// Total kasus
+$totalKasus = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
-    // 3. Kelurahan Terdampak
-    $idPetugas  = session()->get('id_petugas');
-        $idPenyakit = session()->get('id_penyakit');
+// Kasus hari ini
+$kasusHariIni = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
-        $kelurahanTerdampak = $dbStat->table('pasien')
-            ->select('id_wilayah')
-            ->where('id_petugas', $idPetugas)
-            ->where('id_penyakit', $idPenyakit)
-            ->distinct()
-            ->countAllResults();
+// Kelurahan terdampak
+$kelurahanTerdampak = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->select('COUNT(DISTINCT wilayah.kelurahan) as total')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->get()
+    ->getRow()
+    ->total;
 ?>
 
 <div class="stat-row">
