@@ -310,48 +310,6 @@
         width: 40% !important;
     }
 }
-.info-table tr td {
-    padding: 8px 6px;
-    vertical-align: top;
-    line-height: 1.5;
-    font-size: 14px;
-}
-.info-table tr td.label {
-    width: 55%;
-    color: #2b2b2b;
-    font-weight: 600;
-    font-size: 14px;
-    white-space: normal;
-    word-break: break-word;
-}
-.info-table tr td.colon {
-    width: 14px;
-    text-align: center;
-    color: #555;
-    font-weight: 400;
-}
-.info-table tr td.value {
-    color: #111;
-    font-weight: 500;
-    font-size: 14px;
-    word-break: break-word;
-}
-.info-table tr.sub td.label {
-    padding-left: 22px;
-    color: #555;
-    font-weight: 400;
-    font-size: 13.5px;
-}
-.info-table tr.sub td.value {
-    font-size: 13.5px;
-}
-@media (max-width: 480px) {
-    .info-table tr td,
-    .info-table tr td.label,
-    .info-table tr td.value { font-size: 12.5px; }
-    .info-table tr.sub td.label,
-    .info-table tr.sub td.value { font-size: 12px; }
-}
 </style>
 
 <div class="welcome-box">
@@ -382,32 +340,26 @@
         'karangrejo'
     ];
 
-$desaList = "'" . implode("','", $desa_diizinkan) . "'";
+// Total kasus
+$totalKasus = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
-// Total kasus DBD (unik per NIK + tgl_kunjungan)
-$totalKasus = (int) $db->query("
-    SELECT COUNT(*) AS total FROM (
-        SELECT p.nik, p.tgl_kunjungan
-        FROM pasien p
-        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-        WHERE p.id_penyakit = 1
-          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
-        GROUP BY p.nik, p.tgl_kunjungan
-    ) t
-")->getRow()->total;
-
-// Kasus baru hari ini (unik per NIK + tgl_kunjungan)
-$kasusHariIni = (int) $db->query("
-    SELECT COUNT(*) AS total FROM (
-        SELECT p.nik, p.tgl_kunjungan
-        FROM pasien p
-        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-        WHERE p.id_penyakit = 1
-          AND DATE(p.tgl_kunjungan) = '" . date('Y-m-d') . "'
-          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
-        GROUP BY p.nik, p.tgl_kunjungan
-    ) t
-")->getRow()->total;
+// Kasus hari ini
+$kasusHariIni = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
 // Kelurahan terdampak
 $kelurahanTerdampak = $db->table('pasien')
@@ -820,12 +772,7 @@ $kelurahanTerdampak = $db->table('pasien')
     if (!empty($reqWilayahABJ)) { foreach ($dataFinalABJ as $nama => $val) { if ($nama !== $reqWilayahABJ) unset($dataFinalABJ[$nama]); } }
 
     // ================= DATA GRAFIK MORTALITAS =================
-    $subMort = $db->table('pasien')
-    ->select('MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah, status_akhir, jenis_kelamin')
-    ->where('id_penyakit', 1)
-    ->groupBy('nik, tgl_kunjungan')
-    ->getCompiledSelect();
-$builderMort = $db->table("($subMort) pasien", true);
+    $builderMort = $db->table('pasien');
     $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
     $builderMort->where('pasien.id_penyakit', 1);
     $builderMort->where('pasien.status_akhir', 'Meninggal');
@@ -882,16 +829,7 @@ $builderMort = $db->table("($subMort) pasien", true);
     $bPasien->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah', 'left');
     $bPasien->where('YEAR(pasien.tgl_kunjungan)', $tahunMapFilter);
     $bPasien->where('pasien.id_penyakit', 1);
-    $pasienDetail = $dbMap->query("
-    SELECT p.umur, p.jenis_kelamin, p.status_akhir, w.kelurahan as nama_kelurahan
-    FROM (
-        SELECT MIN(id_pasien) as id_pasien, nik, tgl_kunjungan, id_wilayah, umur, jenis_kelamin, status_akhir
-        FROM pasien
-        WHERE id_penyakit = 1 AND YEAR(tgl_kunjungan) = " . (int)$tahunMapFilter . "
-        GROUP BY nik, tgl_kunjungan
-    ) p
-    LEFT JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-")->getResultArray();
+    $pasienDetail = $bPasien->get()->getResultArray();
 
     // 2. Ambil Rekap Jentik
     $bJentik = $dbMap->table('rekap_pelaporan_kader');
@@ -1222,26 +1160,13 @@ document.addEventListener("DOMContentLoaded", function() {
     switchTab(currentTab);
 
     // --- GRAFIK KASUS ---
-const grafikData = <?= json_encode($grafik ?? []) ?>;
-const labelsKasus = grafikData.map(i => i.wilayah);
-const dataAnak    = grafikData.map(i => +i.anak);
-const dataRemaja  = grafikData.map(i => +i.remaja);
-const dataDewasa  = grafikData.map(i => +i.dewasa);
-const dataLansia  = grafikData.map(i => +i.lansia);
-
-new Chart(document.getElementById('chartKasus').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: labelsKasus,
-        datasets: [
-            { label: 'Anak',   data: dataAnak,   backgroundColor: '#0F766E' },
-            { label: 'Remaja', data: dataRemaja, backgroundColor: '#06B6D4' },
-            { label: 'Dewasa', data: dataDewasa, backgroundColor: '#7DD3FC' },
-            { label: 'Lansia', data: dataLansia, backgroundColor: '#14B8A6' }
-        ]
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-});
+    const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
+    let labelsKasus = []; let totalKasus = [];
+    dataGrafikKasus.forEach(item => { labelsKasus.push(item.kelurahan); totalKasus.push(item.total); });
+    new Chart(document.getElementById('chartKasus').getContext('2d'), {
+        type: 'bar', data: { labels: labelsKasus, datasets: [{ label: 'Total Kasus', data: totalKasus, backgroundColor: '#00BBC2', borderRadius: 8 }] },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
 
     // --- GRAFIK MORTALITAS ---
     const rawDataMort = <?= json_encode($dataFinalMort) ?>;
