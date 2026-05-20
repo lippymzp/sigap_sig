@@ -48,9 +48,11 @@ $builderGrafik->select("
     COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
     COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
 ");
-
-$builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
-$builderGrafik->where('p.id_penyakit', 1);
+$builderGrafik->join(
+    'pasien p',
+    'p.id_wilayah = w.id_wilayah AND p.id_penyakit = 1',
+    'left'
+);
 
 if (!empty($bulan)) {
     $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
@@ -88,8 +90,12 @@ $grafik = $builderGrafik->get()->getResultArray();
         $tahunMap = $this->request->getGet('tahun_map');
 
         $builderDbd = $db->table('pasien p');
-        $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
-        $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+        $builderDbd->select('w.kelurahan as desa, COUNT(DISTINCT p.id_pasien) as kasus');
+        $builderDbd->join(
+    'wilayah w',
+    'w.id_wilayah = p.id_wilayah',
+    'left'
+);
         $builderDbd->where('p.id_penyakit', 1);
 
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
@@ -139,6 +145,7 @@ $builderDetail->where('p.id_penyakit', 1);
         $detailDesa = [];
         $maxKasus = 0;
         $desaTertinggi = '-';
+        $penduduk = [];
 
         foreach ($rawDetail as $row) {
 
@@ -449,7 +456,7 @@ $builderDetail->where('p.id_penyakit', 1);
     }
 
 
-    public function view_laporan($id)
+    public function view_laporan(int $id)
     {
          $layout_dinamis = $this->getDashboardLayout();
         $db = \Config\Database::connect();
@@ -494,7 +501,9 @@ $builderDetail->where('p.id_penyakit', 1);
         $perPage = 10;
         $page = $this->request->getVar('page') ?? 1;
         $skrining = $builder->limit($perPage, ($page - 1) * $perPage)->get()->getResultArray();
-        $total = $db->table('skrining')->countAll();
+        $total = $db->table('skrining')
+    ->where('id_penyakit', 1)
+    ->countAllResults();
         $pager = \Config\Services::pager();
 
         $data = [
@@ -507,7 +516,7 @@ $builderDetail->where('p.id_penyakit', 1);
         return view('gol_a/rekap_skrining_kepala', $data);
     }
 
-    public function hapus_skrining($id)
+    public function hapus_skrining(int $id)
     {
         $model = new \App\Models\SkriningdbdModel();
         $model->delete($id);

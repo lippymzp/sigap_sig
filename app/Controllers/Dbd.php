@@ -12,7 +12,7 @@ class Dbd extends BaseController
 {
     protected FunfactModel $funfact;
     protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
-    protected $db; 
+    protected \CodeIgniter\Database\BaseConnection $db;
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
     public function __construct()
     {
@@ -101,7 +101,7 @@ class Dbd extends BaseController
     
                 // ID PETUGAS LOGIN
                 'id_petugas' => session()->get('id_petugas'),
-                'id_penyakit' => session()->get('id_penyakit'),
+                'id_penyakit' => 1,
     
                 // ======================
                 // DATA WILAYAH
@@ -658,7 +658,8 @@ class Dbd extends BaseController
 
 
         $builder = $db->table('pasien p');
-        $builder->select('w.kelurahan, COUNT(*) as total');
+        $builder->where('p.id_penyakit', 1);
+        $builder->select('w.kelurahan, COUNT(DISTINCT p.id_pasien) as total');
         $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
         // 2. TAMBAH LOGIKA FILTER WILAYAH (DAN FIX SPASI TEGAL GEDE)
@@ -716,7 +717,8 @@ class Dbd extends BaseController
         $tahunMap = $this->request->getGet('tahun_map');
 
         $builderDbd = $db->table('pasien p');
-        $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
+        $builderDbd->where('p.id_penyakit', 1);
+        $builderDbd->select('w.kelurahan as desa, COUNT(DISTINCT p.id_pasien) as kasus');
         $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
@@ -792,7 +794,7 @@ public function manajemen_pkm()
     }
 
     // 4. Menampilkan Detail
-    public function detail_manajemen_pkm($id)
+    public function detail_manajemen_pkm(int $id)
     {
         $puskesmas = $this->db->table('instansi')->where('id_instansi', $id)->get()->getRowArray();
 
@@ -807,7 +809,7 @@ public function manajemen_pkm()
     }
 
     // 5. Menampilkan Form Edit
-    public function edit_manajemen_pkm($id)
+    public function edit_manajemen_pkm(int $id)
     {
         $puskesmas = $this->db->table('instansi')->where('id_instansi', $id)->get()->getRowArray();
 
@@ -822,7 +824,7 @@ public function manajemen_pkm()
     }
 
     // 6. Proses Update Data
-    public function update_manajemen_pkm($id)
+    public function update_manajemen_pkm(int $id)
     {
         $data = [
             'nama_instansi' => $this->request->getPost('nama_instansi')
@@ -833,7 +835,7 @@ public function manajemen_pkm()
     }
 
     // 7. Proses Hapus Data
-    public function hapus_manajemen_pkm($id)
+    public function hapus_manajemen_pkm(int $id)
     {
         // Cek relasi ke tabel petugas
         $cekPetugas = $this->db->table('petugas')->where('id_instansi', $id)->countAllResults();
