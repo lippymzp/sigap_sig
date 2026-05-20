@@ -236,27 +236,20 @@ $skriningModel->insert([
     // GENERATE PDF
     // =========================
     public function pdf()
-    {
-        $session = session()->get('skrining_diare');
+{
+    $session = session()->get('skrining_diare');
 
-        if (!$session || !isset($session['identitas'])) {
-            return redirect()->to('/skrining-diare');
-        }
-
-        $dompdf = new Dompdf();
-
-        $html = view('gol_d/pdf_diare', [
-            'identitas'   => $session['identitas'],
-            'jawaban'     => $session['jawaban'],
-            'hasil'       => $session['hasil'],
-            'rekomendasi' => $session['rekomendasi']
-        ]);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("hasil-diare.pdf", ["Attachment" => false]);
+    if (!$session || !isset($session['identitas'])) {
+        return redirect()->to('/skrining-diare');
     }
+
+    return view('gol_d/pdf_diare', [
+        'identitas'   => $session['identitas'],
+        'jawaban'     => $session['jawaban'],
+        'hasil'       => $session['hasil'],
+        'rekomendasi' => $session['rekomendasi']
+    ]);
+}
 // =========================
 // LANDING PAGE DIARE
 // =========================
