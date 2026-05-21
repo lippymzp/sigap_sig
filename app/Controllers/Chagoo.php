@@ -50,7 +50,7 @@ class Chagoo extends BaseController
     private function generateReplyGroq($msg)
     {
         // API Key Groq
-        $apiKey = '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'; 
+        $apiKey = 'gsk_HkkNs6HEZiU7oxnIlYIYWGdyb3FYGetrdnASXWw5gzgB9bo7DY5'; 
         
         // ====================================================================
         // SETUP URL & PERTANYAAN FORMAT GROQ
