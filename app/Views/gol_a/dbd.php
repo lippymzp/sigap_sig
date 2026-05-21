@@ -1082,6 +1082,11 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                 </div>
             </div>
         </div>
+    <div class="mt-3 d-flex gap-2 justify-content-center">
+        <span class="badge bg-success">Rendah</span>
+        <span class="badge bg-warning">Sedang</span>
+        <span class="badge bg-danger">Tinggi</span>
+    </div>
     </div>
 </section>
 
