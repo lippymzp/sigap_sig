@@ -190,6 +190,10 @@ $tahunMap = $tahunMap ?? [
     height: 100% !important;
 }
 
+.leaflet-popup-content button{
+    pointer-events: auto !important;
+    z-index: 999999 !important;
+}
 /* ================= RESPONSIVE FIX GLOBAL ================= */
 
 /* ===== TABLET ===== */
@@ -739,7 +743,7 @@ $tahunMap = $tahunMap ?? [
 var dataDBD = <?= json_encode($dbd ?? []) ?>;
 var detailDesa = <?= json_encode($detailDesa ?? []) ?>;
 var desaTertinggi = <?= json_encode($desaTertinggi ?? '-') ?>;
-var tahunSekarang = <?= json_encode($tahunMap) ?>;
+var tahunSekarang = <?= json_encode($filterTahunMap ?? date('Y')) ?>;
 const colorMapping = { 'Antirogo': '#1f4e5b', 'Sumbersari': '#00BBC2', 'Karangrejo': '#b2dfdb', 'Tegalgede': '#5cb85c', 'Wirolegi': '#4fc3f7' };
 
 // --- SCRIPT UPDATE URL MAP ---
@@ -968,34 +972,79 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 return { color: "#00CED1", weight: 2, fillColor: warna, fillOpacity: 0.7 };
             },
-            onEachFeature: function(feature, layer){
-                var namaAsli = feature.properties.NAMOBJ || "Kelurahan";
-                var namaFix  = fixNama(namaAsli);
-                if(aliasDesa[namaFix]){ namaFix = aliasDesa[namaFix]; }
-                var item = dataFinal[namaFix];
-                
-                var isi = "<div style='min-width:220px;'><b>Kelurahan: " + namaAsli + "</b>";
-                if(item){
-                    var detail = detailDesa[namaFix] || {};
-                    var kategori = detail.kategori || '-';
-                    isi += "<br>Total Kasus: " + item.total;
-                    isi += "<br>Kategori: " + kategori;
-                    isi += `<br><br><button onclick="showDetailPopup('${namaFix}','${namaAsli}')" 
-                            style="background:#00CED1; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">
-                            Selengkapnya</button>`;
-                } else {
-                    isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                }
-                isi += "</div>";
+           onEachFeature: function(feature, layer){
 
-                layer.bindPopup(isi);
-                layer.bindTooltip(namaAsli, { permanent: true, direction: "center", className: "label-desa" });
+    var namaAsli = feature.properties.NAMOBJ || "Kelurahan";
+    var namaFix  = fixNama(namaAsli);
 
-                layer.on({
-                    mouseover: function(e){ e.target.setStyle({ weight: 3, color: '#000' }); },
-                    mouseout: function(e){ geo.resetStyle(e.target); }
-                });
-            }
+    if(aliasDesa[namaFix]){
+        namaFix = aliasDesa[namaFix];
+    }
+
+    var item = dataFinal[namaFix];
+
+    var isi = `
+        <div style="min-width:220px;">
+            <b>Kelurahan: ${namaAsli}</b>
+    `;
+
+    if(item){
+
+        var detail = detailDesa[namaFix] || {};
+        var kategori = detail.kategori || '-';
+
+        isi += `
+            <br>Total Kasus: ${item.total}
+            <br>Kategori: ${kategori}
+            <br><br>
+
+            <button
+                onclick="showDetailPopup('${namaFix}','${namaAsli}')"
+                style="
+                    background:#00BBC2;
+                    color:white;
+                    border:none;
+                    padding:8px 14px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:600;
+                ">
+                Selengkapnya
+            </button>
+        `;
+    } else {
+
+        isi += `
+            <br>Tidak ada data
+        `;
+    }
+
+    isi += `</div>`;
+
+    layer.bindPopup(isi);
+
+layer.bindTooltip(namaAsli, {
+    permanent: true,
+    direction: 'center',
+    className: 'label-desa'
+});
+
+layer.on({
+    mouseover: function(e){
+        e.target.setStyle({
+            weight: 3,
+            fillOpacity: 0.9
+        });
+    },
+
+    mouseout: function(e){
+        e.target.setStyle({
+            weight: 2,
+            fillOpacity: 0.7
+        });
+    }
+});
+}
         }).addTo(map);
 
         map.fitBounds(geo.getBounds());
@@ -1108,7 +1157,6 @@ new Chart(ctxKasus, {
         }
     });
 
-document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
 
@@ -1143,7 +1191,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
-});
 });
 </script>
 <?= $this->endSection(); ?>
