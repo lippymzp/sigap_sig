@@ -1982,7 +1982,39 @@ function sendMessage() {
         console.error('Error:', error);
     });
 }
-// =======================================================================
+    const footerDesc = document.querySelector(".footer-desc");
+
+    if(footerDesc){
+
+        footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    AIGON
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Gerak Cepat, Solusi Tepat 
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
 </script>
 
 <?= $this->include('layout/footer') ?>
