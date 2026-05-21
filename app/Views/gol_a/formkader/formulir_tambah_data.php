@@ -58,18 +58,10 @@
     .calendar-table tr.selected-week { background-color: transparent !important; }
 
     /* Warna background hijau/biru muda untuk rentang Jumat - Kamis */
-    .calendar-table td.range-highlight { 
-        background-color: #E6F4F1 !important; 
-        color: #333;
-    }
+    .calendar-table td.range-highlight { background-color: #E6F4F1 !important; color: #333; }
 
     /* Warna bulat toska tua khusus untuk tanggal aktif yang diklik */
-    .calendar-table td.selected-day { 
-        background-color: #00CED1 !important; 
-        color: white !important; 
-        font-weight: bold; 
-        border-radius: 8px !important; 
-    }
+    .calendar-table td.selected-day { background-color: #00CED1 !important; color: white !important; font-weight: bold; border-radius: 8px !important; }
 
     .grid-view { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 0; }
     .grid-item { text-align: center; padding: 12px 0; background: #F4F6F8; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: #333; transition: 0.2s; }
@@ -79,9 +71,9 @@
 
     /* --- STYLE COUNTER & WARNING --- */
     .counter-container { display: flex; align-items: center; margin-bottom: 5px; }
-    .btn-counter { background: #FFF; border: 2px solid #555; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; color: #333; transition: 0.2s; }
+    .btn-counter { background: #FFF; border: 2px solid #555; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; color: #333; transition: 0.2s; flex-shrink: 0; }
     .btn-counter:hover { background: #F0F0F0; }
-    .counter-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; height: 40px; flex: 1; margin: 0 10px; text-align: center; font-weight: bold; font-size: 16px; outline: none; }
+    .counter-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; height: 40px; flex: 1; margin: 0 10px; text-align: center; font-weight: bold; font-size: 16px; outline: none; min-width: 0; }
     .counter-input::-webkit-outer-spin-button, .counter-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .warning-text { color: #DC3545; font-size: 11px; margin-top: 5px; margin-bottom: 15px; display: none; align-items: center; gap: 5px; }
 
@@ -117,7 +109,7 @@
     .camera-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
     .camera-container { position: relative; width: 100%; max-width: 500px; padding: 20px; }
     #liveCamera { width: 100%; border-radius: 15px; background: #222; transform: scaleX(-1); }
-    .camera-controls { display: flex; justify-content: space-around; width: 100%; max-width: 500px; margin-top: 20px; }
+    .camera-controls { display: flex; justify-content: space-around; width: 100%; max-width: 500px; margin-top: 20px; flex-wrap: wrap; gap: 10px; }
     .btn-close-cam { background: #DC3545; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .btn-snap-cam { background: #00CED1; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
@@ -128,6 +120,20 @@
     .btn-kirim { flex: 1; background: #00CED1; border: 1px solid #00CED1; color: #FFF; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; cursor: pointer; }
     .btn-kirim:hover { background: #00B3B5; }
     .btn-kirim:disabled { background: #A0EBEB; border-color: #A0EBEB; cursor: not-allowed; }
+
+    /* --- RESPONSIVE MOBILE FIXES --- */
+    @media (max-width: 768px) {
+        .page-wrapper { padding: 10px; }
+        .banner-top { flex-direction: column; text-align: center; padding: 20px 15px; gap: 10px; }
+        .banner-icon { margin-right: 0; width: 50px; height: 50px; }
+        .form-card { padding: 20px; }
+        .calendar-popup { max-width: 100%; padding: 15px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); }
+        .upload-options-box { flex-direction: column; gap: 20px; padding: 20px; }
+        .preview-item { width: 140px; height: 100px; }
+        .action-buttons { flex-direction: column; gap: 10px; }
+        .btn-batal, .btn-kirim { width: 100%; }
+        .row.mt-4 > div { margin-bottom: 15px; }
+    }
 </style>
 
 <div class="page-wrapper">

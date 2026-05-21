@@ -44,14 +44,14 @@
     .periode-nav:hover { transform: scale(1.2); color: #009ca2; }
     .periode-nav.disabled { color: #CCC; cursor: not-allowed; transform: none; }
     
-    .btn-add { background-color: #00BBC2; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn-add { background-color: #00BBC2; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
     .btn-add:hover { background-color: #009ca2; color: white; }
 
     /* --- TABEL --- */
     .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 20px; }
-    .table-custom th { background-color: #E2F5F4; color: #333; font-weight: 700; font-size: 13px; padding: 15px 10px; border-bottom: 2px solid #fff; text-align: left; }
+    .table-custom th { background-color: #E2F5F4; color: #333; font-weight: 700; font-size: 13px; padding: 15px 10px; border-bottom: 2px solid #fff; text-align: left; white-space: nowrap; }
     .table-custom th.text-center { text-align: center; }
-    .table-custom td { padding: 15px 10px; font-size: 13px; color: #555; border-bottom: 1px solid #F0F0F0; vertical-align: middle; }
+    .table-custom td { padding: 15px 10px; font-size: 13px; color: #555; border-bottom: 1px solid #F0F0F0; vertical-align: middle; white-space: nowrap; }
     .table-custom td.text-center { text-align: center; }
     
     .action-buttons { display: flex; gap: 8px; justify-content: center; }
@@ -59,12 +59,12 @@
     .btn-action:hover { transform: scale(1.1); }
     
     /* Tombol Aksi */
-    .btn-view { background-color: #0000FF; } /* Biru untuk Detail */
-    .btn-edit { background-color: #FFD700 !important; color: #333 !important; } /* Kuning Emas untuk Edit */
-    .btn-delete { background-color: #FF0000; } /* Merah untuk Hapus */
+    .btn-view { background-color: #0000FF; } 
+    .btn-edit { background-color: #FFD700 !important; color: #333 !important; } 
+    .btn-delete { background-color: #FF0000; } 
 
-    .card-footer-custom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #888; margin-top: 20px; }
-    .pagination-custom { display: flex; gap: 5px; list-style: none; padding: 0; margin: 0; }
+    .card-footer-custom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #888; margin-top: 20px; flex-wrap: wrap; gap: 15px; }
+    .pagination-custom { display: flex; gap: 5px; list-style: none; padding: 0; margin: 0; flex-wrap: wrap; justify-content: center; }
     .pagination-custom li a, .pagination-custom li span { padding: 6px 12px; border: 1px solid #E0E0E0; border-radius: 4px; color: #555; text-decoration: none; background: white; transition: 0.2s; }
     .pagination-custom li a:hover { background-color: #00BBC2; color: white; border-color: #00BBC2; }
     .pagination-custom li.active span { background-color: #E0E0E0; font-weight: bold; }
@@ -142,6 +142,26 @@
     .grid-item:hover { background: #00BBC2; color: white; }
     .grid-item.active { background: #00BBC2; color: white; }
     .grid-item.disabled-grid { background: #FFF; color: #E0E0E0; cursor: not-allowed; }
+
+    /* --- RESPONSIVE MOBILE FIXES --- */
+    @media (max-width: 768px) {
+        .page-wrapper { padding: 10px; }
+        .banner-top { flex-direction: column; text-align: center; padding: 20px 15px; gap: 10px; }
+        .banner-icon { margin-right: 0; width: 50px; height: 50px; }
+        .data-card { padding: 20px 15px; }
+        .toolbar-container { flex-direction: column; align-items: stretch; gap: 15px; }
+        .toolbar-left { flex-direction: column; width: 100%; gap: 10px; }
+        .search-group { width: 100%; display: flex; }
+        .search-input { width: 100%; }
+        .toolbar-right { flex-direction: column; width: 100%; gap: 15px; }
+        .btn-add { width: 100%; }
+        .periode-text { justify-content: center; width: 100%; }
+        .filter-modal { width: 90%; padding: 20px; }
+        .filter-footer { flex-direction: column; gap: 10px; }
+        .filter-footer-right { width: 100%; justify-content: space-between; }
+        .filter-footer-right button, .btn-modal-reset { width: 100%; }
+        .card-footer-custom { flex-direction: column; text-align: center; }
+    }
 </style>
 
 <div class="page-wrapper">
