@@ -1986,7 +1986,7 @@ function sendMessage() {
         appendMessage('bot', 'Gagal terhubung ke server. Silakan coba lagi.');
         console.error('Error:', error);
     });
-
+}
     const footerDesc = document.querySelector(".footer-desc");
 
     if(footerDesc){
@@ -2018,8 +2018,8 @@ function sendMessage() {
 
         `);
 
-    }
 }
+
 </script>
 
 <?= $this->include('layout/footer') ?>
