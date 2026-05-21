@@ -7,6 +7,9 @@ $tahunMap = $tahunMap ?? [
     2024 => '2024',
     2025 => '2025',
 ];
+$totalKasus = $totalKasus ?? 0;
+$kasusHariIni = $kasusHariIni ?? 0;
+$kelurahanTerdampak = $kelurahanTerdampak ?? 0;
 ?>
 
 <?= $this->extend('layout/dashboard_layout_kepala'); ?>
