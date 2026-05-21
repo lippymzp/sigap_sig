@@ -1506,17 +1506,17 @@ d = d || {};
 
 .funfact-section{
     margin-top: 50px;
-    padding: 0 30px; 
+    padding: 0 20px;
 }
 
 .funfact-scroll{
     display: flex;
-    flex-wrap: nowrap;
+    gap: 18px;
     overflow-x: auto;
-    gap: 28px; 
+    overflow-y: hidden;
     scroll-behavior: smooth;
-    padding: 10px 0 20px 10px;
-    scroll-snap-type: x mandatory;
+    flex-wrap: nowrap;
+    padding-bottom: 10px;
 }
 
 .funfact-scroll::-webkit-scrollbar{
@@ -1524,14 +1524,12 @@ d = d || {};
 }
 
 .funfact-card{
-    min-width: 68%;
-    max-width: 68%;
+    min-width: 420px;
+    max-width: 420px;
     flex-shrink: 0;
     margin-top: 20px;
     position: relative;
-    scroll-snap-align: start;
 }
-
 
 .funfact-icon{
     width: 60px;
@@ -1552,7 +1550,7 @@ d = d || {};
     margin-top: -25px;
     background: linear-gradient(135deg,#0097A7,#00B8C8);
     border-radius: 20px;
-    padding: 45px 30px 25px;
+    padding: 45px 25px 25px;
 }
 
 .funfact-inner h3{
@@ -1565,53 +1563,74 @@ d = d || {};
 
 .funfact-body{
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
 }
 
 .funfact-text{
-    width: 60%;
+    flex: 1;
     color: white;
-    line-height: 1.5;
+    line-height: 1.6;
     font-size: 13px;
 }
 
 .funfact-body img{
-    width: 220px;
-    height: 150px;
+    width: 170px;
+    height: 130px;
     border-radius: 16px;
     object-fit: cover;
     flex-shrink: 0;
 }
+.funfact-text-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+.funfact-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    padding: 8px 16px;
+    background: white;
+    color: #0097A7;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .3s ease;
+}
 
-/* ================= RESPONSIVE ================= */
+.funfact-btn:hover{
+    background: #e6ffff;
+    color: #007b87;
+    transform: translateX(3px);
+}
 
-@media (max-width: 1024px){
+/* ================= TABLET ================= */
 
-    .berita-card{
-        min-width: 85%;
-        padding: 20px;
-    }
-
-    .berita-content h3{
-        font-size: 26px;
-    }
-
-    .berita-card img{
-        width: 180px;
-        height: 130px;
-    }
+@media (max-width: 768px){
 
     .funfact-card{
-        min-width: 85%;
-        max-width: 85%;
-        margin-right: -80px;
+        min-width: 300px;
+        max-width: 300px;
+    }
+
+    .funfact-body{
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .funfact-body img{
-        width: 180px;
-        height: 130px;
+        width: 100%;
+        height: 160px;
+    }
+
+    .funfact-inner{
+        padding: 40px 18px 18px;
+    }
+
+    .funfact-inner h3{
+        font-size: 16px;
     }
 
     .funfact-text{
@@ -1619,81 +1638,17 @@ d = d || {};
     }
 }
 
-
-@media (max-width: 768px){
-
-    .section-title h2{
-        font-size: 30px;
-    }
-
-    .section-title p{
-        font-size: 15px;
-    }
-
-    .berita-card{
-        min-width: 95%;
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-
-    .berita-content{
-        width: 100%;
-    }
-
-    .berita-content h3{
-        font-size: 22px;
-    }
-
-    .berita-card img{
-        width: 100%;
-        height: 200px;
-    }
-
-    .funfact-card{
-        min-width: 92%;
-        max-width: 92%;
-        margin-right: -50px;
-    }
-
-    .funfact-body{
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .funfact-text{
-        width: 100%;
-        font-size: 13px;
-    }
-
-    .funfact-body img{
-        width: 100%;
-        height: 200px;
-    }
-
-    .funfact-inner{
-        padding: 40px 20px 20px;
-    }
-}
-
+/* ================= MOBILE ================= */
 
 @media (max-width: 480px){
 
-    .funfact-section,
-    .berita-section{
+    .funfact-section{
         padding: 0 10px;
     }
 
-    .section-title h2{
-        font-size: 24px;
-    }
-
-    .berita-content h3{
-        font-size: 18px;
-    }
-
-    .funfact-inner h3{
-        font-size: 16px;
+    .funfact-card{
+        min-width: 260px;
+        max-width: 260px;
     }
 
     .funfact-icon{
@@ -1702,19 +1657,31 @@ d = d || {};
         font-size: 18px;
     }
 
-    .funfact-card{
-        margin-right: -30px;
+    .funfact-inner{
+        border-radius: 16px;
+    }
+
+    .funfact-body img{
+        height: 140px;
+    }
+
+    .funfact-inner h3{
+        font-size: 15px;
+    }
+
+    .funfact-text{
+        font-size: 11px;
     }
 }
 
-</STyle>
+</style>
 <?php $funfact = $funfact ?? []; ?>
 </div>
 <section class="funfact-section">
 
-    <div class="section-title">
-        <h2>Funfact</h2>
-        <p>Informasi dan Edukasi berdasarkan sumber terpercaya</p>
+    <div class="mb-4">
+    <h4 id="titleFunfact" class="text-dark fw-bold">Funfact</h4>
+        <p>Informasi dan Edukasi Berdasarkan Sumber Terpercaya</p>
     </div>
 
     <div class="funfact-scroll">
@@ -1732,12 +1699,17 @@ d = d || {};
             <h3><?= esc((string)$f['judul_funfact']) ?></h3>
 
             <div class="funfact-body">
-
+            <div class="funfact-text-wrapper">
                 <div class="funfact-text">
                     <?= character_limiter(strip_tags((string)$f['isi_funfact']), 180) ?>
                 </div>
-
+                <br>
+                <a href="<?= base_url('berita/funfact_user/' . $f['id_funfact']) ?>" class="funfact-btn">
+                            Baca Selengkapnya →
+                </a>
+            </div>
                 <img src="<?= base_url('uploads/funfact/' . $f['gambar_funfact']) ?>">
+                
 
             </div>
 
