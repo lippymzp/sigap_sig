@@ -504,6 +504,7 @@ $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 // PROFIL SISTEM
 
 $routes->get('superadmin/profil_sistem', 'SuperAdmin::profil_sistem');
+$routes->get('superadmin/profil', 'SuperAdmin::profil');
 $routes->get('superadmin/profil_sistem/edit', 'SuperAdmin::edit');
 $routes->post('superadmin/profil_sistem/update', 'SuperAdmin::update');
 
@@ -562,7 +563,6 @@ $routes->get('/superadmin', 'SuperAdmin::dashboard');
 $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->get('/superadmin/admin', 'SuperAdmin::admin');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
-$routes->get('/superadmin/profil', 'SuperAdmin::profil');
 
 $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->post('/superadmin/iklan/simpan', 'SuperAdmin::simpanIklan');
