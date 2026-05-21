@@ -1722,6 +1722,7 @@ public function simpanDraft(int $id)
     // ===============================
     public function rekap_kader()
     {
+        $layout_dinamis = $this->getDashboardLayout();
         $db = \Config\Database::connect();
         
         // 1. Ambil Filter dari URL
@@ -1745,6 +1746,7 @@ public function simpanDraft(int $id)
 
         // 3. Kirim ke View
         $data = [
+            'layout'      => $layout_dinamis, 
             'title'      => 'Rekap Pelaporan Kader',
             'rekap'      => $rekapData,
             'bulanAktif' => $bulan,

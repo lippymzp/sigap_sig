@@ -498,7 +498,7 @@ $routes->get('funfact/hapus/(:num)', 'Dbd::hapusFunfact/$1');
 $routes->get('funfact/upload/(:num)', 'Dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Dbd::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'Dbd::view/$1');;
-$routes->get('/tentang-kami', 'Home::tentangKami');
+$routes->get('/tentang-kami', 'SuperAdmin::tentangKami');
 $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
