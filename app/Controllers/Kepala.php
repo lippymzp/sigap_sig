@@ -46,8 +46,23 @@ class Kepala extends Controller
 $builderGrafik = $db->table('pasien p');
 
 $builderGrafik->select("
-    w.kelurahan,
-    COUNT(DISTINCT p.id_pasien) as total
+    w.kelurahan as wilayah,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur BETWEEN 0 AND 6 
+        THEN p.id_pasien END) as anak,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur > 6 AND p.umur <= 18 
+        THEN p.id_pasien END) as remaja,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur > 18 AND p.umur <= 59 
+        THEN p.id_pasien END) as dewasa,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur >= 60 
+        THEN p.id_pasien END) as lansia
 ");
 
 $builderGrafik->join(
@@ -81,18 +96,20 @@ if (!empty($jk)) {
     );
 }
 
-if (!empty($usia)) {
-    if ($usia == 'anak') {
-        $builderGrafik->where('p.umur <=', 14);
-    } elseif ($usia == 'remaja') {
-        $builderGrafik->where('p.umur >=', 15);
-        $builderGrafik->where('p.umur <=', 24);
-    } elseif ($usia == 'dewasa') {
-        $builderGrafik->where('p.umur >=', 25);
-        $builderGrafik->where('p.umur <=', 59);
-    } elseif ($usia == 'lansia') {
-        $builderGrafik->where('p.umur >=', 60);
-    }
+if ($usia == 'anak') {
+    $builderGrafik->where('p.umur >=', 0);
+    $builderGrafik->where('p.umur <=', 6);
+
+} elseif ($usia == 'remaja') {
+    $builderGrafik->where('p.umur >', 6);
+    $builderGrafik->where('p.umur <=', 18);
+
+} elseif ($usia == 'dewasa') {
+    $builderGrafik->where('p.umur >', 18);
+    $builderGrafik->where('p.umur <=', 59);
+
+} elseif ($usia == 'lansia') {
+    $builderGrafik->where('p.umur >=', 60);
 }
 
 $builderGrafik->groupBy('w.kelurahan');
@@ -141,15 +158,16 @@ $dbd = $builderDbd->get()->getResultArray();
 $builderDetail->select("
     w.kelurahan,
     COUNT(DISTINCT p.id_pasien) as jumlah_kasus,
-    COUNT(DISTINCT CASE WHEN p.umur <= 14 THEN p.id_pasien END) as anak,
-    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 15 AND 59 THEN p.id_pasien END) as dewasa,
-    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia,
+COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 THEN p.id_pasien END) as anak,
+COUNT(DISTINCT CASE WHEN p.umur > 6 AND p.umur <= 18 THEN p.id_pasien END) as remaja,
+COUNT(DISTINCT CASE WHEN p.umur > 18 AND p.umur <= 59 THEN p.id_pasien END) as dewasa,
+COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia,
     COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN p.id_pasien END) as laki,
     COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Perempuan' THEN p.id_pasien END) as perempuan,
 COALESCE(r.rumah_diperiksa, 0) as rumah_diperiksa,
 COALESCE(r.rumah_positif, 0) as rumah_positif,
     COUNT(DISTINCT CASE WHEN p.status_akhir = 'Sembuh' THEN p.id_pasien END) as sembuh,
-    COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' THEN p.id_pasien END) as meninggal,
+    COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' THEN p.id_pasien END) as meninggal
 ");
 
 $builderDetail->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
@@ -181,35 +199,48 @@ $builderDetail->where('p.id_penyakit', 1);
         $maxKasus = 0;
         $desaTertinggi = '-';
         $penduduk = [];
+         $dataPenduduk = [];
 
-        foreach ($rawDetail as $row) {
+                $pendudukDb = $db->table('data_penduduk dp')
+                    ->select('w.kelurahan, dp.jumlah_penduduk')
+                    ->join('wilayah w', 'w.id_wilayah = dp.id_wilayah', 'left')
+                    ->get()
+                    ->getResultArray();
 
-            $jumlahKasus = (int)$row['jumlah_kasus'];
+                foreach ($pendudukDb as $p) {
+                    $keyPenduduk = strtolower(str_replace(' ', '', $p['kelurahan']));
+                    $dataPenduduk[$keyPenduduk] = (int)$p['jumlah_penduduk'];
+                }
+           foreach ($rawDetail as $row) {
 
-            if ($jumlahKasus >= 20) {
-                $kategori = 'tinggi';
-            } elseif ($jumlahKasus >= 10) {
-                $kategori = 'sedang';
-            } else {
-                $kategori = 'rendah';
-            }
+    $jumlahKasus = (int)$row['jumlah_kasus'];
 
-            // usia tertinggi
-            $usiaTertinggi = 'Anak-anak';
+    if ($jumlahKasus > $maxKasus) {
+        $maxKasus = $jumlahKasus;
+        $desaTertinggi = $row['kelurahan'];
+    }
 
-            if (
-                $row['dewasa'] >= $row['anak'] &&
-                $row['dewasa'] >= $row['lansia']
-            ) {
-                $usiaTertinggi = 'Dewasa';
-            } elseif (
-                $row['lansia'] >= $row['anak'] &&
-                $row['lansia'] >= $row['dewasa']
-            ) {
-                $usiaTertinggi = 'Lansia';
-            }
+ 
 
-            $key = strtolower(str_replace(' ', '', $row['kelurahan']));
+    if ($jumlahKasus >= 20) {
+        $kategori = 'tinggi';
+    } elseif ($jumlahKasus >= 10) {
+        $kategori = 'sedang';
+    } else {
+        $kategori = 'rendah';
+    }
+
+    // usia tertinggi
+    $usiaList = [
+        'Bayi dan Anak Pra-sekolah' => (int)$row['anak'],
+        'Sekolah dan Remaja'        => (int)$row['remaja'],
+        'Dewasa'                    => (int)$row['dewasa'],
+        'Lansia'                    => (int)$row['lansia']
+    ];
+
+    $usiaTertinggi = array_search(max($usiaList), $usiaList);
+
+    $key = strtolower(str_replace(' ', '', $row['kelurahan']));
 
             $rumahDiperiksa = (int)($row['rumah_diperiksa'] ?? 0);
             $rumahPositif   = (int)($row['rumah_positif'] ?? 0);
@@ -219,13 +250,15 @@ $builderDetail->where('p.id_penyakit', 1);
 
             $detailDesa[$key] = [
                 'nama'            => $row['kelurahan'],
-                'jumlah_penduduk' => 0,
+                'jumlah_penduduk' => $dataPenduduk[$key] ?? 0,
                 'jumlah_kasus'    => $jumlahKasus,
                 'kategori'        => $kategori,
 
                 'anak'            => (int)$row['anak'],
                 'dewasa'          => (int)$row['dewasa'],
+                'remaja' => (int)$row['remaja'],
                 'lansia'          => (int)$row['lansia'],
+                
 
                 'usia_tertinggi'  => $usiaTertinggi,
 
@@ -239,12 +272,55 @@ $builderDetail->where('p.id_penyakit', 1);
                 'sembuh'    => (int)($row['sembuh'] ?? 0),
                 'meninggal' => (int)($row['meninggal'] ?? 0)
                 ];
-            $penduduk = $db->table('data_penduduk')
-                ->where('id_penyakit', 1)
-                ->get()
-                ->getResultArray();
+        }   
+$desa_diizinkan = [
+    'sumbersari',
+    'wirolegi',
+    'antirogo',
+    'tegalgede',
+    'karangrejo'
+];
 
-        }   // ======================
+$desaList = "'" . implode("','", $desa_diizinkan) . "'";
+
+// Total kasus
+$totalKasus = (int) $db->query("
+    SELECT COUNT(*) AS total FROM (
+        SELECT p.nik, p.tgl_kunjungan
+        FROM pasien p
+        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
+        WHERE p.id_penyakit = 1
+        AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
+        GROUP BY p.nik, p.tgl_kunjungan
+    ) t
+")->getRow()->total;
+
+// Kasus hari ini
+$kasusHariIni = (int) $db->query("
+    SELECT COUNT(*) AS total FROM (
+        SELECT p.nik, p.tgl_kunjungan
+        FROM pasien p
+        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
+        WHERE p.id_penyakit = 1
+        AND DATE(p.tgl_kunjungan) = '" . date('Y-m-d') . "'
+        AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
+        GROUP BY p.nik, p.tgl_kunjungan
+    ) t
+")->getRow()->total;
+
+// Kelurahan terdampak
+$kelurahanTerdampak = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->select('COUNT(DISTINCT wilayah.kelurahan) as total')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->get()
+    ->getRow()
+    ->total;        
+        // ======================
         // 🔥 KIRIM KE VIEW
         // ======================
         return view('gol_a/dashboard_kepala', [
@@ -252,9 +328,9 @@ $builderDetail->where('p.id_penyakit', 1);
             'judul' => 'Dashboard Kepala Puskesmas',
             'nama_puskesmas' => 'Puskesmas Panti, Jember',
 
-            'total_kasus' => 20,
-            'kasus_baru' => 2,
-            'wilayah' => 6,
+            'totalKasus' => $totalKasus,
+            'kasusHariIni' => $kasusHariIni,
+            'kelurahanTerdampak' => $kelurahanTerdampak,
 
             'grafik' => $grafik,
             'dbd' => $dbd,

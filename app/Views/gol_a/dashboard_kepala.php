@@ -290,64 +290,6 @@ $tahunMap = $tahunMap ?? [
     </div>
 </div>
 
-<?php
-    $db = \Config\Database::connect();
-
-    $idPetugas  = session()->get('id_petugas');
-    $idPenyakit = session()->get('id_penyakit');
-
-    $builder = $db->table('pasien')
-    ->where('id_petugas', $idPetugas)
-    ->where('id_penyakit', $idPenyakit);
-    $desa_diizinkan = [
-        'sumbersari',
-        'wirolegi',
-        'antirogo',
-        'tegalgede',
-        'karangrejo'
-    ];
-
-$desaList = "'" . implode("','", $desa_diizinkan) . "'";
-
-// Total kasus DBD (unik per NIK + tgl_kunjungan)
-$totalKasus = (int) $db->query("
-    SELECT COUNT(*) AS total FROM (
-        SELECT p.nik, p.tgl_kunjungan
-        FROM pasien p
-        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-        WHERE p.id_penyakit = 1
-          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
-        GROUP BY p.nik, p.tgl_kunjungan
-    ) t
-")->getRow()->total;
-
-// Kasus baru hari ini (unik per NIK + tgl_kunjungan)
-$kasusHariIni = (int) $db->query("
-    SELECT COUNT(*) AS total FROM (
-        SELECT p.nik, p.tgl_kunjungan
-        FROM pasien p
-        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-        WHERE p.id_penyakit = 1
-          AND DATE(p.tgl_kunjungan) = '" . date('Y-m-d') . "'
-          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
-        GROUP BY p.nik, p.tgl_kunjungan
-    ) t
-")->getRow()->total;
-
-// Kelurahan terdampak
-$kelurahanTerdampak = $db->table('pasien')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->select('COUNT(DISTINCT wilayah.kelurahan) as total')
-    ->where('pasien.id_penyakit', 1)
-    ->whereIn(
-        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
-        $desa_diizinkan
-    )
-    ->get()
-    ->getRow()
-    ->total;
-?>
-
 <div class="stat-row">
     <div class="stat-card">
         <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
@@ -448,9 +390,14 @@ $kelurahanTerdampak = $db->table('pasien')
     <td colspan="3" style="padding-top:14px; font-weight:700; color:#1f2937;">Rentang Usia</td>
 </tr>
                 <tr class="sub">
-                    <td class="label">Anak-anak</td>
+                    <td class="label">Bayi dan Pra Sekolah</td>
                     <td class="colon">:</td>
                     <td class="value" id="modalAnak">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Sekolah dan Remaja</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRemaja">0</td>
                 </tr>
                 <tr class="sub">
                     <td class="label">Dewasa</td>
@@ -550,9 +497,9 @@ $kelurahanTerdampak = $db->table('pasien')
                             <div class="pill-select-wrapper">
                                 <select name="usia" class="pill-select" onchange="this.form.submit()">
                                     <option value="">All</option>
-                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-14</option>
-                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>15-24</option>
-                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>25-59</option>
+                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-6</option>
+                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>7-18</option>
+                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>19-59</option>
                                     <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>60+</option>
                                 </select>
                                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
@@ -887,15 +834,16 @@ function showDetailPopup(namaFix, namaAsli){
     elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
     elKat.className = 'value ' + kategoriCls;
 
-    document.getElementById("modalAnak").innerText         = d.anak    ?? 0;
-    document.getElementById("modalDewasa").innerText       = d.dewasa  ?? 0;
-    document.getElementById("modalLansia").innerText       = d.lansia  ?? 0;
+    document.getElementById("modalAnak").innerText   = d.anak ?? 0;
+    document.getElementById("modalRemaja").innerText = d.remaja ?? 0;
+    document.getElementById("modalDewasa").innerText = d.dewasa ?? 0;
+    document.getElementById("modalLansia").innerText = d.lansia ?? 0;
     document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
     document.getElementById("modalDesaTertinggi").innerText = desaTertinggi || '-';
 
     var lk = parseInt(d.laki ?? 0);
     var pr = parseInt(d.perempuan ?? 0);
-    document.getElementById("modalJkTotal").innerText = lk + pr;
+    
     document.getElementById("modalLaki").innerText         = lk;
     document.getElementById("modalPerempuan").innerText    = pr;
     document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
