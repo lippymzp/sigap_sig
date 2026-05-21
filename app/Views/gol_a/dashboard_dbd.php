@@ -1100,70 +1100,118 @@ d = d || {};
 
 <style>
 
-.berita-section,
 .funfact-section{
-    margin-top: 50px;
+    padding-top: 40px;
+}
+.section-title{
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .section-title h2{
-    font-size: 42px;
-    font-weight: 800;
-    color: #111;
+    font-size: 32px;
+    margin-bottom: 10px;
 }
 
 .section-title p{
-    color: #666;
-    font-size: 18px;
-    margin-bottom: 25px;
+    color: #64748b;
 }
-
-.berita-scroll{
+.berita-track{
     display: flex;
-    gap: 22px;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 20px;
     overflow-x: auto;
-    padding-bottom: 10px;
+    overflow-y: hidden;
     scroll-behavior: smooth;
+    padding: 10px 5px;
+    scrollbar-width: none;
 }
 
-.berita-scroll::-webkit-scrollbar{
-    display: none;
-}
-
-.berita-card{
-    min-width: 620px;
-    background: linear-gradient(135deg,#00B8C8,#69D5D7);
-    border-radius: 24px;
-    padding: 22px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.berita-item{
+    min-width: 290px;
+    max-width: 290px;
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     flex-shrink: 0;
+    transition: .3s ease;
+}
+
+.berita-item:hover{
+    transform: translateY(-5px);
+}
+
+.berita-item img{
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
 }
 
 .berita-content{
-    width: 65%;
+    padding: 18px;
 }
 
-.berita-content h3{
-    color: white;
-    font-size: 34px;
-    font-weight: 800;
-    line-height: 1.3;
+.berita-content h5{
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #1e293b;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.berita-meta{
-    margin-top: 30px;
-    color: white;
-    font-size: 13px;
-    display: flex;
-    gap: 20px;
+.berita-content p{
+    font-size: 14px;
+    line-height: 1.6;
+    color: #64748b;
+    margin-bottom: 16px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.berita-card img{
-    width: 210px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 20px;
+.berita-link{
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0ea5e9;
+}
+
+.berita-link:hover{
+    color: #0284c7;
+}
+
+.berita-btn{
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 10;
+    transition: .3s ease;
+}
+
+.berita-btn:hover{
+    background: #0ea5e9;
+    color: #fff;
+}
+
+.berita-btn.left{
+    margin-right: 10px;
+}
+
+.berita-btn.right{
+    margin-left: 10px;
 }
 
 /* ================= RESPONSIVE FIX GLOBAL ================= */
@@ -1215,12 +1263,6 @@ d = d || {};
     min-height: 42px;
     line-height: 1.3;
 }
-
-
-    .berita-card {
-        min-width: 85%;
-    }
-
     .funfact-card {
         min-width: 85%;
         max-width: 85%;
@@ -1320,24 +1362,31 @@ d = d || {};
         font-size: 14px;
     }
 
-    .berita-card {
-        min-width: 95%;
-        flex-direction: column;
-        text-align: center;
-        gap: 18px;
+    .berita-item{
+        min-width: 240px;
+        max-width: 240px;
     }
 
-    .berita-content {
-        width: 100%;
+    .berita-item img{
+        height: 140px;
     }
 
-    .berita-content h3 {
+    .berita-content{
+        padding: 14px;
+    }
+
+    .berita-content h5{
+        font-size: 15px;
+    }
+
+    .berita-content p{
+        font-size: 12px;
+    }
+
+    .berita-btn{
+        width: 34px;
+        height: 34px;
         font-size: 22px;
-    }
-
-    .berita-card img {
-        width: 100%;
-        height: 200px;
     }
 
     .funfact-card {
@@ -1401,41 +1450,55 @@ d = d || {};
 }
 
 </style>
-<section class="berita-section">
+<section class="berita-section container mt-5">
 
-    <div class="section-title">
-        <h2>Berita</h2>
+    <div class="mb-4">
+    <h4 id="titleBerita" class="text-dark fw-bold">Berita</h4>
         <p>Informasi dan Edukasi tentang Pencegahan serta Penanganan DBD</p>
     </div>
 
-    <div class="berita-scroll">
+    <div class="berita-wrapper">
 
-        <?php if(!empty($berita)): ?>
-    <?php foreach($berita as $b): ?>
+        <div id="beritaTrack" class="berita-track">
 
-        <div class="berita-card">
+            <?php if(!empty($berita)) : ?>
+                <?php foreach($berita as $b) : ?>
 
-            <div class="berita-content">
-                <h3><?= esc((string)($b['judul_berita'] ?? '')) ?></h3>
+                    <div class="berita-item">
 
-                <div class="berita-meta">
-                    <span><?= $b['penulis'] ?? 'Admin' ?></span>
-                    <span><?= date('d M Y', strtotime($b['tanggal_berita'])) ?></span>
-                </div>
-            </div>
+                        <img src="<?= !empty($b['gambar_berita'])
+                            ? base_url('uploads/berita/' . $b['gambar_berita'])
+                            : base_url('img/default.png') ?>">
 
-            <img src="<?= base_url('uploads/berita/' . ($b['gambar_berita'] ?? 'default.png')) ?>">
+                        <div class="berita-content">
+
+                            <h5>
+                                <?= esc((string) ($b['judul_berita'] ?? '')) ?>
+                            </h5>
+
+                            <p>
+                                <?= substr(strip_tags((string)($b['isi_berita'] ?? '')), 0, 100) ?>...
+                            </p>
+
+                            <a href="<?= base_url('berita/detail/' . $b['id_berita']) ?>" class="berita-link">
+                                Baca Selengkapnya →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                <?php endforeach; ?>
+            <?php else : ?>
+
+                <p>Belum ada berita.</p>
+
+            <?php endif; ?>
 
         </div>
 
-    <?php endforeach; ?>
-<?php else: ?>
-
-    <p>Tidak ada berita tersedia.</p>
-
-<?php endif; ?>
-
     </div>
+
 </section>
 
 
