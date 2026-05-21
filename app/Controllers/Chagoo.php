@@ -49,8 +49,8 @@ class Chagoo extends BaseController
 
     private function generateReplyGroq($msg)
     {
-        // API Key Groq
-        $apiKey = 'gsk_HkkNs6HEZiU7oxnIlYIYWGdyb3FYGetrdnASXWw5gzgB9bo7DY5'; 
+        // Menggunakan API Key Groq Anda
+        $apiKey = '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'; 
         
         // ====================================================================
         // SETUP URL & PERTANYAAN FORMAT GROQ
@@ -130,8 +130,7 @@ class Chagoo extends BaseController
             }
 
             // Jika ada error lainnya
-    
-            //return "Terjadi kendala pada server Groq (Kode: $httpCode). Bantuan teknis: " . $response;
+            return "Terjadi kendala pada server Groq (Kode: $httpCode). Bantuan teknis: " . $response;
         }
 
         return "Maaf, ChaGoo tidak dapat memproses jawaban saat ini.";
