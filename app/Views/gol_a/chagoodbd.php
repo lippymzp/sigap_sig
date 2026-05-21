@@ -19,7 +19,7 @@ function toggleChat() {
 
 function triggerInitialGreeting() {
     var loadingId = 'loading-' + Date.now();
-    appendMessage('bot', 'Mengetik...', loadingId);
+    appendMessage('bot', 'Sedang mengetik...', loadingId);
 
     var formData = new URLSearchParams();
     formData.append('message', 'halo'); 
@@ -151,7 +151,7 @@ function sendMessage() {
     input.value = '';
 
     var loadingId = 'loading-' + Date.now();
-    appendMessage('bot', 'Mengetik...', loadingId);
+    appendMessage('bot', 'Sedang mengetik...', loadingId);
 
     var formData = new URLSearchParams();
     formData.append('message', message);
