@@ -51,13 +51,7 @@ class SuperAdmin extends BaseController
         ]);
     }
 
-    public function profil()
-    {
-        return view('superadmin/profil_sistem', [
-            'judul' => 'Profil Sistem',
-            'menu' => 'profil'
-        ]);
-    }
+
     public function simpanIklan()
     {
         $iklanModel = new IklanModel();

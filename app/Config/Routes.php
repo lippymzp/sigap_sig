@@ -502,8 +502,8 @@ $routes->get('/tentang-kami', 'Home::tentangKami');
 $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
-$routes->get('superadmin/profil_sistem', 'SuperAdmin::profil');
-$routes->get('superadmin/profil', 'SuperAdmin::profil');
+
+$routes->get('superadmin/profil_sistem', 'SuperAdmin::profil_sistem');
 $routes->get('superadmin/profil_sistem/edit', 'SuperAdmin::edit');
 $routes->post('superadmin/profil_sistem/update', 'SuperAdmin::update');
 
