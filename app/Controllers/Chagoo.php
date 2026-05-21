@@ -79,14 +79,13 @@ class Chagoo extends BaseController
         $curlError = curl_error($ch);
         curl_close($ch);
 
-        if ($curlError || $httpCode != 200) {
-            // Tampilkan pesan error asli dari cURL atau server Groq
-            $debugMessage = "cURL Error: " . ($curlError ?: 'Tidak ada error cURL') . 
+       if ($curlError || $httpCode != 200) {
+            $debugMessage = "cURL Error: " . ($curlError ?: 'Tidak ada') . 
                             " | HTTP Code: " . $httpCode . 
-                            " | Response Groq: " . $response;
+                            " | Response: " . $response;
                             
             return $this->response->setJSON([
-                'reply' => 'DEBUG ERROR: ' . $debugMessage,
+                'reply' => 'DITOLAK HOSTING: ' . $debugMessage,
                 'csrf_token' => csrf_hash() 
             ]);
         }
