@@ -884,8 +884,9 @@ public function manajemen_pkm()
 
     public function rekap_skrining()
 {
-    $db = \Config\Database::connect();
     $layout_dinamis = $this->getDashboardLayout();
+    $db = \Config\Database::connect();
+
     $builder = $db->table('skrining as s');
 
     $builder->select('
@@ -988,9 +989,9 @@ public function manajemen_pkm()
     $pagerLinks = $pager->makeLinks($page, $perPage, $total, 'default_full');
 
     $data = [
+        'layout'   => $layout_dinamis,  
         'menu'       => 'skrining',
         'judul'      => 'Rekap Skrining',
-        'layout'   => $layout_dinamis,   
         'skrining'   => $skriningData,
         'pagerLinks' => $pagerLinks,
         // Kirim balik value input ke view untuk mempertahankan status input form

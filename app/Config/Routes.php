@@ -502,9 +502,10 @@ $routes->get('/tentang-kami', 'Home::tentangKami');
 $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
-$routes->get('profil_sistem', 'ProfilSistem::index');
-$routes->get('profil_sistem/edit', 'ProfilSistem::edit');
-$routes->post('profil_sistem/update', 'ProfilSistem::update');
+$routes->get('superadmin/profil_sistem', 'SuperAdmin::profil_sistem');
+$routes->get('superadmin/profil', 'SuperAdmin::profil');
+$routes->get('superadmin/profil_sistem/edit', 'SuperAdmin::edit');
+$routes->post('superadmin/profil_sistem/update', 'SuperAdmin::update');
 
 // ================= PELAPORAN KADER DI ADMIN =================
 $routes->get('dbd/pelaporan-kader/admin', 'Dbd::pelaporan_kader');
