@@ -56,13 +56,19 @@ class Chagoo extends BaseController
 
     private function generateReplyGroq($msg)
     {
-        $apiKey = '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'; 
+        // Membaca API Key dari Constants (Prioritas 1) atau Environment Variable (Prioritas 2)
+        $apiKey = defined('GROQ_API_KEY') ? GROQ_API_KEY : (getenv('GROQ_API_KEY') ?: ''); 
+        
+        // Validasi jika API Key belum terpasang di sistem manapun
+        if (empty($apiKey)) {
+            return "🚨 KESALAHAN SISTEM: API Key Groq belum dikonfigurasi di server.";
+        }
         
         $url = 'https://api.groq.com/openai/v1/chat/completions';
 
         $systemInstruction = "Anda adalah ChaGoo Bot, asisten ahli medis profesional yang SECARA EKSKLUSIF memberikan edukasi tentang Demam Berdarah Dengue (DBD). "
             . "TUGAS UTAMA: Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan DBD (definisi, etiologi, patofisiologi, manifestasi klinis, pemeriksaan lab, pengobatan, pencegahan 3M Plus, dsb). "
-            . "ATURAN MUTLAK: Jika pengguna bertanya tentang topik di luar DBD (penyakit lain, resep masakan, cuaca, coding, dll), Anda WAJIB MENOLAK dengan sopan dan mengingatkan bahwa Anda hanya melayani pertanyaan seputar DBD. "
+            . "ATURAN MUTLAK: Jika pengguna bertanya tentang topik di luar DBD (penyakit lain, resep masakan, cuaca, coding, dll), Anda WAJIB MENOLAK dengan sopan dan reminding bahwa Anda hanya melayani pertanyaan seputar DBD. "
             . "ATURAN FORMAT: DILARANG KERAS menggunakan tanda bintang di dalam jawaban untuk alasan apapun. Jawaban Anda HARUS singkat, padat, dan terdiri dari MAKSIMAL 1 PARAGRAF saja.";
 
         $data = [
