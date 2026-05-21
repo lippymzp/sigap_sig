@@ -11,61 +11,61 @@ class Chagoo extends BaseController
 
     public function send()
     {
-        // ====================================================================
-        // Sistem Anti-Spam (Jeda 5 Detik) Menggunakan Session
-        // ====================================================================
-        $session = session();
-        $lastRequestTime = $session->get('last_chagoo_request');
-        $currentTime = time();
+        try {
+            // ====================================================================
+            // Sistem Anti-Spam (Jeda 5 Detik) Menggunakan Session
+            // ====================================================================
+            $session = session();
+            $lastRequestTime = $session->get('last_chagoo_request');
+            $currentTime = time();
 
-        // Jika request kurang dari 5 detik dari request sebelumnya, tolak!
-        if ($lastRequestTime && ($currentTime - $lastRequestTime) < 5) {
+            if ($lastRequestTime && ($currentTime - $lastRequestTime) < 5) {
+                return $this->response->setJSON([
+                    'reply' => 'Mohon tunggu sekitar 5 detik sebelum mengirim pertanyaan berikutnya.',
+                    'csrf_token' => csrf_hash() 
+                ]);
+            }
+            
+            $session->set('last_chagoo_request', $currentTime);
+
+            $message = trim((string) $this->request->getPost('message'));
+
+            if (empty($message)) {
+                return $this->response->setJSON([
+                    'reply' => 'Silakan masukkan pertanyaan terlebih dahulu.',
+                    'csrf_token' => csrf_hash() 
+                ]);
+            }
+
+            // Panggil fungsi API Groq
+            $reply = $this->generateReplyGroq($message);
+
             return $this->response->setJSON([
-                'reply' => 'Mohon tunggu sekitar 5 detik sebelum mengirim pertanyaan berikutnya.',
+                'reply' => $reply,
+                'csrf_token' => csrf_hash() 
+            ]);
+
+        } catch (\Throwable $e) {
+            // JIKA PHP CRASH (Misal cURL tidak ada), ERROR AKAN TAMPIL DI CHAT!
+            return $this->response->setJSON([
+                'reply' => '🚨 SISTEM PHP CRASH: ' . $e->getMessage() . ' (Baris: ' . $e->getLine() . '). Pastikan ekstensi cURL aktif di php.ini!',
                 'csrf_token' => csrf_hash() 
             ]);
         }
-        
-        // Simpan waktu request terbaru ke session
-        $session->set('last_chagoo_request', $currentTime);
-
-        $message = trim((string) $this->request->getPost('message'));
-
-        if (empty($message)) {
-            return $this->response->setJSON([
-                'reply' => 'Silakan masukkan pertanyaan terlebih dahulu.',
-                'csrf_token' => csrf_hash() 
-            ]);
-        }
-
-        // Panggil fungsi API Groq
-        $reply = $this->generateReplyGroq($message);
-
-        return $this->response->setJSON([
-            'reply' => $reply,
-            'csrf_token' => csrf_hash() 
-        ]);
     }
 
     private function generateReplyGroq($msg)
     {
-        // Menggunakan API Key Groq Anda
         $apiKey = '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'; 
         
-        // ====================================================================
-        // SETUP URL & PERTANYAAN FORMAT GROQ
-        // ====================================================================
         $url = 'https://api.groq.com/openai/v1/chat/completions';
 
-        // INSTRUKSI: Menambahkan aturan tidak boleh pakai bintang dan maksimal 1 paragraf
         $systemInstruction = "Anda adalah ChaGoo Bot, asisten ahli medis profesional yang SECARA EKSKLUSIF memberikan edukasi tentang Demam Berdarah Dengue (DBD). "
             . "TUGAS UTAMA: Anda HANYA boleh menjawab pertanyaan yang berkaitan dengan DBD (definisi, etiologi, patofisiologi, manifestasi klinis, pemeriksaan lab, pengobatan, pencegahan 3M Plus, dsb). "
             . "ATURAN MUTLAK: Jika pengguna bertanya tentang topik di luar DBD (penyakit lain, resep masakan, cuaca, coding, dll), Anda WAJIB MENOLAK dengan sopan dan mengingatkan bahwa Anda hanya melayani pertanyaan seputar DBD. "
             . "ATURAN FORMAT: DILARANG KERAS menggunakan tanda bintang di dalam jawaban untuk alasan apapun. Jawaban Anda HARUS singkat, padat, dan terdiri dari MAKSIMAL 1 PARAGRAF saja.";
 
-        // Format payload untuk Groq API (Mirip OpenAI)
         $data = [
-            // PERUBAHAN ADA DI SINI: Menggunakan model Llama 3.1 versi terbaru
             "model" => "llama-3.1-8b-instant", 
             "messages" => [
                 [
@@ -83,11 +83,8 @@ class Chagoo extends BaseController
 
         $jsonData = json_encode($data);
 
-        // ====================================================================
-        // EKSEKUSI DENGAN FITUR "AUTO-RETRY"
-        // ====================================================================
-        $maxRetries = 2; // Coba maksimal 2 kali
-        $retryDelay = 2; // Tunggu 2 detik jika gagal
+        $maxRetries = 2; 
+        $retryDelay = 2; 
 
         for ($i = 0; $i < $maxRetries; $i++) {
             $ch = curl_init($url);
@@ -102,35 +99,32 @@ class Chagoo extends BaseController
 
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
             curl_close($ch);
 
-            // Jika sukses (200 OK), langsung kembalikan jawaban ke pengguna
             if ($httpCode == 200) {
                 $responseData = json_decode($response, true);
                 if (isset($responseData['choices'][0]['message']['content'])) {
-                    // Mencegah kebocoran karakter bintang dan merapikan teks
                     $finalReply = trim($responseData['choices'][0]['message']['content']);
-                    $finalReply = str_replace('*', '', $finalReply);
+                    $finalReply = str_replace(chr(42), '', $finalReply); // Hapus bintang tanpa memicu format
                     return $finalReply;
                 }
             }
 
-            // Jika error 503 (Server Penuh) atau 429 (Terlalu Cepat/Limit)
             if ($httpCode == 503 || $httpCode == 429) {
                 if ($i < $maxRetries - 1) {
                     sleep($retryDelay); 
                     continue; 
                 } else {
                     if ($httpCode == 429) {
-                        return "Mohon tunggu sebentar. Anda mengirim pertanyaan terlalu cepat. Jeda beberapa detik sebelum bertanya lagi.";
+                        return "Mohon tunggu sebentar. Anda mengirim pertanyaan terlalu cepat.";
                     } else {
-                        return "Maaf, server AI sedang sibuk. Silakan coba tanyakan kembali dalam beberapa detik.";
+                        return "Maaf, server AI sedang sibuk. Silakan coba tanyakan kembali.";
                     }
                 }
             }
 
-            // Jika ada error lainnya
-            return "Terjadi kendala pada server Groq (Kode: $httpCode). Bantuan teknis: " . $response;
+            return "🚨 GROQ API ERROR (Kode HTTP: $httpCode). Error cURL: " . ($curlError ? $curlError : 'Kosong') . " | Respons asli: " . $response;
         }
 
         return "Maaf, ChaGoo tidak dapat memproses jawaban saat ini.";
