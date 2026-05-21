@@ -3,12 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\IklanModel;
+use App\Models\ProfilSistemModel;
+use App\Models\FilosofiLogoModel;
 
 use App\Models\SuperAdmin as SuperAdminModel;
 
 
-use App\Models\ProfilSistemModel;
-use App\Models\FilosofiLogoModel;
+
 
 class SuperAdmin extends BaseController
 {
@@ -51,7 +52,13 @@ class SuperAdmin extends BaseController
         ]);
     }
 
-
+    public function profil()
+    {
+        return view('superadmin/profil_sistem', [
+            'judul' => 'Profil Sistem',
+            'menu' => 'profil'
+        ]);
+    }
     public function simpanIklan()
     {
         $iklanModel = new IklanModel();
