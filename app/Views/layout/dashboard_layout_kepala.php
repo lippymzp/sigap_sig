@@ -246,10 +246,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <div class="menu-label">Informasi</div>
 
-<a href="<?= base_url('profil_kepala') ?>"
-    class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-    <i class="fa-regular fa-user me-2"></i> Profil
-</a>
+<a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
+            <i class="fa-regular fa-user me-2"></i> Profil Kader
+        </a>
 
 </div>
 
@@ -279,7 +278,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li>
                             <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
-                                <i class="fa-regular fa-user me-2"></i> Profile
+                                <i class="fa-regular fa-user me-2"></i> Profil Kepala
                             </a>
                         </li>
                         <li>
