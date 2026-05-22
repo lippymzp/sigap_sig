@@ -188,16 +188,36 @@ public function view($id = null)
     // =========================
     // STEP 1
     // =========================
+    public function tambahBaru()
+{
+    // reset semua session edit
+    session()->remove([
+        'edit_video',
+        'video_temp',
+        'from_edit'
+    ]);
+    session()->set('is_tambah_baru', true);
+    return redirect()->to('/video/tambah1');
+}
     public function tambah1()
 {
-    if (!session()->get('from_edit')) {
-        session()->remove('edit_video');
-        session()->remove('video_temp');
+    // kalau tambah baru → kosongkan data
+    if(session()->get('is_tambah_baru')){
+        // reset semua
+        session()->remove([
+            'edit_video',
+            'video_temp',
+            'from_edit',
+            'is_tambah_baru'
+        ]);
+
+
+        $video = null;
+
+    }else{
+
+        $video = session()->get('edit_video');
     }
-
-    $video = session()->get('edit_video');
-
-    session()->remove('from_edit');
 
     return view('gol_a/video/tambah1', [
         'title'   => 'Video',
@@ -268,11 +288,11 @@ public function view($id = null)
                 ->with('error', 'Video tidak ditemukan');
         }
         // simpan data lama ke session
+            session()->remove('is_tambah_baru');
             session()->set('edit_video', $video);
             session()->set('video_temp', $video['file_video']);
-            session()->set('from_edit', true);
 
-            return redirect()->to('/video/tambah1');
+            return redirect()->to('/video/tambah2');
     }
 }
 
@@ -316,6 +336,8 @@ public function view($id = null)
 
         // hapus session
         session()->remove('video_temp');
+        session()->remove('edit_video');
+        session()->remove('from_edit');
 
         return redirect()->to('/video')
             ->with('success', 'Video berhasil disimpan');

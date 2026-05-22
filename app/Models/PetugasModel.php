@@ -19,6 +19,7 @@ class PetugasModel extends Model
         'no_telp',
         'email',
         'password',
+        'foto_profil',
         'created_at'
     ];
 
@@ -29,6 +30,7 @@ class PetugasModel extends Model
                     ->findAll();
     }
 
+    // AMBIL DATA PROFIL + FOTO
     // AMBIL DATA PROFIL + FOTO + JABATAN
     public function getProfil($id_petugas)
     {
@@ -75,6 +77,4 @@ class PetugasModel extends Model
             ]);
         }
     }
-
-    
 }

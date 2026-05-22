@@ -15,7 +15,7 @@ body { font-family: 'Poppins', sans-serif; }
 .page-box { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
 /* HEADER INFO */
-.info-banner { background: #4cc7c3; border-radius: 16px; padding: 20px 24px; color: #fff; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.info-banner { background: #00BBC2; border-radius: 16px; padding: 20px 24px; color: #fff; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
 .info-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.25); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 .info-banner h4 { margin: 0; font-weight: 700; font-size: 20px; }
 .info-banner p { margin: 0; opacity: 0.9; font-size: 14px; margin-top: 4px; }
@@ -71,10 +71,19 @@ $bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
 ?>
 
 <div class="info-banner">
-    <div class="info-icon"><i class="fa-solid fa-shield-heart"></i></div>
+    <div class="info-icon">
+        <!-- Mengganti fa-shield-heart dengan SVG Shield Plus -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="34" height="34">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+    </div>
+    
+    <!-- Bagian teks dibungkus div agar sejajar di sebelah icon -->
     <div>
         <h4>Pelaporan Kader</h4>
-        <p>Menampilkan riwayat pelaporan jentik</p>
+        <p>Menampilkan riwayat pelaporan kader</p>
     </div>
 </div>
 
@@ -130,13 +139,32 @@ $bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
                 <?php $no = 1; ?>
                 <?php if(!empty($pelaporan)): ?>
                     <?php foreach($pelaporan as $row): ?>
+                    
+                    <?php 
+                        // MAPPING NAMA KELURAHAN
+                        $nama_kelurahan = $row['id_kelurahan'];
+                        if ($row['id_kelurahan'] == 1) $nama_kelurahan = 'Sumbersari';
+                        elseif ($row['id_kelurahan'] == 2) $nama_kelurahan = 'Wirolegi';
+                        elseif ($row['id_kelurahan'] == 3) $nama_kelurahan = 'Antirogo';
+                        elseif ($row['id_kelurahan'] == 4) $nama_kelurahan = 'Tegalgede';
+                        elseif ($row['id_kelurahan'] == 5) $nama_kelurahan = 'Karangrejo';
+                        else $nama_kelurahan = $row['kelurahan'] ?? $row['id_kelurahan']; // Jika ada field teksnya
+                        
+                        // MAPPING NAMA PUSKESMAS (Asumsi ID 1 adalah Puskesmas Sumbersari)
+                        $nama_puskesmas = ($row['id_puskesmas'] == 1) ? 'Sumbersari' : $row['id_puskesmas'];
+                    ?>
+
                     <tr>
                         <td><?= $no++ ?></td>
                         <td><?= esc((string)$row['bulan']) ?></td>
                         <td><?= esc((string)$row['minggu']) ?></td>
-                        <td><?= esc((string)$row['id_puskesmas']) ?></td> 
-                        <td><?= esc((string)$row['id_kelurahan']) ?></td> 
-                        <td><?= esc((string)$row['id_posyandu']) ?></td> <td><?= isset($row['abj']) ? round($row['abj']) . '%' : '75%' ?></td>
+                        
+                        <td><?= esc($nama_puskesmas) ?></td> 
+                        <td><?= esc($nama_kelurahan) ?></td> 
+                        
+                        <td>Catleya <?= esc((string)$row['id_posyandu']) ?></td> 
+                        
+                        <td><?= isset($row['abj']) ? round($row['abj']) . '%' : '75%' ?></td>
                         <td>
                             <div class="action-buttons">
                                 <a href="<?= base_url('kepala/view_laporan/' . $row['id_laporan']) ?>" class="btn-action view">

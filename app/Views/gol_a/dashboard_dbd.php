@@ -110,6 +110,64 @@ $penduduk = $penduduk ?? [];
     color: #444;
     font-weight: 400;
 }
+.info-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.info-table tr {
+    background: #fff;
+}
+
+.info-table td {
+    padding: 9px 10px;
+    vertical-align: middle;
+    line-height: 1.5;
+}
+
+.info-table td.label {
+    width: 42%;
+    color: #374151;
+    font-weight: 500;
+}
+
+.info-table td.colon {
+    width: 20px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.info-table td.value {
+    color: #111827;
+    font-weight: 700;
+}
+
+.info-table tr.sub td.label {
+    padding-left: 34px;
+    color: #4b5563;
+    font-weight: 400;
+}
+
+.info-table tr.section-row td {
+    padding-top: 14px;
+    font-weight: 800;
+    color: #111827;
+    border-top: 1px solid #e5e7eb;
+}
+
+.info-table tr.highlight-row td {
+    background: #e8ffff;
+    font-weight: 800;
+}
+
+.custom-modal-content {
+    max-width: 820px;
+}
+
+.modal-title {
+    padding-right: 40px;
+}
 /* ================= GRAFIK ================= */
 
 /* Toggle KASUS / MORTALITAS / ABJ */
@@ -201,48 +259,99 @@ $penduduk = $penduduk ?? [];
 .kategori-sedang { color: #d39e00; font-weight: 600; }
 .kategori-rendah { color: #28a745; font-weight: 600; }
 
-.info-table tr td {
-    padding: 8px 6px;
+.info-table tr.important-row td {
+    background: #f0fdfa;
+    font-weight: 800;
+    color: #0f172a;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-top: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.info-table tr.important-row td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.info-table tr.important-row td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.info-table tr.important-row .value {
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: capitalize;
+}
+
+#detailModal .info-table {
+    width: 100%;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    font-size: 14.5px;
+    color: #333;
+}
+
+#detailModal .info-table tr {
+    background: transparent !important;
+}
+
+#detailModal .info-table tr td {
+    padding: 6px 0 !important;
     vertical-align: top;
-    line-height: 1.5;
-    font-size: 14px;
+    line-height: 1.6;
 }
-.info-table tr td.label {
-    width: 55%;
+
+#detailModal .info-table tr td.label {
+    width: 45%;
     color: #2b2b2b;
-    font-weight: 600;
-    font-size: 14px;
-    white-space: normal;
-    word-break: break-word;
+    font-weight: 400;
 }
-.info-table tr td.colon {
-    width: 14px;
+
+#detailModal .info-table tr td.colon {
+    width: 18px;
     text-align: center;
     color: #555;
-    font-weight: 400;
 }
-.info-table tr td.value {
+
+#detailModal .info-table tr td.value {
     color: #111;
-    font-weight: 500;
-    font-size: 14px;
-    word-break: break-word;
+    font-weight: 600;
 }
-.info-table tr.sub td.label {
-    padding-left: 22px;
-    color: #555;
+
+#detailModal .info-table tr.sub td.label {
+    padding-left: 28px !important;
+    color: #444;
     font-weight: 400;
-    font-size: 13.5px;
 }
-.info-table tr.sub td.value {
-    font-size: 13.5px;
+
+#detailModal .info-table tr.important-row td {
+    background: #f0fdfa !important;
+    font-weight: 900 !important;
+    color: #0f172a !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    border-top: 1px solid #99f6e4 !important;
+    border-bottom: 1px solid #99f6e4 !important;
 }
-@media (max-width: 480px) {
-    .info-table tr td,
-    .info-table tr td.label,
-    .info-table tr td.value { font-size: 12.5px; }
-    .info-table tr.sub td.label,
-    .info-table tr.sub td.value { font-size: 12px; }
+
+#detailModal .info-table tr.important-row td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
+
+#detailModal .info-table tr.important-row td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#detailModal .info-table tr.important-row .value {
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    text-transform: capitalize;
+}
+
 
 </style>
 
@@ -276,32 +385,26 @@ $penduduk = $penduduk ?? [];
         'karangrejo'
     ];
 
-$desaList = "'" . implode("','", $desa_diizinkan) . "'";
+// Total kasus
+$totalKasus = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
-// Total kasus DBD (unik per NIK + tgl_kunjungan)
-$totalKasus = (int) $db->query("
-    SELECT COUNT(*) AS total FROM (
-        SELECT p.nik, p.tgl_kunjungan
-        FROM pasien p
-        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-        WHERE p.id_penyakit = 1
-          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
-        GROUP BY p.nik, p.tgl_kunjungan
-    ) t
-")->getRow()->total;
-
-// Kasus baru hari ini (unik per NIK + tgl_kunjungan)
-$kasusHariIni = (int) $db->query("
-    SELECT COUNT(*) AS total FROM (
-        SELECT p.nik, p.tgl_kunjungan
-        FROM pasien p
-        JOIN wilayah w ON w.id_wilayah = p.id_wilayah
-        WHERE p.id_penyakit = 1
-          AND DATE(p.tgl_kunjungan) = '" . date('Y-m-d') . "'
-          AND LOWER(REPLACE(w.kelurahan,' ','')) IN ($desaList)
-        GROUP BY p.nik, p.tgl_kunjungan
-    ) t
-")->getRow()->total;
+// Kasus hari ini
+$kasusHariIni = $db->table('pasien')
+    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
+    ->where('pasien.id_penyakit', 1)
+    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
+    ->whereIn(
+        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
+        $desa_diizinkan
+    )
+    ->countAllResults();
 
 // Kelurahan terdampak
 $kelurahanTerdampak = $db->table('pasien')
@@ -384,7 +487,7 @@ $kelurahanTerdampak = $db->table('pasien')
 
                 <select id="periodeMap" onchange="updateMap()">
                     <?php for($t = 2024; $t <= $tahunSekarang; $t++): ?>
-                        <option value="<?= $t ?>" <?= ($t == $tahunSekarang ? 'selected' : '') ?>>
+                        <option value="<?= $t ?>" <?= ($t == $tahunMapDipilih ? 'selected' : '') ?>><?= $t ?></option>
                             <?= $t ?>
                         </option>
                     <?php endfor; ?>
@@ -502,123 +605,135 @@ $kelurahanTerdampak = $db->table('pasien')
     </div>
 </div>
 
-            <div id="detailModal" class="custom-modal">
-                <div class="custom-modal-content">
+<div id="detailModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <span class="close-modal" onclick="closeDetailModal()">&times;</span>
 
-                    <span class="close-modal" onclick="closeDetailModal()">&times;</span>
+        <div class="modal-title">
+            Detail Wilayah Sebaran Kasus <span id="modalTahun"><?= $tahunSekarang ?></span>
+        </div>
 
-                    <div class="modal-title">
-                        Peta Sebaran Kasus <span id="modalTahun"><?= $tahunSekarang ?></span>
-                    </div>
+        <div class="info-box">
+            <h4>Informasi Capaian Wilayah :</h4>
 
-                    <div class="info-box">
-                        <h4>Informasi :</h4>
+            <table class="info-table">
+                <tr>
+                    <td class="label">Nama Kelurahan</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalNama">-</td>
+                </tr>
 
-                        <table class="info-table">
-                            <tr>
-                                <td class="label">Nama Daerah</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalNama">-</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Jumlah Penduduk</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalPenduduk">-</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Jumlah Kasus</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalKasus">-</td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">Sembuh</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalSembuh">0</td>
-                            </tr>
+                <tr>
+                    <td class="label">Jumlah Penduduk</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalPenduduk">-</td>
+                </tr>
 
-                            <tr class="sub">
-                                <td class="label">Meninggal</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalMeninggal">0</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Kategori Kasus</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalKategori">-</td>
-                            </tr>
+                <tr>
+                    <td class="label">Jumlah Kasus Terdata</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalKasus">-</td>
+                </tr>
 
-                            <tr>
-                                <td class="label">Rentang usia</td>
-                                <td class="colon">:</td>
-                                <td class="value"></td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">Bayi dan Anak-anak</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalAnak">0</td>
-                            </tr>
-                             <tr class="sub">
-                                <td class="label">Sekolah dan Remaja</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalRemaja">0</td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">Dewasa</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalDewasa">0</td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">Lansia</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalLansia">0</td>
-                            </tr>
+                <tr class="sub">
+                    <td class="label">Sembuh</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalSembuh">0</td>
+                </tr>
 
-                            <tr>
-                                <td class="label">Rentang usia dengan kasus tertinggi</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalUsiaTertinggi">-</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Desa dengan kasus tertinggi</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalDesaTertinggi">-</td>
-                            </tr>
+                <tr class="sub">
+                    <td class="label">Meninggal</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalMeninggal">0</td>
+                </tr>
 
-                            <tr>
-                                <td class="label">Jenis kelamin terinfeksi</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalJkTotal">0</td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">Laki-laki</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalLaki">0</td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">Perempuan</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalPerempuan">0</td>
-                            </tr>
+                <tr class="important-row">
+                    <td class="label">Kategori Status Kerawanan</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalKategori">-</td>
+                </tr>
 
-                            <tr>
-                                <td class="label">Rumah Diperiksa</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalRumahPeriksa">0</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Rumah Positive Jentik</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalRumahJentik">0</td>
-                            </tr>
-                            <tr class="sub">
-                                <td class="label">ABJ</td>
-                                <td class="colon">:</td>
-                                <td class="value" id="modalAbj">0%</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                <tr>
+                    <td class="label">Distribusi Rentang Usia Kasus</td>
+                    <td class="colon">:</td>
+                    <td class="value"></td>
+                </tr>
+
+                <tr class="sub">
+                    <td class="label">Bayi & Anak-anak (0-6 Thn)</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalAnak">0</td>
+                </tr>
+
+                <tr class="sub">
+                    <td class="label">Sekolah & Remaja (7-18 Thn)</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRemaja">0</td>
+                </tr>
+
+                <tr class="sub">
+                    <td class="label">Dewasa (19-59 Thn)</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalDewasa">0</td>
+                </tr>
+
+                <tr class="sub">
+                    <td class="label">Lansia (>=60 Thn)</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalLansia">0</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Rentang usia dengan kasus tertinggi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalUsiaTertinggi">-</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Desa dengan kasus tertinggi</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalDesaTertinggi">-</td>
+                </tr>                
+
+                <tr>
+                    <td class="label">Rentang Jenis Kelamin Kasus</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalJkTotal">0</td>
+                </tr>
+
+                <tr class="sub">
+                    <td class="label">Laki-laki</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalLaki">0</td>
+                </tr>
+
+                <tr class="sub">
+                    <td class="label">Perempuan</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalPerempuan">0</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Total Rumah Diperiksa (Kader)</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRumahPeriksa">0</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Rumah Positif Jentik Nyamuk</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRumahJentik">0</td>
+                </tr>
+
+                <tr class="sub" style="background:#e8ffff; font-weight:bold;">
+                    <td class="label">Angka Bebas Jentik (ABJ) Target >=95%</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalAbj">0%</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
             <script>
             function closeFormPenduduk(){
             document.getElementById("formTambah").style.display = "none";
@@ -770,10 +885,15 @@ for (var key in detailDesa) {
                             var isi = "<div style='min-width:220px;'>";
                             isi += "<b>Kelurahan: " + namaAsli + "</b>";
 
-                            if(item){
+                            if(item || detailDesa[namaFix]){
                                 var detail = detailDesa[namaFix] || {};
                                 var kategori = detail.kategori || '-';
-                                isi += "<br>Total Kasus: " + item.total;
+
+                                var totalKasusPopup = detail.jumlah_kasus ?? (item ? item.total : 0);
+                                var abjWilayah = detail.abj ?? 0;
+
+                                isi += "<br>Total Kasus: " + totalKasusPopup;
+                                isi += "<br>ABJ Wilayah: " + abjWilayah + "%";
                                 isi += "<br>Kategori: " + kategori;
 
                                 isi += `
@@ -820,69 +940,94 @@ for (var key in detailDesa) {
             });
 
             /* 🔥 TAMPILKAN MODAL DETAIL — AMBIL DARI DATABASE */
-            function showDetailPopup(namaFix, namaAsli){
+            function formatNamaDaerah(nama) {
+    const key = fixNama(nama);
 
-                // ambil detail desa dari data yang sudah dipassing dari controller
-        var d = detailDesa[namaFix] 
-     || detailDesa[namaAsli.toLowerCase().replace(/\s/g,'')] 
-     || {};
+    const namaMap = {
+        sumbersari: 'Sumbersari',
+        wirolegi: 'Wirolegi',
+        antirogo: 'Antirogo',
+        tegalgede: 'Tegal Gede',
+        karangrejo: 'Karangrejo'
+    };
 
-if(!d){
-    // fallback cari manual
-    for(let key in detailDesa){
-        if(key.includes(namaFix) || namaFix.includes(key)){
-            d = detailDesa[key];
-            break;
-        }
-    }
+    return namaMap[key] || nama;
 }
 
-d = d || {};
+function showDetailPopup(namaFix, namaAsli) {
+    let d = detailDesa[namaFix]
+        || detailDesa[fixNama(namaAsli)]
+        || {};
 
-                // fallback nilai default kalau data kosong
-                var kategori   = d.kategori   || '-';
-                var kategoriCls = '';
-                if(kategori.toLowerCase() === 'tinggi') kategoriCls = 'kategori-tinggi';
-                else if(kategori.toLowerCase() === 'sedang') kategoriCls = 'kategori-sedang';
-                else if(kategori.toLowerCase() === 'rendah') kategoriCls = 'kategori-rendah';
-
-                document.getElementById("modalTahun").innerText        = tahunSekarang;
-                document.getElementById("modalNama").innerText         = namaAsli;
-                document.getElementById("modalPenduduk").innerText     = d.jumlah_penduduk ?? 0;
-                document.getElementById("modalKasus").innerText        = d.jumlah_kasus    ?? 0;
-                document.getElementById("modalSembuh").innerText       = d.sembuh ?? 0;
-                document.getElementById("modalMeninggal").innerText    = d.meninggal ?? 0;
-
-                var elKat = document.getElementById("modalKategori");
-                elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
-                elKat.className = 'value ' + kategoriCls;
-
-                document.getElementById("modalAnak").innerText         = d.anak    ?? 0;
-                document.getElementById("modalDewasa").innerText       = d.dewasa  ?? 0;
-                document.getElementById("modalLansia").innerText       = d.lansia  ?? 0;
-
-                document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
-                document.getElementById("modalDesaTertinggi").innerText = desaTertinggi    || '-';
-
-                var lk = parseInt(d.laki ?? 0);
-                var pr = parseInt(d.perempuan ?? 0);
-                var jkUnik = (lk > 0 ? 1 : 0) + (pr > 0 ? 1 : 0);
-
-                document.getElementById("modalJkTotal").innerText      = jkUnik;
-                document.getElementById("modalLaki").innerText         = lk;
-                document.getElementById("modalPerempuan").innerText    = pr;
-
-                document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
-                document.getElementById("modalRumahJentik").innerText  = d.rumah_jentik ?? 0;
-                document.getElementById('modalAbj').innerText = (d.abj ?? 0) + '%';
-
-                document.getElementById("detailModal").style.display = "flex";
+    if (!d) {
+        for (let key in detailDesa) {
+            if (key.includes(namaFix) || namaFix.includes(key)) {
+                d = detailDesa[key];
+                break;
             }
+        }
+    }
 
-            function closeDetailModal(){
-                document.getElementById("detailModal").style.display = "none";
-            }
+    d = d || {};
 
+    const kategori = d.kategori || '-';
+    let kategoriCls = '';
+
+    if (kategori.toLowerCase() === 'tinggi') {
+        kategoriCls = 'kategori-tinggi';
+    } else if (kategori.toLowerCase() === 'sedang') {
+        kategoriCls = 'kategori-sedang';
+    } else if (kategori.toLowerCase() === 'rendah') {
+        kategoriCls = 'kategori-rendah';
+    }
+
+    const tahunPeta = document.getElementById("periodeMap")
+        ? document.getElementById("periodeMap").value
+        : tahunSekarang;
+
+    document.getElementById("modalTahun").innerText = tahunPeta;
+    document.getElementById("modalNama").innerText = formatNamaDaerah(namaAsli);
+
+    document.getElementById("modalPenduduk").innerText = d.jumlah_penduduk ?? 0;
+    document.getElementById("modalKasus").innerText = d.jumlah_kasus ?? 0;
+    document.getElementById("modalSembuh").innerText = d.sembuh ?? 0;
+    document.getElementById("modalMeninggal").innerText = d.meninggal ?? 0;
+
+    const elKat = document.getElementById("modalKategori");
+    elKat.innerText = kategori !== '-'
+        ? kategori.charAt(0).toUpperCase() + kategori.slice(1)
+        : '-';
+    elKat.className = 'value ' + kategoriCls;
+
+    document.getElementById("modalAnak").innerText = d.anak ?? 0;
+    document.getElementById("modalRemaja").innerText = d.remaja ?? 0;
+    document.getElementById("modalDewasa").innerText = d.dewasa ?? 0;
+    document.getElementById("modalLansia").innerText = d.lansia ?? 0;
+
+    document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
+    document.getElementById("modalDesaTertinggi").innerText = formatNamaDaerah(desaTertinggi || '-');
+
+    const lk = parseInt(d.laki ?? 0);
+    const pr = parseInt(d.perempuan ?? 0);
+    const jkUnik = (lk > 0 ? 1 : 0) + (pr > 0 ? 1 : 0);
+
+    document.getElementById("modalJkTotal").innerText = jkUnik;
+    document.getElementById("modalLaki").innerText = lk;
+    document.getElementById("modalPerempuan").innerText = pr;
+
+    document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
+    document.getElementById("modalRumahJentik").innerText = d.rumah_jentik ?? 0;
+    document.getElementById("modalAbj").innerText = (d.abj ?? 0) + '%';
+
+    document.getElementById("detailModal").style.display = "flex";
+}
+    function closeDetailModal() {
+    const modal = document.getElementById("detailModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
             // klik di luar modal untuk menutup
             window.addEventListener('click', function(e){
                 var modal = document.getElementById('detailModal');
@@ -948,7 +1093,7 @@ d = d || {};
                                     <option value="">All</option>
                                     <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>Bayi dan Anak Pra-sekolah (0–6 Tahun)</</option>
                                     <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>Anak Sekolah dan Remaja (>6–18 Tahun)</option>
-                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>2Dewasa (>18–59 Tahun)</option>
+                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>Dewasa (>18–59 Tahun)</option>
                                     <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>Lansia (≥60 Tahun)</option>
                                 </select>
                             </div>
@@ -1131,7 +1276,7 @@ d = d || {};
 .berita-item{
     min-width: 290px;
     max-width: 290px;
-    background: #fff;
+    background: linear-gradient(135deg,#0097A7,#00B8C8);
     border-radius: 22px;
     overflow: hidden;
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
@@ -1157,7 +1302,7 @@ d = d || {};
     font-size: 17px;
     font-weight: 700;
     margin-bottom: 10px;
-    color: #1e293b;
+    color: #fff;
 
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1168,7 +1313,7 @@ d = d || {};
 .berita-content p{
     font-size: 14px;
     line-height: 1.6;
-    color: #64748b;
+    color: #fff;
     margin-bottom: 16px;
 
     display: -webkit-box;
@@ -1177,41 +1322,29 @@ d = d || {};
     overflow: hidden;
 }
 
-.berita-link{
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    color: #0ea5e9;
-}
-
 .berita-link:hover{
     color: #0284c7;
 }
 
 .berita-btn{
-    width: 42px;
-    height: 42px;
-    border: none;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-    font-size: 28px;
-    cursor: pointer;
-    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    padding: 8px 16px;
+    background: white;
+    color: #0097A7;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
     transition: .3s ease;
 }
 
 .berita-btn:hover{
-    background: #0ea5e9;
-    color: #fff;
-}
-
-.berita-btn.left{
-    margin-right: 10px;
-}
-
-.berita-btn.right{
-    margin-left: 10px;
+    background: #e6ffff;
+    color: #007b87;
+    transform: translateX(3px);
 }
 
 /* ================= RESPONSIVE FIX GLOBAL ================= */
@@ -1383,12 +1516,6 @@ d = d || {};
         font-size: 12px;
     }
 
-    .berita-btn{
-        width: 34px;
-        height: 34px;
-        font-size: 22px;
-    }
-
     .funfact-card {
         min-width: 95%;
         max-width: 95%;
@@ -1400,8 +1527,11 @@ d = d || {};
     }
 
     .funfact-text {
-        width: 100%;
+        flex: 1;
+        color: white;
+        line-height: 1.6;
         font-size: 13px;
+        margin-bottom: 16px;
     }
 
     .funfact-body img {
@@ -1412,6 +1542,28 @@ d = d || {};
     .funfact-inner {
         padding: 35px 20px 20px;
     }
+}
+@media (max-width: 768px){
+
+.berita-card{
+    min-width: 95%;
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+}
+
+.berita-content{
+    padding: 12px;
+}
+
+.berita-content h3{
+    font-size: 0.88rem;
+}
+
+.berita-card img{
+    width: 100%;
+    height: 200px;
+}
 }
 
 
@@ -1479,8 +1631,8 @@ d = d || {};
                             <p>
                                 <?= substr(strip_tags((string)($b['isi_berita'] ?? '')), 0, 100) ?>...
                             </p>
-
-                            <a href="<?= base_url('berita/detail/' . $b['id_berita']) ?>" class="berita-link">
+                            <br>
+                            <a href="<?= base_url('berita/view_user/' . $b['id_berita']) ?>" class="berita-btn">
                                 Baca Selengkapnya →
                             </a>
 
@@ -1904,20 +2056,27 @@ const dataLansia = grafik.map(item => item.lansia);
 
 const usiaFilter = "<?= request()->getGet('usia') ?>";
 
+const labelUsiaKasus = {
+    anak: 'Bayi dan Anak Pra-sekolah (0–6 Tahun)',
+    remaja: 'Anak Sekolah dan Remaja (>6–18 Tahun)',
+    dewasa: 'Dewasa (>18–59 Tahun)',
+    lansia: 'Lansia (≥60 Tahun)'
+};
+
 let datasetsKasus = [];
 
 if (usiaFilter === 'anak') {
 
     datasetsKasus.push({
-        label: 'Anak',
+        label: labelUsiaKasus.anak,
         data: dataAnak,
-        backgroundColor: '#4285F4'
+        backgroundColor: '#0F766E'
     });
 
 } else if (usiaFilter === 'remaja') {
 
     datasetsKasus.push({
-        label: 'Remaja',
+        label: labelUsiaKasus.remaja,
         data: dataRemaja,
         backgroundColor: '#06B6D4'
     });
@@ -1925,7 +2084,7 @@ if (usiaFilter === 'anak') {
 } else if (usiaFilter === 'dewasa') {
 
     datasetsKasus.push({
-        label: 'Dewasa',
+        label: labelUsiaKasus.dewasa,
         data: dataDewasa,
         backgroundColor: '#7DD3FC'
     });
@@ -1933,32 +2092,31 @@ if (usiaFilter === 'anak') {
 } else if (usiaFilter === 'lansia') {
 
     datasetsKasus.push({
-        label: 'Lansia',
+        label: labelUsiaKasus.lansia,
         data: dataLansia,
         backgroundColor: '#14B8A6'
     });
 
 } else {
 
-    // kalau ALL tampil semua
     datasetsKasus = [
         {
-            label: 'Anak',
+            label: labelUsiaKasus.anak,
             data: dataAnak,
             backgroundColor: '#0F766E'
         },
         {
-            label: 'Remaja',
+            label: labelUsiaKasus.remaja,
             data: dataRemaja,
             backgroundColor: '#06B6D4'
         },
         {
-            label: 'Dewasa',
+            label: labelUsiaKasus.dewasa,
             data: dataDewasa,
             backgroundColor: '#7DD3FC'
         },
         {
-            label: 'Lansia',
+            label: labelUsiaKasus.lansia,
             data: dataLansia,
             backgroundColor: '#14B8A6'
         }
@@ -2077,7 +2235,7 @@ new Chart(ctxKasus, {
         }
     });
     
-
+});
 function openPendudukModal(){
     document.getElementById("pendudukModal").style.display="flex";
 }
@@ -2118,7 +2276,6 @@ function editPenduduk(kelurahan, laki, perempuan) {
     document.getElementById("input_perempuan").value = perempuan;
     hitungTotalManual();
 }
-});
 document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
@@ -2153,7 +2310,6 @@ document.addEventListener("DOMContentLoaded", function(){
         `);
 
     }
-
 });
 </script>
 <?= $this->endSection() ?>

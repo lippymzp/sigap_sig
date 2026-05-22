@@ -234,8 +234,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
 </a>
 
-<a href="<?= base_url('dbd/rekap_skrining') ?>"
-    class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
+<a href="<?= base_url('kepala/rekap_skrining') ?>"
+    class="<?= ($menu == 'rekap_skrining_kepala') ? 'active' : '' ?>">
     <i class="fa-regular fa-file-lines me-2"></i> Rekap Skrining 
 </a>
 
@@ -247,7 +247,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <div class="menu-label">Informasi</div>
 
 <a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-            <i class="fa-regular fa-user me-2"></i> Profil Kader
+            <i class="fa-regular fa-user me-2"></i> Profil Kepala
         </a>
 
 </div>
@@ -278,7 +278,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li>
                             <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
-                                <i class="fa-regular fa-user me-2"></i> Profil Kepala
+                                <i class="fa-regular fa-user me-2"></i> Profile
                             </a>
                         </li>
                         <li>

@@ -58,7 +58,7 @@ $routes->get('/skriningdbd', 'Skriningdbd::skriningdbd');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Skriningdbd::skriningdbd2');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Skriningdbd::skriningdbd3');
 $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
-$routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
+$routes->post('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 
 /* ========================= */
 /* PROFIL dan Logut */
@@ -70,6 +70,7 @@ $routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto_admin', 'Profile2::uploadFoto');
 $routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
+$routes->get('/hapusFoto_kader', 'Profile3::hapusFoto');
 $routes->post('uploadFoto_kader', 'Profile3::uploadFoto');
 $routes->post('updateProfil_kader', 'Profile3::updateProfil');
 
@@ -455,7 +456,7 @@ $routes->get('/video/video_dbd/(:num)', 'VideoDbd::view/$1');
 
 $routes->get('/video/tambah1', 'VideoDbd::tambah1');
 $routes->post('/video/simpan', 'VideoDbd::simpan');
-
+$routes->get('/video/tambahBaru', 'VideoDbd::tambahBaru');
 $routes->get('/video/tambah1/(:num)', 'VideoDbd::edit/$1');
 $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 
@@ -473,6 +474,8 @@ $routes->get('bannerDbd/edit/(:num)','ManajemenBanner::edit/$1');
 $routes->post('bannerDbd/update/(:num)','ManajemenBanner::update/$1');
 $routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
 $routes->get('bannerDbd/preview/(:num)', 'ManajemenBanner::preview/$1');
+$routes->post('bannerDbd/updateUrutan/(:num)','ManajemenBanner::updateUrutan/$1');
+
 
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen-user', 'ManajemenUser::index');
@@ -498,7 +501,7 @@ $routes->get('funfact/hapus/(:num)', 'Dbd::hapusFunfact/$1');
 $routes->get('funfact/upload/(:num)', 'Dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Dbd::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'Dbd::view/$1');;
-$routes->get('/tentang-kami', 'SuperAdmin::tentangKami');
+$routes->get('/tentang-kami', 'SuperAdmin::tentang_kami');
 $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
@@ -559,6 +562,7 @@ $routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
 
 //super admin iki
 $routes->get('/superadmin', 'SuperAdmin::dashboard');
+$routes->get('superadmin/manajemen_admin','SuperAdmin::manajemen_admin');
 $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->get('/superadmin/admin', 'SuperAdmin::admin');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');

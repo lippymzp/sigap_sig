@@ -358,7 +358,7 @@ body{
 $pertanyaan = [
     "Apakah Anda menguras TPA (Tempat Penampungan Air)?",
     
-    "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada di dalam rumah?",
+    "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada didalam rumah?",
     
     "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada di luar rumah?",
     
@@ -368,9 +368,9 @@ $pertanyaan = [
     
     "Apakah Anda mendaur ulang barang bekas yang dapat menampung air hujan?",
     
-    "Apakah Anda menaburkan larvasida (obat pembunuh jentik) seperti abate pada tempat penampungan yang sulit dibersihkan?",
+    "Apakah Anda menaburkan larvasida (obat pembunuh jentik) seperti abate pada tempat penampungan yang sulit di bersihkan?",
     
-    "Apakah Anda menaburkan larvasida (obat pembunuh jentik) seperti abate sesuai dengan aturan pakai?",
+    "Apakah Anda menaburkan  larvasida (obat pembunuh jentik) seperti abate sesuai dengan aturan pakai?",
     
     "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
     
@@ -380,9 +380,9 @@ $pertanyaan = [
     
     "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
     
-    "Apakah talang air dan saluran pembuangan rutin dibersihkan?",
-    
     "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus (Menguras, Menutup, Mendaur ulang)?",
+    
+    "Apakah Anda tidak menggantungkan baju di rumah?",
     
     "Apakah semua anggota keluarga Anda tidak menggantungkan baju di rumah?"
 ];

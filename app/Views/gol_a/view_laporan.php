@@ -2,7 +2,6 @@
 $layout = $layout ?? 'layout/dashboard_layout_admin';
 ?>
 <?= $this->extend($layout) ?>
-
 <?= $this->section('style'); ?>
 <style>
     /* Import font Poppins dari Google Fonts */
@@ -36,8 +35,18 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
 
     /* Statistik Box Putih */
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .stat-card { background: #fff; border-radius: 10px; padding: 25px; text-align: center; }
-    .stat-card-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 15px; }
+    .stat-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 25px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .stat-card-title { font-size: 13px; font-weight: 700; color: #333; margin: 0; }
     .stat-card-value { font-size: 40px; font-weight: 800; color: #111; line-height: 1; }
 
     /* ABJ Box Putih */
@@ -99,7 +108,15 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
             }
 
             $tgl_upload_date = date('Y-m-d', strtotime($createdAt));
-            $tgl_upload_indo = date('d F Y', strtotime($createdAt));
+
+            // Format bulan Indonesia (hindari output English seperti "May")
+            $tsUpload = strtotime($createdAt);
+            $bulanIndo = [
+                'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April',
+                'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus',
+                'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+            ];
+            $tgl_upload_indo = date('d', $tsUpload) . ' ' . ($bulanIndo[date('F', $tsUpload)] ?? date('F', $tsUpload)) . ' ' . date('Y', $tsUpload);
             
             $statusText = '';
             $statusClass = '';
@@ -202,15 +219,32 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
             <div class="grey-box-title">Galeri Pemeriksaan Jentik</div>
             <div class="gallery-grid">
                 <?php 
-                // PERBAIKAN: Menggunakan json_decode dan folder uploads/pelaporan persis seperti kode Kader
-                $fotos = json_decode($laporan['foto'], true);
-                if (!empty($fotos) && is_array($fotos)): 
+                // PERBAIKAN FOTO: dukung format JSON array atau string tunggal + path yang konsisten
+                $fotosRaw = $laporan['foto'] ?? '';
+                $fotos = json_decode((string) $fotosRaw, true);
+
+                if (empty($fotos) || !is_array($fotos)) {
+                    $fotos = [];
+                    if (!empty($fotosRaw) && $fotosRaw !== 'null') {
+                        $fotos = [(string) $fotosRaw];
+                    }
+                }
+
+                if (!empty($fotos) && is_array($fotos)):
                     foreach($fotos as $f):
+                        $f = trim((string) $f);
+                        if ($f === '') continue;
+
+                        // Jika di DB sudah menyimpan path (mis. "uploads/pelaporan/x.jpg"), pakai langsung
+                        $isPath = (strpos($f, 'uploads/') !== false) || (strpos($f, 'uploads\\') !== false);
+                        $src = $isPath
+                            ? base_url(str_replace('\\', '/', $f))
+                            : base_url('uploads/pelaporan/' . $f);
                 ?>
-                        <img src="<?= base_url('uploads/pelaporan/' . $f) ?>" class="gallery-img" alt="Foto Jentik">
-                <?php 
+                        <img src="<?= $src ?>" class="gallery-img" alt="Foto Jentik">
+                <?php
                     endforeach;
-                else: 
+                else:
                 ?>
                     <div class="w-100 text-center py-4" style="color: #999;">
                         <p style="font-style: italic;">Tidak ada foto yang diunggah.</p>

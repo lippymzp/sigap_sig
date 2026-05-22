@@ -235,8 +235,7 @@ $skriningModel->insert([
 ]); 
 }
 
-    // =========================
-    // GENERATE PDF
+    // =============
     // =========================
     public function pdf()
 {
