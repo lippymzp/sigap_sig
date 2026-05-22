@@ -487,7 +487,7 @@ $kelurahanTerdampak = $db->table('pasien')
 
                 <select id="periodeMap" onchange="updateMap()">
                     <?php for($t = 2024; $t <= $tahunSekarang; $t++): ?>
-                        <option value="<?= $t ?>" <?= ((string)$t === (string)$tahunMapDipilih ? 'selected' : '') ?>>
+                        <option value="<?= $t ?>" <?= ($t == $tahunMapDipilih ? 'selected' : '') ?>><?= $t ?></option>
                             <?= $t ?>
                         </option>
                     <?php endfor; ?>
