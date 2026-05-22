@@ -235,7 +235,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 </a>
 
 <a href="<?= base_url('kepala/rekap_skrining') ?>"
-    class="<?= ($menu == 'skrining') ? 'active' : '' ?>">
+    class="<?= ($menu == 'rekap_skrining_kepala') ? 'active' : '' ?>">
     <i class="fa-regular fa-file-lines me-2"></i> Rekap Skrining 
 </a>
 

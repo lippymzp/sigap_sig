@@ -70,6 +70,7 @@ $routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto_admin', 'Profile2::uploadFoto');
 $routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
+$routes->get('/hapusFoto_kader', 'Profile3::hapusFoto');
 $routes->post('uploadFoto_kader', 'Profile3::uploadFoto');
 $routes->post('updateProfil_kader', 'Profile3::updateProfil');
 

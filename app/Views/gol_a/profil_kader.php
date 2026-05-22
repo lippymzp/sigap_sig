@@ -100,7 +100,7 @@ $passBintang = str_repeat('*', strlen($rawPassword));
                 
                 <?php if(!empty($petugas['foto_profil'])): ?>
                 <li>
-                    <a class="dropdown-item text-danger" href="<?= base_url('hapusFoto_kader') ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus foto profil ini?');">
+                    <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="konfirmasiHapus('<?= base_url('hapusFoto_kader') ?>')">
                         <i class="fa-regular fa-trash-can"></i> Hapus foto
                     </a>
                 </li>
@@ -155,6 +155,8 @@ $passBintang = str_repeat('*', strlen($rawPassword));
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 function previewImage(event) {
     const reader = new FileReader();
@@ -170,11 +172,9 @@ const passwordInput = document.getElementById('passwordInput');
 const eyeIcon = document.getElementById('eyeIcon');
 
 togglePassword.addEventListener('click', function () {
-    // Ubah tipe input antara password dan text
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
     
-    // Ubah icon mata sesuai kondisi tipe input
     if (type === 'password') {
         eyeIcon.classList.remove('fa-eye-slash');
         eyeIcon.classList.add('fa-eye');
@@ -183,6 +183,26 @@ togglePassword.addEventListener('click', function () {
         eyeIcon.classList.add('fa-eye-slash');
     }
 });
+
+// FUNGSI POP-UP KONFIRMASI SWEETALERT2
+function konfirmasiHapus(urlHapus) {
+    Swal.fire({
+        title: 'Hapus Foto Profil?',
+        text: "Apakah Anda yakin ingin menghapus foto profil ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#198754', // Warna Hijau (Success)
+        cancelButtonColor: '#dc3545',  // Warna Merah (Danger)
+        confirmButtonText: '<i class="fa-solid fa-check"></i> Iya',
+        cancelButtonText: '<i class="fa-solid fa-xmark"></i> Tidak',
+        focusCancel: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Jika user menekan tombol 'Iya', arahkan ke url hapus foto
+            window.location.href = urlHapus;
+        }
+    });
+}
 </script>
 
 <?= $this->endSection(); ?>

@@ -19,6 +19,7 @@ class PetugasModel extends Model
         'no_telp',
         'email',
         'password',
+        'foto_profil',
         'created_at'
     ];
 
