@@ -17,7 +17,7 @@ public function index()
         $petugas = $petugasModel->find($id_petugas);
 
 
-        $id_penyakit = 1;
+        $id_penyakit = $petugas['id_penyakit'] ?? null;
 
         // 1. Tambahkan penangkap parameter 'wilayah' di sini
         $wilayah = $this->request->getGet('wilayah');
@@ -30,7 +30,9 @@ public function index()
     // ==========================================
         // 1. QUERY UTAMA: DATA PETA & DETAIL DESA (TERFILTER)
         // ==========================================
-        $builderMape = $db->table('pasien p');
+        $builderMape = $db->table('wilayah w');
+
+        $penyakitFilter = !empty($id_penyakit) ? "AND p.id_penyakit = " . $db->escape($id_penyakit) : "";
         // FILTER GLOBAL
         $bulanFilter = !empty($bulan)
             ? "AND MONTH(p.tgl_kunjungan) = " . $db->escape($bulan)
@@ -73,147 +75,68 @@ public function index()
             }
         }
 
-$builderMape->select("
-    w.kelurahan as desa,
+        $allFilters = "$penyakitFilter $bulanMapFilter $tahunMapFilter $jkFilter $usiaFilter";
+        
+        $builderMape->select("
+            w.kelurahan as desa,
+            COUNT(DISTINCT CASE WHEN p.id_pasien IS NOT NULL $allFilters THEN p.id_pasien END) as kasus,
+            COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Laki-laki' $allFilters THEN p.id_pasien END) as laki,
+            COUNT(DISTINCT CASE WHEN p.jenis_kelamin = 'Perempuan' $allFilters THEN p.id_pasien END) as perempuan,
+            
+            
+            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 $allFilters THEN p.id_pasien END) as anak,
+            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 $allFilters THEN p.id_pasien END) as remaja,
+            COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 $allFilters THEN p.id_pasien END) as dewasa,
+            COUNT(DISTINCT CASE WHEN p.umur >= 60 $allFilters THEN p.id_pasien END) as lansia,
+            
+            COUNT(DISTINCT CASE WHEN p.status_akhir = 'Sembuh' $allFilters THEN p.id_pasien END) as sembuh,
+            COUNT(DISTINCT CASE WHEN p.status_akhir = 'Meninggal' $allFilters THEN p.id_pasien END) as meninggal,
+            
+            COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
+            COALESCE(SUM(DISTINCT rp.diperiksa), 0) as rumah_diperiksa,
+            COALESCE(SUM(DISTINCT rp.positif), 0) as rumah_positif
+        ");
 
-    COUNT(DISTINCT p.id_pasien) as kasus,
-        WHEN p.id_pasien IS NOT NULL
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        $usiaFilter
-        THEN p.id_pasien
-    END) as kasus,
+        // Join standar ke pasien (menggunakan LEFT JOIN agar kelurahan tetap muncul walau kasus 0)
+        $builderMape->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
 
-    COUNT(DISTINCT CASE
-        WHEN p.jenis_kelamin = 'Laki-laki'
-        $bulanMapFilter
-        $tahunMapFilter
-        $usiaFilter
-        THEN p.id_pasien
-    END) as laki,
+        // Join Rekap Jentik (Kader)
+        $builderMape->join('rekap_pelaporan_kader rp', 'LOWER(REPLACE(rp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
 
-    COUNT(DISTINCT CASE
-        WHEN p.jenis_kelamin = 'Perempuan'
-        $bulanMapFilter
-        $tahunMapFilter
-        $usiaFilter
-        THEN p.id_pasien
-    END) as perempuan,
+        // Join Total Penduduk per Kelurahan (Subquery) - Menggunakan $id_penyakit dari session
+        $subQueryPenduduk = $db->table('data_penduduk')
+            ->select('kelurahan, SUM(total_penduduk) as total_penduduk')
+            ->where('id_penyakit', $id_penyakit)
+            ->groupBy('kelurahan')
+            ->getCompiledSelect();
 
-    COUNT(DISTINCT CASE
-        WHEN p.umur BETWEEN 0 AND 6
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        THEN p.id_pasien
-    END) as anak,
+        $builderMape->join("($subQueryPenduduk) dp", 'LOWER(REPLACE(dp.kelurahan, " ", "")) = LOWER(REPLACE(w.kelurahan, " ", ""))', 'left');
 
-    COUNT(DISTINCT CASE
-        WHEN p.umur BETWEEN 7 AND 18
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        THEN p.id_pasien
-    END) as remaja,
+        // Filter Wilayah Utama
+        if (!empty($wilayah)) {
+            $namaWilayah = ($wilayah === 'Tegalgede') ? 'Tegal Gede' : $wilayah;
+            $builderMape->where('w.kelurahan', $namaWilayah);
+        } else {
+            $builderMape->whereIn('w.kelurahan', ['Sumbersari', 'Wirolegi', 'Antirogo', 'Tegal Gede', 'Karangrejo']);
+        }
 
-    COUNT(DISTINCT CASE
-        WHEN p.umur BETWEEN 19 AND 59
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        THEN p.id_pasien
-    END) as dewasa,
-
-    COUNT(DISTINCT CASE
-        WHEN p.umur >= 60
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        THEN p.id_pasien
-    END) as lansia,
-
-    COUNT(DISTINCT CASE
-        WHEN p.status_akhir = 'Sembuh'
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        $usiaFilter
-        THEN p.id_pasien
-    END) as sembuh,
-
-    COUNT(DISTINCT CASE
-        WHEN p.status_akhir = 'Meninggal'
-        $bulanMapFilter
-        $tahunMapFilter
-        $jkFilter
-        $usiaFilter
-        THEN p.id_pasien
-    END) as meninggal,
-
-    COALESCE(dp.total_penduduk, 0) as jumlah_penduduk,
-    COALESCE(rp.rumah_diperiksa, 0) as rumah_diperiksa,
-    COALESCE(rp.rumah_positif, 0) as rumah_positif
-");
-
-// ======================
-// DATA PETA
-// ======================
-
-$tahunMap = $this->request->getGet('tahun_map');
-
-$builderMape = $db->table('pasien p');
-
-$builderMape->select("
-    w.kelurahan as desa,
-    COUNT(DISTINCT p.id_pasien) as kasus
-");
-
-$builderMape->join(
-    'wilayah w',
-    'w.id_wilayah = p.id_wilayah',
-    'left'
-);
-
-$builderMape->where('p.id_penyakit', 1);
-
-$builderMape->whereIn('w.kelurahan', [
-    'Sumbersari',
-    'Wirolegi',
-    'Antirogo',
-    'Tegal Gede',
-    'Karangrejo'
-]);
-
-if (!empty($tahunMap)) {
-    $builderMape->where('YEAR(p.tgl_kunjungan)', $tahunMap);
-}
-
-$builderMape->groupBy('w.kelurahan');
-
-$dbd = $builderMape->get()->getResultArray();
+        $builderMape->groupBy('w.kelurahan, dp.total_penduduk');
+        $dbd = $builderMape->get()->getResultArray();
 // ==========================================
         // 2. QUERY GRAFIK (DIUBAH MENJADI 4 KATEGORI USIA)
         // ==========================================
-// ======================
-// DATA GRAFIK
-// ======================
-
-$builderGrafik = $db->table('pasien p');
+      $builderGrafik = $db->table('wilayah w');
 
 $builderGrafik->select("
-    w.kelurahan,
-    COUNT(DISTINCT p.id_pasien) as total
-");
+    w.kelurahan as wilayah,
 
-$builderGrafik->join(
-    'wilayah w',
-    'w.id_wilayah = p.id_wilayah',
-    'left'
-);
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 0 AND 6 THEN p.id_pasien END) as anak,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 7 AND 18 THEN p.id_pasien END) as remaja,
+    COUNT(DISTINCT CASE WHEN p.umur BETWEEN 19 AND 59 THEN p.id_pasien END) as dewasa,
+    COUNT(DISTINCT CASE WHEN p.umur >= 60 THEN p.id_pasien END) as lansia
+    ");
 
-$builderGrafik->where('p.id_penyakit', 1);
-
+$builderGrafik->join('pasien p', 'p.id_wilayah = w.id_wilayah', 'left');
 $builderGrafik->whereIn('w.kelurahan', [
     'Sumbersari',
     'Wirolegi',
@@ -221,6 +144,12 @@ $builderGrafik->whereIn('w.kelurahan', [
     'Tegal Gede',
     'Karangrejo'
 ]);
+
+$builderGrafik->where('p.id_penyakit', 1);
+
+if (!empty($id_penyakit)) {
+    $builderGrafik->where('p.id_penyakit', 1);
+}
 
 if (!empty($bulan)) {
     $builderGrafik->where('MONTH(p.tgl_kunjungan)', $bulan);
@@ -231,27 +160,19 @@ if (!empty($tahun)) {
 }
 
 if (!empty($jk)) {
-    if ($jk == 'L') {
-        $builderGrafik->where('p.jenis_kelamin', 'Laki-laki');
-    } elseif ($jk == 'P') {
-        $builderGrafik->where('p.jenis_kelamin', 'Perempuan');
-    }
+    $builderGrafik->where(
+        'p.jenis_kelamin',
+        ($jk == 'L' ? 'Laki-laki' : 'Perempuan')
+    );
 }
+if (!empty($wilayah)) {
 
-if (!empty($usia)) {
-    if ($usia == 'anak') {
-        $builderGrafik->where('p.umur <=', 14);
-    } elseif ($usia == 'remaja') {
-        $builderGrafik->where('p.umur >=', 15);
-        $builderGrafik->where('p.umur <=', 24);
-    } elseif ($usia == 'dewasa') {
-        $builderGrafik->where('p.umur >=', 25);
-        $builderGrafik->where('p.umur <=', 59);
-    } elseif ($usia == 'lansia') {
-        $builderGrafik->where('p.umur >=', 60);
-    }
+    $namaWilayah = ($wilayah === 'Tegalgede')
+        ? 'Tegal Gede'
+        : $wilayah;
+
+    $builderGrafik->where('w.kelurahan', $namaWilayah);
 }
-
 $builderGrafik->groupBy('w.kelurahan');
 
 $grafik = $builderGrafik->get()->getResultArray();
@@ -266,15 +187,7 @@ $grafik = $builderGrafik->get()->getResultArray();
             $namaKel = $row['desa'];
             $jumlahKasus = (int)$row['kasus'];
 
-            if ($jumlahKasus >= 20) {
-    $kategori = 'tinggi';
-} elseif ($jumlahKasus >= 10) {
-    $kategori = 'sedang';
-} elseif ($jumlahKasus > 0) {
-    $kategori = 'rendah';
-} else {
-    $kategori = 'Belum ada data';
-}
+            $kategori = 'Belum ada data';
 
            // Memasukkan 4 kategori baru untuk mencari mana kelompok usia yang paling mendominasi
             $usiaData = [
@@ -378,7 +291,7 @@ public function simpanPenduduk()
     return redirect()->back()->with('success', 'Data ' . $kelurahan . ' berhasil diperbarui');
 }
 
-public function hapusPenduduk(int $id)
+public function hapusPenduduk($id)
 {
     $db = \Config\Database::connect();
 
@@ -390,7 +303,7 @@ public function hapusPenduduk(int $id)
         ->with('success','Data berhasil dihapus');
 }
 
-public function editPenduduk(int $id)
+public function editPenduduk($id)
 {
     $db = \Config\Database::connect();
 
