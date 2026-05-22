@@ -2088,16 +2088,16 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$totalBerita = $queryBerita->getNumRows();
 ?>
 
 <div class="news-slider-admin">
