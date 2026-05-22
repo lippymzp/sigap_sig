@@ -468,7 +468,7 @@ const wilayahLabels = [
     'Suka Makmur',
     'Klompangan',
     'Pancakarya',
-    'Manggaran',
+    'Mangaran',
     'Pasien Luar Wilayah',
 ];
 
