@@ -133,7 +133,7 @@ class InputDataPasienAModel extends Model
                 SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
                 SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
 
-                SUM(CASE WHEN p.status_akhir = 'Meninggal' THEN 1 ELSE 0 END) as jumlah_kematian,
+                SUM(CASE WHEN p.status_akhir = 'meninggal' THEN 1 ELSE 0 END) as jumlah_kematian,
 
                 COUNT(*) as jumlah
                 

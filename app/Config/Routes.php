@@ -148,7 +148,7 @@ $routes->get('pneumonia-funfact', 'FunfactPneumoniaLanding::index');
 /* ========================= */
 
 $routes->get('/diare-detail', 'Home::diare_detail');
-$routes->get('/diare', 'Diare::index');
+
 
 /* ========================= */
 /* LOGIN */
@@ -498,13 +498,14 @@ $routes->get('funfact/hapus/(:num)', 'Dbd::hapusFunfact/$1');
 $routes->get('funfact/upload/(:num)', 'Dbd::uploadFunfact/$1');
 $routes->get('funfact/simpan-draft/(:num)', 'Dbd::simpanDraft/$1');
 $routes->get('funfact/view/(:num)', 'Dbd::view/$1');;
-$routes->get('/tentang-kami', 'Home::tentangKami');
+$routes->get('/tentang-kami', 'SuperAdmin::tentangKami');
 $routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
-$routes->get('profil_sistem', 'ProfilSistem::index');
-$routes->get('profil_sistem/edit', 'ProfilSistem::edit');
-$routes->post('profil_sistem/update', 'ProfilSistem::update');
+$routes->get('superadmin/profil_sistem', 'SuperAdmin::profil_sistem');
+$routes->get('superadmin/profil', 'SuperAdmin::profil');
+$routes->get('superadmin/profil_sistem/edit', 'SuperAdmin::edit');
+$routes->post('superadmin/profil_sistem/update', 'SuperAdmin::update');
 
 // ================= PELAPORAN KADER DI ADMIN =================
 $routes->get('dbd/pelaporan-kader/admin', 'Dbd::pelaporan_kader');

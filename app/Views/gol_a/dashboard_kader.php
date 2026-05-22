@@ -774,6 +774,7 @@ $kelurahanTerdampak = $db->table('pasien')
     // ================= DATA GRAFIK MORTALITAS =================
     $builderMort = $db->table('pasien');
     $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
+    $builderMort->where('pasien.id_penyakit', 1);
     $builderMort->where('pasien.status_akhir', 'Meninggal');
     
     $reqWilayahMort = $_GET['wilayah_mort'] ?? '';
@@ -827,6 +828,7 @@ $kelurahanTerdampak = $db->table('pasien')
     $bPasien->select('pasien.umur, pasien.jenis_kelamin, pasien.status_akhir, wilayah.kelurahan as nama_kelurahan');
     $bPasien->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah', 'left');
     $bPasien->where('YEAR(pasien.tgl_kunjungan)', $tahunMapFilter);
+    $bPasien->where('pasien.id_penyakit', 1);
     $pasienDetail = $bPasien->get()->getResultArray();
 
     // 2. Ambil Rekap Jentik
@@ -1158,13 +1160,26 @@ document.addEventListener("DOMContentLoaded", function() {
     switchTab(currentTab);
 
     // --- GRAFIK KASUS ---
-    const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
-    let labelsKasus = []; let totalKasus = [];
-    dataGrafikKasus.forEach(item => { labelsKasus.push(item.kelurahan); totalKasus.push(item.total); });
-    new Chart(document.getElementById('chartKasus').getContext('2d'), {
-        type: 'bar', data: { labels: labelsKasus, datasets: [{ label: 'Total Kasus', data: totalKasus, backgroundColor: '#00BBC2', borderRadius: 8 }] },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
+const dataGrafikKasus = <?= json_encode($grafik ?? []) ?>;
+const labelsKasus = dataGrafikKasus.map(i => i.wilayah);
+const dataAnak    = dataGrafikKasus.map(i => +i.anak);
+const dataRemaja  = dataGrafikKasus.map(i => +i.remaja);
+const dataDewasa  = dataGrafikKasus.map(i => +i.dewasa);
+const dataLansia  = dataGrafikKasus.map(i => +i.lansia);
+
+new Chart(document.getElementById('chartKasus').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: labelsKasus,
+        datasets: [
+            { label: 'Anak (0-14)',    data: dataAnak,   backgroundColor: '#0F766E' },
+            { label: 'Remaja (15-24)', data: dataRemaja, backgroundColor: '#06B6D4' },
+            { label: 'Dewasa (25-59)', data: dataDewasa, backgroundColor: '#7DD3FC' },
+            { label: 'Lansia (60+)',   data: dataLansia, backgroundColor: '#14B8A6' }
+        ]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
 
     // --- GRAFIK MORTALITAS ---
     const rawDataMort = <?= json_encode($dataFinalMort) ?>;
@@ -1245,7 +1260,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
-});
 });
 </script>
 <?= $this->endSection() ?>

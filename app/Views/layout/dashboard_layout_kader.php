@@ -395,5 +395,3 @@ function confirmLogout(url) {
     });
 }
 </script>
-</body>
-</html>

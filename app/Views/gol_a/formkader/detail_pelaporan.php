@@ -22,6 +22,18 @@
     .btn-kembali:hover { background-color: #00B3B5; color: white; transform: translateY(-2px); }
 
     .abj-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; background-color: #E6F4F1; color: #00CED1; font-weight: 800; font-size: 16px; margin-left: 10px; }
+
+    /* --- RESPONSIVE MOBILE FIXES --- */
+    @media (max-width: 768px) {
+        .page-wrapper { padding: 10px; }
+        .banner-top { flex-direction: column; text-align: center; gap: 15px; padding: 20px 15px; }
+        .banner-icon { margin-right: 0; width: fit-content; margin: 0 auto; }
+        .form-card { padding: 20px 15px; }
+        .col-md-12.text-end { text-align: left !important; margin-bottom: 15px; }
+        .abj-badge { margin-left: 0; margin-top: 10px; display: block; width: fit-content; }
+        .preview-grid { justify-content: center; }
+        .preview-item { width: 100%; height: auto; max-width: 250px; max-height: 200px; }
+    }
 </style>
 
 <div class="page-wrapper">

@@ -202,9 +202,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
   <i class="fa-solid fa-video me-2"></i> Video
 </a>
 
-<a href="<?= base_url('profil_admin') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-  <i class="fa-solid fa-user me-2"></i> Profil User
-</a>
+<a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
+            <i class="fa-regular fa-user me-2"></i> Profil Admin
+        </a>
 
 <div class="menu-label">Master Data</div>
 
@@ -247,7 +247,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
                 <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li>
-                        <a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
+                        <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
                             <i class="fa-regular fa-user me-2"></i> Profile
                         </a>
                     </li>

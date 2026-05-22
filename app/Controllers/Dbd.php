@@ -12,7 +12,7 @@ class Dbd extends BaseController
 {
     protected FunfactModel $funfact;
     protected PelaporanModel $pelaporanModel; // <-- DITAMBAHKAN: Variabel untuk model
-    protected $db; 
+    protected \CodeIgniter\Database\BaseConnection $db;
     // <-- DITAMBAHKAN: Constructor untuk inisialisasi model
     public function __construct()
     {
@@ -101,7 +101,7 @@ class Dbd extends BaseController
     
                 // ID PETUGAS LOGIN
                 'id_petugas' => session()->get('id_petugas'),
-                'id_penyakit' => session()->get('id_penyakit'),
+                'id_penyakit' => 1,
     
                 // ======================
                 // DATA WILAYAH
@@ -653,13 +653,48 @@ class Dbd extends BaseController
         
         $bulan = $this->request->getGet('bulan');
         $tahun = $this->request->getGet('tahun');
+
+// Default ke tahun sekarang biar match dengan peta yang juga default tahun sekarang
+if ($tahun === null) {
+    $tahun = date('Y');
+}
         $usia  = $this->request->getGet('usia');
         $jk    = $this->request->getGet('jk');
 
 
-        $builder = $db->table('pasien p');
-        $builder->select('w.kelurahan, COUNT(*) as total');
-        $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+$builder = $db->table('pasien p');
+
+$builder->select("
+    w.kelurahan as wilayah,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur <= 14 
+        THEN p.id_pasien 
+    END) as anak,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur BETWEEN 15 AND 24 
+        THEN p.id_pasien 
+    END) as remaja,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur BETWEEN 25 AND 59 
+        THEN p.id_pasien 
+    END) as dewasa,
+
+    COUNT(DISTINCT CASE 
+        WHEN p.umur >= 60 
+        THEN p.id_pasien 
+    END) as lansia
+");
+
+$builder->join(
+    'wilayah w',
+    'w.id_wilayah = p.id_wilayah',
+    'left'
+);
+
+$builder->where('p.id_penyakit', 1);
 
         // 2. TAMBAH LOGIKA FILTER WILAYAH (DAN FIX SPASI TEGAL GEDE)
         if (!empty($wilayah)) {
@@ -709,14 +744,14 @@ class Dbd extends BaseController
         $builder->groupBy('w.kelurahan');
 
         $grafik = $builder->get()->getResultArray();
-
         // ======================
         // 🔥 DATA PETA
         // ======================
         $tahunMap = $this->request->getGet('tahun_map');
 
         $builderDbd = $db->table('pasien p');
-        $builderDbd->select('w.kelurahan as desa, COUNT(*) as kasus');
+        $builderDbd->where('p.id_penyakit', 1);
+        $builderDbd->select('w.kelurahan as desa, COUNT(DISTINCT p.id_pasien) as kasus');
         $builderDbd->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
 
         // 🔥 FILTER HARUS DI SINI (SEBELUM get)
@@ -792,7 +827,7 @@ public function manajemen_pkm()
     }
 
     // 4. Menampilkan Detail
-    public function detail_manajemen_pkm($id)
+    public function detail_manajemen_pkm(int $id)
     {
         $puskesmas = $this->db->table('instansi')->where('id_instansi', $id)->get()->getRowArray();
 
@@ -807,7 +842,7 @@ public function manajemen_pkm()
     }
 
     // 5. Menampilkan Form Edit
-    public function edit_manajemen_pkm($id)
+    public function edit_manajemen_pkm(int $id)
     {
         $puskesmas = $this->db->table('instansi')->where('id_instansi', $id)->get()->getRowArray();
 
@@ -822,7 +857,7 @@ public function manajemen_pkm()
     }
 
     // 6. Proses Update Data
-    public function update_manajemen_pkm($id)
+    public function update_manajemen_pkm(int $id)
     {
         $data = [
             'nama_instansi' => $this->request->getPost('nama_instansi')
@@ -833,7 +868,7 @@ public function manajemen_pkm()
     }
 
     // 7. Proses Hapus Data
-    public function hapus_manajemen_pkm($id)
+    public function hapus_manajemen_pkm(int $id)
     {
         // Cek relasi ke tabel petugas
         $cekPetugas = $this->db->table('petugas')->where('id_instansi', $id)->countAllResults();
@@ -849,7 +884,9 @@ public function manajemen_pkm()
 
     public function rekap_skrining()
 {
+    $layout_dinamis = $this->getDashboardLayout();
     $db = \Config\Database::connect();
+
     $builder = $db->table('skrining as s');
 
     $builder->select('
@@ -952,8 +989,9 @@ public function manajemen_pkm()
     $pagerLinks = $pager->makeLinks($page, $perPage, $total, 'default_full');
 
     $data = [
+        'layout'   => $layout_dinamis,  
         'menu'       => 'skrining',
-        'judul'      => 'Rekap Skrining',   
+        'judul'      => 'Rekap Skrining',
         'skrining'   => $skriningData,
         'pagerLinks' => $pagerLinks,
         // Kirim balik value input ke view untuk mempertahankan status input form
@@ -1684,6 +1722,7 @@ public function simpanDraft(int $id)
     // ===============================
     public function rekap_kader()
     {
+        $layout_dinamis = $this->getDashboardLayout();
         $db = \Config\Database::connect();
         
         // 1. Ambil Filter dari URL
@@ -1707,6 +1746,7 @@ public function simpanDraft(int $id)
 
         // 3. Kirim ke View
         $data = [
+            'layout'      => $layout_dinamis, 
             'title'      => 'Rekap Pelaporan Kader',
             'rekap'      => $rekapData,
             'bulanAktif' => $bulan,

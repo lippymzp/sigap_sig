@@ -19,7 +19,7 @@ function toggleChat() {
 
 function triggerInitialGreeting() {
     var loadingId = 'loading-' + Date.now();
-    appendMessage('bot', 'Mengetik...', loadingId);
+    appendMessage('bot', 'Sedang mengetik...', loadingId);
 
     var formData = new URLSearchParams();
     formData.append('message', 'halo'); 
@@ -32,7 +32,15 @@ function triggerInitialGreeting() {
         },
         body: formData
     })
-    .then(response => response.json())
+    .then(async response => {
+        const text = await response.text();
+        try {
+            return JSON.parse(text); // Coba ubah ke JSON
+        } catch (error) {
+            console.error("🚨 BALASAN SERVER BUKAN JSON (MUNGKIN ERROR CI4):", text);
+            throw new Error("Sistem CodeIgniter mendeteksi error fatal. Silakan cek Inspect Element -> Console.");
+        }
+    })
     .then(data => {
         var loadingEl = document.getElementById(loadingId);
         if (loadingEl) loadingEl.remove();
@@ -43,13 +51,17 @@ function triggerInitialGreeting() {
 
         if (data.reply) {
             appendMessage('bot', data.reply.trim());
-            
             if (data.options && data.options.length > 0) {
                 renderChatOptions(data.options);
             }
         }
     })
-    .catch(error => console.error('Error Init Chat:', error));
+    .catch(error => {
+        console.error('Error Init Chat:', error);
+        var loadingEl = document.getElementById(loadingId);
+        if (loadingEl) loadingEl.remove();
+        appendMessage('bot', error.message);
+    });
 }
 
 function handleChatEnter(event) {
@@ -65,10 +77,11 @@ function appendMessage(sender, text, id = null) {
     if (id) msgDiv.id = id;
     
     if (sender === 'bot') {
-        // Konversi markdown sederhana dari Gemini ke HTML (Tebal & Miring)
-        let formattedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); // Mencegah XSS
-        formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"); // Bold
-        formattedText = formattedText.replace(/\*(.*?)\*/g, "<em>$1</em>"); // Italic
+        let formattedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+        let boldReg = new RegExp("\\x2A\\x2A(.*?)\\x2A\\x2A", "g");
+        let italicReg = new RegExp("\\x2A(.*?)\\x2A", "g");
+        formattedText = formattedText.replace(boldReg, "<strong>$1</strong>"); 
+        formattedText = formattedText.replace(italicReg, "<em>$1</em>"); 
         
         msgDiv.innerHTML = formattedText;
     } else {
@@ -138,7 +151,7 @@ function sendMessage() {
     input.value = '';
 
     var loadingId = 'loading-' + Date.now();
-    appendMessage('bot', 'Mengetik...', loadingId);
+    appendMessage('bot', 'Sedang mengetik...', loadingId);
 
     var formData = new URLSearchParams();
     formData.append('message', message);
@@ -151,7 +164,15 @@ function sendMessage() {
         },
         body: formData
     })
-    .then(response => response.json())
+    .then(async response => {
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch (error) {
+            console.error("🚨 BALASAN SERVER BUKAN JSON:", text);
+            throw new Error("Sistem CodeIgniter menolak permintaan (Buka Inspect -> Console untuk detail).");
+        }
+    })
     .then(data => {
         var loadingEl = document.getElementById(loadingId);
         if (loadingEl) loadingEl.remove();
@@ -178,8 +199,8 @@ function sendMessage() {
     .catch(error => {
         var loadingEl = document.getElementById(loadingId);
         if (loadingEl) loadingEl.remove();
-        
-        appendMessage('bot', 'Gagal terhubung ke server. Periksa koneksi internet Anda.');
+        console.error(error);
+        appendMessage('bot', error.message);
     });
 }
 </script>

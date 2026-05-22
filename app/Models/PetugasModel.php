@@ -29,12 +29,13 @@ class PetugasModel extends Model
                     ->findAll();
     }
 
-    // AMBIL DATA PROFIL + FOTO
+    // AMBIL DATA PROFIL + FOTO + JABATAN
     public function getProfil($id_petugas)
     {
         return $this->db->table('petugas')
-            ->select('petugas.*, profil.foto_profil, profil.id_foto')
+            ->select('petugas.*, profil.foto_profil, profil.id_foto, jabatan.nama_jabatan')
             ->join('profil', 'profil.id_petugas = petugas.id_petugas', 'left')
+            ->join('jabatan', 'jabatan.id_jabatan = petugas.id_jabatan', 'left')
             ->where('petugas.id_petugas', $id_petugas)
             ->get()
             ->getRowArray();
@@ -74,4 +75,6 @@ class PetugasModel extends Model
             ]);
         }
     }
+
+    
 }

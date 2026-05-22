@@ -7,6 +7,9 @@ $tahunMap = $tahunMap ?? [
     2024 => '2024',
     2025 => '2025',
 ];
+$totalKasus = $totalKasus ?? 0;
+$kasusHariIni = $kasusHariIni ?? 0;
+$kelurahanTerdampak = $kelurahanTerdampak ?? 0;
 ?>
 
 <?= $this->extend('layout/dashboard_layout_kepala'); ?>
@@ -190,6 +193,10 @@ $tahunMap = $tahunMap ?? [
     height: 100% !important;
 }
 
+.leaflet-popup-content button{
+    pointer-events: auto !important;
+    z-index: 999999 !important;
+}
 /* ================= RESPONSIVE FIX GLOBAL ================= */
 
 /* ===== TABLET ===== */
@@ -230,6 +237,48 @@ $tahunMap = $tahunMap ?? [
     .modal-title { font-size: 16px; }
     .info-table { font-size: 12px; }
 }
+.info-table tr td {
+    padding: 8px 6px;
+    vertical-align: top;
+    line-height: 1.5;
+    font-size: 14px;
+}
+.info-table tr td.label {
+    width: 55%;
+    color: #2b2b2b;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: normal;
+    word-break: break-word;
+}
+.info-table tr td.colon {
+    width: 14px;
+    text-align: center;
+    color: #555;
+    font-weight: 400;
+}
+.info-table tr td.value {
+    color: #111;
+    font-weight: 500;
+    font-size: 14px;
+    word-break: break-word;
+}
+.info-table tr.sub td.label {
+    padding-left: 22px;
+    color: #555;
+    font-weight: 400;
+    font-size: 13.5px;
+}
+.info-table tr.sub td.value {
+    font-size: 13.5px;
+}
+@media (max-width: 480px) {
+    .info-table tr td,
+    .info-table tr td.label,
+    .info-table tr td.value { font-size: 12.5px; }
+    .info-table tr.sub td.label,
+    .info-table tr.sub td.value { font-size: 12px; }
+}
 </style>
 <?= $this->endSection(); ?>
 
@@ -247,58 +296,6 @@ $tahunMap = $tahunMap ?? [
              style="width:280px; height:auto;">
     </div>
 </div>
-
-<?php
-    $db = \Config\Database::connect();
-
-    $idPetugas  = session()->get('id_petugas');
-    $idPenyakit = session()->get('id_penyakit');
-
-    $builder = $db->table('pasien')
-    ->where('id_petugas', $idPetugas)
-    ->where('id_penyakit', $idPenyakit);
-    $desa_diizinkan = [
-        'sumbersari',
-        'wirolegi',
-        'antirogo',
-        'tegalgede',
-        'karangrejo'
-    ];
-
-// Total kasus
-$totalKasus = $db->table('pasien')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->where('pasien.id_penyakit', 1)
-    ->whereIn(
-        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
-        $desa_diizinkan
-    )
-    ->countAllResults();
-
-// Kasus hari ini
-$kasusHariIni = $db->table('pasien')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->where('pasien.id_penyakit', 1)
-    ->where('DATE(pasien.tgl_kunjungan)', date('Y-m-d'))
-    ->whereIn(
-        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
-        $desa_diizinkan
-    )
-    ->countAllResults();
-
-// Kelurahan terdampak
-$kelurahanTerdampak = $db->table('pasien')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->select('COUNT(DISTINCT wilayah.kelurahan) as total')
-    ->where('pasien.id_penyakit', 1)
-    ->whereIn(
-        'LOWER(REPLACE(wilayah.kelurahan," ",""))',
-        $desa_diizinkan
-    )
-    ->get()
-    ->getRow()
-    ->total;
-?>
 
 <div class="stat-row">
     <div class="stat-card">
@@ -396,15 +393,18 @@ $kelurahanTerdampak = $db->table('pasien')
                     <td class="value" id="modalKategori">-</td>
                 </tr>
 
-                <tr>
-                    <td class="label">Rentang usia</td>
-                    <td class="colon">:</td>
-                    <td class="value"></td>
-                </tr>
+<tr>
+    <td colspan="3" style="padding-top:14px; font-weight:700; color:#1f2937;">Rentang Usia</td>
+</tr>
                 <tr class="sub">
-                    <td class="label">Anak-anak</td>
+                    <td class="label">Bayi dan Pra Sekolah</td>
                     <td class="colon">:</td>
                     <td class="value" id="modalAnak">0</td>
+                </tr>
+                <tr class="sub">
+                    <td class="label">Sekolah dan Remaja</td>
+                    <td class="colon">:</td>
+                    <td class="value" id="modalRemaja">0</td>
                 </tr>
                 <tr class="sub">
                     <td class="label">Dewasa</td>
@@ -428,11 +428,9 @@ $kelurahanTerdampak = $db->table('pasien')
                     <td class="value" id="modalDesaTertinggi">-</td>
                 </tr>
 
-                <tr>
-                    <td class="label">Jenis kelamin terinfeksi</td>
-                    <td class="colon">:</td>
-                    <td class="value" id="modalJkTotal">0</td>
-                </tr>
+<tr>
+    <td colspan="3" style="padding-top:14px; font-weight:700; color:#1f2937;">Jenis Kelamin Terinfeksi</td>
+</tr>
                 <tr class="sub">
                     <td class="label">Laki-laki</td>
                     <td class="colon">:</td>
@@ -506,9 +504,9 @@ $kelurahanTerdampak = $db->table('pasien')
                             <div class="pill-select-wrapper">
                                 <select name="usia" class="pill-select" onchange="this.form.submit()">
                                     <option value="">All</option>
-                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-14</option>
-                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>15-24</option>
-                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>25-59</option>
+                                    <option value="anak" <?= request()->getGet('usia') == 'anak' ? 'selected' : '' ?>>0-6</option>
+                                    <option value="remaja" <?= request()->getGet('usia') == 'remaja' ? 'selected' : '' ?>>7-18</option>
+                                    <option value="dewasa" <?= request()->getGet('usia') == 'dewasa' ? 'selected' : '' ?>>19-59</option>
                                     <option value="lansia" <?= request()->getGet('usia') == 'lansia' ? 'selected' : '' ?>>60+</option>
                                 </select>
                                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
@@ -698,6 +696,7 @@ $kelurahanTerdampak = $db->table('pasien')
     // ================= DATA GRAFIK MORTALITAS =================
     $builderMort = $db->table('pasien');
     $builderMort->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
+    $builderMort->where('pasien.id_penyakit', 1);
     $builderMort->where('pasien.status_akhir', 'Meninggal');
     
     $reqWilayahMort = $_GET['wilayah_mort'] ?? '';
@@ -747,7 +746,7 @@ $kelurahanTerdampak = $db->table('pasien')
 var dataDBD = <?= json_encode($dbd ?? []) ?>;
 var detailDesa = <?= json_encode($detailDesa ?? []) ?>;
 var desaTertinggi = <?= json_encode($desaTertinggi ?? '-') ?>;
-var tahunSekarang = <?= json_encode($tahunMap) ?>;
+var tahunSekarang = <?= json_encode($filterTahunMap ?? date('Y')) ?>;
 const colorMapping = { 'Antirogo': '#1f4e5b', 'Sumbersari': '#00BBC2', 'Karangrejo': '#b2dfdb', 'Tegalgede': '#5cb85c', 'Wirolegi': '#4fc3f7' };
 
 // --- SCRIPT UPDATE URL MAP ---
@@ -842,15 +841,16 @@ function showDetailPopup(namaFix, namaAsli){
     elKat.innerText = (kategori.charAt(0).toUpperCase() + kategori.slice(1));
     elKat.className = 'value ' + kategoriCls;
 
-    document.getElementById("modalAnak").innerText         = d.anak    ?? 0;
-    document.getElementById("modalDewasa").innerText       = d.dewasa  ?? 0;
-    document.getElementById("modalLansia").innerText       = d.lansia  ?? 0;
+    document.getElementById("modalAnak").innerText   = d.anak ?? 0;
+    document.getElementById("modalRemaja").innerText = d.remaja ?? 0;
+    document.getElementById("modalDewasa").innerText = d.dewasa ?? 0;
+    document.getElementById("modalLansia").innerText = d.lansia ?? 0;
     document.getElementById("modalUsiaTertinggi").innerText = d.usia_tertinggi || '-';
     document.getElementById("modalDesaTertinggi").innerText = desaTertinggi || '-';
 
     var lk = parseInt(d.laki ?? 0);
     var pr = parseInt(d.perempuan ?? 0);
-    document.getElementById("modalJkTotal").innerText      = (lk > 0 ? 1 : 0) + (pr > 0 ? 1 : 0);
+    
     document.getElementById("modalLaki").innerText         = lk;
     document.getElementById("modalPerempuan").innerText    = pr;
     document.getElementById("modalRumahPeriksa").innerText = d.rumah_diperiksa ?? 0;
@@ -975,34 +975,79 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 return { color: "#00CED1", weight: 2, fillColor: warna, fillOpacity: 0.7 };
             },
-            onEachFeature: function(feature, layer){
-                var namaAsli = feature.properties.NAMOBJ || "Kelurahan";
-                var namaFix  = fixNama(namaAsli);
-                if(aliasDesa[namaFix]){ namaFix = aliasDesa[namaFix]; }
-                var item = dataFinal[namaFix];
-                
-                var isi = "<div style='min-width:220px;'><b>Kelurahan: " + namaAsli + "</b>";
-                if(item){
-                    var detail = detailDesa[namaFix] || {};
-                    var kategori = detail.kategori || '-';
-                    isi += "<br>Total Kasus: " + item.total;
-                    isi += "<br>Kategori: " + kategori;
-                    isi += `<br><br><button onclick="showDetailPopup('${namaFix}','${namaAsli}')" 
-                            style="background:#00CED1; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">
-                            Selengkapnya</button>`;
-                } else {
-                    isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-                }
-                isi += "</div>";
+           onEachFeature: function(feature, layer){
 
-                layer.bindPopup(isi);
-                layer.bindTooltip(namaAsli, { permanent: true, direction: "center", className: "label-desa" });
+    var namaAsli = feature.properties.NAMOBJ || "Kelurahan";
+    var namaFix  = fixNama(namaAsli);
 
-                layer.on({
-                    mouseover: function(e){ e.target.setStyle({ weight: 3, color: '#000' }); },
-                    mouseout: function(e){ geo.resetStyle(e.target); }
-                });
-            }
+    if(aliasDesa[namaFix]){
+        namaFix = aliasDesa[namaFix];
+    }
+
+    var item = dataFinal[namaFix];
+
+    var isi = `
+        <div style="min-width:220px;">
+            <b>Kelurahan: ${namaAsli}</b>
+    `;
+
+    if(item){
+
+        var detail = detailDesa[namaFix] || {};
+        var kategori = detail.kategori || '-';
+
+        isi += `
+            <br>Total Kasus: ${item.total}
+            <br>Kategori: ${kategori}
+            <br><br>
+
+            <button
+                onclick="showDetailPopup('${namaFix}','${namaAsli}')"
+                style="
+                    background:#00BBC2;
+                    color:white;
+                    border:none;
+                    padding:8px 14px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:600;
+                ">
+                Selengkapnya
+            </button>
+        `;
+    } else {
+
+        isi += `
+            <br>Tidak ada data
+        `;
+    }
+
+    isi += `</div>`;
+
+    layer.bindPopup(isi);
+
+layer.bindTooltip(namaAsli, {
+    permanent: true,
+    direction: 'center',
+    className: 'label-desa'
+});
+
+layer.on({
+    mouseover: function(e){
+        e.target.setStyle({
+            weight: 3,
+            fillOpacity: 0.9
+        });
+    },
+
+    mouseout: function(e){
+        e.target.setStyle({
+            weight: 2,
+            fillOpacity: 0.7
+        });
+    }
+});
+}
         }).addTo(map);
 
         map.fitBounds(geo.getBounds());
@@ -1115,7 +1160,6 @@ new Chart(ctxKasus, {
         }
     });
 
-document.addEventListener("DOMContentLoaded", function(){
 
     const footerDesc = document.querySelector(".footer-desc");
 
@@ -1150,7 +1194,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
-});
 });
 </script>
 <?= $this->endSection(); ?>

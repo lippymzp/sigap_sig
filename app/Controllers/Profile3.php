@@ -7,10 +7,31 @@ use App\Models\PetugasModel;
 
 class Profile3 extends Controller
 {
+    private function getDashboardLayout()
+    {
+        // Mengambil id_jabatan dari session login petugas
+        $id_jabatan = session()->get('id_jabatan');
+
+        // Melakukan mapping layout berdasarkan id_jabatan dari tabel petugas/jabatan
+        switch ($id_jabatan) {
+            case 1:
+                return 'layout/dashboard_layout_kepala';   // id_jabatan 1 -> Admin
+            case 2:
+                return 'layout/dashboard_layout_kader';   // id_jabatan 2 -> Kader
+            case 3:
+                return 'layout/dashboard_layout_admin';  // id_jabatan 3 -> Kepala
+            default:
+                // Fallback jika id_jabatan berupa superadmin (4) atau belum login
+                return 'layout/dashboard_layout_admin'; 
+        }
+    }
+
     // HALAMAN PROFIL
     public function profil_kader()
     {
+        $layout_dinamis = $this->getDashboardLayout();
         $model = new PetugasModel();
+        
 
         // ambil id user login dari session
         $id_petugas = session()->get('id_petugas');
@@ -22,6 +43,7 @@ class Profile3 extends Controller
             'petugas' => $petugas,
 
             // layout
+            'layout'   => $layout_dinamis,
             'menu'  => 'profil',
             'judul' => 'Profil Kader',
             'title' => 'Profil Kader'
@@ -77,5 +99,34 @@ class Profile3 extends Controller
 
         return redirect()->to(base_url('profil_kader'))
             ->with('success', 'Profil berhasil diupdate');
+    }
+
+    // HAPUS FOTO
+    public function hapusFoto()
+    {
+        $id_petugas = session()->get('id_petugas');
+        $model = new \App\Models\PetugasModel();
+
+        // Ambil data profil saat ini
+        $petugas = $model->getProfil($id_petugas);
+
+        // Pastikan ada file fotonya sebelum dihapus
+        if ($petugas && !empty($petugas['foto_profil'])) {
+            $pathFoto = ROOTPATH . 'public/uploads/profil/' . $petugas['foto_profil'];
+
+            // Hapus file fisik dari server jika file tersebut ada
+            if (file_exists($pathFoto)) {
+                unlink($pathFoto);
+            }
+
+            // Update database, kosongkan field foto_profil
+            $model->update($id_petugas, [
+                'foto_profil' => null // atau sesuaikan dengan struktur database (misal: '')
+            ]);
+            
+            return redirect()->back()->with('success', 'Foto profil berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', 'Foto profil gagal dihapus atau sudah kosong.');
     }
 }
