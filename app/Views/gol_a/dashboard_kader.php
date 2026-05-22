@@ -1243,7 +1243,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     line-height:1;
                 ">
                     AIGON
-                </h3>
+                </h3>z
 
                 <p style="
                     color:#E8FFFF;

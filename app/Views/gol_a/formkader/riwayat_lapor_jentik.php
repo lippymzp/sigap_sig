@@ -238,6 +238,7 @@
                             data-tahun="<?= $tahunData ?>" 
                             data-bulan="<?= strtolower(esc($row['bulan'])) ?>" 
                             data-minggu="<?= strtolower(esc($row['minggu'])) ?>" 
+                            data-kelurahan="<?= strtolower(esc($row['kelurahan'])) ?>" 
                             data-abj="<?= round($row['abj']) ?>">
                             
                             <td><?= $no++ ?></td>
@@ -317,11 +318,35 @@
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
+            
+            <label class="form-label">Kelurahan</label>
+            <div class="input-icon-wrap">
+                <select class="form-input" id="filterKelurahan">
+                    <option value="" selected>Semua Kelurahan</option>
+                    <?php 
+                    $unique_kelurahan = [];
+                    if (!empty($pelaporan) && is_array($pelaporan)) {
+                        foreach ($pelaporan as $row) {
+                            if (!in_array($row['kelurahan'], $unique_kelurahan)) {
+                                $unique_kelurahan[] = $row['kelurahan'];
+                            }
+                        }
+                        sort($unique_kelurahan); // Urutkan kelurahan sesuai abjad
+                        foreach ($unique_kelurahan as $kel) {
+                            echo '<option value="' . strtolower(esc($kel)) . '">' . esc($kel) . '</option>';
+                        }
+                    }
+                    ?>
+                </select>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+
             <label class="form-label">Minggu ke-</label>
             <div class="input-icon-wrap" id="periodeContainerFilter" onclick="openCalendar()">
                 <input type="text" class="form-input" id="filterMinggu" placeholder="Pilih minggu yang ingin ditampilkan (Opsional)" readonly style="cursor: pointer;">
                 <i class="fa-regular fa-calendar" style="cursor: pointer;"></i>
             </div>
+            
             <label class="form-label">Urutkan Berdasarkan</label>
             <div class="input-icon-wrap">
                 <select class="form-input" id="filterUrutan">
@@ -367,7 +392,7 @@
        ========================================= */
     const currentRealYear = new Date().getFullYear(); 
     let currentDataYear = currentRealYear; 
-    let filterSearchText = ""; let filterBulanVal = ""; let filterMingguVal = ""; let filterSortVal = "";
+    let filterSearchText = ""; let filterBulanVal = ""; let filterKelurahanVal = ""; let filterMingguVal = ""; let filterSortVal = "";
     const rowsPerPage = 10; let currentPage = 1; let tableRowsValid = []; 
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -418,17 +443,19 @@
             let rowYear = parseInt(row.getAttribute('data-tahun'));
             let rowBulan = row.getAttribute('data-bulan'); 
             let rowMingguText = row.getAttribute('data-minggu'); 
+            let rowKelurahan = row.getAttribute('data-kelurahan'); 
 
             let matchSearch = rowText.includes(filterSearchText);
             let matchYear = (rowYear === currentDataYear);
             let matchBulan = (filterBulanVal === "" || rowBulan === filterBulanVal);
+            let matchKelurahan = (filterKelurahanVal === "" || rowKelurahan === filterKelurahanVal);
             let matchMinggu = true;
             if (filterMingguVal !== "") {
                 let keywordMinggu = filterMingguVal.split('(')[0].trim().toLowerCase(); 
                 matchMinggu = (rowMingguText === keywordMinggu);
             }
 
-            if (matchSearch && matchYear && matchBulan && matchMinggu) { tableRowsValid.push(row); } 
+            if (matchSearch && matchYear && matchBulan && matchKelurahan && matchMinggu) { tableRowsValid.push(row); } 
             else { row.style.display = "none"; }
         });
 
@@ -532,10 +559,11 @@
 
     function applyModalFilter() {
         filterBulanVal = document.getElementById('filterBulan').value.toLowerCase();
+        filterKelurahanVal = document.getElementById('filterKelurahan').value.toLowerCase();
         filterMingguVal = document.getElementById('filterMinggu').value.toLowerCase();
         filterSortVal = document.getElementById('filterUrutan').value;
         
-        let isFilterActive = (filterBulanVal !== "" || filterMingguVal !== "" || filterSortVal !== "");
+        let isFilterActive = (filterBulanVal !== "" || filterKelurahanVal !== "" || filterMingguVal !== "" || filterSortVal !== "");
         let btnFilterIcon = document.querySelector('.btn-filter-icon');
         if (isFilterActive) { btnFilterIcon.classList.add('active-filter'); } else { btnFilterIcon.classList.remove('active-filter'); }
         
@@ -543,8 +571,12 @@
     }
 
     function resetFilter() {
-        document.getElementById('filterBulan').value = ""; document.getElementById('filterMinggu').value = ""; document.getElementById('filterUrutan').value = "";
-        filterBulanVal = ""; filterMingguVal = ""; filterSortVal = "";
+        document.getElementById('filterBulan').value = ""; 
+        document.getElementById('filterKelurahan').value = ""; 
+        document.getElementById('filterMinggu').value = ""; 
+        document.getElementById('filterUrutan').value = "";
+        
+        filterBulanVal = ""; filterKelurahanVal = ""; filterMingguVal = ""; filterSortVal = "";
         document.querySelector('.btn-filter-icon').classList.remove('active-filter');
         applyMasterFilter(); closeFilterModal();
     }

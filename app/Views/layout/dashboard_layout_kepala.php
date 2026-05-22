@@ -247,7 +247,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <div class="menu-label">Informasi</div>
 
 <a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-            <i class="fa-regular fa-user me-2"></i> Profil Kader
+            <i class="fa-regular fa-user me-2"></i> Profil Kepala
         </a>
 
 </div>
