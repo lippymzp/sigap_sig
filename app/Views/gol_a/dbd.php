@@ -1000,7 +1000,56 @@ $this->setVar('id_penyakit', '1');
     width: 260px;
     max-width: 100%;
 }
+/* WRAPPER LEGEND */
+.legend-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    margin-top:22px;
+    flex-wrap:wrap;
+}
 
+/* ITEM LEGEND */
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:10px 22px;
+    font-size:15px;
+    font-weight:600;
+    color:#222;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    transition:0.2s ease;
+}
+
+.legend-item:hover{
+    transform:translateY(-2px);
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* WARNA */
+.legend-color{
+    width:18px;
+    height:18px;
+    border-radius:5px;
+    display:inline-block;
+}
+
+.tinggi{
+    background:#dc3545;
+}
+
+.sedang{
+    background:#ffc107;
+}
+
+.rendah{
+    background:#28a745;
+}
 /* RESPONSIVE */
 @media(max-width:768px){
     .fitur-slider-wrapper{ justify-content:flex-start; gap:14px; }
@@ -1224,12 +1273,39 @@ $totalKasusRingkasan = 0;
             </div>
         </div>
 
-        <div class="inner-card">
-            <div id="map" style="height: 450px; border-radius: 15px;"></div>
-        </div>
-    </div>
-</div>
+     <div class="section-card">
 
+    <div class="section-block">
+        <!-- CARD MAP -->
+        <div class="inner-card">
+            <div class="map-wrapper">
+                <div id="map" style="height:450px; border-radius:20px;"></div>
+            </div>
+        </div>
+
+        <!-- LEGEND DI LUAR CARD -->
+        <div class="legend-wrapper">
+
+            <div class="legend-item">
+                <span class="legend-color tinggi"></span>
+                <span>Tinggi</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color sedang"></span>
+                <span>Sedang</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-color rendah"></span>
+                <span>Rendah</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 <div id="pendudukModal" class="custom-modal">
     <div class="custom-modal-content" style="max-width:900px;">
         <span class="close-modal" onclick="closePendudukModal()">&times;</span>
