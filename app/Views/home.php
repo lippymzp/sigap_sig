@@ -48,7 +48,7 @@
 
 <!-- MENU -->
 <section class="container text-center mt-5">
-    <h3 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Data</h3>
+    <h3 class="text-teal mb-4">Platform Pemetaan Penyakit Berbasis Dat</h3>
 
     <div class="disease-menu">
 
