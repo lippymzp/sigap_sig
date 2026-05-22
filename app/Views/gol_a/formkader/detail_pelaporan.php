@@ -3,7 +3,7 @@
 
 <style>
     .page-wrapper { background-color: #E6F4F1; padding: 20px; border-radius: 15px; min-height: 100vh; }
-    .banner-top { background-color: #51C2B8; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; }
+    .banner-top { background-color: #00BBC2; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; }
     .banner-icon { background: rgba(255, 255, 255, 0.2); padding: 12px 15px; border-radius: 10px; margin-right: 20px; font-size: 24px; }
     .banner-text h4 { margin: 0; font-weight: 700; font-size: 18px; }
     

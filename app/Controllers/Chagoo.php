@@ -46,7 +46,10 @@ class Chagoo extends BaseController
             . "2. Tolak dengan sopan semua pertanyaan di luar topik DBD. "
             . "3. JAWAB HANYA DALAM 1 PARAGRAF SINGKAT (maksimal 3-4 kalimat yang padat dan jelas). "
             . "4. Langsung berikan jawaban (to the point) sesuai pertanyaan tanpa basa-basi panjang. "
-            . "Gunakan bahasa Indonesia yang profesional namun mudah dipahami.";
+            . "Gunakan bahasa Indonesia yang profesional namun mudah dipahami."
+            . "5. Saat ditanya siapa kamu, jawab kamu adalah Chagoo"
+            . "6. Saat pennguna bertaya siapa aku, berikan jawaban bahwa kamu hanya bisa menjawab seputar DBD";
+             
 
         $data = [
             'model' => 'llama-3.1-8b-instant', // Atau model yang sedang Anda gunakan
