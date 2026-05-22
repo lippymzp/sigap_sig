@@ -27,9 +27,9 @@ class Database extends Config
     public array $default = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => 'u262188147_medixaa',
-        'password'     => 'Sigap12399',
-        'database'     => 'u262188147_sigapcoba',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'sigap',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,
