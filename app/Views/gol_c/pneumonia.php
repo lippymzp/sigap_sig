@@ -1943,7 +1943,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
         document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
 
         if(bulan){
