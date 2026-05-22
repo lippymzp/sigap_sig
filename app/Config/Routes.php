@@ -562,6 +562,7 @@ $routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
 
 //super admin iki
 $routes->get('/superadmin', 'SuperAdmin::dashboard');
+$routes->get('superadmin/manajemen_admin','SuperAdmin::manajemen_admin');
 $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->get('/superadmin/admin', 'SuperAdmin::admin');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
