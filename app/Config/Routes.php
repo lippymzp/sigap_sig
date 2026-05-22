@@ -595,6 +595,9 @@ $routes->get('/superadmin/puskesmas/view/(:num)', 'SuperAdmin::viewPkm/$1');
 $routes->get('/superadmin/puskesmas/edit/(:num)', 'SuperAdmin::editPkm/$1');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
 
+// TANYA RORA
+$routes->post('api/tanya-rora', 'TanyaRora::ask');
+
 
 ///* FUNFACT DIARE */
 $routes->get('admind/funfact', 'AdminD::funfact');

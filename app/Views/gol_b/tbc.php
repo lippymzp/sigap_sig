@@ -1119,6 +1119,104 @@
     }
 }
 
+#rora-chatbot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: 'Poppins', sans-serif;
+}
+
+#rora-icon img {
+    width: 60px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+#rora-icon img:hover {
+    transform: scale(1.1);
+}
+
+#rora-box {
+    width: 320px;
+    max-height: 450px;
+    background: linear-gradient(to bottom, #00c4cc, #00a5b5);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+#rora-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #00a5b5;
+    color: #fff;
+    position: relative;
+}
+
+#rora-header img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+#rora-header button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#rora-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.rora-msg-bot, .rora-msg-user {
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    max-width: 80%;
+    display: flex;
+    align-items: center;
+}
+
+.rora-msg-bot img {
+    width: 30px;
+    margin-right: 6px;
+}
+
+.rora-msg-bot { background: #ffffff30; color: #fff; margin-right: auto; }
+.rora-msg-user { background: #00fff2; color: #000; margin-left: auto; text-align: right; }
+
+#rora-input {
+    display: flex;
+    padding: 5px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+
+#rora-input input {
+    flex: 1;
+    padding: 6px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+}
+
+#rora-input button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
 </style>
 
 
@@ -1653,5 +1751,89 @@ setInterval(()=>{
 
 </section>
 
+<!-- Chatbot Rora -->
+<div id="rora-chatbot">
+    <!-- Logo awal -->
+    <div id="rora-icon" onclick="toggleRoraChat()">
+        <img src="/assets/img/61e92dd1-c0e5-4609-9f86-47da50fd777e.png" alt="Rora Logo" />
+    </div>
+
+    <!-- Kotak chat -->
+    <div id="rora-box" style="display:none;">
+        <div id="rora-header">
+            <img src="/assets/img/aef88268-679c-4a63-b0cd-24ffd489de56.png" alt="Rora" />
+            <span>Tanya Rora</span>
+            <small>Saya siap membantumu kapan saja!</small>
+            <button onclick="closeRoraChat()">✕</button>
+        </div>
+
+        <!-- Pesan chat -->
+        <div id="rora-messages">
+            <div class="rora-msg-bot">
+                <img src="/assets/img/66f1b534-8975-4287-a80b-4b1f29b1bb21.png" alt="Rora" />
+                Hai ! Aku Rora<br/>
+                Ada yang bisa aku bantu seputar Tuberkulosis?
+            </div>
+        </div>
+
+        <!-- Input teks -->
+        <div id="rora-input">
+            <input type="text" id="rora-user-message" placeholder="Tulis pesan.." />
+            <button onclick="sendRoraMessage()">
+                <img src="/assets/img/5a42470a-8770-4335-a402-0a485f6c3d65.png" alt="Kirim" />
+            </button>
+            <button id="voice-btn" onclick="startVoice()">
+                <img src="/assets/img/50ffda95-d77e-4491-acf4-85b652066de4.png" alt="Voice" />
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+   function toggleRoraChat() {
+    const box = document.getElementById('rora-box');
+    box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+}
+
+function closeRoraChat() {
+    document.getElementById('rora-box').style.display = 'none';
+}
+
+function sendRoraMessage() {
+    const input = document.getElementById('rora-user-message');
+    const msg = input.value.trim();
+    if(!msg) return;
+
+    const messages = document.getElementById('rora-messages');
+
+    const userDiv = document.createElement('div');
+    userDiv.className = 'rora-msg-user';
+    userDiv.textContent = msg;
+    messages.appendChild(userDiv);
+    input.value = '';
+    messages.scrollTop = messages.scrollHeight;
+
+    // Panggil backend TanyaRora
+    fetch('/api/tanya-rora', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ message: msg })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const botDiv = document.createElement('div');
+        botDiv.className = 'rora-msg-bot';
+        botDiv.innerHTML = '<img src="/assets/img/66f1b534-8975-4287-a80b-4b1f29b1bb21.png" /> ' + data.reply;
+        messages.appendChild(botDiv);
+        messages.scrollTop = messages.scrollHeight;
+    });
+}
+
+// Voice message
+function startVoice() {
+    alert("Voice input aktif! (implementasi Web Speech API atau integrasi Gemini Voice)");
+}
+
+</script>
 
 <?= $this->include('layout/footer') ?>
