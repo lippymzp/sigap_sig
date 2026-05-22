@@ -147,8 +147,8 @@ body {
 <!-- CARD -->
 <div class="card-custom">
 
-<h5><b>Informasi Gejala Klinis</b></h5>
-<p class="mb-2">Sesuaikan dengan kondisi gejala yang dialami</p>
+<h5><b>Informasi Lingkungan</b></h5>
+<p class="mb-2">Sesuaikan dengan kondisi lingkungan rumah anda</p>
 
 <!-- PROGRESS -->
 <p id="progressText"></p>

@@ -58,7 +58,7 @@ $routes->get('/skriningdbd', 'Skriningdbd::skriningdbd');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Skriningdbd::skriningdbd2');
 $routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Skriningdbd::skriningdbd3');
 $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
-$routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
+$routes->post('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 
 /* ========================= */
 /* PROFIL dan Logut */
@@ -455,7 +455,7 @@ $routes->get('/video/video_dbd/(:num)', 'VideoDbd::view/$1');
 
 $routes->get('/video/tambah1', 'VideoDbd::tambah1');
 $routes->post('/video/simpan', 'VideoDbd::simpan');
-
+$routes->get('/video/tambahBaru', 'VideoDbd::tambahBaru');
 $routes->get('/video/tambah1/(:num)', 'VideoDbd::edit/$1');
 $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 
@@ -473,6 +473,8 @@ $routes->get('bannerDbd/edit/(:num)','ManajemenBanner::edit/$1');
 $routes->post('bannerDbd/update/(:num)','ManajemenBanner::update/$1');
 $routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
 $routes->get('bannerDbd/preview/(:num)', 'ManajemenBanner::preview/$1');
+$routes->post('bannerDbd/updateUrutan/(:num)','ManajemenBanner::updateUrutan/$1');
+
 
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen-user', 'ManajemenUser::index');

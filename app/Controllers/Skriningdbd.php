@@ -85,7 +85,7 @@ class Skriningdbd extends BaseController
 
         $id_pasien_skrining = $modelPasien->insertID();
 
-        // ======================
+   // ======================
         // AMBIL JAWABAN
         // ======================
 
@@ -102,71 +102,43 @@ class Skriningdbd extends BaseController
         $p11 = (int)$this->request->getPost('p11');
         $p12 = (int)$this->request->getPost('p12');
         $p13 = (int)$this->request->getPost('p13');
-
-        // pertanyaan negatif dibalik
         $p14 = (int)$this->request->getPost('p14');
         $p15 = (int)$this->request->getPost('p15');
 
         // ======================
-        // HITUNG TOTAL
+        // DECISION TREE C4.5 
         // ======================
 
-        $totalBaik =
-            $p1 + $p2 + $p3 + $p4 + $p5 +
-            $p6 + $p7 + $p8 + $p9 + $p10 +
-            $p11 + $p12 + $p13 + $p14 + $p15;
+        if ($p3 == 0) {
 
-        // ======================
-        // DECISION TREE C4.5
-        // ======================
+            if ($p6 == 0) {
 
-        if ($totalBaik <= 4) {
+                if ($p8 == 0) {
 
-            $hasil = "Kategori Lingkungan Buruk";
+                    if ($p4 == 0) {
 
-        } else {
+                        if ($p15 == 0) {
 
-            if ($p3 == 0) {
+                            if ($p12 == 0) {
 
-                if ($p6 == 0) {
-
-                    if ($p8 == 0) {
-
-                        if ($p4 == 0) {
-
-                            if ($p15 == 0) {
-
-                                if ($p12 == 0) {
-
-                                    $hasil = "Kategori Lingkungan Buruk";
-
-                                } else {
-
-                                    if ($p13 == 0) {
-
-                                        $hasil = "Kategori Lingkungan Buruk";
-
-                                    } else {
-
-                                        $hasil = "Kategori Lingkungan Cukup";
-                                    }
-                                }
+                                $hasil = "Kategori Lingkungan Buruk";
 
                             } else {
 
-                                if ($p1 == 0) {
-
-                                    $hasil = "Kategori Lingkungan Cukup";
-
-                                } else {
-
+                                if ($p13 == 0) {
                                     $hasil = "Kategori Lingkungan Buruk";
+                                } else {
+                                    $hasil = "Kategori Lingkungan Cukup";
                                 }
                             }
 
                         } else {
 
-                            $hasil = "Kategori Lingkungan Cukup";
+                            if ($p1 == 0) {
+                                $hasil = "Kategori Lingkungan Cukup";
+                            } else {
+                                $hasil = "Kategori Lingkungan Buruk";
+                            }
                         }
 
                     } else {
@@ -181,21 +153,22 @@ class Skriningdbd extends BaseController
 
             } else {
 
-                if ($p13 == 0) {
+                $hasil = "Kategori Lingkungan Cukup";
+            }
 
-                    if ($p5 == 0) {
+        } else {
 
-                        $hasil = "Kategori Lingkungan Buruk";
+            if ($p13 == 0) {
 
-                    } else {
-
-                        $hasil = "Kategori Lingkungan Cukup";
-                    }
-
+                if ($p5 == 0) {
+                    $hasil = "Kategori Lingkungan Buruk";
                 } else {
-
-                    $hasil = "Kategori Lingkungan Baik";
+                    $hasil = "Kategori Lingkungan Cukup";
                 }
+
+            } else {
+
+                $hasil = "Kategori Lingkungan Baik";
             }
         }
 
