@@ -527,7 +527,7 @@ td:last-child{
                             <tr>
                                 <td><?= $no++ ?></td>
                                 <td><?= esc($user['nama_puskesmas']) ?></td>
-                                <td><?= esc($user['nama_kecamatan']) ?></td>                                
+                                <td><?= esc($user['kecamatan']) ?></td>                                
                                 <td><?= esc($user['no_telpon_puskesmas']) ?></td>
                                 <td><?= esc($user['email_puskesmas']) ?></td>
                                 <td class="text-center">
@@ -551,7 +551,7 @@ td:last-child{
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="text-muted" style="font-size: 14px;">
                 <!--Menampilkan <?= count($users ?? []) ?> dari <?= count($users ?? []) ?> data-->
-                Menampilkan <?= count($users ?? []) ?> dari <?= $totalData ?> data
+                Menampilkan <?= count($users ?? []) ?> data
             </div>
         <div class="pagination">
 

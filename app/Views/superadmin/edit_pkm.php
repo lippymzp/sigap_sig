@@ -6,787 +6,812 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-body, input, button, select, textarea {
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Header puskesmas */
-.header-puskesmas, 
-.header-posyandu {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background:  linear-gradient(90deg, #26c6da, #4dd0e1);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-.header-icon img {
-    width: 40px;
-    height: 40px;
-}
-
-/* Form container */
-.form-container-create {
-    background: #fff;
-    padding: 30px;
-    border-radius: 15px;
-    margin-top: 20px;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
-}
-
-/* Grid form 2 kolom */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 kolom pertama */
-    gap: 15px;
-    margin-bottom: 5px;
-}
-
-/* Untuk row 2 & 3, bisa gunakan nested grid atau buat class tambahan */
-.row-2, .row-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 kolom */
-    gap: 15px;
-}
-
-/* Form group */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.required::after {
-    content: " *";
-    color: red;
-    font-weight: bold;
-}
-
-/* Input */
-.form-group input,
-.form-group select {
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    outline: none;
-    transition: all 0.2s;
-    background-color: #f2f4f7; /* abu-abu muda */
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    border-color: #26c6da;
-    box-shadow: 0 0 6px rgba(38,198,218,0.3);
-}
-
-/* Kelurahan + tombol Tambah Posyandu */
-.kelurahan-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.kelurahan-container input {
-    flex: 1;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-}
-
-.kelurahan-container input:focus {
-    border-color: #26c6da;
-    box-shadow: 0 0 6px rgba(38,198,218,0.3);
-}
-
-.kelurahan-container button {
-    background: #26c6da;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.kelurahan-container button:hover {
-    background: #00acc1;
-}
-
-/* Tombol aksi full width kiri & kanan */
-.form-action {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 tombol */
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.btn-back {
-    background: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    padding: 12px 25px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.btn-back, .btn-save {
-    width: 100%; /* full width masing-masing kolom */
-    padding: 14px 0;
-    border-radius: 25px;
-    font-weight: 600;
-    font-size: 15px;
-    height: 48px;
-}
-
-.btn-back:hover {
-    background-color: #f0f0f0;
-}
-
-.btn-save {
-    background: #26c6da;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.btn-save:hover {
-    background: #00acc1;
-}
-
-.kelurahan-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.kelurahan-wrapper {
-    width: 600px !important;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.kelurahan-container input {
-    flex: 1;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    outline: none;
-}
-
-.kelurahan-container input:focus {
-    border-color: #26c6da;
-    box-shadow: 0 0 6px rgba(38,198,218,0.3);
-}
-
-.kelurahan-container button {
-    background: #26c6da;
-    color: white;
-    border: none;
-    padding: 12px 15px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.kelurahan-container button:hover {
-    background: #00acc1;
-}
-
-/* Card Daftar Kelurahan */
-.kelurahan-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px 15px;
-    border-radius: 12px;
-    width: 100%; /* full width */
-}
-
-/* Input + tombol tambah kelurahan */
-.kelurahan-input-wrapper {
-    display: flex;
-    flex: 2; /* ambil space lebih besar */
-}
-
-.kelurahan-input-wrapper input {
-    flex: 1;
-    padding: 12px 15px;
-    border-radius: 12px 0 0 12px;
-    border: 1px solid #ddd;
-    outline: none;
-}
-
-.kelurahan-input-wrapper input:focus {
-    border-color: #26c6da;
-    box-shadow: 0 0 6px rgba(38,198,218,0.3);
-}
-
-.kelurahan-input-wrapper .btn-tambah-kelurahan {
-    background: transparent;
-    color: #555;
-    border: none;
-    padding: 0px 10px;
-    border-radius: 0 12px 12px 0;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-}
-
-.kelurahan-input-wrapper .btn-tambah-kelurahan:hover {
-    background: #00acc1;
-}
-
-/* Tombol Tambah Posyandu di sebelah kanan */
-.btn-tambah-posyandu {
-    width: 400px !important;
-    background: #26c6da;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-    padding: 8px 12px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    outline: none;
-    transition: all 0.2s;
-}
-
-.btn-tambah-posyandu:hover {
-    background: #00acc1;
-}
-
-.kelurahan-wrapper input {
-    width: 400px;
-    flex: unset;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    outline: none;
-    transition: all 0.2s;
-    background-color: #f2f4f7; /* abu-abu muda */
-}
-
-.kelurahan-input-wrapper .btn-tambah-kelurahan:disabled {
-    cursor: not-allowed;
-    color: #ccc;
-}
-
-.kelurahan-input-wrapper .btn-tambah-kelurahan.active {
-    color: black; /* sudah bisa diklik */
-}
-
-.btn-tambah-posyandu:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.kelurahan-wrapper .btn-tambah-kelurahan {
-    background: transparent;
-    border: none;
-    color: #555;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-.kelurahan-wrapper .btn-tambah-kelurahan.active {
-    color: black;
-}
-
-/* Card Posyandu */
-.posyandu-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.posyandu-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.posyandu-card input {
-    flex: 1;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-}
-
-.posyandu-card button {
-    background: #ff4d4f;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.posyandu-card button:hover {
-    background: #d9363e;
-}
-
-.form-container-posyandu .header-posyandu {
-    display: flex; /* tetap tampil */
-}
-.form-container-create.hidden .header-puskesmas {
-    display: none; /* sembunyikan */
-}
-.form-container-posyandu {
-    background: #fff;
-    width: 100%;
-    margin: auto;
-    box-shadow: none;
-}
-
-.form-grid-posyandu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: flex-start;
-    margin-bottom: 20px;
-}
-
-.form-grid-posyandu .full-width {
-    grid-column: 1 / -1; /* buat posyandu full width */
-}
-
-.form-grid-posyandu input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-}
-
-#posyandu-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#posyandu-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.posyandu-row {
-    display: flex;
-    gap: 10px;
-}
-
-.posyandu-row input {
-    flex: 1;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    background-color: #f2f4f7;
-}
-
-.posyandu-row button.btn-tambah-posyandu {
-    padding: 0 12px;
-    border-radius: 12px;
-    background: #26c6da;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-}
-.posyandu-row button.btn-tambah-posyandu:hover {
-    background: #00acc1;
-}
-
-.posyandu-card {
-    display: flex;
-    gap: 10px;
-}
-
-.posyandu-card input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-}
-
-.posyandu-card button.btn-tambah-posyandu {
-    padding: 0 12px;
-    border-radius: 50%;
-    background: #26c6da;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.form-action {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.btn-back, .btn-save {
-    padding: 14px 0;
-    border-radius: 25px;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.btn-back {
-    background: #fff;
-    border: 1px solid #ccc;
-}
-
-.btn-save {
-    background: #00acc1;
-    color: white;
-    border: none;
-}
-
-.posyandu-card button {
-    background: #ff4d4f;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 12px;
-    cursor: pointer;
-}
-
-.posyandu-item{
-    position: relative;
-    width: 445px;
-    margin-bottom: 12px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    
-}
-
-.posyandu-item input{
-    width: 445px;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    outline: none;
-    transition: all 0.2s;
-    background-color: #ebf8fc; /* abu-abu muda */
-}
-.input-posyandu{
-    width: 400px;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    outline: none;
-    transition: all 0.2s;
-    background-color: #ebf8fc; /* abu-abu muda */
-}
-
-.btn-plus-pos{
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    
-    border: none;
-    background: transparent;
-    
-    color: #26c6da;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.input-group-text{
-    font-size: 14px;
-}
-
-/* =========================
+    body,
+    input,
+    button,
+    select,
+    textarea {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Header puskesmas */
+    .header-puskesmas,
+    .header-posyandu {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: linear-gradient(90deg, #26c6da, #4dd0e1);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .header-icon img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Form container */
+    .form-container-create {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        margin-top: 20px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Grid form 2 kolom */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 kolom pertama */
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    /* Untuk row 2 & 3, bisa gunakan nested grid atau buat class tambahan */
+    .row-2,
+    .row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* 2 kolom */
+        gap: 15px;
+    }
+
+    /* Form group */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .required::after {
+        content: " *";
+        color: red;
+        font-weight: bold;
+    }
+
+    /* Input */
+    .form-group input,
+    .form-group select {
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: all 0.2s;
+        background-color: #f2f4f7;
+        /* abu-abu muda */
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #26c6da;
+        box-shadow: 0 0 6px rgba(38, 198, 218, 0.3);
+    }
+
+    /* Kelurahan + tombol Tambah Posyandu */
+    .kelurahan-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .kelurahan-container input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+    }
+
+    .kelurahan-container input:focus {
+        border-color: #26c6da;
+        box-shadow: 0 0 6px rgba(38, 198, 218, 0.3);
+    }
+
+    .kelurahan-container button {
+        background: #26c6da;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .kelurahan-container button:hover {
+        background: #00acc1;
+    }
+
+    /* Tombol aksi full width kiri & kanan */
+    .form-action {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* 2 tombol */
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-back {
+        background: #fff;
+        color: #333;
+        border: 1px solid #ccc;
+        padding: 12px 25px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .btn-back,
+    .btn-save {
+        width: 100%;
+        /* full width masing-masing kolom */
+        padding: 14px 0;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 15px;
+        height: 48px;
+    }
+
+    .btn-back:hover {
+        background-color: #f0f0f0;
+    }
+
+    .btn-save {
+        background: #26c6da;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .btn-save:hover {
+        background: #00acc1;
+    }
+
+    .kelurahan-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .kelurahan-wrapper {
+        width: 600px !important;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .kelurahan-container input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
+
+    .kelurahan-container input:focus {
+        border-color: #26c6da;
+        box-shadow: 0 0 6px rgba(38, 198, 218, 0.3);
+    }
+
+    .kelurahan-container button {
+        background: #26c6da;
+        color: white;
+        border: none;
+        padding: 12px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .kelurahan-container button:hover {
+        background: #00acc1;
+    }
+
+    /* Card Daftar Kelurahan */
+    .kelurahan-card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 15px;
+        border-radius: 12px;
+        width: 100%;
+        /* full width */
+    }
+
+    /* Input + tombol tambah kelurahan */
+    .kelurahan-input-wrapper {
+        display: flex;
+        flex: 2;
+        /* ambil space lebih besar */
+    }
+
+    .kelurahan-input-wrapper input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 12px 0 0 12px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
+
+    .kelurahan-input-wrapper input:focus {
+        border-color: #26c6da;
+        box-shadow: 0 0 6px rgba(38, 198, 218, 0.3);
+    }
+
+    .kelurahan-input-wrapper .btn-tambah-kelurahan {
+        background: transparent;
+        color: #555;
+        border: none;
+        padding: 0px 10px;
+        border-radius: 0 12px 12px 0;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1.2rem;
+        transition: all 0.2s;
+    }
+
+    .kelurahan-input-wrapper .btn-tambah-kelurahan:hover {
+        background: #00acc1;
+    }
+
+    /* Tombol Tambah Posyandu di sebelah kanan */
+    .btn-tambah-posyandu {
+        width: 400px !important;
+        background: #26c6da;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .btn-tambah-posyandu:hover {
+        background: #00acc1;
+    }
+
+    .kelurahan-wrapper input {
+        width: 400px;
+        flex: unset;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: all 0.2s;
+        background-color: #f2f4f7;
+        /* abu-abu muda */
+    }
+
+    .kelurahan-input-wrapper .btn-tambah-kelurahan:disabled {
+        cursor: not-allowed;
+        color: #ccc;
+    }
+
+    .kelurahan-input-wrapper .btn-tambah-kelurahan.active {
+        color: black;
+        /* sudah bisa diklik */
+    }
+
+    .btn-tambah-posyandu:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .kelurahan-wrapper .btn-tambah-kelurahan {
+        background: transparent;
+        border: none;
+        color: #555;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .kelurahan-wrapper .btn-tambah-kelurahan.active {
+        color: black;
+    }
+
+    /* Card Posyandu */
+    .posyandu-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .posyandu-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .posyandu-card input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+    }
+
+    .posyandu-card button {
+        background: #ff4d4f;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .posyandu-card button:hover {
+        background: #d9363e;
+    }
+
+    .form-container-posyandu .header-posyandu {
+        display: flex;
+        /* tetap tampil */
+    }
+
+    .form-container-create.hidden .header-puskesmas {
+        display: none;
+        /* sembunyikan */
+    }
+
+    .form-container-posyandu {
+        background: #fff;
+        width: 100%;
+        margin: auto;
+        box-shadow: none;
+    }
+
+    .form-grid-posyandu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .form-grid-posyandu .full-width {
+        grid-column: 1 / -1;
+        /* buat posyandu full width */
+    }
+
+    .form-grid-posyandu input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+    }
+
+    #posyandu-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #posyandu-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .posyandu-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .posyandu-row input {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        background-color: #f2f4f7;
+    }
+
+    .posyandu-row button.btn-tambah-posyandu {
+        padding: 0 12px;
+        border-radius: 12px;
+        background: #26c6da;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .posyandu-row button.btn-tambah-posyandu:hover {
+        background: #00acc1;
+    }
+
+    .posyandu-card {
+        display: flex;
+        gap: 10px;
+    }
+
+    .posyandu-card input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+    }
+
+    .posyandu-card button.btn-tambah-posyandu {
+        padding: 0 12px;
+        border-radius: 50%;
+        background: #26c6da;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .form-action {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn-back,
+    .btn-save {
+        padding: 14px 0;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .btn-back {
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+
+    .btn-save {
+        background: #00acc1;
+        color: white;
+        border: none;
+    }
+
+    .posyandu-card button {
+        background: #ff4d4f;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+    }
+
+    .posyandu-item {
+        position: relative;
+        width: 445px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+    }
+
+    .posyandu-item input {
+        width: 445px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: all 0.2s;
+        background-color: #ebf8fc;
+        /* abu-abu muda */
+    }
+
+    .input-posyandu {
+        width: 400px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: all 0.2s;
+        background-color: #ebf8fc;
+        /* abu-abu muda */
+    }
+
+    .btn-plus-pos {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        border: none;
+        background: transparent;
+
+        color: #26c6da;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .input-group-text {
+        font-size: 14px;
+    }
+
+    /* =========================
 MODAL NOTIF POSYANDU
 ========================= */
-.modal-posyandu{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(0,0,0,0.15);
+    .modal-posyandu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.15);
 
-    display: none;
-    justify-content: center;
-    align-items: center;
+        display: none;
+        justify-content: center;
+        align-items: center;
 
-    z-index: 9999;
-}
+        z-index: 9999;
+    }
 
-.modal-posyandu-box{
-    width: 290px;
-    background: white;
-    border-radius: 8px;
-    padding: 22px 20px;
-    text-align: center;
+    .modal-posyandu-box {
+        width: 290px;
+        background: white;
+        border-radius: 8px;
+        padding: 22px 20px;
+        text-align: center;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
 
-.icon-success{
-    width: 42px;
-    height: 42px;
-    margin: auto;
-    margin-bottom: 14px;
+    .icon-success {
+        width: 42px;
+        height: 42px;
+        margin: auto;
+        margin-bottom: 14px;
 
-    background: #39c97a;
-    border-radius: 50%;
+        background: #39c97a;
+        border-radius: 50%;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.icon-success i{
-    color: white;
-    font-size: 20px;
-}
+    .icon-success i {
+        color: white;
+        font-size: 20px;
+    }
 
-.modal-posyandu-title{
-    font-size: 16px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 8px;
-    line-height: 1.4;
-}
+    .modal-posyandu-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
 
-.modal-posyandu-subtitle{
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 18px;
-}
+    .modal-posyandu-subtitle {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 18px;
+    }
 
-.btn-lihat-detail{
-    width: 100%;
-    border: none;
-    background: #26c6da;
-    color: white;
+    .btn-lihat-detail {
+        width: 100%;
+        border: none;
+        background: #26c6da;
+        color: white;
 
-    padding: 9px 0;
-    border-radius: 4px;
+        padding: 9px 0;
+        border-radius: 4px;
 
-    font-size: 13px;
-    font-weight: 500;
+        font-size: 13px;
+        font-weight: 500;
 
-    margin-bottom: 10px;
-    transition: .2s;
-}
+        margin-bottom: 10px;
+        transition: .2s;
+    }
 
-.btn-lihat-detail:hover{
-    background: #00acc1;
-    transform: translateY(-2px);
-    box-shadow: 
-        0 8px 18px rgba(0,0,0,0.18),
-        0 3px 8px rgba(38,198,218,0.35);
-}
+    .btn-lihat-detail:hover {
+        background: #00acc1;
+        transform: translateY(-2px);
+        box-shadow:
+            0 8px 18px rgba(0, 0, 0, 0.18),
+            0 3px 8px rgba(38, 198, 218, 0.35);
+    }
 
-.btn-selesai{
-    width: 100%;
-    border: none;
-    background: #eaecec;
-    color: white;
+    .btn-selesai {
+        width: 100%;
+        border: none;
+        background: #eaecec;
+        color: white;
 
-    padding: 9px 0;
-    border-radius: 4px;
+        padding: 9px 0;
+        border-radius: 4px;
 
-    font-size: 13px;
-    font-weight: 500;
+        font-size: 13px;
+        font-weight: 500;
 
-    margin-bottom: 10px;
-    transition: .2s;
-}
+        margin-bottom: 10px;
+        transition: .2s;
+    }
 
-/* HOVER SELESAI */
-.btn-selesai:hover{
-    background: #dfdfdf;
+    /* HOVER SELESAI */
+    .btn-selesai:hover {
+        background: #dfdfdf;
 
-    transform: translateY(-2px);
+        transform: translateY(-2px);
 
-    box-shadow:
-        0 8px 18px rgba(0,0,0,0.15),
-        0 3px 8px rgba(0,0,0,0.10);
-}
+        box-shadow:
+            0 8px 18px rgba(0, 0, 0, 0.15),
+            0 3px 8px rgba(0, 0, 0, 0.10);
+    }
 
-/* =========================
+    /* =========================
 MODAL NOTIF PUSKESMAS
 ========================= */
-.modal-puskesmas{
-    position: fixed;
-    top: 0;
-    left: 0;
+    .modal-puskesmas {
+        position: fixed;
+        top: 0;
+        left: 0;
 
-    width: 100%;
-    height: 100vh;
+        width: 100%;
+        height: 100vh;
 
-    background: rgba(238,244,244,0.75);
+        background: rgba(238, 244, 244, 0.75);
 
-    display: none;
-    justify-content: center;
-    align-items: center;
+        display: none;
+        justify-content: center;
+        align-items: center;
 
-    z-index: 99999;
+        z-index: 99999;
 
-    backdrop-filter: blur(2px);
-}
+        backdrop-filter: blur(2px);
+    }
 
-.modal-puskesmas-box{
-    width: 255px;
+    .modal-puskesmas-box {
+        width: 255px;
 
-    background: #fff;
+        background: #fff;
 
-    border-radius: 8px;
+        border-radius: 8px;
 
-    padding: 34px 24px 18px;
+        padding: 34px 24px 18px;
 
-    text-align: center;
+        text-align: center;
 
-    box-shadow:
-        0 8px 20px rgba(0,0,0,0.16),
-        0 2px 5px rgba(0,0,0,0.08);
-}
+        box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.16),
+            0 2px 5px rgba(0, 0, 0, 0.08);
+    }
 
-/* ICON */
-.icon-success-puskesmas{
-    width: 42px;
-    height: 42px;
+    /* ICON */
+    .icon-success-puskesmas {
+        width: 42px;
+        height: 42px;
 
-    margin: auto;
-    margin-bottom: 16px;
+        margin: auto;
+        margin-bottom: 16px;
 
-    background: #59c57b;
+        background: #59c57b;
 
-    border-radius: 50%;
+        border-radius: 50%;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.icon-success-puskesmas i{
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-}
+    .icon-success-puskesmas i {
+        color: white;
+        font-size: 22px;
+        font-weight: bold;
+    }
 
-/* TITLE */
-.modal-puskesmas-title{
-    font-size: 16px;
-    font-weight: 700;
+    /* TITLE */
+    .modal-puskesmas-title {
+        font-size: 16px;
+        font-weight: 700;
 
-    color: #1f1f1f;
+        color: #1f1f1f;
 
-    line-height: 1.45;
+        line-height: 1.45;
 
-    margin-bottom: 10px;
-}
+        margin-bottom: 10px;
+    }
 
-/* SUBTITLE */
-.modal-puskesmas-subtitle{
-    font-size: 13px;
-    color: #8f8f8f;
+    /* SUBTITLE */
+    .modal-puskesmas-subtitle {
+        font-size: 13px;
+        color: #8f8f8f;
 
-    margin-bottom: 20px;
-}
+        margin-bottom: 20px;
+    }
 
-/* BUTTON LIHAT DETAIL */
-.btn-detail-puskesmas{
-    width: 100%;
+    /* BUTTON LIHAT DETAIL */
+    .btn-detail-puskesmas {
+        width: 100%;
 
-    height: 30px;
+        height: 30px;
 
-    border: none;
+        border: none;
 
-    border-radius: 5px;
+        border-radius: 5px;
 
-    background: #16c2cf;
+        background: #16c2cf;
 
-    color: white;
+        color: white;
 
-    font-size: 13px;
-    font-weight: 500;
+        font-size: 13px;
+        font-weight: 500;
 
-    margin-bottom: 10px;
+        margin-bottom: 10px;
 
-    transition: all .25s ease;
+        transition: all .25s ease;
 
-    box-shadow:
-        0 3px 6px rgba(0,0,0,0.12);
-}
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.12);
+    }
 
-.btn-detail-puskesmas:hover{
-    background: #00acc1;
+    .btn-detail-puskesmas:hover {
+        background: #00acc1;
 
-    transform: translateY(-2px);
+        transform: translateY(-2px);
 
-    box-shadow:
-        0 8px 18px rgba(0,0,0,0.18),
-        0 3px 8px rgba(38,198,218,0.35);
-}
+        box-shadow:
+            0 8px 18px rgba(0, 0, 0, 0.18),
+            0 3px 8px rgba(38, 198, 218, 0.35);
+    }
 
-/* BUTTON SELESAI */
-.btn-selesai-puskesmas{
-    width: 100%;
+    /* BUTTON SELESAI */
+    .btn-selesai-puskesmas {
+        width: 100%;
 
-    height: 30px;
+        height: 30px;
 
-    border: none;
+        border: none;
 
-    border-radius: 5px;
+        border-radius: 5px;
 
-    background: #f4f4f4;
+        background: #f4f4f4;
 
-    color: #7b7b7b;
+        color: #7b7b7b;
 
-    font-size: 13px;
-    font-weight: 500;
+        font-size: 13px;
+        font-weight: 500;
 
-    transition: all .25s ease;
+        transition: all .25s ease;
 
-    box-shadow:
-        0 3px 6px rgba(0,0,0,0.10);
-}
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.10);
+    }
 
-.btn-selesai-puskesmas:hover{
-    background: #ebebeb;
+    .btn-selesai-puskesmas:hover {
+        background: #ebebeb;
 
-    transform: translateY(-2px);
+        transform: translateY(-2px);
 
-    box-shadow:
-        0 8px 18px rgba(0,0,0,0.15),
-        0 3px 8px rgba(0,0,0,0.10);
-}
+        box-shadow:
+            0 8px 18px rgba(0, 0, 0, 0.15),
+            0 3px 8px rgba(0, 0, 0, 0.10);
+    }
 </style>
 
 <div class="header-puskesmas">
@@ -802,270 +827,296 @@ MODAL NOTIF PUSKESMAS
 
 <div class="form-container-create">
 
-<form action="/superadmin/puskesmas/update/<?= $puskesmas['id_manajemen_puskesmas'] ?>" method="post">
+    <form action="/superadmin/puskesmas/update/<?= $puskesmas['id_manajemen_puskesmas'] ?>" method="post">
 
-    <div class="form-grid">
+        <div class="form-grid">
 
-        <!-- NAMA PUSKESMAS -->
-        <div class="form-group">
+            <!-- NAMA PUSKESMAS -->
+            <div class="form-group">
 
-            <label class="required">Nama Puskesmas</label>
-
-            <select name="id_instansi" class="form-control" required>
-
-                <option value="">-- Pilih Puskesmas --</option>
-
-                <?php foreach($instansiList as $instansi): ?>
-
-                    <option
-                        value="<?= $instansi['id_instansi'] ?>"
-                        <?= old(
-                            'id_instansi',
-                            $puskesmas['id_instansi']
-                        ) == $instansi['id_instansi']
-                        ? 'selected' : '' ?>>
-
-                        <?= $instansi['nama_instansi'] ?>
-
-                    </option>
-
-                <?php endforeach; ?>
-
-            </select>
-
-        </div>
-
-        <!-- NOMOR TELEPON -->
-        <div class="form-group">
-
-            <label class="required">
-                Nomor Telepon Puskesmas
-            </label>
-
-            <div class="input-group">
-
-                <span class="input-group-text">
-                    (+62)
-                </span>
+                <label class="required">Nama Puskesmas</label>
 
                 <input
                     type="text"
+                    name="nama_puskesmas"
                     class="form-control"
-                    name="no_telpon_puskesmas"
-                    placeholder="83218271652"
                     value="<?= old(
-                        'no_telpon_puskesmas',
-                        str_replace('+62', '', $puskesmas['no_telpon_puskesmas'])
-                    ) ?>" maxlength="13" oninput="formatNoTelpon(this)"
+                                'nama_puskesmas',
+                                $puskesmas['nama_puskesmas']
+                            ) ?>"
                     required>
 
             </div>
 
-        </div>
+            <!-- NOMOR TELEPON -->
+            <div class="form-group">
 
-        <!-- EMAIL -->
-        <div class="form-group">
+                <label class="required">
+                    Nomor Telepon Puskesmas
+                </label>
 
-            <label class="required">
-                Email Puskesmas
-            </label>
+                <div class="input-group">
 
-            <input
-                type="email"
-                name="email_puskesmas"
-                placeholder="Masukkan email"
-                value="<?= old(
-                    'email_puskesmas',
-                    $puskesmas['email_puskesmas']
-                ) ?>">
+                    <span class="input-group-text">
+                        (+62)
+                    </span>
 
-        </div>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="no_telpon_puskesmas"
+                        placeholder="83218271652"
+                        value="<?= old(
+                                    'no_telpon_puskesmas',
+                                    str_replace('+62', '', $puskesmas['no_telpon_puskesmas'])
+                                ) ?>" maxlength="13" oninput="formatNoTelpon(this)"
+                        required>
 
-    </div>
+                </div>
 
-    <!-- ROW 2 -->
-    <div class="row-2">
+            </div>
 
-        <!-- KECAMATAN -->
-        <div class="form-group">
+            <!-- EMAIL -->
+            <div class="form-group">
 
-            <label class="required">
-                Kecamatan
-            </label>
-
-            <select
-                name="id_kecamatan"
-                class="form-control"
-                required>
-
-                <option value="">
-                    -- Pilih Kecamatan --
-                </option>
-
-                <?php foreach($kecamatanList as $kec): ?>
-
-                    <option
-                        value="<?= $kec['id_kecamatan'] ?>"
-                        <?= old(
-                            'id_kecamatan',
-                            $puskesmas['id_kecamatan']
-                        ) == $kec['id_kecamatan']
-                        ? 'selected'
-                        : '' ?>>
-
-                        <?= $kec['nama_kecamatan'] ?>
-
-                    </option>
-
-                <?php endforeach; ?>
-
-            </select>
-
-        </div>
-
-        <!-- KODE POS -->
-        <div class="form-group">
-
-            <label>Kode Pos</label>
-
-            <input
-                type="text"
-                id="kode_pos"
-                name="kode_pos"
-                placeholder="Masukkan kode pos"
-                value="<?= old(
-                    'kode_pos',
-                    $puskesmas['kode_pos']
-                ) ?>">
-
-        </div>
-
-    </div>
-
-    <!-- ALAMAT -->
-    <div class="form-group full-width">
-
-        <label class="required">
-            Alamat Lengkap
-        </label>
-
-        <input
-            type="text"
-            id="alamat"
-            name="alamat"
-            placeholder="Masukkan alamat lengkap"
-            value="<?= old(
-                'alamat',
-                $puskesmas['alamat']
-            ) ?>">
-
-    </div>
-
-    <!-- LAT LNG -->
-    <div class="row-2">
-
-        <div class="form-group">
-
-            <label>Latitude (lintang)</label>
-
-            <input
-                type="text"
-                id="latitude"
-                name="latitude"
-                readonly
-                value="<?= old(
-                    'latitude',
-                    $puskesmas['latitude']
-                ) ?>">
-
-        </div>
-
-        <div class="form-group">
-
-            <label>Longitude (bujur)</label>
-
-            <input
-                type="text"
-                id="longitude"
-                name="longitude"
-                readonly
-                value="<?= old(
-                    'longitude',
-                    $puskesmas['longitude']
-                ) ?>">
-
-        </div>
-
-    </div>
-
-    <!-- KELURAHAN -->
-    <div class="form-group">
-
-        <label>
-            Daftar Kelurahan & Posyandu
-        </label>
-
-        <div id="kelurahan-container">
-
-            <div class="kelurahan-wrapper mb-2">
+                <label class="required">
+                    Email Puskesmas
+                </label>
 
                 <input
-                    type="text"
-                    id="input-kelurahan"
-                    placeholder="Masukkan nama kelurahan">
-
-                <button
-                    type="button"
-                    id="btn-tambah-kelurahan"
-                    class="btn-tambah-kelurahan">
-
-                    <i class="bi bi-plus"></i>
-
-                </button>
+                    type="email"
+                    name="email_puskesmas"
+                    placeholder="Masukkan email"
+                    value="<?= old(
+                                'email_puskesmas',
+                                $puskesmas['email_puskesmas']
+                            ) ?>">
 
             </div>
 
         </div>
 
-        <div id="hasil-kelurahan"></div>
+        <!-- ROW 2 -->
+        <div class="row-2">
 
-    </div>
+            <!-- KECAMATAN -->
+            <!-- KECAMATAN -->
+            <div class="form-group">
 
-    <div id="hidden-input-container"></div>
+                <label class="required">
+                    Kecamatan
+                </label>
 
-    <!-- BUTTON -->
-    <div class="form-action">
+                <select
+                    name="kecamatan"
+                    id="kecamatan"
+                    class="form-control"
+                    required>
 
-        <a href="/superadmin/puskesmas">
+                    <option value="">
+                        -- Pilih Kecamatan --
+                    </option>
+
+                    <?php
+                    $listKecamatan = [
+
+                        "Ajung",
+                        "Ambulu",
+                        "Arjasa",
+                        "Balung",
+                        "Bangsalsari",
+                        "Gumukmas",
+                        "Jelbuk",
+                        "Jenggawah",
+                        "Jombang",
+                        "Kalisat",
+                        "Kaliwates",
+                        "Kencong",
+                        "Ledokombo",
+                        "Mayang",
+                        "Mumbulsari",
+                        "Pakusari",
+                        "Panti",
+                        "Patrang",
+                        "Puger",
+                        "Rambipuji",
+                        "Semboro",
+                        "Silo",
+                        "Sukorambi",
+                        "Sukowono",
+                        "Sumberbaru",
+                        "Sumbersari",
+                        "Tanggul",
+                        "Tempurejo",
+                        "Umbulsari",
+                        "Wuluhan"
+
+                    ];
+
+                    foreach ($listKecamatan as $kec):
+                    ?>
+
+                        <option
+                            value="<?= $kec ?>"
+                            <?= old(
+                                'kecamatan',
+                                $puskesmas['kecamatan']
+                            ) == $kec ? 'selected' : '' ?>>
+
+                            <?= $kec ?>
+
+                        </option>
+
+                    <?php endforeach; ?>
+
+                </select>
+
+            </div>
+
+            <!-- KODE POS -->
+            <div class="form-group">
+
+                <label>Kode Pos</label>
+
+                <input
+                    type="text"
+                    id="kode_pos"
+                    name="kode_pos"
+                    class="form-control"
+                    placeholder="Masukkan kode pos"
+                    value="<?= old(
+                                'kode_pos',
+                                $puskesmas['kode_pos']
+                            ) ?>">
+
+            </div>
+
+        </div>
+
+        <!-- ALAMAT -->
+        <div class="form-group full-width">
+
+            <label class="required">
+                Alamat Lengkap
+            </label>
+
+            <input
+                type="text"
+                id="alamat"
+                name="alamat"
+                placeholder="Masukkan alamat lengkap"
+                value="<?= old(
+                            'alamat',
+                            $puskesmas['alamat']
+                        ) ?>">
+
+        </div>
+
+        <!-- LAT LNG -->
+        <div class="row-2">
+
+            <div class="form-group">
+
+                <label>Latitude (lintang)</label>
+
+                <input
+                    type="text"
+                    id="latitude"
+                    name="latitude"
+                    readonly
+                    value="<?= old(
+                                'latitude',
+                                $puskesmas['latitude']
+                            ) ?>">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Longitude (bujur)</label>
+
+                <input
+                    type="text"
+                    id="longitude"
+                    name="longitude"
+                    readonly
+                    value="<?= old(
+                                'longitude',
+                                $puskesmas['longitude']
+                            ) ?>">
+
+            </div>
+
+        </div>
+
+        <!-- KELURAHAN -->
+        <div class="form-group">
+
+            <label>
+                Daftar Kelurahan & Posyandu
+            </label>
+
+            <div id="kelurahan-container">
+
+                <div class="kelurahan-wrapper mb-2">
+
+                    <input
+                        type="text"
+                        id="input-kelurahan"
+                        placeholder="Masukkan nama kelurahan">
+
+                    <button
+                        type="button"
+                        id="btn-tambah-kelurahan"
+                        class="btn-tambah-kelurahan">
+
+                        <i class="bi bi-plus"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div id="hasil-kelurahan"></div>
+
+        </div>
+
+        <div id="hidden-input-container"></div>
+
+        <!-- BUTTON -->
+        <div class="form-action">
+
+            <a href="/superadmin/puskesmas">
+
+                <button
+                    type="button"
+                    class="btn-back">
+
+                    Batal
+
+                </button>
+
+            </a>
 
             <button
-                type="button"
-                class="btn-back">
+                type="submit"
+                class="btn-save">
 
-                Batal
+                Update
 
             </button>
 
-        </a>
+        </div>
 
-        <button
-            type="submit"
-            class="btn-save">
-
-            Update
-
-        </button>
-
-    </div>
-
-</form>
+    </form>
 
 </div>
 
 <!-- POSYANDU -->
 <div
-class="form-container-posyandu"
-style="display:none;">
+    class="form-container-posyandu"
+    style="display:none;">
 
     <div class="header-posyandu">
 
@@ -1150,73 +1201,118 @@ style="display:none;">
 </div>
 
 <script>
+    // ===============================
+    // AUTO KODE POS DARI KECAMATAN
+    // ===============================
 
-// ===============================
-// AUTO LOAD DATA EDIT
-// ===============================
+    const kodePosMap = {
 
-let daftarKelurahan =
-<?= json_encode($kelurahanData) ?>;
+        "Ajung": "68175",
+        "Ambulu": "68172",
+        "Arjasa": "68191",
+        "Balung": "68161",
+        "Bangsalsari": "68154",
+        "Gumukmas": "68165",
+        "Jelbuk": "68192",
+        "Jenggawah": "68171",
+        "Jombang": "68168",
+        "Kalisat": "68193",
+        "Kaliwates": "68131",
+        "Kencong": "68167",
+        "Ledokombo": "68195",
+        "Mayang": "68182",
+        "Mumbulsari": "68174",
+        "Pakusari": "68181",
+        "Panti": "68153",
+        "Patrang": "68111",
+        "Puger": "68164",
+        "Rambipuji": "68152",
+        "Semboro": "68157",
+        "Silo": "68184",
+        "Sukorambi": "68151",
+        "Sukowono": "68194",
+        "Sumberbaru": "68159",
+        "Sumbersari": "68121",
+        "Tanggul": "68155",
+        "Tempurejo": "68173",
+        "Umbulsari": "68162",
+        "Wuluhan": "68163"
 
-renderKelurahan();
+    };
 
-let currentKelurahanIndex = null;
+    // ===============================
+    // AUTO KODE POS
+    // ===============================
+    document
+        .getElementById('kecamatan')
+        .addEventListener('change', function() {
 
-// ===============================
-// FETCH KODE POS
-// ===============================
+            const kecamatan = this.value;
 
-document
-.querySelector('select[name="id_kecamatan"]')
-.addEventListener('change', function(){
-
-    const kecId = this.value;
-
-    if(kecId){
-
-        fetch('/superadmin/get-kodepos/'+kecId)
-        .then(res => res.json())
-        .then(data => {
-
-            document
-            .getElementById('kode_pos')
-            .value = data.kode_pos;
+            document.getElementById('kode_pos').value =
+                kodePosMap[kecamatan] || '';
 
         });
 
-    } else {
+    // ===============================
+    // AUTO LOAD SAAT EDIT DIBUKA
+    // ===============================
+    window.addEventListener('load', function() {
 
-        document
-        .getElementById('kode_pos')
-        .value = '';
+        const kecamatan =
+            document.getElementById('kecamatan').value;
 
-    }
+        if (kecamatan != '') {
 
-});
+            document.getElementById('kode_pos').value =
+                kodePosMap[kecamatan] || '';
 
-// ===============================
-// AUTO LAT LNG
-// ===============================
+        }
 
-const alamatInput =
-document.getElementById('alamat');
+    });
 
-const latInput =
-document.getElementById('latitude');
+    // ===============================
+    // AUTO LOAD DATA EDIT
+    // ===============================
 
-const lngInput =
-document.getElementById('longitude');
+    let daftarKelurahan =
+        <?= json_encode($kelurahanData) ?>;
 
-alamatInput.addEventListener('keyup', function(){
+    renderKelurahan();
 
-    clearTimeout(window.delayGeo);
+    let currentKelurahanIndex = null;
 
-    window.delayGeo = setTimeout(async () => {
+    // ===============================
+    // AUTO LATITUDE LONGITUDE
+    // ===============================
+
+    const alamatInput =
+        document.getElementById('alamat');
+
+    const kecamatanInput =
+        document.getElementById('kecamatan');
+
+    const latInput =
+        document.getElementById('latitude');
+
+    const lngInput =
+        document.getElementById('longitude');
+
+    // ===============================
+    // FUNCTION AMBIL KOORDINAT
+    // ===============================
+    async function ambilKoordinat() {
 
         const alamat =
-        alamatInput.value.trim();
+            alamatInput.value.trim();
 
-        if(alamat.length < 5){
+        const kecamatan =
+            kecamatanInput.value.trim();
+
+        // ===========================
+        // kalau kecamatan kosong
+        // ===========================
+        if (kecamatan == '') {
 
             latInput.value = '';
             lngInput.value = '';
@@ -1224,95 +1320,150 @@ alamatInput.addEventListener('keyup', function(){
             return;
         }
 
-        try {
+        // ===========================
+        // query default kecamatan
+        // ===========================
+        let query =
+            kecamatan + ', Jember';
 
-            const response =
-            await fetch(
-                'https://nominatim.openstreetmap.org/search?format=json&q='
-                + encodeURIComponent(alamat)
-            );
+        // ===========================
+        // kalau alamat diisi
+        // ===========================
+        if (alamat != '') {
 
-            const data =
-            await response.json();
-
-            if(data.length > 0){
-
-                latInput.value =
-                data[0].lat;
-
-                lngInput.value =
-                data[0].lon;
-
-            }
-
-        } catch(error){
-
-            console.log(
-                'Gagal ambil koordinat'
-            );
+            query =
+                alamat + ', ' +
+                kecamatan +
+                ', Jember';
 
         }
 
-    }, 1000);
+        try {
 
-});
+            const response = await fetch(
+                'https://nominatim.openstreetmap.org/search?format=json&q=' +
+                encodeURIComponent(query)
+            );
 
-// ===============================
-// TAMBAH KELURAHAN
-// ===============================
+            const data = await response.json();
 
-document
-.getElementById('btn-tambah-kelurahan')
-.addEventListener('click', function(){
+            console.log(query);
+            console.log(data);
 
-    const inputKel =
-    document.getElementById(
-        'input-kelurahan'
-    );
+            if (data.length > 0) {
 
-    const namaKel =
-    inputKel.value.trim();
+                latInput.value = data[0].lat;
 
-    if(namaKel == ''){
+                lngInput.value = data[0].lon;
 
-        alert(
-            'Kelurahan wajib diisi'
-        );
+            } else {
 
-        return;
+                latInput.value = '';
+                lngInput.value = '';
+
+            }
+
+        } catch (error) {
+
+            console.log('Gagal ambil koordinat');
+
+        }
 
     }
 
-    daftarKelurahan.push({
+    // ===============================
+    // SAAT KECAMATAN DIGANTI
+    // ===============================
+    kecamatanInput.addEventListener(
+        'change',
+        function() {
 
-        nama_kelurahan: namaKel,
-        posyandu: []
+            ambilKoordinat();
+
+        });
+
+    // ===============================
+    // SAAT ALAMAT DIKETIK
+    // ===============================
+    alamatInput.addEventListener(
+        'keyup',
+        function() {
+
+            clearTimeout(window.delayGeo);
+
+            window.delayGeo = setTimeout(() => {
+
+                ambilKoordinat();
+
+            }, 300);
+
+        });
+
+    // ===============================
+    // AUTO LOAD SAAT EDIT DIBUKA
+    // ===============================
+    window.addEventListener('load', function() {
+
+        ambilKoordinat();
 
     });
 
-    inputKel.value = '';
+    // ===============================
+    // TAMBAH KELURAHAN
+    // ===============================
 
-    renderKelurahan();
+    document
+        .getElementById('btn-tambah-kelurahan')
+        .addEventListener('click', function() {
 
-});
+            const inputKel =
+                document.getElementById(
+                    'input-kelurahan'
+                );
 
-// ===============================
-// RENDER KELURAHAN
-// ===============================
-function renderKelurahan(){
+            const namaKel =
+                inputKel.value.trim();
 
-    const hasil =
-    document.getElementById('hasil-kelurahan');
+            if (namaKel == '') {
 
-    const hidden =
-    document.getElementById('hidden-input-container');
+                alert(
+                    'Kelurahan wajib diisi'
+                );
 
-    hasil.innerHTML = '';
-    hidden.innerHTML = '';
+                return;
 
-    daftarKelurahan.forEach((item, index) => {
+            }
 
-        hasil.innerHTML += `
+            daftarKelurahan.push({
+
+                nama_kelurahan: namaKel,
+                posyandu: []
+
+            });
+
+            inputKel.value = '';
+
+            renderKelurahan();
+
+        });
+
+    // ===============================
+    // RENDER KELURAHAN
+    // ===============================
+    function renderKelurahan() {
+
+        const hasil =
+            document.getElementById('hasil-kelurahan');
+
+        const hidden =
+            document.getElementById('hidden-input-container');
+
+        hasil.innerHTML = '';
+        hidden.innerHTML = '';
+
+        daftarKelurahan.forEach((item, index) => {
+
+            hasil.innerHTML += `
         
         <div class="d-flex justify-content-between align-items-center mt-2">
 
@@ -1335,10 +1486,10 @@ function renderKelurahan(){
         
         `;
 
-        // =========================
-        // HIDDEN INPUT KELURAHAN
-        // =========================
-        hidden.innerHTML += `
+            // =========================
+            // HIDDEN INPUT KELURAHAN
+            // =========================
+            hidden.innerHTML += `
       
         <input
             type="hidden"
@@ -1347,12 +1498,12 @@ function renderKelurahan(){
         
         `;
 
-        // =========================
-        // HIDDEN INPUT POSYANDU
-        // =========================
-        item.posyandu.forEach(pos => {
+            // =========================
+            // HIDDEN INPUT POSYANDU
+            // =========================
+            item.posyandu.forEach(pos => {
 
-            hidden.innerHTML += `
+                hidden.innerHTML += `
             
             <input
                 type="hidden"
@@ -1361,94 +1512,92 @@ function renderKelurahan(){
           
             `;
 
+            });
+
         });
-
-    });
-
-}
-
-// ===============================
-// BUKA POSYANDU
-// ===============================
-
-function bukaPosyandu(index){
-
-    currentKelurahanIndex = index;
-
-    document.querySelector(
-        '.form-container-create'
-    ).style.display = 'none';
-
-    document.querySelector(
-        '.header-puskesmas'
-    ).style.display = 'none';
-
-    document.querySelector(
-        '.form-container-posyandu'
-    ).style.display = 'block';
-
-    document.querySelector(
-        '.header-posyandu'
-    ).style.display = 'flex';
-
-    const namaPkm =
-    document.querySelector(
-        '[name="id_instansi"]'
-    );
-
-    const namaPuskesmas =
-    namaPkm.options[
-        namaPkm.selectedIndex
-    ].text;
-
-    document.getElementById(
-        'posyandu-puskesmas'
-    ).value = namaPuskesmas;
-
-    document.getElementById(
-        'posyandu-kelurahan'
-    ).value =
-    daftarKelurahan[index]
-    .nama_kelurahan;
-
-    renderPosyandu();
-
-    if(
-        daftarKelurahan[
-            currentKelurahanIndex
-        ].posyandu.length == 0
-    ){
-
-        daftarKelurahan[
-            currentKelurahanIndex
-        ].posyandu.push('');
-
-        renderPosyandu();
 
     }
 
-}
+    // ===============================
+    // BUKA POSYANDU
+    // ===============================
 
-// ===============================
-// RENDER POSYANDU
-// ===============================
+    function bukaPosyandu(index) {
 
-function renderPosyandu(){
+        currentKelurahanIndex = index;
 
-    const list =
-    document.getElementById(
-        'list-posyandu'
-    );
+        document.querySelector(
+            '.form-container-create'
+        ).style.display = 'none';
 
-    list.innerHTML = '';
+        document.querySelector(
+            '.header-puskesmas'
+        ).style.display = 'none';
 
-    daftarKelurahan[
-        currentKelurahanIndex
-    ]
-    .posyandu
-    .forEach((item, i) => {
+        document.querySelector(
+            '.form-container-posyandu'
+        ).style.display = 'block';
 
-        list.innerHTML += `
+        document.querySelector(
+            '.header-posyandu'
+        ).style.display = 'flex';
+
+        const namaPkm =
+            document.querySelector(
+                '[name="nama_puskesmas"]'
+            );
+
+        const namaPuskesmas =
+            namaPkm.value;
+
+        document.getElementById(
+            'posyandu-puskesmas'
+        ).value = namaPuskesmas;
+
+        document.getElementById(
+                'posyandu-kelurahan'
+            ).value =
+            daftarKelurahan[index]
+            .nama_kelurahan;
+
+        renderPosyandu();
+
+        if (
+            daftarKelurahan[
+                currentKelurahanIndex
+            ].posyandu.length == 0
+        ) {
+
+            daftarKelurahan[
+                currentKelurahanIndex
+            ].posyandu.push('');
+
+            renderPosyandu();
+
+        }
+
+    }
+
+    // ===============================
+    // RENDER POSYANDU
+    // ===============================
+
+    function renderPosyandu() {
+
+        const list =
+            document.getElementById(
+                'list-posyandu'
+            );
+
+        list.innerHTML = '';
+
+        daftarKelurahan[
+                currentKelurahanIndex
+            ]
+            .posyandu
+            .forEach((item, i) => {
+
+                list.innerHTML += `
         
         <div class="posyandu-item">
 
@@ -1472,223 +1621,223 @@ function renderPosyandu(){
 
         `;
 
-    });
-
-}
-
-// ===============================
-// TAMBAH POSYANDU
-// ===============================
-
-function tambahInputPosyandu(){
-
-    daftarKelurahan[
-        currentKelurahanIndex
-    ]
-    .posyandu
-    .push('');
-
-    renderPosyandu();
-
-}
-
-// ===============================
-// UPDATE POS
-// ===============================
-
-function updatePos(index, value){
-
-    daftarKelurahan[
-        currentKelurahanIndex
-    ]
-    .posyandu[index] = value;
-
-}
-
-// ===============================
-// KEMBALI
-// ===============================
-
-function kembaliCreate(){
-
-    document.querySelector(
-        '.form-container-posyandu'
-    ).style.display = 'none';
-
-    document.querySelector(
-        '.form-container-create'
-    ).style.display = 'block';
-
-    document.querySelector(
-        '.header-puskesmas'
-    ).style.display = 'flex';
-
-}
-
-// ===============================
-// SIMPAN POSYANDU
-// ===============================
-
-function simpanPosyandu(){
-    renderKelurahan();
-    // tampilkan modal notif
-    document.getElementById('modal-update-posyandu')
-    .style.display = 'flex';
-    // kembaliCreate();
-}
-
-// ===============================
-// LIHAT DETAIL
-// kembali ke form posyandu
-// ===============================
-function lihatDetailPosyandu(){
-
-    document.getElementById('modal-posyandu')
-    .style.display = 'none';
-
-    // tetap di form posyandu
-    document.querySelector('.form-container-posyandu')
-    .style.display = 'block';
-
-}
-
-// ===============================
-// SELESAI
-// kembali ke form create
-// ===============================
-function selesaiPosyandu(){
-
-    document.getElementById('modal-posyandu')
-    .style.display = 'none';
-
-    kembaliCreate();
-
-}
-
-// ===============================
-// SUBMIT FORM PUSKESMAS
-// ===============================
-document.querySelector('form').addEventListener('submit', function(){
-
-    // biarkan form submit normal ke controller
-    // controller akan simpan data ke database
-
-});
-
-function formatNoTelpon(input){
-
-    // hanya angka
-    let value = input.value.replace(/[^0-9]/g, '');
-
-    // jika angka pertama 0
-    if(value.startsWith('0')){
-
-        alert('Nomor tidak boleh diawali angka 0');
-
-        value = value.substring(1);
+            });
 
     }
 
-    // tampilkan kembali
-    input.value = value;
-}
+    // ===============================
+    // TAMBAH POSYANDU
+    // ===============================
 
-function renderHiddenInput(){
+    function tambahInputPosyandu() {
 
-    const hidden =
-    document.getElementById('hidden-input-container');
+        daftarKelurahan[
+                currentKelurahanIndex
+            ]
+            .posyandu
+            .push('');
 
-    hidden.innerHTML = '';
+        renderPosyandu();
 
-    daftarKelurahan.forEach((item, index) => {
+    }
 
-        hidden.innerHTML += `
+    // ===============================
+    // UPDATE POS
+    // ===============================
+
+    function updatePos(index, value) {
+
+        daftarKelurahan[
+                currentKelurahanIndex
+            ]
+            .posyandu[index] = value;
+
+    }
+
+    // ===============================
+    // KEMBALI
+    // ===============================
+
+    function kembaliCreate() {
+
+        document.querySelector(
+            '.form-container-posyandu'
+        ).style.display = 'none';
+
+        document.querySelector(
+            '.form-container-create'
+        ).style.display = 'block';
+
+        document.querySelector(
+            '.header-puskesmas'
+        ).style.display = 'flex';
+
+    }
+
+    // ===============================
+    // SIMPAN POSYANDU
+    // ===============================
+
+    function simpanPosyandu() {
+        renderKelurahan();
+        // tampilkan modal notif
+        document.getElementById('modal-update-posyandu')
+            .style.display = 'flex';
+        // kembaliCreate();
+    }
+
+    // ===============================
+    // LIHAT DETAIL
+    // kembali ke form posyandu
+    // ===============================
+    function lihatDetailPosyandu() {
+
+        document.getElementById('modal-posyandu')
+            .style.display = 'none';
+
+        // tetap di form posyandu
+        document.querySelector('.form-container-posyandu')
+            .style.display = 'block';
+
+    }
+
+    // ===============================
+    // SELESAI
+    // kembali ke form create
+    // ===============================
+    function selesaiPosyandu() {
+
+        document.getElementById('modal-posyandu')
+            .style.display = 'none';
+
+        kembaliCreate();
+
+    }
+
+    // ===============================
+    // SUBMIT FORM PUSKESMAS
+    // ===============================
+    document.querySelector('form').addEventListener('submit', function() {
+
+        // biarkan form submit normal ke controller
+        // controller akan simpan data ke database
+
+    });
+
+    function formatNoTelpon(input) {
+
+        // hanya angka
+        let value = input.value.replace(/[^0-9]/g, '');
+
+        // jika angka pertama 0
+        if (value.startsWith('0')) {
+
+            alert('Nomor tidak boleh diawali angka 0');
+
+            value = value.substring(1);
+
+        }
+
+        // tampilkan kembali
+        input.value = value;
+    }
+
+    function renderHiddenInput() {
+
+        const hidden =
+            document.getElementById('hidden-input-container');
+
+        hidden.innerHTML = '';
+
+        daftarKelurahan.forEach((item, index) => {
+
+            hidden.innerHTML += `
             <input
                 type="hidden"
                 name="kelurahan[]"
                 value="${item.nama_kelurahan}">
         `;
 
-        item.posyandu.forEach(pos => {
+            item.posyandu.forEach(pos => {
 
-            hidden.innerHTML += `
+                hidden.innerHTML += `
                 <input
                     type="hidden"
                     name="posyandu[${index}][]"
                     value="${pos}">
             `;
 
+            });
+
         });
 
-    });
+    }
 
-}
+    function editKelurahan(index, value) {
 
-function editKelurahan(index, value){
+        daftarKelurahan[index]
+            .nama_kelurahan = value;
 
-    daftarKelurahan[index]
-    .nama_kelurahan = value;
+        document.querySelectorAll(
+            'input[name="kelurahan[]"]'
+        )[index].value = value;
 
-    document.querySelectorAll(
-        'input[name="kelurahan[]"]'
-    )[index].value = value;
+    }
 
-}
+    // ===============================
+    // MODAL UPDATE BERHASIL
+    // ===============================
+    <?php if (session()->getFlashdata('success_update')): ?>
 
-// ===============================
-// MODAL UPDATE BERHASIL
-// ===============================
-<?php if(session()->getFlashdata('success_update')): ?>
+        window.onload = function() {
 
-window.onload = function(){
+            document.getElementById(
+                'modal-update-puskesmas'
+            ).style.display = 'flex';
 
-    document.getElementById(
-        'modal-update-puskesmas'
-    ).style.display = 'flex';
+        }
 
-}
+    <?php endif; ?>
 
-<?php endif; ?>
+    // ===============================
+    // LIHAT DETAIL
+    // ===============================
+    function lihatDetailPuskesmas() {
 
-// ===============================
-// LIHAT DETAIL
-// ===============================
-function lihatDetailPuskesmas(){
+        window.location.href =
+            "/index.php/superadmin/puskesmas/view/<?= session()->getFlashdata('id_puskesmas') ?>";
 
-    window.location.href =
-    "/index.php/superadmin/puskesmas/view/<?= session()->getFlashdata('id_puskesmas') ?>";
+    }
 
-}
+    // ===============================
+    // SELESAI
+    // ===============================
+    function selesaiPuskesmas() {
 
-// ===============================
-// SELESAI
-// ===============================
-function selesaiPuskesmas(){
+        window.location.href =
+            "/index.php/superadmin/puskesmas";
 
-    window.location.href =
-    "/index.php/superadmin/puskesmas";
+    }
 
-}
+    function detailPosyanduSelesai() {
+        // tutup modal
+        document.getElementById(
+            'modal-update-posyandu'
+        ).style.display = 'none';
 
-function detailPosyanduSelesai(){
-    // tutup modal
-    document.getElementById(
-        'modal-update-posyandu'
-    ).style.display = 'none';
+    }
 
-}
+    function selesaiModalPosyandu() {
 
-function selesaiModalPosyandu(){
+        // tutup modal
+        document.getElementById(
+            'modal-update-posyandu'
+        ).style.display = 'none';
 
-    // tutup modal
-    document.getElementById(
-        'modal-update-posyandu'
-    ).style.display = 'none';
+        // kembali ke form utama
+        kembaliCreate();
 
-    // kembali ke form utama
-    kembaliCreate();
-
-}
+    }
 </script>
 <!-- =========================
 MODAL NOTIF UPDATE PUSKESMAS

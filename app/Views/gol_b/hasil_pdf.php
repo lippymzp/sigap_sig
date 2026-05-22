@@ -2,11 +2,23 @@
 
 $hasil = $data['hasil'] ?? '';
 
-$path = FCPATH . 'img/logotbc_navbar.png';
-$type = pathinfo($path, PATHINFO_EXTENSION);
-$file = file_get_contents($path);
+// 1. Load Logo (Base64)
+$pathLogo = FCPATH . 'img/logotbc_navbar.png';
+$logo = '';
+if (file_exists($pathLogo)) {
+    $typeLogo = pathinfo($pathLogo, PATHINFO_EXTENSION);
+    $fileLogo = file_get_contents($pathLogo);
+    $logo = 'data:image/' . $typeLogo . ';base64,' . base64_encode($fileLogo);
+}
 
-$logo = 'data:image/' . $type . ';base64,' . base64_encode($file);
+// 2. Load Book Icon (Base64)
+$pathBook = FCPATH . 'img/book.png';
+$bookIcon = '';
+if (file_exists($pathBook)) {
+    $typeBook = pathinfo($pathBook, PATHINFO_EXTENSION);
+    $fileBook = file_get_contents($pathBook);
+    $bookIcon = 'data:image/' . $typeBook . ';base64,' . base64_encode($fileBook);
+}
 
 ?>
 
@@ -89,7 +101,7 @@ body{
 }
 
 .value-blue{
-    background:#7c8edc;
+    background:#14b8a6;;
     color:white;
     border:none;
 }
@@ -125,19 +137,40 @@ body{
     font-size:11px;
 }
 
-/* TIPS */
+/* =========================
+   TIPS (OVERLAPPED LIKE HASIL.PHP)
+   ========================= */
+.tips-wrapper{
+    position: relative;
+    margin-top: 35px; /* Beri ruang agar ikon meluncur ke atas tanpa tabrakan */
+}
+
+.tips-icon{
+    position: absolute;
+    left: -8px;
+    top: -12px;
+    z-index: 999;
+}
+
+.tips-box{
+    margin-left: 24px; /* Geser box ke kanan agar ada ruang untuk ikon melayang */
+    border-radius: 16px;
+}
+
 .tips-header{
-    background:#1e3a8a;
+    background:#14b8a6;
     color:white;
-    padding:10px 16px;
-    border-radius:12px 12px 0 0;
+    padding:14px 24px;
+    padding-left: 28px; /* Ruang ekstra dalam agar tulisan tidak tertutup ikon */
     font-weight:bold;
-    font-size:12px;
+    font-size:18px;
+    border-radius:12px 12px 0 0;
 }
 
 .tips-body{
-    background:#dbeafe;
-    padding:14px 18px;
+    background:#ccfbf1;
+    padding:16px 24px;
+    padding-left: 28px;
     border-radius:0 0 12px 12px;
 }
 
@@ -146,7 +179,7 @@ body{
 }
 
 .tips-body li{
-    margin-bottom:6px;
+    margin-bottom:8px;
     font-size:11px;
 }
 
@@ -171,13 +204,13 @@ body{
 
 <body>
 
-
-<img src="<?= $logo ?>" width="150">
-
+<?php if(!empty($logo)): ?>
+    <img src="<?= $logo ?>" width="150">
+<?php endif; ?>
 
 
 <!-- JUDUL -->
-<div class="judul">
+<div class="judul" style="margin-top: 10px;">
     Hasil Skrining Tuberkulosis Anda
 </div>
 
@@ -297,39 +330,37 @@ body{
 
 </div>
 
-<!-- TIPS -->
-<div style="margin-top:20px;">
+<!-- TIPS BERGAYA OVERLAP -->
+<div class="tips-wrapper">
 
-    <div class="tips-header">
+    <!-- Ikon Buku Base64 Overlap -->
+    <?php if(!empty($bookIcon)): ?>
+        <div class="tips-icon">
+            <img src="<?= $bookIcon ?>" width="38" height="38">
+        </div>
+    <?php endif; ?>
 
-        <?= ($hasil == 'TB')
-            ? '💡 Tips Sementara Sebelum Pemeriksaan'
-            : '💡 Tips Kesehatan'
-        ?>
+    <div class="tips-box">
+        
+        <div class="tips-header">
+            Tips Sementara Sebelum Pemeriksaan
+        </div>
 
-    </div>
-
-    <div class="tips-body">
-
-        <ul>
-
-            <?php if($hasil == 'TB'): ?>
-
-                <li>Gunakan masker saat berinteraksi dengan orang lain</li>
-                <li>Terapkan etika batuk dan bersin</li>
-                <li>Hindari kontak dekat dengan kelompok rentan</li>
-                <li>Istirahat cukup dan konsumsi makanan bergizi</li>
-
-            <?php else: ?>
-
-                <li>Konsumsi makanan bergizi seimbang setiap hari</li>
-                <li>Rutin berolahraga minimal 30 menit</li>
-                <li>Istirahat yang cukup</li>
-                <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
-
-            <?php endif; ?>
-
-        </ul>
+        <div class="tips-body">
+            <ul>
+                <?php if($hasil == 'TB'): ?>
+                    <li>Gunakan masker saat berinteraksi dengan orang lain</li>
+                    <li>Terapkan etika batuk dan bersin</li>
+                    <li>Hindari kontak dekat dengan kelompok rentan</li>
+                    <li>Istirahat cukup dan konsumsi makanan bergizi</li>
+                <?php else: ?>
+                    <li>Konsumsi makanan bergizi seimbang setiap hari</li>
+                    <li>Rutin berolahraga minimal 30 menit</li>
+                    <li>Istirahat yang cukup</li>
+                    <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
+                <?php endif; ?>
+            </ul>
+        </div>
 
     </div>
 

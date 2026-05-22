@@ -596,9 +596,8 @@ $routes->get('/superadmin/puskesmas/edit/(:num)', 'SuperAdmin::editPkm/$1');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
 
 // TANYA RORA
-$routes->post('api/tanya-rora', 'TanyaRora::ask');
-
-
+// Tambahkan baris ini:
+$routes->post('api/tanya-rora', 'TanyaRora::tanyaRora');
 ///* FUNFACT DIARE */
 $routes->get('admind/funfact', 'AdminD::funfact');
 $routes->get('admind/funfact/tambah', 'AdminD::tambahFunfact');

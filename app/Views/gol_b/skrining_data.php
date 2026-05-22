@@ -261,19 +261,52 @@ label{
         </select>
 
         <label>Tanggal Lahir</label>
-        <input 
-            type="date"
-            name="tanggal_lahir"
-            class="form-control mb-3"
-        >
+<input 
+    type="date"
+    name="tanggal_lahir"
+    id="tanggal_lahir"
+    class="form-control mb-3"
+>
 
-        <label>Usia</label>
-        <input 
-            type="text"
-            name="usia"
-            class="form-control mb-3" 
-            placeholder="Masukkan Usia"
-        >
+<label>Usia</label>
+<input 
+    type="text"
+    name="usia"
+    id="usia"
+    class="form-control mb-3" 
+    placeholder="Usia otomatis"
+    readonly
+>
+
+<script>
+document.getElementById('tanggal_lahir').addEventListener('change', function () {
+
+    const tanggalLahir = new Date(this.value);
+    const hariIni = new Date();
+
+    let tahun = hariIni.getFullYear() - tanggalLahir.getFullYear();
+    let bulan = hariIni.getMonth() - tanggalLahir.getMonth();
+
+    // Kalau tanggal sekarang belum melewati tanggal lahir
+    if (bulan < 0) {
+        tahun--;
+        bulan += 12;
+    }
+
+    // Kalau hari sekarang lebih kecil dari hari lahir
+    if (hariIni.getDate() < tanggalLahir.getDate()) {
+        bulan--;
+
+        if (bulan < 0) {
+            tahun--;
+            bulan += 12;
+        }
+    }
+
+    document.getElementById('usia').value = 
+        `${tahun} tahun ${bulan} bulan`;
+});
+</script>
 
         <label>Nomor Telepon</label>
         <input 

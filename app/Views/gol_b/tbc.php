@@ -1751,14 +1751,10 @@ setInterval(()=>{
 
 </section>
 
-<!-- Chatbot Rora -->
 <div id="rora-chatbot">
-    <!-- Logo awal -->
     <div id="rora-icon" onclick="toggleRoraChat()">
         <img src="/assets/img/61e92dd1-c0e5-4609-9f86-47da50fd777e.png" alt="Rora Logo" />
     </div>
-
-    <!-- Kotak chat -->
     <div id="rora-box" style="display:none;">
         <div id="rora-header">
             <img src="/assets/img/aef88268-679c-4a63-b0cd-24ffd489de56.png" alt="Rora" />
@@ -1766,8 +1762,6 @@ setInterval(()=>{
             <small>Saya siap membantumu kapan saja!</small>
             <button onclick="closeRoraChat()">✕</button>
         </div>
-
-        <!-- Pesan chat -->
         <div id="rora-messages">
             <div class="rora-msg-bot">
                 <img src="/assets/img/66f1b534-8975-4287-a80b-4b1f29b1bb21.png" alt="Rora" />
@@ -1775,37 +1769,38 @@ setInterval(()=>{
                 Ada yang bisa aku bantu seputar Tuberkulosis?
             </div>
         </div>
-
-        <!-- Input teks -->
         <div id="rora-input">
             <input type="text" id="rora-user-message" placeholder="Tulis pesan.." />
-            <button onclick="sendRoraMessage()">
-                <img src="/assets/img/5a42470a-8770-4335-a402-0a485f6c3d65.png" alt="Kirim" />
-            </button>
-            <button id="voice-btn" onclick="startVoice()">
-                <img src="/assets/img/50ffda95-d77e-4491-acf4-85b652066de4.png" alt="Voice" />
-            </button>
+            <button type="button" onclick="sendRoraMessage()">Kirim</button>
+            <button type="button" onclick="startVoice()">Voice</button>
         </div>
     </div>
 </div>
 
 <script>
-   function toggleRoraChat() {
+const input = document.getElementById('rora-user-message');
+input.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        sendRoraMessage();
+    }
+});
+
+function toggleRoraChat() {
     const box = document.getElementById('rora-box');
     box.style.display = box.style.display === 'none' ? 'flex' : 'none';
 }
-
 function closeRoraChat() {
     document.getElementById('rora-box').style.display = 'none';
 }
 
 function sendRoraMessage() {
-    const input = document.getElementById('rora-user-message');
     const msg = input.value.trim();
-    if(!msg) return;
+    if (!msg) return;
 
     const messages = document.getElementById('rora-messages');
 
+    // Pesan user
     const userDiv = document.createElement('div');
     userDiv.className = 'rora-msg-user';
     userDiv.textContent = msg;
@@ -1813,27 +1808,58 @@ function sendRoraMessage() {
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
 
-    // Panggil backend TanyaRora
+    // Animasi mengetik
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'rora-msg-bot typing';
+    typingDiv.textContent = '...';
+    messages.appendChild(typingDiv);
+    messages.scrollTop = messages.scrollHeight;
+
+    // Fetch ke backend
     fetch('/api/tanya-rora', {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ message: msg })
     })
     .then(res => res.json())
     .then(data => {
+        typingDiv.remove();
         const botDiv = document.createElement('div');
         botDiv.className = 'rora-msg-bot';
-        botDiv.innerHTML = '<img src="/assets/img/66f1b534-8975-4287-a80b-4b1f29b1bb21.png" /> ' + data.reply;
+        botDiv.textContent = data.reply;
         messages.appendChild(botDiv);
         messages.scrollTop = messages.scrollHeight;
+    })
+    .catch(err => {
+        typingDiv.remove();
+        const errDiv = document.createElement('div');
+        errDiv.className = 'rora-msg-bot';
+        errDiv.textContent = 'Error: ' + err.message;
+        messages.appendChild(errDiv);
+        messages.scrollTop = messages.scrollHeight;
+        console.error('Rora error:', err);
     });
 }
 
-// Voice message
+// Voice input
 function startVoice() {
-    alert("Voice input aktif! (implementasi Web Speech API atau integrasi Gemini Voice)");
-}
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'id-ID';
+    recognition.interimResults = true;
 
+    recognition.start();
+
+    recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+            .map(r => r[0].transcript)
+            .join('');
+        input.value = transcript;
+    };
+
+    recognition.onend = () => {
+        sendRoraMessage();
+    };
+}
 </script>
 
 <?= $this->include('layout/footer') ?>
