@@ -1030,7 +1030,7 @@ new Chart(ctx, {
             },
 
             {
-                label: 'Wanita',
+                label: 'Perempuan',
                 data: dataWanita,
                 backgroundColor: '#a7d7d3',
                 borderRadius: 6
