@@ -15,7 +15,7 @@ body { font-family: 'Poppins', sans-serif; }
 .page-box { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
 /* HEADER INFO */
-.info-banner { background: #4cc7c3; border-radius: 16px; padding: 20px 24px; color: #fff; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.info-banner { background: #00BBC2; border-radius: 16px; padding: 20px 24px; color: #fff; display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
 .info-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.25); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 .info-banner h4 { margin: 0; font-weight: 700; font-size: 20px; }
 .info-banner p { margin: 0; opacity: 0.9; font-size: 14px; margin-top: 4px; }
@@ -71,10 +71,19 @@ $bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
 ?>
 
 <div class="info-banner">
-    <div class="info-icon"><i class="fa-solid fa-shield-heart"></i></div>
+    <div class="info-icon">
+        <!-- Mengganti fa-shield-heart dengan SVG Shield Plus -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="34" height="34">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+    </div>
+    
+    <!-- Bagian teks dibungkus div agar sejajar di sebelah icon -->
     <div>
         <h4>Pelaporan Kader</h4>
-        <p>Menampilkan riwayat pelaporan jentik</p>
+        <p>Menampilkan riwayat pelaporan kader</p>
     </div>
 </div>
 
