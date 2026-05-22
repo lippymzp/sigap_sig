@@ -134,11 +134,11 @@ $bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
                     <?php 
                         // MAPPING NAMA KELURAHAN
                         $nama_kelurahan = $row['id_kelurahan'];
-                        if ($row['id_kelurahan'] == 1) $nama_kelurahan = 'Antirogo';
-                        elseif ($row['id_kelurahan'] == 2) $nama_kelurahan = 'Karangrejo';
-                        elseif ($row['id_kelurahan'] == 3) $nama_kelurahan = 'Sumbersari';
+                        if ($row['id_kelurahan'] == 1) $nama_kelurahan = 'Sumbersari';
+                        elseif ($row['id_kelurahan'] == 2) $nama_kelurahan = 'Wirolegi';
+                        elseif ($row['id_kelurahan'] == 3) $nama_kelurahan = 'Antirogo';
                         elseif ($row['id_kelurahan'] == 4) $nama_kelurahan = 'Tegalgede';
-                        elseif ($row['id_kelurahan'] == 5) $nama_kelurahan = 'Wirolegi';
+                        elseif ($row['id_kelurahan'] == 5) $nama_kelurahan = 'Karangrejo';
                         else $nama_kelurahan = $row['kelurahan'] ?? $row['id_kelurahan']; // Jika ada field teksnya
                         
                         // MAPPING NAMA PUSKESMAS (Asumsi ID 1 adalah Puskesmas Sumbersari)

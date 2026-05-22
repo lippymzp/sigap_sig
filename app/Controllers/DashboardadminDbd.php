@@ -277,36 +277,54 @@ $grafik = $builderGrafik->get()->getResultArray();
 }
 
            // Memasukkan 4 kategori baru untuk mencari mana kelompok usia yang paling mendominasi
-            $usiaData = [
-                'Anak-anak (0-6)'   => (int)$row['anak'],
-                'Remaja (7-18)'     => (int)$row['remaja'],
-                'Dewasa (19-59)'    => (int)$row['dewasa'],
-                'Lansia (>=60)'     => (int)$row['lansia'],
-            ];
-            arsort($usiaData);
+            // Memasukkan 4 kategori baru untuk mencari mana kelompok usia yang paling mendominasi
+$usiaData = [
+    'Anak-anak (0-6)'   => (int)($row['anak'] ?? 0),
+    'Remaja (7-18)'     => (int)($row['remaja'] ?? 0),
+    'Dewasa (19-59)'    => (int)($row['dewasa'] ?? 0),
+    'Lansia (>=60)'     => (int)($row['lansia'] ?? 0),
+];
+arsort($usiaData);
             $usiaTertinggi = array_key_first($usiaData);
 
             $key = preg_replace('/[^a-z0-9]/', '', strtolower($namaKel));
 
-            $detailDesa[$key] = [
-                'jumlah_penduduk' => (int)$row['jumlah_penduduk'],
-                'jumlah_kasus'    => $jumlahKasus,
-                'sembuh'          => (int)$row['sembuh'],
-                'meninggal'       => (int)$row['meninggal'],
-                'kategori'        => $kategori,
-                'anak'   => (int)$row['anak'],
-                'remaja' => (int)$row['remaja'],
-                'dewasa' => (int)$row['dewasa'],
-                'lansia' => (int)$row['lansia'],
-                'usia_tertinggi'  => $usiaTertinggi,
-                'laki'            => (int)$row['laki'],
-                'perempuan'       => (int)$row['perempuan'],
-                'rumah_diperiksa' => (int)$row['rumah_diperiksa'],
-                'rumah_jentik'    => (int)$row['rumah_positif'],
-                'abj'             => ((int)$row['rumah_diperiksa'] > 0)
-                    ? round((((int)$row['rumah_diperiksa'] - (int)$row['rumah_positif']) / (int)$row['rumah_diperiksa']) * 100, 2)
-                    : 0,
-            ];
+            // 1. Amankan seluruh data dari $row dengan memberikan nilai default 0 jika key tidak ada
+$jumlahPenduduk  = (int)($row['jumlah_penduduk'] ?? 0);
+$sembuh          = (int)($row['sembuh'] ?? 0);
+$meninggal       = (int)($row['meninggal'] ?? 0);
+$anak            = (int)($row['anak'] ?? 0);
+$remaja          = (int)($row['remaja'] ?? 0);
+$dewasa          = (int)($row['dewasa'] ?? 0);
+$lansia          = (int)($row['lansia'] ?? 0);
+$laki            = (int)($row['laki'] ?? 0);
+$perempuan       = (int)($row['perempuan'] ?? 0);
+$rumahDiperiksa  = (int)($row['rumah_diperiksa'] ?? 0);
+$rumahPositif    = (int)($row['rumah_positif'] ?? 0);
+
+// 2. Hitung Angka Bebas Jentik (ABJ) secara aman
+$abj = ($rumahDiperiksa > 0) 
+    ? round((($rumahDiperiksa - $rumahPositif) / $rumahDiperiksa) * 100, 2) 
+    : 0;
+
+// 3. Masukkan ke dalam array detailDesa
+$detailDesa[$key] = [
+    'jumlah_penduduk' => $jumlahPenduduk,
+    'jumlah_kasus'    => $jumlahKasus,
+    'sembuh'          => $sembuh,
+    'meninggal'       => $meninggal,
+    'kategori'        => $kategori,
+    'anak'            => $anak,
+    'remaja'          => $remaja,
+    'dewasa'          => $dewasa,
+    'lansia'          => $lansia,
+    'usia_tertinggi'  => $usiaTertinggi,
+    'laki'            => $laki,
+    'perempuan'       => $perempuan,
+    'rumah_diperiksa' => $rumahDiperiksa,
+    'rumah_jentik'    => $rumahPositif, // Menggunakan variabel yang sudah aman
+    'abj'             => $abj,
+];
         }
 
         // Tentukan desa tertinggi kasusnya menggunakan array duplikat agar urutan asli $dbd aman
