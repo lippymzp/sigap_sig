@@ -297,72 +297,119 @@ public function index()
     // HASIL DATA
     // =========================
     public function hasil_data()
-    {
-        $pasien = session()->get('pasien') ?? [];
+{
+    $model = new DataDiareModel();
 
-        return view('gol_d/hasil_d', [
-            'menu' => 'hasil',
-            'penyakit' => 'diare',
-            'pasien' => $pasien
-        ]);
-    }
+    $pasien = $model
+        ->orderBy('id', 'DESC')
+        ->findAll();
+
+    return view('gol_d/hasil_d', [
+        'menu' => 'hasil',
+        'penyakit' => 'diare',
+        'pasien' => $pasien
+    ]);
+}
 
     // =========================
     // SIMPAN DATA
     // =========================
-    public function simpan()
-    {
-        $data = [
-            'kecamatan' => $this->request->getPost('kecamatan'),
-            'desa'      => $this->request->getPost('desa'),
-            'jk'        => $this->request->getPost('jk'),
-            'usia'      => $this->request->getPost('usia'),
-        ];
+public function simpan()
+{
+    $model = new DataDiareModel();
 
-        $pasien = session()->get('pasien') ?? [];
-        $pasien[] = $data;
+    $tanggalKunjungan = $this->request->getPost('tanggal_kunjungan');
 
-        session()->set('pasien', $pasien);
-
-        return redirect()->to('/diare/hasil_d');
+    if (empty($tanggalKunjungan)) {
+        $tanggalKunjungan = date('Y-m-d');
     }
+
+    $data = [
+        'no_rm' => $this->request->getPost('norm') ?? '',
+        'nik' => $this->request->getPost('nik') ?? '',
+        'nama_pasien' => $this->request->getPost('nama_pasien') ?? 'Pasien Baru',
+        'jenis_kelamin' => $this->request->getPost('jenis_kelamin') ?? '',
+        'tanggal_lahir' => $this->request->getPost('tgl_lahir') ?? null,
+        'tanggal_kunjungan' => $tanggalKunjungan,
+        'tanggal_sakit' => $this->request->getPost('tgl_sakit') ?? null,
+
+        'provinsi' => $this->request->getPost('provinsi') ?? 'Jawa Timur',
+        'kabupaten' => $this->request->getPost('kabupaten') ?? 'Jember',
+        'kecamatan' => $this->request->getPost('kecamatan') ?? 'Panti',
+        'desa' => $this->request->getPost('desa') ?? '',
+        'rt' => $this->request->getPost('rt') ?? '',
+        'rw' => $this->request->getPost('rw') ?? '',
+        'alamat' => $this->request->getPost('alamat') ?? '',
+
+        'latitude' => $this->request->getPost('lat') ?? '',
+        'longitude' => $this->request->getPost('lng') ?? '',
+
+        'diagnosis' => $this->request->getPost('diagnosis') ?? '',
+        'dehidrasi' => $this->request->getPost('dehidrasi') ?? '',
+        'oralit' => $this->request->getPost('oralit') ?? 0,
+        'zinc' => $this->request->getPost('zinc') ?? 0,
+        'rl' => $this->request->getPost('rl') ?? 0,
+        'antibiotik' => $this->request->getPost('antibiotik') ?? 'Tidak',
+        'status_kematian' => $this->request->getPost('kematian') ?? 'Tidak',
+        'konseling' => $this->request->getPost('konseling') ?? 'Tidak',
+        'catatan' => $this->request->getPost('catatan') ?? '',
+    ];
+
+    $model->insert($data);
+
+    return redirect()->to('/diare/dashboardd')
+        ->with('success', 'Data berhasil disimpan');
+}
 
     // =========================
     // EXPORT EXCEL
     // =========================
     public function export()
-    {
-        $pasien = session()->get('pasien') ?? [];
+{
+    $model = new DataDiareModel();
+    $pasien = $model->findAll();
 
-        header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=data_pasien.xls");
-
-        echo "<table border='1'>";
-        echo "<tr>
-                <th>No</th>
-                <th>Kecamatan</th>
-                <th>Desa</th>
-                <th>Jenis Kelamin</th>
-                <th>Usia</th>
-                <th>Kasus</th>
-              </tr>";
-
-        $no = 1;
-
-        foreach ($pasien as $p) {
-            echo "<tr>
-                    <td>{$no}</td>
-                    <td>{$p['kecamatan']}</td>
-                    <td>{$p['desa']}</td>
-                    <td>{$p['jk']}</td>
-                    <td>{$p['usia']}</td>
-                    <td>1</td>
-                  </tr>";
-            $no++;
-        }
-
-        echo "</table>";
+    if (ob_get_length()) {
+        ob_end_clean();
     }
+
+    header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
+    header("Content-Disposition: attachment; filename=data_diare.xls");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    echo "<table border='1'>";
+    echo "<tr>
+        <th>No</th>
+        <th>Nama Pasien</th>
+        <th>Kecamatan</th>
+        <th>Desa</th>
+        <th>Jenis Kelamin</th>
+        <th>Usia</th>
+        <th>Diagnosis</th>
+        <th>Tanggal Kunjungan</th>
+        <th>Catatan</th>
+    </tr>";
+
+    $no = 1;
+
+    foreach ($pasien as $p) {
+        echo "<tr>
+            <td>".$no++."</td>
+            <td>".($p['nama_pasien'] ?? '-')."</td>
+            <td>".($p['kecamatan'] ?? '-')."</td>
+            <td>".($p['desa'] ?? '-')."</td>
+            <td>".($p['jk'] ?? '-')."</td>
+            <td>".($p['usia'] ?? '-')."</td>
+            <td>".($p['diagnosis'] ?? '-')."</td>
+            <td>".($p['tanggal_kunjungan'] ?? '-')."</td>
+            <td>".($p['catatan'] ?? '-')."</td>
+        </tr>";
+    }
+
+    echo "</table>";
+    exit;
+}
     public function kalkulatorAir()
 {
     return view('gol_d/kalkulator_air', [
@@ -460,5 +507,30 @@ public function funfact()
         ->findAll();
 
     return view('admind/funfact', $data);
+}
+public function dashboardd()
+{
+    $beritaModel = new \App\Models\BeritaModelDD();
+    $diareModel = new \App\Models\DataDiareModel();
+
+    $hariIni = date('Y-m-d');
+
+    $kasusBaru = $diareModel
+        ->where('tanggal_kunjungan', $hariIni)
+        ->countAllResults();
+
+    $data = [
+        'judul' => 'Dashboard',
+        'menu' => 'dashboard',
+        'diare' => $diareModel->findAll(),
+        'kasusBaru' => $kasusBaru,
+        'berita' => $beritaModel
+            ->where('id_penyakit', 4)
+            ->where('status_berita', 'publish')
+            ->orderBy('id_berita', 'DESC')
+            ->findAll()
+    ];
+
+    return view('gol_d/dashboard_diare', $data);
 }
 }
