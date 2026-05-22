@@ -204,7 +204,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
             <i class="fa-regular fa-user me-2"></i> Profil Admin
-        </a>
+</a>
 
 <div class="menu-label">Master Data</div>
 

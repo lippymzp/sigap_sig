@@ -45,8 +45,8 @@ class Profile3 extends Controller
             // layout
             'layout'   => $layout_dinamis,
             'menu'  => 'profil',
-            'judul' => 'Profil Kader',
-            'title' => 'Profil Kader'
+            'judul' => 'Profil',
+            'title' => 'Profil'
         ];
 
         return view('gol_a/profil_kader', $data);

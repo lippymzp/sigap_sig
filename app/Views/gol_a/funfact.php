@@ -581,7 +581,7 @@ body{
     </form>
 
     <!-- STAT -->
-     <?php
+    <?php
         $idPetugas = session()->get('id_petugas');
 
         $db = \Config\Database::connect();
@@ -590,7 +590,7 @@ body{
             ->where('id_petugas', $idPetugas)
             ->where('id_penyakit', 1)
             ->countAllResults();
-    ?>
+        ?>
 
     <div class="stat-box">
 

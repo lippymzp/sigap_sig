@@ -29,6 +29,7 @@ class PetugasModel extends Model
                     ->findAll();
     }
 
+    // AMBIL DATA PROFIL + FOTO
     // AMBIL DATA PROFIL + FOTO + JABATAN
     public function getProfil($id_petugas)
     {
@@ -75,6 +76,4 @@ class PetugasModel extends Model
             ]);
         }
     }
-
-    
 }

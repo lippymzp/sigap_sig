@@ -130,13 +130,32 @@ $bulanParam = isset($_GET['bulan']) ? (string)$_GET['bulan'] : '';
                 <?php $no = 1; ?>
                 <?php if(!empty($pelaporan)): ?>
                     <?php foreach($pelaporan as $row): ?>
+                    
+                    <?php 
+                        // MAPPING NAMA KELURAHAN
+                        $nama_kelurahan = $row['id_kelurahan'];
+                        if ($row['id_kelurahan'] == 1) $nama_kelurahan = 'Antirogo';
+                        elseif ($row['id_kelurahan'] == 2) $nama_kelurahan = 'Karangrejo';
+                        elseif ($row['id_kelurahan'] == 3) $nama_kelurahan = 'Sumbersari';
+                        elseif ($row['id_kelurahan'] == 4) $nama_kelurahan = 'Tegalgede';
+                        elseif ($row['id_kelurahan'] == 5) $nama_kelurahan = 'Wirolegi';
+                        else $nama_kelurahan = $row['kelurahan'] ?? $row['id_kelurahan']; // Jika ada field teksnya
+                        
+                        // MAPPING NAMA PUSKESMAS (Asumsi ID 1 adalah Puskesmas Sumbersari)
+                        $nama_puskesmas = ($row['id_puskesmas'] == 1) ? 'Sumbersari' : $row['id_puskesmas'];
+                    ?>
+
                     <tr>
                         <td><?= $no++ ?></td>
                         <td><?= esc((string)$row['bulan']) ?></td>
                         <td><?= esc((string)$row['minggu']) ?></td>
-                        <td><?= esc((string)$row['id_puskesmas']) ?></td> 
-                        <td><?= esc((string)$row['id_kelurahan']) ?></td> 
-                        <td><?= esc((string)$row['id_posyandu']) ?></td> <td><?= isset($row['abj']) ? round($row['abj']) . '%' : '75%' ?></td>
+                        
+                        <td><?= esc($nama_puskesmas) ?></td> 
+                        <td><?= esc($nama_kelurahan) ?></td> 
+                        
+                        <td>Catleya <?= esc((string)$row['id_posyandu']) ?></td> 
+                        
+                        <td><?= isset($row['abj']) ? round($row['abj']) . '%' : '75%' ?></td>
                         <td>
                             <div class="action-buttons">
                                 <a href="<?= base_url('kepala/view_laporan/' . $row['id_laporan']) ?>" class="btn-action view">
