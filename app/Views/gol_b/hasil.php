@@ -905,14 +905,14 @@ $puskesmas = [
     <div class="tips-box">
 
         <div class="tips-header">
-            Tips Kesehatan
+            Tips Sementara Sebelum Pemeriksaan
         </div>
     <div class="tips-body">
         <ul>
-            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
-            <li>Rutin berolahraga minimal 30 menit</li>
-            <li>Istirahat yang cukup</li>
-            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
+            <li>Gunakan masker saat berinteraksi dengan orang lain</li>
+            <li>Terapkan etika batuk (menutup mulut dan hidung saat batuk/bersin)</li>
+            <li>Hindari kontak dekat dengan anak-anak, lansia, atau orang dengan daya tahan tubuh rendah</li>
+            <li>Jaga daya tahan tubuh dengan makan bergizi dan istirahat cukup</li>
         </ul>
     </div>
 </div>
@@ -940,14 +940,14 @@ $puskesmas = [
     <div class="tips-box">
 
         <div class="tips-header">
-            Tips Sementara Sebelum Pemeriksaan
+            Tips Kesehatan 
         </div>
     <div class="tips-body">
         <ul>
-            <li>Gunakan masker saat berinteraksi dengan orang lain</li>
-            <li>Terapkan etika batuk (menutup mulut dan hidung saat batuk/bersin)</li>
-            <li>Hindari kontak dekat dengan anak-anak, lansia, atau orang dengan daya tahan tubuh rendah</li>
-            <li>Jaga daya tahan tubuh dengan makan bergizi dan istirahat cukup</li>
+            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
+            <li>Rutin berolahraga minimal 30 menit</li>
+            <li>Istirahat yang cukup</li>
+            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
         </ul>
     </div>
 </div>

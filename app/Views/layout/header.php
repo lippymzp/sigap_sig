@@ -333,6 +333,7 @@ body .nav-link{
     object-fit: contain;
     display: block;
 }
+
 }
 </style>
 
@@ -368,6 +369,14 @@ $isPneumoniaPage = in_array($uri, [
     'grafik_pneumonia',
     'hasil-pneumonia'
 ]) || strpos(current_url(), 'pneumonia') !== false;
+
+$isTbcPage = in_array($uri, [
+    'tbc',
+    'skrining-tbc',
+    'hasil-tbc',
+    'tbc-detail',
+    'berita-tbc'
+]) || strpos(current_url(), 'tbc') !== false;
 
 /*
 |--------------------------------------------------------------------------
@@ -412,20 +421,19 @@ $showLoginPages = [
             alt="Pulmora"
             class="brand-logo pneu-logo">
 
-    <?php else: ?>
+  <?php elseif ($isTbcPage): ?>
 
-        <img src="<?= base_url('img/logo_sigap.png') ?>" 
-             alt="SIGAP"
-             class="brand-logo">
+    <img src="<?= base_url('img/logotbc_navbar.png') ?>" alt="TBC Logo" class="brand-logo tbc-logo">
 
-        <div class="brand-text">
-            <h1 class="brand-name">SIGAP</h1>
-            <p class="brand-subtitle">
-                Sistem Informasi, Geografis Analisis & Pemantauan
-            </p>
-        </div>
+<?php else: ?>
 
-    <?php endif; ?>
+    <img src="<?= base_url('img/logo_sigap.png') ?>" alt="SIGAP" class="brand-logo">
+    <div class="brand-text">
+        <h1 class="brand-name">SIGAP</h1>
+        <p class="brand-subtitle">Sistem Informasi, Geografis Analisis & Pemantauan</p>
+    </div>
+
+<?php endif; ?>
 
 </a>
 

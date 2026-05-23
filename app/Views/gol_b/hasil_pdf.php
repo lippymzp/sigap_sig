@@ -315,14 +315,12 @@ body{
     <div class="rekom-box">
 
         <?php if($hasil == 'TB'): ?>
-
-            Berdasarkan hasil skrining, Anda memiliki risiko Tuberkulosis (TB).
-            Disarankan untuk segera melakukan pemeriksaan lebih lanjut di fasilitas kesehatan terdekat.
+            Berdasarkan hasil skrining, Anda memiliki risiko Tuberkulosis (TB). Disarankan untuk segera melakukan pemeriksaan lebih lanjut di fasilitas pelayanan kesehatan (fasyankes) terdekat untuk memastikan diagnosis dan mendapatkan penanganan yang tepat.
 
         <?php else: ?>
 
-            Berdasarkan hasil skrining, saat ini Anda tidak menunjukkan risiko Tuberkulosis (TB).
-            Tetap pertahankan kondisi kesehatan Anda dan lakukan pemantauan mandiri terhadap gejala yang mungkin muncul di kemudian hari.
+            Berdasarkan hasil skrining, saat ini Anda tidak menunjukkan risiko Tuberkulosis (TB). Tetap pertahankan kondisi kesehatan Anda dan lakukan pemantauan mandiri terhadap gejala yang mungkin muncul di kemudian hari.
+
 
         <?php endif; ?>
 
