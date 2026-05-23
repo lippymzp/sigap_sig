@@ -53,7 +53,7 @@ class Pegawai extends BaseController
         : 1;
 
     $builder = $this->petugasModel
-        ->where('id_penyakit', 3);
+        ->where('id_instansi', 3);
 
     if ($keyword) {
         $builder->groupStart()
@@ -157,5 +157,39 @@ public function edit($id)
         return redirect()
             ->to(base_url('index.php/pneumonia/pegawai'))
             ->with('success', 'Data berhasil dihapus');
+    }
+
+    public function exportPdf()
+    {
+        $db = \Config\Database::connect();
+
+        $data = $db->table('petugas p')
+            ->select('
+                p.nama_petugas,
+                p.NIP as nip,
+                p.no_telp,
+                i.nama_instansi
+            ')
+            ->join('instansi i', 'i.id_instansi = p.id_instansi', 'left')
+            ->get()
+            ->getResultArray();
+
+        $html = view(
+            'gol_c/hasil_data_pasien/export_pdf_pegawai',
+            ['data' => $data]
+        );
+
+        $dompdf = new \Dompdf\Dompdf();
+
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'portrait');
+
+        $dompdf->render();
+
+        return $dompdf->stream(
+            'data_pegawai.pdf',
+            ['Attachment' => true]
+        );
     }
 }

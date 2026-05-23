@@ -1,7 +1,8 @@
 <?= $this->extend('layout/dashboard_layout_pneumonia_admin') ?>
 <?= $this->section('content') ?>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 .export-wrapper{
@@ -406,11 +407,6 @@
                         <label class="check-item">
                             <input type="radio" name="jenisData" value="kasus" checked>
                             Data Kasus
-                        </label>
-
-                        <label class="check-item">
-                            <input type="radio" name="jenisData" value="pegawai">
-                            Data Pegawai
                         </label>
 
                     </div>

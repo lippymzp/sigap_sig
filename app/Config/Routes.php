@@ -83,7 +83,7 @@ $routes->post('uploadFoto_admin', 'Profile_admin_pneumonia::uploadFoto');
 $routes->post('updateProfil_admin', 'Profile_admin_pneumonia::updateProfil');
 
 /* ========================= */
-/* EKSPORT DATA PASIEN PNEUMONIA */
+/* EKSPORT DATA PNEUMONIA */
 /* ========================= */
 $routes->get('pneumonia/get-data-pasien-by-tahun', 'pneumonia::get_data_pasien_by_tahun');
 $routes->get('pneumonia/export_hasil_data_pasien', 'pneumonia::export_hasil_data_pasien');
@@ -91,6 +91,8 @@ $routes->get('pneumonia/get-tahun-list', 'pneumonia::get_tahun_list');
 $routes->get('pneumonia/export-hasil-data-pasien/pdf', 'pneumonia::export_pdf_pasien');
 $routes->get('pneumonia/export-hasil-data-pasien/excel', 'pneumonia::export_excel_pasien');
 $routes->get('pneumonia/preview-export', 'Pneumonia::preview_export');
+
+$routes->get('pneumonia/export_pegawai_pdf', 'Pegawai::exportPdf');
 
 /* ========================= */
 /* ADMIN GRAFIK PNEUMONIA */
