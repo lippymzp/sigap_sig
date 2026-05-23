@@ -24,7 +24,6 @@ class RoraController extends ResourceController
 
         // Pilihan Cadangan / Fail-safe (Hanya jika getenv masih membandel kosong):
         if (empty($apiKey)) {
-            $apiKey = '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';
         }
 
         // 2. Gunakan URL endpoint kompatibilitas OpenAI milik Google
