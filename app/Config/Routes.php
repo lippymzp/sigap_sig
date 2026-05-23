@@ -9,6 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 /* ========================= */
 /* HALAMAN UTAMA */
 /* ========================= */
+$routes->get('diare/dashboardd', 'Diare::dashboardd');
 
 $routes->get('/', 'Home::index');
 $routes->get('/logout', 'Auth::logout');
