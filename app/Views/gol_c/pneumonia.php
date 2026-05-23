@@ -2891,7 +2891,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 <!-- FLOATING CHAT BUTTON -->
 <div id="chatbot-toggle">
-    <i class="fa-solid fa-comment-medical"></i>
+    <img src="<?= base_url('img/pneu_chat.png') ?>" alt="chatbot">
 </div>
 
 <!-- CHAT POPUP -->
@@ -2917,10 +2917,10 @@ document.addEventListener("DOMContentLoaded", function(){
     position:fixed;
     bottom:20px;
     right:20px;
-    width:65px;
-    height:65px;
+    width:75px;
+    height:75px;
     border-radius:50%;
-    background:linear-gradient(135deg,#00CED1,#40EDD0);
+    background:rgb(46, 138, 224);
     color:white;
     display:flex;
     justify-content:center;
@@ -2932,6 +2932,18 @@ document.addEventListener("DOMContentLoaded", function(){
     animation:pulse 1.8s infinite;
     transition:0.3s;
 }
+
+#chatbot-toggle img{
+    width: 64px !important;
+    height: 64px !important;
+
+    max-width: 54px;
+    max-height: 54px;
+
+    object-fit: contain;
+    display: block;
+}
+
 /* HOVER */
 #chatbot-toggle:hover{
     transform:scale(1.08);

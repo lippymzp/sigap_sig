@@ -9,6 +9,7 @@ use App\Models\SkriningPneumoniaModel;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use DateTime;
 
 class Pneumonia extends BaseController
 {
@@ -1088,7 +1089,12 @@ public function skriningpneumonia3()
     $nama = $this->request->getPost('nama');
     $jenis_kelamin = $this->request->getPost('jenis_kelamin');
     $tanggal_lahir = $this->request->getPost('tanggal_lahir');
-    $kategori_usia = $this->request->getPost('kategori_usia');
+    $tanggal_lahir = $this->request->getPost('tanggal_lahir');
+
+    $lahir = new DateTime($tanggal_lahir);
+    $today = new DateTime();
+
+    $usia = $today->diff($lahir)->y;
     $nik = $this->request->getPost('nik');
     $telepon = $this->request->getPost('telepon');
 
@@ -1144,7 +1150,7 @@ public function skriningpneumonia3()
         'nama_pasien_skrining' => $nama,
         'jenis_kelamin' => $jenis_kelamin,
         'tanggal_lahir' => $tanggal_lahir,
-        'usia' => $kategori_usia,
+        'usia' => $usia,
         'no_hp' => $telepon,
         'created_at' => date('Y-m-d H:i:s'),
         'id_wilayah' => $id_wilayah

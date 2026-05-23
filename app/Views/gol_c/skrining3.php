@@ -21,7 +21,6 @@ $rt_rw = $rt_rw ?? '';
 $hasil = $hasil ?? '';
 $alasan = $alasan ?? '';
 $totalSkor = $totalSkor ?? 0;
-$kategori = ($kategori_usia <= 19) ? 'Anak-anak' : 'Dewasa';
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +49,9 @@ body{
     background:#f8fbfc;
     padding:40px;
     max-width:1000px;
-    margin:40px auto;
+
+    margin:110px auto 40px auto;
+
     box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
@@ -264,7 +265,7 @@ body{
                 <input type="text" class="form-control" value="<?= $tanggal_lahir ?>" readonly>
 
                 <label class="mt-3">Kategori Usia</label>
-                <input type="text" class="form-control" value="<?= $kategori ?>" readonly>
+                <input type="text" class="form-control" value="<?= $kategori_usia ?>" readonly>
 
             </div>
 

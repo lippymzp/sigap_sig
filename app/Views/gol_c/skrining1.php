@@ -20,6 +20,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 120px;
 }
 .step {
     display: inline-flex;
@@ -198,10 +199,12 @@ body {
 <!-- KANAN -->
 <div class="col-md-6">
 
+<div class="mb-3">
 <label>Provinsi</label>
 <select name="provinsi" id="provinsi" class="form-select"></select>
-<div class="mb-3">
+</div>
 
+<div class="mb-3">
 <label>Kabupaten</label>
 <select name="kabupaten" id="kabupaten" class="form-select"></select>
 </div>
