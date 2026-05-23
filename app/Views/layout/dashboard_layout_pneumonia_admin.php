@@ -62,7 +62,7 @@
                 <i class="fa-solid fa-file-lines me-2"></i> Rekap Skrining
             </a>
 
-            <a href="<?= base_url('index.php/' . $penyakit . '/dashboard/admin#petaSebaran') ?>"
+            <a href="<?= base_url('index.php/' . $penyakit . '/peta_sebaran') ?>"
                 class="<?= ($menu == 'peta') ? 'active' : '' ?>">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
             </a>

@@ -180,6 +180,7 @@ $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('tbc/dashboard/admin', 'Dashboard::tbc');
 $routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
+$routes->get('pneumonia/peta_sebaran', 'Dashboard::peta_sebaran_pneumonia');
 $routes->get('pneumonia/input_data', 'pneumonia::inputData');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
 $routes->post('pneumonia/simpandatapasien', 'pneumonia::simpandatapasien');

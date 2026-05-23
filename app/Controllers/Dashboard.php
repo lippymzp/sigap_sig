@@ -519,6 +519,134 @@ $builder->groupBy("
         ]
     );
 }
+
+public function peta_sebaran_pneumonia()
+{
+    $db = \Config\Database::connect();
+
+    $bulan = $this->request->getGet('bulan');
+    $tahun = $this->request->getGet('tahun');
+    $jk    = $this->request->getGet('jk');
+
+    // =====================
+    // DATA PETA PNEUMONIA
+    // =====================
+    $builder = $db->table('pasien p');
+
+    $builder->select("
+        w.kelurahan as desa,
+        p.jenis_kelamin,
+        p.umur,
+        p.tgl_kunjungan,
+        COUNT(p.id_pasien) as kasus
+    ");
+
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah',
+        'left'
+    );
+
+    $builder->where('p.id_penyakit', 3);
+
+    if(!empty($bulan)){
+        $builder->where('MONTH(p.tgl_kunjungan)', $bulan);
+    }
+
+    if(!empty($tahun)){
+        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+    }
+
+    if(!empty($jk)){
+        $builder->where('p.jenis_kelamin', $jk);
+    }
+
+    $builder->groupBy("
+        w.kelurahan,
+        p.jenis_kelamin,
+        MONTH(p.tgl_kunjungan),
+        YEAR(p.tgl_kunjungan)
+    ");
+
+    $pneumonia = $builder->get()->getResultArray();
+
+    // =====================
+    // LIST TAHUN
+    // =====================
+    $tahunQuery = $db->table('pasien')
+        ->select('YEAR(tgl_kunjungan) as tahun')
+        ->where('id_penyakit', 3)
+        ->where('tgl_kunjungan IS NOT NULL')
+        ->groupBy('YEAR(tgl_kunjungan)')
+        ->orderBy('tahun', 'DESC')
+        ->get()
+        ->getResultArray();
+
+    $tahunList = [];
+
+    foreach($tahunQuery as $t){
+        if(!empty($t['tahun'])){
+            $tahunList[] = $t['tahun'];
+        }
+    }
+
+    // Tahun manual agar tetap muncul di filter
+    $tahunList[] = '2026';
+    $tahunList[] = '2025';
+
+    // Hilangkan duplikat dan urutkan terbaru
+    $tahunList = array_unique($tahunList);
+    rsort($tahunList);
+
+    // =====================
+    // TOTAL KASUS
+    // =====================
+    $totalKasus = array_sum(
+        array_column($pneumonia, 'kasus')
+    );
+
+    // =====================
+    // KASUS BARU BULAN INI
+    // =====================
+    $kasusBaru = $db->table('pasien')
+        ->where('id_penyakit', 3)
+        ->where('YEAR(tgl_kunjungan)', date('Y'))
+        ->where('MONTH(tgl_kunjungan)', date('m'))
+        ->countAllResults();
+
+    // =====================
+    // NOTIFIKASI RISIKO
+    // =====================
+    $notif = $db->table('skrining s')
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
+        ->where('s.id_penyakit', 3)
+        ->where('s.hasil', 'Berisiko')
+        ->orderBy('s.id_skrining', 'DESC')
+        ->limit(3)
+        ->get()
+        ->getResultArray();
+
+    return view('gol_c/peta_sebaran_pneumonia', [
+        'menu'       => 'peta',
+        'judul'      => 'Peta Sebaran',
+        'pneumonia'  => $pneumonia,
+        'tahunList'  => $tahunList,
+        'totalKasus' => $totalKasus,
+        'kasusBaru'  => $kasusBaru,
+        'notif'      => $notif
+    ]);
+}
+
 public function diare()
 {
     return view('gol_d/dashboard_diare', [
