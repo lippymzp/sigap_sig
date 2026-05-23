@@ -198,8 +198,12 @@ $routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
 $routes->get('pneumonia/peta_sebaran', 'Dashboard::peta_sebaran_pneumonia');
 $routes->get('pneumonia/input_data', 'pneumonia::inputData');
+$routes->get('pneumonia/edit/(:num)','Pneumonia::editData/$1');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
+$routes->get('pneumonia/hasil/(:num)', 'Pneumonia::hasil_data/$1');
+$routes->post('pneumonia/updatepasien','Pneumonia::updatePasien');
 $routes->post('pneumonia/simpandatapasien', 'pneumonia::simpandatapasien');
+$routes->get('pneumonia/hapuspasien/(:num)','Pneumonia::hapusPasien/$1');
 $routes->get('pneumonia/export', 'pneumonia::export');
 
 $routes->get('diare/dashboardd/', 'Dashboard::diare');

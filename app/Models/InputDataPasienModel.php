@@ -68,7 +68,7 @@ class InputDataPasienModel extends Model
             'tgl_lahir'     => $data['tgl_lahir'] ?? null,
 
             // sementara usia kategori diambil angka awalnya
-            'umur'          => (int) filter_var($data['usia'] ?? 0, FILTER_SANITIZE_NUMBER_INT),
+            'rentang_umur' => $data['rentang_umur'] ?? '-',
 
             // ambil dari input tanggal, bukan tanggal_pemeriksaan
             'tgl_kunjungan' => !empty($data['tanggal'])
@@ -78,6 +78,7 @@ class InputDataPasienModel extends Model
             'status_akhir'  => $data['status_akhir'] ?? null,
             'tindak_lanjut' => $tindak_lanjut ?? null,
             'ctt_klinis' => $data['diagnosa'] ?? 'Pneumonia',
+            'antibiotik' => $data['antibiotik'] ?? '-',
 
             // tidak boleh null
             'id_petugas'    => $data['id_petugas'] ?? 1,
