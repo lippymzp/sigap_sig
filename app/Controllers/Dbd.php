@@ -296,7 +296,7 @@ class Dbd extends BaseController
         $data = [
             'title' => 'Tambah Pelaporan Kader',
             'judul' => 'Pelaporan Kader',
-            'menu'  => 'pelaporan'
+            'menu'    => 'riwayat_jentik'
         ];
 
         return view('gol_a/formkader/formulir_tambah_data', $data);
@@ -401,8 +401,8 @@ class Dbd extends BaseController
         $periodeLengkap = $this->request->getPost('periode'); 
         $idPuskesmas    = $this->request->getPost('id_puskesmas');
         $idKelurahan    = $this->request->getPost('id_kelurahan');
-        $Kelurahan      = $this->request->getPost('kelurahan');
-        $idPosyandu     = $this->request->getPost('id_posyandu');
+        $kelurahan      = $this->request->getPost('kelurahan');
+        $idposyandu     = $this->request->getPost('id_posyandu');
         $diperiksa      = $this->request->getPost('diperiksa');
         $positif        = $this->request->getPost('positif');
         $bagian         = $this->request->getPost('bagian');
@@ -445,7 +445,8 @@ class Dbd extends BaseController
             'periode_lengkap' => $periodeLengkap,
             'id_puskesmas'    => $idPuskesmas,
             'id_kelurahan'    => $idKelurahan,
-            'id_posyandu'     => $idPosyandu,
+            'kelurahan'       => $kelurahan,
+            'id_posyandu'      =>$idposyandu,
             'diperiksa'       => $diperiksa,
             'positif'         => $positif,
             'bagian'          => $bagian,
@@ -565,7 +566,7 @@ class Dbd extends BaseController
         ];
 
         $laporan['nama_puskesmas'] = ($laporan['id_puskesmas'] == 1) ? 'PKM Sumbersari' : '-';
-        $laporan['nkelurahan'] = isset($kelurahanMap[(string)$laporan['id_kelurahan']])
+        $laporan['kelurahan'] = isset($kelurahanMap[(string)$laporan['id_kelurahan']])
         ? $kelurahanMap[(string)$laporan['id_kelurahan']]
           : '-';
         $laporan['nama_posyandu']  = 'CATLEYA ' . $laporan['id_posyandu'];

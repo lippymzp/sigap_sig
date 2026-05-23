@@ -163,6 +163,7 @@
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
+            <input type="hidden" name="kelurahan" id="hiddenKelurahan" value="<?= $laporan['kelurahan'] ?>">
 
             <label class="form-label">Pos Posyandu</label>
             <div class="input-icon-wrap">
@@ -262,20 +263,33 @@
     function loadPosyandu(kelId) {
         const select = document.getElementById('posyanduSelect');
         select.innerHTML = '<option value="" disabled selected>Pilih pos posyandu</option>';
+        
         if (posyanduData[kelId]) {
             posyanduData[kelId].forEach(name => {
                 let idMatch = name.match(/CATLEYA\s([0-9A-Z]+)/);
                 let id = idMatch ? idMatch[1] : name;
                 let opt = document.createElement('option');
-                opt.value = id; opt.text = name;
-                if(id === savedPosyanduId) opt.selected = true;
+                opt.value = id; 
+                opt.text = name;
+                
+                // PERBAIKAN: Gunakan perbandingan (==) atau parseInt agar nilai "01" dan "1" tetap dianggap sama
+                if (id == savedPosyanduId || parseInt(id, 10) == parseInt(savedPosyanduId, 10)) {
+                    opt.selected = true;
+                }
+                
                 select.appendChild(opt);
             });
         }
     }
-    document.getElementById('kelurahanSelect').addEventListener('change', function() { loadPosyandu(this.value); });
-    loadPosyandu(document.getElementById('kelurahanSelect').value);
+    document.getElementById('kelurahanSelect').addEventListener('change', function() { 
+        // PERBAIKAN: MENGAMBIL TEKS NAMA KELURAHAN KE HIDDEN INPUT
+        const kelurahanText = this.options[this.selectedIndex].text;
+        document.getElementById('hiddenKelurahan').value = kelurahanText;
 
+        loadPosyandu(this.value); 
+    });
+    
+    loadPosyandu(document.getElementById('kelurahanSelect').value);
     /* ----- 2. LOGIKA UPLOAD & KAMERA LIVE ----- */
     let keepPhotos = <?= !empty($laporan['foto']) ? $laporan['foto'] : '[]' ?>; // Foto dari DB
     let newPhotos = []; // Foto baru
