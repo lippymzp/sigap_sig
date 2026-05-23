@@ -36,7 +36,7 @@ class RoraController extends ResourceController
                 // 1. TAMBAHKAN PERINTAH SISTEM INI DI ATAS PESAN USER
                 [
                     'role' => 'system',
-                    'content' => 'Kamu adalah asisten chatbot yang cerdas. Kamu WAJIB selalu menjawab dan merespons dalam Bahasa Indonesia yang baik, santun, dan mudah dipahami, apa pun bahasa yang digunakan oleh user.'
+                    'content' => 'Kamu adalah Rora asisten chatbot yang cerdas. Kamu WAJIB selalu menjawab dan merespons dalam Bahasa Indonesia yang baik, santun, dan mudah dipahami, apa pun bahasa yang digunakan oleh user.'
                 ],
                 // 2. Ini pesan dari user yang sudah ada sebelumnya
                 [

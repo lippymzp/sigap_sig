@@ -8,17 +8,33 @@ class FunfactTbcModel extends Model
 {
     protected $table      = 'funfact';
     protected $primaryKey = 'id_funfact';
+    protected $returnType = 'array';
 
     protected $allowedFields = [
         'id_petugas',
         'id_penyakit',
         'judul_funfact',
+        'isi_funfact',
         'deskripsi_funfact',
         'gambar_funfact',
         'tanggal_funfact',
         'url',
-        'status_funfact'
+        'status_funfact',
+        'penulis',
     ];
 
-    protected $useTimestamps = false;
+    public function getFunfactTbc($limit = 10)
+{
+    return $this->where('id_penyakit', 2)
+                ->orderBy('tanggal_funfact', 'DESC')
+                ->limit($limit)
+                ->findAll();
+}
+
+    public function getDetailFunfactTbc($id)
+    {
+        return $this->where('id_funfact', $id)
+                    ->where('id_penyakit', 2)
+                    ->first();
+    }
 }

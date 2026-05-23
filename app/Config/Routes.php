@@ -477,6 +477,12 @@ $routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
 $routes->get('bannerDbd/preview/(:num)', 'ManajemenBanner::preview/$1');
 $routes->post('bannerDbd/updateUrutan/(:num)','ManajemenBanner::updateUrutan/$1');
 
+// ===============================================
+// ROUTE Landingpage TB
+// ===============================================
+$routes->get('tbc', 'LandingTbc::index');
+$routes->get('tbc/detail_funfact/(:num)', 'LandingTbc::detail_funfact/$1');
+
 
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen-user', 'ManajemenUser::index');
