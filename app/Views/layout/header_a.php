@@ -151,19 +151,17 @@ body .btn-login:hover{
 
 /* DROPDOWN */
 .dropdown-menu{
-    border: none;
     border-radius: 14px;
     padding: 10px;
-    margin-top: 10px;
-    min-width: 220px;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-    z-index: 99999;
+    margin-top: 14px;
+    background: white;
+    position: relative;
+    z-index: 9999;
 }
 
 .dropdown-item{
     border-radius: 10px;
     padding: 10px 14px;
-    transition: 0.3s;
 }
 
 .dropdown-item:hover{
@@ -171,18 +169,19 @@ body .btn-login:hover{
     color: #00BFCF;
 }
 
-/* HOVER DROPDOWN DESKTOP */
+/* DROPDOWN DESKTOP KLIK */
 @media(min-width:992px){
 
     .navbar .dropdown-menu{
-        display: block;
+        display: none;
         opacity: 0;
         visibility: hidden;
         transform: translateY(10px);
         transition: all 0.3s ease;
     }
 
-    .navbar .dropdown:hover .dropdown-menu{
+    .navbar .dropdown-menu.show{
+        display: block;
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
@@ -311,7 +310,6 @@ $showLoginPages = [
                    href="#"
                    id="penyakitDropdown"
                    role="button"
-                   data-bs-toggle="dropdown"
                    aria-expanded="false">
 
                     Penyakit
@@ -388,8 +386,32 @@ $showLoginPages = [
 <!-- SPACING -->
 <div style="margin-top:110px;"></div>
 
-<!-- BOOTSTRAP JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+const dropdownToggle = document.getElementById('penyakitDropdown');
+const dropdownMenu = document.querySelector('.dropdown-menu');
+
+dropdownToggle.addEventListener('click', function(e){
+
+    e.preventDefault();
+
+    dropdownMenu.classList.toggle('show');
+
+});
+
+/* klik luar menutup */
+document.addEventListener('click', function(e){
+
+    if(
+        !dropdownToggle.contains(e.target) &&
+        !dropdownMenu.contains(e.target)
+    ){
+        dropdownMenu.classList.remove('show');
+    }
+
+});
+
+</script>
 
 </body>
 </html>

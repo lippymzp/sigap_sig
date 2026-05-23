@@ -313,6 +313,97 @@ body{
     font-weight:bold;
     cursor:pointer;
 }
+/* DELETE MODAL */
+.delete-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:99999;
+}
+
+.delete-box{
+    width:90%;
+    max-width:420px;
+    background:#fff;
+    border-radius:18px;
+    padding:35px 28px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    animation:popup .2s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.delete-icon{
+    width:78px;
+    height:78px;
+    margin:auto;
+    border-radius:50%;
+    background:#ffe5e5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#ff1717;
+    font-size:34px;
+    margin-bottom:18px;
+}
+
+.delete-box h3{
+    margin:0 0 12px;
+    font-size:28px;
+    font-weight:800;
+    color:#111;
+}
+
+.delete-box p{
+    margin:0;
+    color:#666;
+    line-height:1.6;
+    font-size:15px;
+}
+
+.delete-actions{
+    display:flex;
+    gap:14px;
+    margin-top:28px;
+}
+
+.btn-cancel,
+.btn-delete{
+    flex:1;
+    height:50px;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.btn-cancel{
+    background:#ececec;
+    color:#444;
+}
+
+.btn-delete{
+    background:#ff1717;
+    color:#fff;
+}
 </style>
 
 <link rel="stylesheet"
@@ -375,7 +466,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
         </div>
 
-        <a href="/video/tambah1" class="add-btn">
+        <a href="/video/tambahBaru" class="add-btn">
             Tambah Video
         </a>
 
@@ -491,13 +582,16 @@ echo $hari . ' ' . $bulan . ' ' . $tahun;
                 </a>
 
                 <!-- DELETE -->
-                <a href="/video/delete/<?= $b['id_video']; ?>"
-                class="icon-btn delete"
-                onclick="return confirm('Hapus video ini?')">
-
+                <button
+                    type="button"
+                    class="icon-btn delete"
+                    onclick="openDeleteModal(
+                        '<?= $b['id_video']; ?>',
+                        '<?= esc(addslashes((string)$b['judul_video'])) ?>'
+                    )"
+                >
                     <i class="fas fa-trash"></i>
-
-                </a>
+                </button>
 
             </div>
 
@@ -519,6 +613,44 @@ echo $hari . ' ' . $bulan . ' ' . $tahun;
         </div>
 
     </div>
+    <!-- DELETE MODAL -->
+<div class="delete-modal" id="deleteModal">
+
+<div class="delete-box">
+
+    <div class="delete-icon">
+        <i class="fas fa-trash"></i>
+    </div>
+
+    <h3>Hapus Video</h3>
+
+    <p id="deleteText">
+        Apakah yakin ingin menghapus video ini?
+    </p>
+
+    <div class="delete-actions">
+
+        <button
+            type="button"
+            class="btn-cancel"
+            onclick="closeDeleteModal()"
+        >
+            Batal
+        </button>
+
+        <a
+            href="#"
+            id="deleteLink"
+            class="btn-delete"
+        >
+            Hapus
+        </a>
+
+    </div>
+
+</div>
+
+</div>
 
     <?php endforeach; ?>
 
@@ -649,7 +781,53 @@ window.addEventListener('click', function(e){
     }
 
 });
+// OPEN DELETE MODAL
+function openDeleteModal(id, judul){
+
+const modal =
+document.getElementById('deleteModal');
+
+const text =
+document.getElementById('deleteText');
+
+const link =
+document.getElementById('deleteLink');
+
+text.innerHTML =
+'Apakah yakin ingin menghapus video <b>' +
+judul +
+'</b>?';
+
+link.href =
+'/video/delete/' + id;
+
+modal.style.display = 'flex';
+}
+
+
+// CLOSE DELETE MODAL
+function closeDeleteModal(){
+
+document.getElementById('deleteModal')
+.style.display = 'none';
+
+}
+
+
+// CLOSE KLIK BACKGROUND
+window.addEventListener('click', function(e){
+
+const modal =
+document.getElementById('deleteModal');
+
+if(e.target === modal){
+
+    closeDeleteModal();
+}
+
+});
 
 </script>
+
 
 <?= $this->endSection(); ?>

@@ -351,7 +351,60 @@ $penduduk = $penduduk ?? [];
     font-weight: 900 !important;
     text-transform: capitalize;
 }
+/* ================= LEGEND MAP ================= */
+.map-wrapper{
+    width: 100%;
+    overflow: hidden;
+    border-radius: 18px;
+}
 
+.legend-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    margin-top:22px;
+    flex-wrap:wrap;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:10px 22px;
+    font-size:15px;
+    font-weight:600;
+    color:#222;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    transition:0.2s ease;
+}
+
+.legend-item:hover{
+    transform:translateY(-2px);
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.legend-color{
+    width:18px;
+    height:18px;
+    border-radius:5px;
+    display:inline-block;
+}
+
+.tinggi{
+    background:#dc3545;
+}
+
+.sedang{
+    background:#ffc107;
+}
+
+.rendah{
+    background:#28a745;
+}
 
 </style>
 
@@ -496,7 +549,30 @@ $kelurahanTerdampak = $db->table('pasien')
         </div>
 
         <div class="inner-card">
-            <div id="map"></div>
+
+    <div class="map-wrapper">
+        <div id="map"></div>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend-wrapper">
+
+        <div class="legend-item">
+            <span class="legend-color tinggi"></span>
+            <span>Tinggi</span>
+        </div>
+
+        <div class="legend-item">
+            <span class="legend-color sedang"></span>
+            <span>Sedang</span>
+        </div>
+
+        <div class="legend-item">
+            <span class="legend-color rendah"></span>
+            <span>Rendah</span>
+        </div>
+
+    </div>
             <div style="
                 margin-top:30px;
                 margin-bottom:30px;

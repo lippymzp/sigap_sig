@@ -575,28 +575,19 @@ BUTTON CETAK
     <?php
 
     $pertanyaan = [
-
-    "Apakah Anda mengalami batuk dan berdahak terus-menerus selama dua minggu?",
-
-    "Apakah Anda mengalami batuk bercampur darahh?",
-
-    "Apakah Anda mengalami demam yang berlangsung selama 2 minggu?",
-
+            "Apakah Anda mengalami batuk dan berdahak terus-menerus selama 2 minggu?",
+    "Apakah Anda mengalami batuk bercampur darah?",
+    "Apakah dahak Anda bercampur darah?",
+    "Apakah Anda sering merasa sesak napas?",
+    "Apakah Anda mengalami nyeri atau sakit di dada?",
+    "Apakah Anda mengalami demam yang berlangsung selama 2 minggu atau lebih?",
     "Apakah Anda sering berkeringat pada malam hari tanpa aktivitas fisik?",
-
-    "Apakah Anda mengalami penurunan berat badan tanpa sebab yang jelas dalam waktu selama 2 bulan?",
-
-    "Apakah Anda memiliki kondisi yang melemahkan sistem imun, seperti pembesaran kelenjar getah bening, HIV/AIDS, dan diabetes melitus?",
-
-    "Apakah Anda mengalami sesak napas?",
-
-    "Apakah Anda mengalami penurunan nafsu makan dalam beberapa minggu terakhir?",
-
     "Apakah Anda sering merasa lelah atau tidak bertenaga?",
-
-    "Apakah terdapat benjolan yang muncul di sekitar ketiak dan leher?",
-
-    "Apakah Anda mengalami nyeri pada dada?",
+    "Apakah Anda mengalami penurunan nafsu makan dalam beberapa minggu terakhir?",
+    "Apakah Anda mengalami penurunan berat badan belakangan ini?",
+    "Apakah Anda mengalami sakit atau nyeri punggung pada bagian tertentu?",
+    "Apakah ada benjolan di sekitar ketiak atau leher?",
+    "Apakah Anda mengalami pembengkakan pada kelenjar getah bening di leher atau bagian tubuh lain?"
     ];
 
     $jawaban = session()->get('jawaban') ?? [];
@@ -896,33 +887,20 @@ $puskesmas = [
 <!-- Tips Kesehatan Umum -->
 <div class="tips-wrapper">
 
-    <div class="tips-icon">
-        📖
-    </div>
+<div class="tips-icon">
 
-    <div class="tips-box">
+    <img
+        src="<?= base_url('img/book.png') ?>"
+        alt="Book"
+        width="42"
+        height="42"
+        style="
+            object-fit:contain;
+            display:block;
+        "
+    >
 
-        <div class="tips-header">
-            Tips Kesehatan
-        </div>
-    <div class="tips-body">
-        <ul>
-            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
-            <li>Rutin berolahraga minimal 30 menit</li>
-            <li>Istirahat yang cukup</li>
-            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
-        </ul>
-    </div>
 </div>
-
-<?php else: ?>
-
-<!-- TIPS -->
-<div class="tips-wrapper">
-
-    <div class="tips-icon">
-        📖
-    </div>
 
     <div class="tips-box">
 
@@ -935,6 +913,41 @@ $puskesmas = [
             <li>Terapkan etika batuk (menutup mulut dan hidung saat batuk/bersin)</li>
             <li>Hindari kontak dekat dengan anak-anak, lansia, atau orang dengan daya tahan tubuh rendah</li>
             <li>Jaga daya tahan tubuh dengan makan bergizi dan istirahat cukup</li>
+        </ul>
+    </div>
+</div>
+
+<?php else: ?>
+
+<!-- TIPS -->
+<div class="tips-wrapper">
+
+<div class="tips-icon">
+
+    <img
+        src="<?= base_url('img/book.png') ?>"
+        alt="Book"
+        width="42"
+        height="42"
+        style="
+            object-fit:contain;
+            display:block;
+        "
+    >
+
+</div>
+
+    <div class="tips-box">
+
+        <div class="tips-header">
+            Tips Kesehatan 
+        </div>
+    <div class="tips-body">
+        <ul>
+            <li>Konsumsi makanan bergizi seimbang setiap hari</li>
+            <li>Rutin berolahraga minimal 30 menit</li>
+            <li>Istirahat yang cukup</li>
+            <li>Jaga kebersihan lingkungan dan ventilasi rumah</li>
         </ul>
     </div>
 </div>

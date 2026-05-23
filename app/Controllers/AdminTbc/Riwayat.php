@@ -14,76 +14,102 @@ class Riwayat extends BaseController
 
     public function proses()
     {
-        // Ambil input
-        $batuk = $this->request->getPost('batuk');
-        $berat = $this->request->getPost('berat');
-        $benjol = $this->request->getPost('benjol');
-        $punggung = $this->request->getPost('punggung');
-        $lemas = $this->request->getPost('lemas');
-        $demam = $this->request->getPost('demam');
-        $darah = $this->request->getPost('darah');
-        $dahak = $this->request->getPost('dahak');
-        $nafsu = $this->request->getPost('nafsu');
-        $kelenjar = $this->request->getPost('kelenjar');
-        $keringat = $this->request->getPost('keringat');
-        $dada = $this->request->getPost('dada');
-        $sesak = $this->request->getPost('sesak');
+        // =========================
+        // AMBIL INPUT
+        // =========================
+        $batuk     = $this->request->getPost('batuk');
+        $berat     = $this->request->getPost('berat');
+        $benjol    = $this->request->getPost('benjol');
+        $punggung  = $this->request->getPost('punggung');
+        $lemas     = $this->request->getPost('lemas');
+        $demam     = $this->request->getPost('demam');
+        $darah     = $this->request->getPost('darah');
+        $dahak     = $this->request->getPost('dahak');
+        $nafsu     = $this->request->getPost('nafsu');
+        $kelenjar  = $this->request->getPost('kelenjar');
+        $keringat  = $this->request->getPost('keringat');
+        $dada      = $this->request->getPost('dada');
+        $sesak     = $this->request->getPost('sesak');
 
-        // ===== DECISION TREE =====
+        // =========================
+        // DECISION TREE
+        // =========================
         if ($batuk == 0) {
+
             $hasil = "Tidak TB";
+
         } else {
 
             if ($berat == 1) {
+
                 $hasil = "TB";
-            }
-            elseif ($darah == 1) {
+
+            } elseif ($darah == 1) {
+
                 $hasil = "TB";
-            }
-            elseif ($kelenjar == 1 && $demam == 1) {
+
+            } elseif ($kelenjar == 1 && $demam == 1) {
+
                 $hasil = "TB";
-            }
-            elseif ($keringat == 1 && $dada == 1) {
+
+            } elseif ($keringat == 1 && $dada == 1) {
+
                 $hasil = "TB";
-            }
-            elseif ($sesak == 1) {
+
+            } elseif ($sesak == 1) {
+
                 $hasil = "TB";
-            }
-            else {
+
+            } else {
+
                 $hasil = "Tidak TB";
             }
         }
 
-        // ===== SIMPAN KE DATABASE =====
+        // =========================
+        // SIMPAN KE DATABASE
+        // =========================
         $model = new SkriningTBCModel();
 
         $data = [
-            'batuk' => $batuk,
-            'berat' => $berat,
-            'benjol' => $benjol,
-            'punggung' => $punggung,
-            'lemas' => $lemas,
-            'demam' => $demam,
-            'darah' => $darah,
-            'dahak' => $dahak,
-            'nafsu' => $nafsu,
-            'kelenjar' => $kelenjar,
-            'keringat' => $keringat,
-            'dada' => $dada,
-            'sesak' => $sesak,
-            'hasil' => $hasil
+
+            'var1'  => $batuk,
+            'var2'  => $berat,
+            'var3'  => $benjol,
+            'var4'  => $punggung,
+            'var5'  => $lemas,
+            'var6'  => $demam,
+            'var7'  => $darah,
+            'var8'  => $dahak,
+            'var9'  => $nafsu,
+            'var10' => $kelenjar,
+            'var11' => $keringat,
+            'var12' => $dada,
+            'var13' => $sesak,
+
+            // TB = 1 | Tidak TB = 2
+            'id_penyakit' => ($hasil == "TB") ? 1 : 2,
+
+            // tanggal otomatis
+            'tanggal' => date('Y-m-d')
+
         ];
 
         $model->insert($data);
 
-        // ===== KIRIM KE VIEW =====
+        // =========================
+        // KIRIM KE VIEW
+        // =========================
         return view('gol_b/hasil', ['hasil' => $hasil]);
     }
 
-    // ===== RIWAYAT =====
+    // =========================
+    // RIWAYAT
+    // =========================
     public function riwayat()
     {
         $model = new SkriningTBCModel();
+
         $data['riwayat'] = $model->findAll();
 
         return view('gol_b/riwayat', $data);

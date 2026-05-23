@@ -247,6 +247,92 @@
     color:#AAA !important;
 }
 
+/* DELETE MODAL */
+.delete-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.delete-box{
+    width:90%;
+    max-width:400px;
+    background:#fff;
+    border-radius:18px;
+    padding:30px;
+    text-align:center;
+    animation:popup .2s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.delete-icon{
+    width:80px;
+    height:80px;
+    background:#ffe5e5;
+    color:#ff1717;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:auto;
+    font-size:35px;
+    margin-bottom:18px;
+}
+
+.delete-box h3{
+    margin-bottom:10px;
+    font-size:28px;
+    font-weight:700;
+}
+
+.delete-box p{
+    color:#666;
+    margin-bottom:25px;
+}
+
+.delete-actions{
+    display:flex;
+    gap:12px;
+}
+
+.btn-cancel,
+.btn-confirm-delete{
+    flex:1;
+    height:48px;
+    border:none;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.btn-cancel{
+    background:#e5e5e5;
+    color:#333;
+}
+
+.btn-confirm-delete{
+    background:#ff1717;
+    color:#fff;
+}
+
 </style>
 
 <div class="container-fluid">
@@ -323,11 +409,15 @@
             <i class="fa fa-pencil"></i>
         </a>
 
-        <a href="<?= base_url('manajemen-user/hapus/'.$p['id_petugas']) ?>"
-           onclick="return confirm('Hapus data?')"
-           class="btn action-btn btn-delete">
+        <button
+            type="button"
+            class="btn action-btn btn-delete"
+            onclick="openDeleteModal(
+                '<?= base_url('manajemen-user/hapus/'.$p['id_petugas']) ?>'
+            )"
+        >
             <i class="fa fa-trash"></i>
-        </a>
+        </button>
 
     </td>
 </tr>
@@ -352,7 +442,44 @@
 
 </div>
 
+<!-- DELETE MODAL -->
+<div class="delete-modal" id="deleteModal">
 
+    <div class="delete-box">
+
+        <div class="delete-icon">
+            <i class="fa fa-trash"></i>
+        </div>
+
+        <h3>Konfirmasi Hapus</h3>
+
+        <p>
+            Apakah yakin ingin menghapus data ini?
+        </p>
+
+        <div class="delete-actions">
+
+            <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeDeleteModal()"
+            >
+                Batal
+            </button>
+
+            <a
+                href="#"
+                id="deleteLink"
+                class="btn-confirm-delete"
+            >
+                Hapus
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 
 <div id="filterModal" class="filter-modal">
 
@@ -436,5 +563,77 @@ function applyFilter(){
     form.submit();
 }
 </script>
+<!-- DELETE MODAL -->
+<div class="delete-modal" id="deleteModal">
 
+    <div class="delete-box">
+
+        <div class="delete-icon">
+            <i class="fa fa-trash"></i>
+        </div>
+
+        <h3>Konfirmasi Hapus</h3>
+
+        <p>
+            Apakah yakin ingin menghapus data ini?
+        </p>
+
+        <div class="delete-actions">
+
+            <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeDeleteModal()"
+            >
+                Batal
+            </button>
+
+            <a
+                href="#"
+                id="deleteLink"
+                class="btn-confirm-delete"
+            >
+                Hapus
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+// OPEN MODAL
+function openDeleteModal(link){
+
+    document.getElementById('deleteModal')
+    .style.display = 'flex';
+
+    document.getElementById('deleteLink')
+    .href = link;
+}
+
+
+// CLOSE MODAL
+function closeDeleteModal(){
+
+    document.getElementById('deleteModal')
+    .style.display = 'none';
+}
+
+
+// CLOSE SAAT KLIK BACKGROUND
+window.addEventListener('click', function(e){
+
+    const modal =
+    document.getElementById('deleteModal');
+
+    if(e.target === modal){
+
+        closeDeleteModal();
+    }
+
+});
+
+</script>
 <?= $this->endSection() ?>

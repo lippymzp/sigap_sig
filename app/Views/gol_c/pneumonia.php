@@ -1030,7 +1030,7 @@ new Chart(ctx, {
             },
 
             {
-                label: 'Wanita',
+                label: 'Perempuan',
                 data: dataWanita,
                 backgroundColor: '#a7d7d3',
                 borderRadius: 6
@@ -1943,7 +1943,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
         document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
 
         if(bulan){

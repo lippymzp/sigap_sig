@@ -1090,9 +1090,9 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 <div id="mapDiare" style="height:400px; border-radius:15px;"></div>
 
 <div class="mt-3 d-flex gap-2">
-<span class="badge bg-warning">Rendah</span>
-<span class="badge bg-danger">Sedang</span>
-<span class="badge bg-dark">Tinggi</span>
+    <span class="badge bg-success">Rendah</span>
+    <span class="badge bg-warning text-dark">Sedang</span>
+    <span class="badge bg-danger">Tinggi</span>
 </div>
 
 </section>
@@ -1115,32 +1115,7 @@ var aliasDesa = {
 
 console.log(<?= json_encode($diare ?? []) ?>);
 var dataDiare = <?= json_encode($diare ?? []) ?>;
-function populateFilters(){
 
-    let desaSet = new Set();
-    let diagnosisSet = new Set();
-    let tahunSet = new Set();
-
-    dataDiare.forEach(item => {
-        desaSet.add(item.desa);
-        diagnosisSet.add(item.diagnosis);
-
-        let tahun = item.tanggal_kunjungan.substring(0,4);
-        tahunSet.add(tahun);
-    });
-
-    desaSet.forEach(d => {
-        filterDesa.innerHTML += `<option value="${d}">${d}</option>`;
-    });
-
-    diagnosisSet.forEach(d => {
-        filterDiagnosis.innerHTML += `<option value="${d}">${d}</option>`;
-    });
-
-    tahunSet.forEach(t => {
-        filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
-    });
-}
 function applyFilters(){
 
     let desa = document.getElementById('filterDesa').value;
@@ -1182,17 +1157,25 @@ dataDiare.forEach(item => {
         };
     }
 
-   dataFinal[desa].total += 1;
+    dataFinal[desa].total++;
     dataFinal[desa].jumlah++;
 });
 
 for(var key in dataFinal){
+
     var rata = dataFinal[key].total / dataFinal[key].jumlah;
 
-    if(rata >= 20) dataFinal[key].kategori = "tinggi";
-    else if(rata >= 10) dataFinal[key].kategori = "sedang";
-    else dataFinal[key].kategori = "rendah";
+    if(rata >= 15){
+        dataFinal[key].kategori = "tinggi";
+    }
+    else if(rata >= 5){
+        dataFinal[key].kategori = "sedang";
+    }
+    else{
+        dataFinal[key].kategori = "rendah";
+    }
 }
+
 // =========================
 // RINGKASAN DINAMIS
 // =========================
@@ -1221,10 +1204,6 @@ for(var key in dataFinal){
         desaDiAtasRata++;
     }
 }
-
-</script>
-
-<script>
 document.addEventListener("DOMContentLoaded", function(){
 
     const filterDesa = document.getElementById('filterDesa');
@@ -1238,31 +1217,48 @@ document.addEventListener("DOMContentLoaded", function(){
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
     .addTo(map);
 
-    function populateFilters(){
-        let desaSet = new Set();
-        let diagnosisSet = new Set();
-        let tahunSet = new Set();
 
-        dataDiare.forEach(item => {
-            desaSet.add(item.desa);
-            diagnosisSet.add(item.diagnosis);
+       function populateFilters(){
 
+    let desaSet = new Set();
+    let diagnosisSet = new Set();
+    let tahunSet = new Set();
+
+    filterDesa.innerHTML = '<option value="">Semua Desa</option>';
+    filterDiagnosis.innerHTML = '<option value="">Semua Diagnosis</option>';
+    filterTahun.innerHTML = '<option value="">Semua Tahun</option>';
+
+    dataDiare.forEach(item => {
+
+        let desa = item.desa ? item.desa.trim() : "";
+        let diagnosis = item.diagnosis_diare
+            ? item.diagnosis_diare.trim()
+            : "";
+
+        if(desa) desaSet.add(desa);
+        if(diagnosis) diagnosisSet.add(diagnosis);
+
+        if(
+            item.tanggal_kunjungan &&
+            item.tanggal_kunjungan !== '0000-00-00'
+        ){
             let tahun = item.tanggal_kunjungan.substring(0,4);
             tahunSet.add(tahun);
-        });
+        }
+    });
 
-        desaSet.forEach(d => {
-            filterDesa.innerHTML += `<option value="${d}">${d}</option>`;
-        });
+    desaSet.forEach(d=>{
+        filterDesa.innerHTML += `<option value="${d}">${d}</option>`;
+    });
 
-        diagnosisSet.forEach(d => {
-            filterDiagnosis.innerHTML += `<option value="${d}">${d}</option>`;
-        });
+    diagnosisSet.forEach(d=>{
+        filterDiagnosis.innerHTML += `<option value="${d}">${d}</option>`;
+    });
 
-        tahunSet.forEach(t => {
-            filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
-        });
-    }
+    tahunSet.forEach(t=>{
+        filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
+    });
+}
 
     function renderChart(filteredData){
 
@@ -1302,18 +1298,38 @@ document.addEventListener("DOMContentLoaded", function(){
 
         filteredData.forEach(item => {
 
-            let desa = fixNama(item.desa);
+    let desa = fixNama(item.desa);
 
-            if(aliasDesa[desa]){
-                desa = aliasDesa[desa];
-            }
+    if(aliasDesa[desa]){
+        desa = aliasDesa[desa];
+    }
 
-            if(!finalData[desa]){
-                finalData[desa] = 0;
-            }
+    if(!finalData[desa]){
+        finalData[desa] = {
+            total: 0,
+            diagnosis: {},
+            tahunTerakhir: 0
+        };
+    }
 
-            finalData[desa]++;
-        });
+    finalData[desa].total++;
+
+    // hitung diagnosis
+    let diag = item.diagnosis || "Tidak diketahui";
+
+    if(!finalData[desa].diagnosis[diag]){
+        finalData[desa].diagnosis[diag] = 0;
+    }
+
+    finalData[desa].diagnosis[diag]++;
+
+    // tahun terbaru
+    let tahun = parseInt(item.tanggal_kunjungan.substring(0,4));
+
+    if(tahun > finalData[desa].tahunTerakhir){
+        finalData[desa].tahunTerakhir = tahun;
+    }
+});
 
         if(geoLayer){
             map.removeLayer(geoLayer);
@@ -1322,7 +1338,17 @@ document.addEventListener("DOMContentLoaded", function(){
         fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
         .then(res => res.json())
         .then(data => {
+let totals = Object.values(finalData)
+    .map(d => d.total)
+    .sort((a,b) => a - b);
 
+let batasSedang = 0;
+let batasTinggi = 0;
+
+if(totals.length > 0){
+    batasSedang = totals[Math.floor(totals.length / 3)];
+    batasTinggi = totals[Math.floor((totals.length * 2) / 3)];
+}
             geoLayer = L.geoJSON(data, {
 
                 style: function(feature){
@@ -1333,15 +1359,16 @@ document.addEventListener("DOMContentLoaded", function(){
                         nama = aliasDesa[nama];
                     }
 
-                    let total = finalData[nama] || 0;
+                    let total = finalData[nama]?.total || 0;
 
-                    let warna = "#28a745";
+let warna = "#28a745"; // hijau
 
-                    if(total >= 20){
-                        warna = "#dc3545";
-                    } else if(total >= 10){
-                        warna = "#ffc107";
-                    }
+if(total > batasTinggi){
+    warna = "#dc3545"; // merah
+}
+else if(total >= batasSedang){
+    warna = "#ffc107"; // kuning
+}
 
                     return {
                         color:"#00CED1",
@@ -1359,12 +1386,67 @@ document.addEventListener("DOMContentLoaded", function(){
                         nama = aliasDesa[nama];
                     }
 
-                    let total = finalData[nama] || 0;
+                    let info = finalData[nama] || {
+    total: 0,
+    diagnosis: {},
+    tahunTerakhir: '-'
+};
 
-                    layer.bindPopup(`
-                        <b>${feature.properties.NAMOBJ}</b>
-                        <br>Total Kasus: ${total}
-                    `);
+let total = info.total;
+
+                    let kategori = "Rendah";
+
+if(total > batasTinggi){
+    kategori = "Tinggi";
+}
+else if(total >= batasSedang){
+    kategori = "Sedang";
+}
+
+
+
+let diagnosisDominan = "-";
+
+if(info){
+    let max = 0;
+
+    for(let d in info.diagnosis){
+        if(info.diagnosis[d] > max){
+            max = info.diagnosis[d];
+            diagnosisDominan = d;
+        }
+    }
+}
+
+layer.bindPopup(`
+    <div style="min-width:220px;">
+        <h6 style="margin-bottom:10px; color:#00BBC2;">
+            📍 ${feature.properties.NAMOBJ}
+        </h6>
+
+        <p style="margin:4px 0;">
+            👥 <b>Total Kasus:</b> ${total}
+        </p>
+
+        <p style="margin:4px 0;">
+            🚨 <b>Status:</b> ${kategori}
+        </p>
+
+        <p style="margin:4px 0;">
+            🏥 <b>Diagnosis Dominan:</b> ${diagnosisDominan}
+        </p>
+
+        <p style="margin:4px 0;">
+            📅 <b>Update Terakhir:</b> ${info?.tahunTerakhir || '-'}
+        </p>
+
+        <hr>
+
+        <small style="color:#666;">
+            Desa ini memiliki pemantauan kasus diare aktif pada sistem SIGAP.
+        </small>
+    </div>
+`);
                 }
 
             }).addTo(map);
