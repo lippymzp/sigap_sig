@@ -141,7 +141,7 @@ $passwordValue = $petugas['password'] ?? '';
     <div class="avatar-box text-center">
 
         <!-- FORM FOTO -->
-        <form action="<?= base_url('pneumonia/uploadFoto_admin') ?>"
+        <form action="<?= base_url('uploadFoto_admin') ?>"
             method="post"
             enctype="multipart/form-data">
 
@@ -168,7 +168,7 @@ $passwordValue = $petugas['password'] ?? '';
     </h4>
 
     <!-- FORM UPDATE -->
-    <form action="<?= base_url('pneumonia/updateProfil_admin') ?>" method="post">
+    <form action="<?= base_url('updateProfil_admin') ?>" method="post">
 
         <div class="form-wrapper">
 

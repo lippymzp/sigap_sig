@@ -323,6 +323,52 @@ textarea.custom-input{
 }
 
 /* =========================
+   CUSTOM TANGGAL INPUT
+========================= */
+.tanggal-wrapper {
+    width: 100%;
+}
+
+.tanggal-box {
+    position: relative;
+    width: 100%;
+}
+
+.tanggal-text {
+    width: 100%;
+    height: 29px;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    padding: 4px 36px 4px 9px;
+    font-size: 11px;
+    color: #111;
+    background: #fff;
+    cursor: pointer;
+}
+
+.tanggal-icon {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: #222;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.tanggal-date {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 36px;
+    height: 29px;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 4;
+}
+
+/* =========================
    STEP 3
 ========================= */
 .step3-layout{
@@ -604,7 +650,8 @@ body{
     margin-top:58px;
 }
 
-}
+
+
 
 
 </style>
@@ -796,9 +843,27 @@ body{
                             <input name="nama" type="text" class="form-control" placeholder="Nama sesuai KTP" id="nama">
                         </div>
 
-                        <div class="step2-field">
+                        <div class="step2-field tanggal-wrapper">
                             <label>Tanggal Input</label>
-                            <input name="tanggal" type="date" class="form-control" id="tanggal">
+
+                            <div class="tanggal-box">
+                                <input 
+                                    type="text" 
+                                    id="tanggal_text" 
+                                    class="form-control tanggal-text"
+                                    placeholder="Pilih Tanggal"
+                                    readonly
+                                >
+
+                                <input 
+                                    name="tanggal" 
+                                    type="date" 
+                                    class="tanggal-date" 
+                                    id="tanggal"
+                                >
+
+                                <i class="fa-regular fa-calendar tanggal-icon" onclick="bukaKalender()"></i>
+                            </div>
                         </div>
 
                         <div class="step2-field">
@@ -819,7 +884,8 @@ body{
                             <label>Usia</label>
                             <select name="usia" class="form-control" id="usia">
                                 <option value="">Pilih Usia</option>
-                                <option value="0-5 Tahun">0-5 Tahun</option>
+                                <option value="0-12 Bulan">0-12 Bulan</option>
+                                <option value="1-5 Tahun">1-5 Tahun</option>
                                 <option value="6-11 Tahun">6-11 Tahun</option>
                                 <option value="12-16 Tahun">12-16 Tahun</option>
                                 <option value="17-25 Tahun">17-25 Tahun</option>
@@ -997,7 +1063,7 @@ body{
 
                         <div class="step3-actions">
 
-                            <button type="button" class="link-action" onclick="prevStep(2)">
+                            <button type="button" class="link-action" onclick="prevStep(1)">
                                 📝 Ubah Data
                             </button>
 
@@ -1116,6 +1182,24 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     });
 
+    // =========================
+// CUSTOM TANGGAL INPUT
+// =========================
+const inputTanggal = document.getElementById('tanggal');
+const inputTanggalText = document.getElementById('tanggal_text');
+
+if (inputTanggal && inputTanggalText) {
+    inputTanggalText.addEventListener('click', function () {
+        bukaKalender();
+    });
+
+    inputTanggal.addEventListener('change', function () {
+        if (this.value) {
+            inputTanggalText.value = formatTanggalIndonesia(this.value);
+        }
+    });
+}
+
     map.on('click', function(e){
 
         var lat = e.latlng.lat;
@@ -1173,6 +1257,30 @@ function nextStep(step){
 
 function prevStep(step){
     nextStep(step);
+}
+
+function formatTanggalIndonesia(tanggal) {
+    const bulan = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+
+    const dateObj = new Date(tanggal);
+    const hari = dateObj.getDate();
+    const namaBulan = bulan[dateObj.getMonth()];
+    const tahun = dateObj.getFullYear();
+
+    return hari + ' ' + namaBulan + ' ' + tahun;
+}
+
+function bukaKalender() {
+    const tanggal = document.getElementById('tanggal');
+
+    if (tanggal && tanggal.showPicker) {
+        tanggal.showPicker();
+    } else if (tanggal) {
+        tanggal.click();
+    }
 }
 
 function showWarningMessage(judul, pesan){
@@ -1315,7 +1423,8 @@ function isiRingkasan(){
     let alamat = document.getElementById('alamat').value || '-';
 
     let nama = document.getElementById('nama').value || '-';
-    let tanggal = document.getElementById('tanggal').value || '-';
+    let tanggalValue = document.getElementById('tanggal').value;
+    let tanggal = tanggalValue ? formatTanggalIndonesia(tanggalValue) : '-';
     let usia = document.getElementById('usia').value || '-';
     let diagnosa = document.getElementById('diagnosa').value || '-';
 
