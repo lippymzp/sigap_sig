@@ -55,10 +55,7 @@
             <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
         </a>
 
-        <a href="<?= base_url('admind/export') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
-            <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Export Data
-        </a>
+      
 
         <!-- <div class="menu-label">Manajemen Data</div>
         <a href="/pasien" class="<?= ($menu == 'pasien') ? 'active' : '' ?>"><i class="fa-solid fa-clipboard-user me-2"></i> Data Pasien</a> -->
@@ -74,10 +71,7 @@
             class="<?= ($menu == 'funfact') ? 'active' : '' ?>">
             <i class="fa-regular fa-user me-2"></i> Edit Funfact
         </a>
-        <a href="<?= base_url('admind/profil') ?>"
-            class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-             <i class="fa-regular fa-user me-2"></i> Profil Admin
-        </a>
+      
 
     </div>
 
@@ -120,13 +114,14 @@
         </div>
 
         <div class="content-body">
-            <?= $this->renderSection('content'); ?>
-        </div>
-</div>
-        <div class="footer-dashboard">
+    <?= $this->renderSection('content'); ?>
+</div> <!-- main-content -->
+
+<div class="footer-dashboard">
     <?php 
         $show_footer_maskot = true;
         $footer_maskot = 'logodsing.png';
+
         echo view('layout/footer', [
             'penyakit' => 'diare',
             'show_footer_maskot' => $show_footer_maskot,
@@ -135,13 +130,13 @@
     ?>
 </div>
 
-    </div>
+</div> <!-- wrapper -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="<?= base_url('js/script.js') ?>"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <?= $this->renderSection('script'); ?>
-    </div> <!-- END WRAPPER -->
 
     <script>
 document.addEventListener("DOMContentLoaded", function() {

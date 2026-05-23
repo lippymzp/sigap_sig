@@ -1,4 +1,3 @@
-
 <?= $this->extend('layout/dashboard_layout_admin') ?>
 <?= $this->section('content') ?>
 
@@ -227,17 +226,32 @@ $current_search = $current_search ?? '';
                     <li>
                         <label class="dropdown-item py-1">
                             <input type="checkbox" name="filter[]" class="filter-item-check" value="lakilaki" <?= in_array('lakilaki', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Laki-laki
-                        </label>
+                        </label>  
                     </li>
                     <li>
-                        <label class="dropdown-item py-1">
-                            <input type="checkbox" name="filter[]" class="filter-item-check" value="anak" <?= in_array('anak', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Anak-anak (0-19 tahun)
-                        </label>
-                    </li>
-                    <li>
-                        <label class="dropdown-item py-1">
-                            <input type="checkbox" name="filter[]" class="filter-item-check" value="dewasa" <?= in_array('dewasa', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Dewasa (>19 tahun)
-                        </label>
+                        <li>
+                    <label class="dropdown-item py-1">
+                        <input type="checkbox" name="filter[]" class="filter-item-check" value="bayi_anak" <?= in_array('bayi_anak', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Bayi dan Anak Pra-sekolah (0–6 Tahun)
+                    </label>
+                </li>
+
+                <li>
+                    <label class="dropdown-item py-1">
+                        <input type="checkbox" name="filter[]" class="filter-item-check" value="remaja" <?= in_array('remaja', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Anak Sekolah dan Remaja (>6–18 Tahun)
+                    </label>
+                </li>
+
+                <li>
+                    <label class="dropdown-item py-1">
+                        <input type="checkbox" name="filter[]" class="filter-item-check" value="dewasa" <?= in_array('dewasa', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Dewasa (>18–59 Tahun)
+                    </label>
+                </li>
+
+                <li>
+                    <label class="dropdown-item py-1">
+                        <input type="checkbox" name="filter[]" class="filter-item-check" value="lansia" <?= in_array('lansia', $current_filter) ? 'checked' : '' ?> onchange="submitFilterForm()"> Lansia (≥60 Tahun)
+                    </label>
+                </li>
                     </li>
                 </ul>
             </div>
@@ -304,7 +318,7 @@ $current_search = $current_search ?? '';
         </table>
     </div>
 
-    <div class="pagination-custom mt-4 d-flex justify-content-between align-items-center">
+    <div class="pagination-custom mt-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div class="text-muted" style="font-size: 13.5px;">
             Menampilkan <b><?= count($skrining ?? []) ?></b> data di halaman ini
         </div>
@@ -392,7 +406,12 @@ $current_search = $current_search ?? '';
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" style="border-radius:8px;" data-bs-dismiss="modal">Batal</button>
-                    <a href="<?= base_url('dbd/hapus_skrining/'.$row['id_skrining']) ?>" class="btn btn-danger" style="border-radius:8px; px-4">Hapus Data</a>
+                    <form action="<?= base_url('dbd/hapus_skrining/'.$row['id_skrining']) ?>" method="post">
+    <?= csrf_field() ?>
+    <button type="submit" class="btn btn-danger">
+        Hapus Data
+    </button>
+</form>
                 </div>
             </div>
         </div>

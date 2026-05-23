@@ -1,152 +1,152 @@
-<?php $pagerLinks = $pagerLinks ?? ''; ?>
+'pagerLinks' => $pager->makeLinks($page, $perPage, $total, 'default_full'),
 <?= $this->extend('layout/dashboard_layout_kepala') ?>
 <?= $this->section('content') ?>
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<?php 
+$pagerLinks = $pagerLinks ?? '';
+?>
 <style>
-body{
-    background:#f5f7fb;
-    font-family:'Poppins',sans-serif;
+body {
+    background: #f5f7fb;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* CARD */
-.custom-card{
-    background:white;
-    border-radius:20px;
-    padding:20px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+.custom-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 /* TOPBAR */
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-    gap:15px;
-    flex-wrap:wrap;
+.topbar-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
-.search-box{
-    position:relative;
-    width:350px;
+.search-box {
+    position: relative;
+    width: 320px;
 }
 
-.search-box input{
-    padding-left:45px;
-    border-radius:10px;
-    height:45px;
+.search-box input {
+    padding-left: 40px;
+    border-radius: 10px;
+    height: 40px;
+    font-size: 14px;
 }
 
-.search-box i{
-    position:absolute;
-    left:15px;
-    top:50%;
-    transform:translateY(-50%);
-    color:#00BBC2;
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00BBC2;
 }
 
-/* DROPDOWN */
-.filter-group{
-    display:flex;
-    gap:10px;
+/* FILTER */
+.filter-group {
+    display: flex;
+    gap: 10px;
 }
 
-.filter-group select{
-    border-radius:10px;
-    height:45px;
-    min-width:160px;
+.filter-group select,
+.filter-group .btn-filter {
+    border-radius: 10px;
+    height: 40px;
+    font-size: 14px;
+    min-width: 140px;
 }
 
 /* TABLE */
-.table{
-    border-radius:20px;
-    overflow:hidden;
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.table {
+    margin-bottom: 0;
+    font-size: 13.5px;
+    border-collapse: collapse;
 }
 
 .table thead {
     background: linear-gradient(135deg, #00BBC2, #009aa0);
-    color: white;
 }
 
 .table thead th {
-    background: linear-gradient(135deg, #00BBC2, #009aa0);
-    color: white;
+    background: linear-gradient(135deg, #00BBC2, #009aa0) !important;
+    color: white !important;
     border: none;
-    padding: 18px;
+    padding: 12px 10px;
     text-align: center;
     font-weight: 600;
-    letter-spacing: 0.3px;
-}
-
-/* rounded header biar soft UI */
-.table thead tr th:first-child {
-    border-top-left-radius: 12px;
-}
-
-.table thead tr th:last-child {
-    border-top-right-radius: 12px;
-}
-
-/* efek halus header */
-.table thead tr {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-.table {
-    border: 1px solid #d1d5db;;
-    border-collapse: collapse;
+    font-size: 13.5px;
 }
 
 .table th,
 .table td {
-    border: 1px solid #d1d5db;
+    border: 1px solid #e5e7eb !important;
+    padding: 10px 12px;
+}
+
+.table tbody tr:hover {
+    background-color: #f9fafb;
 }
 
 /* BADGE */
-.badge-custom{
-    padding:10px 15px;
-    border-radius:20px;
-    font-size:13px;
+.badge-custom {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
-.badge-buruk{
-    background:#ffdddd;
-    color:#d60000;
+.badge-buruk {
+    background: #fee2e2;
+    color: #dc2626;
 }
 
-.badge-cukup{
-    background:#fff4cc;
-    color:#856404;
+.badge-cukup {
+    background: #fef3c7;
+    color: #d97706;
 }
 
-.badge-baik{
-    background:#d4f8e8;
-    color:#0f8b4c;
+.badge-baik {
+    background: #d1fae5;
+    color: #059669;
 }
 
-/* BUTTON AKSI */
-.aksi-btn{
-    width:35px;
-    height:35px;
-    border:none;
-    border-radius:8px;
-    color:white;
-    margin:0 3px;
+/* BUTTON */
+.aksi-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
-.btn-detail{
-    background:#1d4ed8;
+.btn-detail {
+    background: #0284c7;
 }
 
-.btn-edit{
-    background:#facc15;
-    color:black;
+/* PAGINATION */
+.pagination-custom {
+    font-size: 14px;
 }
 
-.btn-hapus{
-    background:#ef4444;
-}
-/* PAGINATION MODERN FULL */
 .pagination-custom .pages {
     display: flex;
     gap: 6px;
@@ -155,64 +155,40 @@ body{
     align-items: center;
 }
 
-/* semua link pager */
 .pagination-custom .pages a,
 .pagination-custom .pages span {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    min-width: 42px;
-    height: 42px;
-    padding: 0 14px;
-
-    border-radius: 12px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
     border: 1px solid #d1d5db;
-
     background: #fff;
     color: #374151;
-
     font-weight: 500;
     text-decoration: none;
-
-    transition: all 0.25s ease;
 }
 
-/* hover */
-.pagination-custom .pages a:hover {
-    background: #00BBC2;
-    color: white;
-    border-color: #00BBC2;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 187, 194, 0.25);
-}
-
-/* active page */
 .pagination-custom .pages .active {
     background: linear-gradient(135deg, #00BBC2, #009aa0);
     color: white !important;
     border: none;
-    box-shadow: 0 6px 14px rgba(0, 187, 194, 0.35);
 }
-
-/* PREV & NEXT styling */
-.pagination-custom .pages a[rel="prev"],
-.pagination-custom .pages a[rel="next"] {
-    min-width: 90px;
-    font-weight: 600;
-    background: #f3f4f6;
+.badge-custom{
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
 }
-
-.pagination-custom .pages a[rel="prev"]:hover,
-.pagination-custom .pages a[rel="next"]:hover {
-    background: #00BBC2;
-    color: white;
-}
+</style>
 </style>
 
    <div class="custom-card">
 
-<div class="topbar">
+<div class="topbar-form">
 
     <!-- SEARCH -->
     <div class="search-box">
@@ -237,7 +213,7 @@ body{
 
         <div class="dropdown">
    
-<button class="form-select text-start"
+<button class="btn btn-outline-secondary text-start btn-filter dropdown-toggle d-flex align-items-center justify-content-between"
         type="button"
         data-bs-toggle="dropdown"
         style="height:45px; min-width:220px;">
@@ -299,15 +275,29 @@ body{
 
 <li>
 <label class="dropdown-item">
-<input type="checkbox" class="filter-check" value="anak">
- Anak-anak (0-19 tahun)
+<input type="checkbox" class="filter-check" value="bayi_anak">
+ Bayi dan Anak Pra-sekolah (0–6 Tahun)
+</label>
+</li>
+
+<li>
+<label class="dropdown-item">
+<input type="checkbox" class="filter-check" value="remaja">
+ Anak Sekolah dan Remaja (>6–18 Tahun)
 </label>
 </li>
 
 <li>
 <label class="dropdown-item">
 <input type="checkbox" class="filter-check" value="dewasa">
- Dewasa (>19 tahun)
+ Dewasa (>18–59 Tahun)
+</label>
+</li>
+
+<li>
+<label class="dropdown-item">
+<input type="checkbox" class="filter-check" value="lansia">
+ Lansia (≥60 Tahun)
 </label>
 </li>
 
@@ -319,24 +309,26 @@ body{
 
 <!-- TABLE -->
 <div class="table-responsive">
-<table class="table align-middle">
+<table class="table align-middle table-hover">
 
 <thead>
 <tr>
-    <th>No.</th>
-    <th>Nama</th>
-    <th>Umur</th>
-    <th>Jenis Kelamin</th>
-    <th>Alamat</th>
-    <th>Tanggal</th>
-    <th>Hasil</th>
-    <th>Aksi</th>
+<th style="width:50px;">No.</th>
+<th>Nama</th>
+<th style="width:80px;">Umur</th>
+<th style="width:120px;">Jenis Kelamin</th>
+<th>Alamat</th>
+<th style="width:120px;">Tanggal</th>
+<th style="width:260px;">Hasil</th>
+<th style="width:80px;">Detail</th>
 </tr>
 </thead>
 
 <tbody>
 
-<?php $no=1; foreach(($skrining ?? []) as $row): ?>
+<?php $no = 1 + (($page ?? 1) - 1) * 10; ?>
+
+<?php foreach(($skrining ?? []) as $row): ?>
 
 <tr class="data-row"
 
@@ -370,39 +362,34 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 <td><?= $row['tanggal'] ?></td>
 
 <td>
-
 <?php if(strpos($row['hasil'],'Buruk') !== false): ?>
-<span class="badge-custom badge-buruk">
-    <?= $row['hasil'] ?>
-</span>
+
+    <span class="badge-custom badge-buruk">
+        <?= $row['hasil'] ?>
+    </span>
 
 <?php elseif(strpos($row['hasil'],'Cukup') !== false): ?>
-<span class="badge-custom badge-cukup">
-    <?= $row['hasil'] ?>
-</span>
+
+    <span class="badge-custom badge-cukup">
+        <?= $row['hasil'] ?>
+    </span>
 
 <?php else: ?>
-<span class="badge-custom badge-baik">
-    <?= $row['hasil'] ?>
-</span>
-<?php endif; ?>
 
-<td>
+    <span class="badge-custom badge-baik">
+        <?= $row['hasil'] ?>
+    </span>
+
+<?php endif; ?>
+</td>
+
+<td class="text-center align-middle">
 
 <button class="aksi-btn btn-detail"
         data-bs-toggle="modal"
         data-bs-target="#detailModal<?= $row['id_skrining'] ?>">
     <i class="bi bi-eye"></i>
 </button>
-
-
-<button class="aksi-btn btn-hapus"
-        data-bs-toggle="modal"
-        data-bs-target="#hapusModal<?= $row['id_skrining'] ?>">
-    <i class="bi bi-trash"></i>
-</button>
-
-</td>
 
 </tr>
 <!-- MODAL DETAIL -->
@@ -530,41 +517,7 @@ $row['kelurahan'].', '.$row['kecamatan'].', '.$row['kabupaten']
 </div>
 </div>
 </div>
-<!-- MODAL HAPUS -->
-<div class="modal fade"
-     id="hapusModal<?= $row['id_skrining'] ?>"
-     tabindex="-1">
 
-<div class="modal-dialog modal-dialog-centered">
-<div class="modal-content" style="border-radius:20px;">
-
-<div class="modal-header">
-    <h5 class="modal-title">
-        Konfirmasi Hapus
-    </h5>
-
-    <button type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body">
-    Yakin ingin menghapus data
-    <b><?= $row['nama_pasien_skrining'] ?></b> ?
-</div>
-
-<div class="modal-footer">
-
-<button type="button"
-        class="btn btn-secondary"
-        data-bs-dismiss="modal">
-    Batal
-</button>
-
-<a href="<?= base_url('dbd/hapus_skrining/'.$row['id_skrining']) ?>"
-   class="btn btn-danger">
-   Hapus
-</a>
 
 </div>
 </div>
@@ -650,19 +603,22 @@ function applyFilter(){
         }
 
         // ===== UMUR =====
-        let umurFilter = activeFilters.filter(f =>
-            ['anak','dewasa'].includes(f)
-        );
+let umurFilter = activeFilters.filter(f =>
+    ['bayi_anak','remaja','dewasa','lansia'].includes(f)
+);
 
-        if(umurFilter.length > 0){
-            let matchUmur =
-                (umurFilter.includes('anak') && usia <= 19) ||
-                (umurFilter.includes('dewasa') && usia > 19);
+if(umurFilter.length > 0){
 
-            if(!matchUmur){
-                show = false;
-            }
-        }
+    let matchUmur =
+        (umurFilter.includes('bayi_anak') && usia >= 0 && usia <= 6) ||
+        (umurFilter.includes('remaja') && usia > 6 && usia <= 18) ||
+        (umurFilter.includes('dewasa') && usia > 18 && usia <= 59) ||
+        (umurFilter.includes('lansia') && usia >= 60);
+
+    if(!matchUmur){
+        show = false;
+    }
+}
 
         // ===== HARI INI =====
         if(activeFilters.includes('hariini') && tanggal !== today){

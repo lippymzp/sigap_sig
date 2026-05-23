@@ -229,8 +229,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-solid fa-chart-column me-2"></i> Grafik
 </a>
 
-<a href="<?= base_url('hasil_data_kepala/hasil') ?>"
-    class="<?= ($menu == 'hasil_data_kepala') ? 'active' : '' ?>">
+<a href="<?= base_url('dbd/hasil') ?>"
+    class="<?= ($menu == 'hasil') ? 'active' : '' ?>">
     <i class="fa-regular fa-folder me-2"></i> Hasil Data Pasien
 </a>
 
@@ -246,17 +246,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
 <div class="menu-label">Informasi</div>
 
-<a href="<?= base_url('profil_kepala') ?>"
-    class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-    <i class="fa-regular fa-user me-2"></i> Profil
-</a>
-
-<div class="menu-label">Master Data</div>
-
-<a href="<?= base_url('kepala/manajemen_user') ?>"
-    class="<?= ($menu == 'manajemen_user_kepala') ? 'active' : '' ?>">
-    <i class="fa-solid fa-users me-2"></i> Manajemen User
-</a>
+<a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
+            <i class="fa-regular fa-user me-2"></i> Profil Kepala
+        </a>
 
 </div>
 

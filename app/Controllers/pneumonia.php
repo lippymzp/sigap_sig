@@ -9,6 +9,7 @@ use App\Models\SkriningPneumoniaModel;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use DateTime;
 
 class Pneumonia extends BaseController
 {
@@ -99,11 +100,13 @@ class Pneumonia extends BaseController
         12 => 'Desember'
     ];
 
-    foreach ($data as &$d) {
+    $hasil = $data;
+    
+    foreach ($hasil as &$d) {
         $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
     }
 
-    return view('gol_c/hasil_data_pasien/hasil_data_c', [
+    return view('gol_c/hasil_data_pasien/hasil_data_c', [                   
         'menu' => 'hasil',
         'penyakit' => 'pneumonia',
         'judul' => 'Hasil Data Pasien',
@@ -171,9 +174,11 @@ class Pneumonia extends BaseController
             12 => 'Desember'
         ];
 
-        foreach ($data as &$d) {
+        foreach ($hasil as &$d) {
             $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
         }
+
+return $this->response->setJSON($hasil);
 
         return $this->response->setJSON($data);
     }
@@ -1040,12 +1045,56 @@ public function rekapskrining()
     return view('gol_c/rekapskrining', $data);
 }
 
+// ======================
+// FUNCTION ENTROPY
+// ======================
+private function entropy($data)
+{
+    $total = count($data);
+
+    if ($total == 0) {
+        return 0;
+    }
+
+    $berisiko = 0;
+    $tidak = 0;
+
+    foreach ($data as $d) {
+
+        if ($d['hasil'] == 'Berisiko') {
+            $berisiko++;
+        } else {
+            $tidak++;
+        }
+    }
+
+    $p1 = $berisiko / $total;
+    $p2 = $tidak / $total;
+
+    $entropy = 0;
+
+    if ($p1 > 0) {
+        $entropy -= $p1 * log($p1, 2);
+    }
+
+    if ($p2 > 0) {
+        $entropy -= $p2 * log($p2, 2);
+    }
+
+    return $entropy;
+}
+
 public function skriningpneumonia3()
 {
     $nama = $this->request->getPost('nama');
     $jenis_kelamin = $this->request->getPost('jenis_kelamin');
     $tanggal_lahir = $this->request->getPost('tanggal_lahir');
-    $kategori_usia = $this->request->getPost('kategori_usia');
+    $tanggal_lahir = $this->request->getPost('tanggal_lahir');
+
+    $lahir = new DateTime($tanggal_lahir);
+    $today = new DateTime();
+
+    $usia = $today->diff($lahir)->y;
     $nik = $this->request->getPost('nik');
     $telepon = $this->request->getPost('telepon');
 
@@ -1101,7 +1150,7 @@ public function skriningpneumonia3()
         'nama_pasien_skrining' => $nama,
         'jenis_kelamin' => $jenis_kelamin,
         'tanggal_lahir' => $tanggal_lahir,
-        'usia' => $kategori_usia,
+        'usia' => $usia,
         'no_hp' => $telepon,
         'created_at' => date('Y-m-d H:i:s'),
         'id_wilayah' => $id_wilayah
@@ -1161,50 +1210,10 @@ public function skriningpneumonia3()
     ];
 
     // ======================
-    // FUNCTION ENTROPY
-    // ======================
-
-    function entropy($data)
-    {
-        $total = count($data);
-
-        if ($total == 0) {
-            return 0;
-        }
-
-        $berisiko = 0;
-        $tidak = 0;
-
-        foreach ($data as $d) {
-
-            if ($d['hasil'] == 'Berisiko') {
-                $berisiko++;
-            } else {
-                $tidak++;
-            }
-        }
-
-        $p1 = $berisiko / $total;
-        $p2 = $tidak / $total;
-
-        $entropy = 0;
-
-        if ($p1 > 0) {
-            $entropy -= $p1 * log($p1, 2);
-        }
-
-        if ($p2 > 0) {
-            $entropy -= $p2 * log($p2, 2);
-        }
-
-        return $entropy;
-    }
-
-    // ======================
     // HITUNG ENTROPY TOTAL
     // ======================
 
-    $entropyTotal = entropy($dataTraining);
+    $entropyTotal = $this->entropy($dataTraining);
 
     // ======================
     // HITUNG GAIN
@@ -1230,8 +1239,8 @@ public function skriningpneumonia3()
 
         $totalData = count($dataTraining);
 
-        $entropyIya = entropy($iya);
-        $entropyTidak = entropy($tidak);
+        $entropyIya = $this->entropy($iya);
+        $entropyTidak = $this->entropy($tidak);
 
         $gain =
             $entropyTotal -
@@ -1352,7 +1361,7 @@ public function skriningpneumonia3()
     $data['kabupaten'] = $kabupaten;
     $data['kecamatan'] = $kecamatan;
     $data['kelurahan'] = $kelurahan;
-
+ 
     $data['hasil'] = $hasil;
     $data['alasan'] = $alasan;
 

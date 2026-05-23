@@ -804,7 +804,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
         document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
         document.getElementById("detailBulanLabel").innerText = "Kasus Baru (" + namaBulan(bulan) + " " + selectedDetailYear + ")";
         document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
@@ -2088,16 +2088,16 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$totalBerita = $queryBerita->getNumRows();
 ?>
 
 <div class="news-slider-admin">
@@ -2110,19 +2110,30 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($queryBerita->getResultArray() as $berita): ?>
 
                 <?php
                 $gambar = trim((string)($berita['gambar_berita'] ?? ''));
-                $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
                 $gambarFix = base_url('uploads/berita/default.jpeg');
 
-                if(
-                    $gambar !== '' &&
-                    strtolower($gambar) !== 'null' &&
-                    file_exists($pathFile)
-                ){
-                    $gambarFix = base_url('uploads/berita/' . $gambar);
+                if ($gambar !== '' && strtolower($gambar) !== 'null') {
+
+                    // CEK APAKAH URL INTERNET
+                    if (filter_var($gambar, FILTER_VALIDATE_URL)) {
+
+                        $gambarFix = $gambar;
+
+                    } else {
+
+                        // FILE LOKAL
+                        $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
+                        if (file_exists($pathFile)) {
+
+                            $gambarFix = base_url('uploads/berita/' . $gambar);
+                        }
+                    }
                 }
 
                 $urlBerita = !empty($berita['url_berita'])
@@ -2166,7 +2177,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 

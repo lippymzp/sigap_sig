@@ -1,4 +1,4 @@
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,79 +102,7 @@ body {
 body {
     font-family: 'Poppins', sans-serif;
 }
-.footer{
-    background:#22c1c9;
-    color:#fff;
-    padding:55px 0 20px;
-    font-family:'Poppins', sans-serif;
-}
 
-.footer-container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-}
-
-.footer-content{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:40px;
-    flex-wrap:wrap;
-}
-
-.footer-box{
-    flex:1;
-    min-width:250px;
-}
-
-/* logo */
-.footer-brand{
-    text-align:center;
-}
-
-.footer-logo{
-    width:90px;
-    margin-bottom:10px;
-}
-
-.footer-brand p{
-    font-size:14px;
-    line-height:1.7;
-    margin:0;
-}
-
-/* judul */
-.footer-title{
-    font-weight:700;
-    margin-bottom:8px;
-}
-
-/* teks kecil */
-.footer-box p{
-    font-size:14px;
-}
-
-/* icon jarak */
-.footer-box i{
-    margin-right:8px;
-}
-
-/* copyright */
-.footer-bottom{
-    text-align:center;
-    margin-top:40px;
-    font-size:14px;
-    opacity:.9;
-}
-
-/* responsive */
-@media(max-width:768px){
-    .footer-content{
-        flex-direction:column;
-        text-align:center;
-    }
-}
 </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -214,18 +142,18 @@ body {
 
 <div class="mb-3">
 <label>NIK</label>
-<input type="text" name="nik" class="form-control">
+<input type="text" name="nik" class="form-control" placeholder="Masukkan Nomor Induk Kependudukan">
 </div>
 
 <div class="mb-3">
 <label>Nama Lengkap</label>
-<input type="text" name="nama" class="form-control">
+<input type="text" name="nama" class="form-control" placeholder="Masukkan Nama Lengkap" >
 </div>
 
 <div class="mb-3">
 <label>Jenis Kelamin</label>
 <select name="jenis_kelamin" class="form-select">
-<option>-- Pilih --</option>
+<option>-- Pilih Jenis Kelamin--</option>
 <option>Laki-laki</option>
 <option>Perempuan</option>
 </select>
@@ -237,16 +165,16 @@ body {
 </div>
 
 <div class="mb-3">
-<label>Kategori Usia</label>
+<label>Pilih Kategori Usia</label>
 
-<input type="text" id="kategori_usia" class="form-control" readonly>
+<input type="text" id="kategori_usia" class="form-control" placeholder="Otomatis sesuai tanggal lahir" readonly>
 
 <input type="hidden" id="usia" name="kategori_usia">
 </div>
 
 <div class="mb-3">
 <label>Nomor Telepon</label>
-<input type="text" name="telepon" class="form-control">
+<input type="text" name="telepon" class="form-control" placeholder="Masukkan Nomor Telepon">
 </div>
 
 </div>
@@ -277,7 +205,7 @@ body {
 <input type="hidden" name="kecamatan_nama" id="kecamatan_nama">
 <div class="mb-3">
 <label>RT/RW</label>
-<input type="text" name="rt_rw" id="rt_rw" class="form-control">
+<input type="text" name="rt_rw" id="rt_rw" class="form-control" placeholder="Masukkkan RT/RW">
 </div>
 
 <div class="mb-3">
@@ -294,52 +222,6 @@ body {
 </form>
 </div>
 </div>
-
-<!-- FOOTER -->
-<footer class="footer">
-
-<div class="footer-container">
-
-<div class="footer-content">
-
-    <!-- BRAND -->
-    <div class="footer-box footer-brand">
-        <img src="<?= base_url('img/logo_denggis.png') ?>" class="footer-logo">
-        <p>
-            Dengue Geographic <br> Information System
-        </p>
-    </div>
-
-    <!-- SOSIAL -->
-    <div class="footer-box">
-        <h6 class="footer-title">Media Sosial</h6>
-
-        <p class="mb-0 small"><i class="fab fa-instagram"></i>Instagram</p>
-        <p class="mb-0 small"><i class="fab fa-facebook"></i>Facebook</p>
-        <p class="mb-0 small"><i class="fab fa-twitter"></i>Twitter</p>
-    </div>
-
-    <!-- KONTAK -->
-    <div class="footer-box">
-        <h6 class="footer-title">Informasi Kontak</h6>
-
-        <p class="mb-0 small">📧 email@kampus.ac.id</p>
-        <p class="mb-0 small">📧 email@puskesmas.ac.id</p>
-        <p class="mb-0 small">📍 Jember, Jawa Timur</p>
-        <p class="mb-0 small">📞 087851132933</p>
-    </div>
-
-</div>
-
-<div class="footer-bottom">
-    © 2026 SIGAP
-</div>
-
-</div>
-
-</footer>
-</div>
-
 <!-- SCRIPT -->
 <script>
 
@@ -450,8 +332,11 @@ document.getElementById('tgl_lahir').addEventListener('change', function () {
         umur--;
     }
 
-    // kategori tampilan
-    let kategori = (umur <= 19) ? 'Anak-anak' : 'Dewasa';
+  let kategori =
+    (umur <= 6) ? 'Bayi dan Anak Pra-sekolah' :
+    (umur <= 18) ? 'Sekolah dan Remaja' :
+    (umur <= 59) ? 'Dewasa' :
+    'Lansia';
 
     // tampil di textbox
     document.getElementById('kategori_usia').value = kategori;
@@ -564,6 +449,6 @@ document.getElementById('kecamatan').addEventListener('change', function () {
     document.getElementById('kecamatan_nama').value = nama;
 });
 </script>
-
 </body>
 </html>
+<?= $this->include('layout/footer') ?>

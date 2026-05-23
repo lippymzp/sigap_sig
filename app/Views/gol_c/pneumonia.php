@@ -90,7 +90,7 @@ $this->setVar('footer_maskot', 'cynex.png');
 }
 
 .pneu-hero {
-    height: 400px;
+    height: 450px;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -100,8 +100,8 @@ $this->setVar('footer_maskot', 'cynex.png');
     background: 
     linear-gradient(
         to right,
-        rgba(0, 206, 209, 0.9) 40%,   /* Menggunakan Dark Turquoise #00CED1 */
-        rgba(0, 206, 209, 0.3) 70%,
+        rgba(0, 206, 209, 0.9) 5%,   /* Menggunakan Dark Turquoise #00CED1 */
+        rgba(0, 206, 209, 0.3) 35%,
         rgba(0, 206, 209, 0) 100%
     ),
     url("<?= base_url('img/pneumonia.png') ?>");
@@ -365,16 +365,18 @@ fitur.forEach(btn => {
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$beritaList = $queryBerita->getResultArray();
+
+$totalBerita = count($beritaList);
 ?>
 
 <div class="news-slider">
@@ -387,7 +389,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($beritaList as $berita): ?>
 
                 <?php
                 // CEK GAMBAR
@@ -451,7 +453,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 
@@ -896,7 +898,7 @@ prevBtn.addEventListener('click', () => {
         <span style="color:red;">skrining</span> sejak dini!
     </p>
 
-    <a href="<?= base_url('skriningpneumonia') ?>"
+    <a href="<?= base_url('pneumonia/skrining') ?>"
        class="btn btn-teal px-4 py-2 shadow">
 
         Mulai Skrining
@@ -926,7 +928,7 @@ prevBtn.addEventListener('click', () => {
 
 <?php
 
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $bulanLabels = [
     'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
@@ -936,8 +938,9 @@ $bulanLabels = [
 $laki = array_fill(0, 12, 0);
 $wanita = array_fill(0, 12, 0);
 
-$query = mysqli_query($conn, "
+$db = \Config\Database::connect();
 
+$query = $db->query("
     SELECT 
         MONTH(tgl_kunjungan) as bulan,
         jenis_kelamin,
@@ -951,10 +954,11 @@ $query = mysqli_query($conn, "
     GROUP BY 
         MONTH(tgl_kunjungan),
         jenis_kelamin
-
 ");
 
-while($row = mysqli_fetch_assoc($query)){
+$result = $query->getResultArray();
+
+foreach($result as $row){
 
     $index = $row['bulan'] - 1;
 
@@ -1026,7 +1030,7 @@ new Chart(ctx, {
             },
 
             {
-                label: 'Wanita',
+                label: 'Perempuan',
                 data: dataWanita,
                 backgroundColor: '#a7d7d3',
                 borderRadius: 6
@@ -1939,7 +1943,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
         document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
 
         if(bulan){
@@ -2729,7 +2733,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <?php
 /* RINGKASAN DATA PNEUMONIA  */
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $dataRingkasan = [];
 
@@ -2741,7 +2745,7 @@ $tertinggi = [
 $rataRata = 0;
 $diAtasRata = 0;
 
-$queryRingkasan = mysqli_query($conn, "
+$queryRingkasan = $db->query("
 
     SELECT 
         wilayah.kelurahan,
@@ -2762,7 +2766,7 @@ $queryRingkasan = mysqli_query($conn, "
 
 if($queryRingkasan){
 
-    while($r = mysqli_fetch_assoc($queryRingkasan)){
+    foreach($queryRingkasan->getResultArray() as $r){
         $dataRingkasan[] = $r;
     }
 
@@ -2887,7 +2891,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 <!-- FLOATING CHAT BUTTON -->
 <div id="chatbot-toggle">
-    <i class="fa-solid fa-comment-medical"></i>
+    <img src="<?= base_url('img/pneu_chat.png') ?>" alt="chatbot">
 </div>
 
 <!-- CHAT POPUP -->
@@ -2913,10 +2917,10 @@ document.addEventListener("DOMContentLoaded", function(){
     position:fixed;
     bottom:20px;
     right:20px;
-    width:65px;
-    height:65px;
+    width:75px;
+    height:75px;
     border-radius:50%;
-    background:linear-gradient(135deg,#00CED1,#40EDD0);
+    background:rgb(46, 138, 224);
     color:white;
     display:flex;
     justify-content:center;
@@ -2928,6 +2932,18 @@ document.addEventListener("DOMContentLoaded", function(){
     animation:pulse 1.8s infinite;
     transition:0.3s;
 }
+
+#chatbot-toggle img{
+    width: 64px !important;
+    height: 64px !important;
+
+    max-width: 54px;
+    max-height: 54px;
+
+    object-fit: contain;
+    display: block;
+}
+
 /* HOVER */
 #chatbot-toggle:hover{
     transform:scale(1.08);

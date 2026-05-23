@@ -662,7 +662,7 @@ body {
     .carousel-wrapper {
         position: relative;
     }
-    
+
 .landing-banner {
     position: relative;
     height: 450px;
@@ -2948,8 +2948,105 @@ body {
         display: flex;
         flex-direction: column;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-=======
     }
+
+    #rora-header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background: #00a5b5;
+        color: #fff;
+        position: relative;
+    }
+
+    #rora-header img {
+        width: 40px;
+        margin-right: 10px;
+    }
+
+    #rora-header button {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        border: none;
+        background: transparent;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #rora-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    .rora-msg-bot,
+    .rora-msg-user {
+        margin-bottom: 10px;
+        padding: 6px 10px;
+        border-radius: 10px;
+        max-width: 80%;
+        display: flex;
+        align-items: center;
+    }
+
+    .rora-msg-bot img {
+        width: 30px;
+        margin-right: 6px;
+    }
+
+    .rora-msg-bot {
+        background: #ffffff30;
+        color: #fff;
+        margin-right: auto;
+    }
+
+    .rora-msg-user {
+        background: #00fff2;
+        color: #000;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    #rora-input {
+        display: flex;
+        padding: 5px;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #rora-input input {
+        flex: 1;
+        padding: 6px;
+        border-radius: 20px;
+        border: none;
+        outline: none;
+    }
+
+    #rora-input button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        margin-left: 5px;
+    }
+
+    .tbc-logo {
+        width: 300px;
+        height: auto;
+    }
+
+    @keyframes shake {
+    0% { transform: rotate(0deg) translateX(0); }
+    10% { transform: rotate(-15deg) translateX(-2px); }
+    20% { transform: rotate(15deg) translateX(2px); }
+    30% { transform: rotate(-10deg) translateX(-2px); }
+    40% { transform: rotate(10deg) translateX(2px); }
+    50% { transform: rotate(-5deg) translateX(-1px); }
+    60% { transform: rotate(5deg) translateX(1px); }
+    70% { transform: rotate(-2deg) translateX(0); }
+    80% { transform: rotate(2deg) translateX(0); }
+    90% { transform: rotate(1deg) translateX(0); }
+    100% { transform: rotate(0deg) translateX(0); }
 }
 
 @media (max-width: 576px) {
@@ -3274,8 +3371,6 @@ body {
     90% { transform: rotate(1deg) translateX(0); }
     100% { transform: rotate(0deg) translateX(0); }
 }
-
-
 .chatbot-animate {
     animation: shake 1.5s infinite;
     transform-origin: center bottom;
@@ -3365,6 +3460,7 @@ $getImageUrl = static function ($gambar) {
 
         <div class="insight-heading">
             <h2 class="insight-title">Telusuri Informasi Berikut</h2>
+
             <p class="insight-desc">
                 Dapatkan informasi kesehatan terpercaya, edukatif dan mudah
                 dipahami untuk meningkatkan kesadaran masyarakat.
@@ -3373,64 +3469,76 @@ $getImageUrl = static function ($gambar) {
 
         <div class="insight-slider-wrapper">
 
-
             <!-- BUTTON LEFT -->
-            <button class="insight-nav prevBtn">
-                ❮
             <button type="button" class="insight-nav prevBtn" id="funfactPrev" aria-label="Sebelumnya">
                 <i class="fas fa-arrow-left"></i>
             </button>
 
             <div class="insight-viewport">
+
                 <div class="insight-slider" id="insightSlider">
 
+                    <?php if (!empty($funfact)): ?>
+                        <?php foreach ($funfact as $item): ?>
 
-<?php foreach ($funfact as $item): ?>
-                    <div class="insight-card">
+                            <?php
+                                $judul = $cleanText($item['judul_funfact'] ?? 'Informasi TBC');
+                                $deskripsi = $cleanText($item['deskripsi_funfact'] ?? $item['isi_funfact'] ?? '');
+                                $gambarUrl = $getImageUrl($item['gambar_funfact'] ?? '');
+                            ?>
 
-                        <div class="insight-content">
+                            <article class="insight-card">
 
-                            <h3>
-                                <?= esc($item['judul_funfact']) ?>
-                            </h3>
+                                <div class="insight-image">
+                                    <img src="<?= esc($gambarUrl) ?>" alt="<?= esc($judul) ?>">
+                                </div>
 
-                            <p class="insight-text">
-                                <?= character_limiter(strip_tags($item['deskripsi_funfact']), 170) ?>
-                            </p>
+                                <div class="insight-content">
 
-                            <div class="insight-meta">
+                                    <h3>
+                                        <?= esc(character_limiter($judul, 34, '...')) ?>
+                                    </h3>
 
-                                <span>
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <?= date('d F Y', strtotime($item['tanggal_funfact'])) ?>
-                                </span>
+                                    <p class="insight-text">
+                                        <?= esc(character_limiter($deskripsi, 94, '...')) ?>
+                                    </p>
 
-                            </div>
+                                    <div class="insight-button-area">
+                                        <a href="<?= base_url('tbc/detail_funfact/' . $item['id_funfact']) ?>" class="btn-insight">
+                                            Selengkapnya
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
 
-                            <a href="<?= base_url('tbc/detail-funfact/' . $item['id_funfact']) ?>" target="_blank" class="btn-insight">
-                                Klik Selengkapnya
-                                <span class="arrow-circle">
-                                    <i class="fas fa-arrow-right"></i>
-                                </span>
-                            </a>
+                                </div>
 
+                            </article>
+
+                        <?php endforeach; ?>
+
+                    <?php else: ?>
+
+                        <div class="empty-box">
+                            <i class="fas fa-info-circle"></i>
+                            <h4>Data Funfact TBC Belum Tersedia</h4>
+                            <p>Informasi akan ditampilkan setelah data ditambahkan.</p>
                         </div>
 
-                        <div class="insight-image">
-                            <img src="<?= base_url('img/' . $item['gambar_funfact']) ?>" alt="">
-                        </div>
+                    <?php endif; ?>
 
-                    </div>
-
-                <?php endforeach; ?>
+                </div>
 
             </div>
 
             <!-- BUTTON RIGHT -->
-            <button class="insight-nav nextBtn">
-                ❯
+            <button type="button" class="insight-nav nextBtn" id="funfactNext" aria-label="Selanjutnya">
+                <i class="fas fa-arrow-right"></i>
             </button>
 
+        </div>
+
+    </div>
+</section>
                     <?php if (!empty($funfact)): ?>
                         <?php foreach ($funfact as $item): ?>
                             <?php
@@ -3536,7 +3644,6 @@ $getImageUrl = static function ($gambar) {
                     <i class="fas fa-arrow-right arrow"></i>
                 </a>
             </div>
-
         </div>
 
     </div>
@@ -3955,10 +4062,24 @@ $getBeritaLink = static function ($berita) {
 </section>
 
 <script>
+    const slider = document.getElementById('insightSlider');
+    const cards = document.querySelectorAll('.insight-card');
+    const dotsContainer = document.getElementById('insightDots');
 
     const slider = document.getElementById('insightSlider');
     const cards = document.querySelectorAll('.insight-card');
     const dotsContainer = document.getElementById('insightDots');
+
+    let currentIndex = 0;
+
+    /* =========================================
+        CREATE DOTS
+    ========================================= */
+
+    cards.forEach((_, index) => {
+
+        const dot = document.createElement('div');
+        dot.classList.add('insight-dot');
 
     let currentIndex = 0;
 
@@ -4016,7 +4137,6 @@ $getBeritaLink = static function ($berita) {
             currentIndex = 0;
         }
 
-=======
 document.addEventListener('DOMContentLoaded', function () {
     const insightSlider = document.getElementById('insightSlider');
     const prevBtn = document.getElementById('funfactPrev');
@@ -4099,14 +4219,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (currentIndex < 0) {
             currentIndex = cards.length - 1;
         }
-
         updateSlider();
 
     }
 
     /* =========================================
-        BUTTON
+        PREV SLIDE
     ========================================= */
+
+    function prevSlide() {
+
+        currentIndex--;
+
+        if (currentIndex < 0) {
+            currentIndex = cards.length - 1;
+        }
+
+        updateSlider();
+
+    }
+
 
     document.querySelector('.nextBtn')
         .addEventListener('click', nextSlide);
@@ -4165,6 +4297,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSlider();
     startAutoplay();
 });
+
 </script>
 
 <script>
@@ -4500,8 +4633,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 Interval: <b>${interval.toFixed(1)}</b>
             </div>
         `;
-
-
             <a href="skrining-tbc" class="gejala-btn">
                 <i class="fas fa-arrow-right"></i>
             </a>
@@ -5087,6 +5218,4 @@ sendMessage("Maaf, Rora tidak bisa mendeteksi suara. Coba ulangi ya!");    } fin
 
     });
 </script>
-
-
 <?= $this->include('layout/footer') ?>

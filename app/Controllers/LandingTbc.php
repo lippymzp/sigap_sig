@@ -39,7 +39,7 @@ class LandingTbc extends BaseController
         }
 
         // =========================
-        // DATA GRAFIK
+        // DATA GRAFIK TBC
         // =========================
         $bulanIndo = [
             1  => 'Jan',
@@ -57,6 +57,7 @@ class LandingTbc extends BaseController
         ];
 
         $labels = array_values($bulanIndo);
+
         $kasus = array_fill(0, 12, 0);
 
         $grafikRows = $db->query("
@@ -72,6 +73,7 @@ class LandingTbc extends BaseController
         ", [$tahunAktif])->getResultArray();
 
         foreach ($grafikRows as $row) {
+
             $bulan = (int)$row['bulan'];
             $total = (int)$row['total'];
 
@@ -83,43 +85,22 @@ class LandingTbc extends BaseController
         $totalKasusTbc = array_sum($kasus);
 
         // =========================
-        // DEFINISI WILAYAH
+        // DATA PETA + RINGKASAN TBC - KALIWATES
         // =========================
-        $wilayahMap = [
-            2001 => [
-                'kelurahan' => 'Jember Kidul',
-                'kecamatan' => 'Kaliwates',
-            ],
-            2002 => [
-                'kelurahan' => 'Kepatihan',
-                'kecamatan' => 'Kaliwates',
-            ],
-            2003 => [
-                'kelurahan' => 'Sempusari',
-                'kecamatan' => 'Kaliwates',
-            ],
-            2004 => [
-                'kelurahan' => 'Mangli',
-                'kecamatan' => 'Kaliwates',
-            ],
-            2005 => [
-                'kelurahan' => 'Kebon Agung',
-                'kecamatan' => 'Kaliwates',
-            ],
-            2006 => [
-                'kelurahan' => 'Kaliwates',
-                'kecamatan' => 'Kaliwates',
-            ],
-            2007 => [
-                'kelurahan' => 'Tegal Besar',
-                'kecamatan' => 'Kaliwates',
-            ],
-        ];
 
-        // =========================
-        // DATA PETA
-        // =========================
-        $petaRowsRaw = $db->query("
+        // Ambil wilayah Kaliwates dari tabel wilayah
+        $wilayahKaliwates = $db->query("
+            SELECT 
+                id_wilayah,
+                kecamatan,
+                kelurahan
+            FROM wilayah
+            WHERE id_wilayah IN (2001, 2002, 2003, 2004, 2005, 2006, 2007)
+            ORDER BY id_wilayah ASC
+        ")->getResultArray();
+
+        // Hitung kasus TBC dari tabel pasien berdasarkan id_wilayah
+        $kasusWilayahRows = $db->query("
             SELECT 
                 id_wilayah,
                 COUNT(id_pasien) AS kasus
@@ -127,48 +108,72 @@ class LandingTbc extends BaseController
             WHERE id_penyakit = 2
               AND tgl_kunjungan IS NOT NULL
               AND YEAR(tgl_kunjungan) = ?
-              AND id_wilayah IN (2001,2002,2003,2004,2005,2006,2007)
+              AND id_wilayah IN (2001, 2002, 2003, 2004, 2005, 2006, 2007)
             GROUP BY id_wilayah
-            ORDER BY kasus DESC
         ", [$tahunAktif])->getResultArray();
 
+        // Ubah hasil query menjadi map: id_wilayah => jumlah kasus
+        $kasusMap = [];
+
+        foreach ($kasusWilayahRows as $row) {
+            $kasusMap[(int)$row['id_wilayah']] = (int)$row['kasus'];
+        }
+
+        // Gabungkan data wilayah + jumlah kasus
         $petaRows = [];
 
-        foreach ($petaRowsRaw as $row) {
-            $idWilayah = (int)$row['id_wilayah'];
+        foreach ($wilayahKaliwates as $wilayah) {
+
+            $idWilayah = (int)$wilayah['id_wilayah'];
 
             $petaRows[] = [
                 'id_wilayah' => $idWilayah,
-                'kelurahan'  => $wilayahMap[$idWilayah]['kelurahan'] ?? 'Tidak diketahui',
-                'kecamatan'  => $wilayahMap[$idWilayah]['kecamatan'] ?? 'Tidak diketahui',
-                'kasus'      => (int)$row['kasus'],
+                'kecamatan'  => $wilayah['kecamatan'],
+                'kelurahan'  => $wilayah['kelurahan'],
+                'kasus'      => $kasusMap[$idWilayah] ?? 0,
             ];
         }
 
-        $totalWilayahTerdampak = count($petaRows);
+        // Hitung wilayah terdampak
+        $totalWilayahTerdampak = 0;
 
-        // =========================
-        // RINGKASAN
-        // =========================
+        foreach ($petaRows as $row) {
+
+            if ((int)$row['kasus'] > 0) {
+                $totalWilayahTerdampak++;
+            }
+        }
+
+        // Urutkan wilayah dari kasus tertinggi
+        usort($petaRows, function ($a, $b) {
+            return $b['kasus'] <=> $a['kasus'];
+        });
+
         $wilayahTertinggi = $petaRows[0] ?? null;
 
+        // Hitung total kasus ringkasan
         $totalKasusRingkasan = 0;
 
         foreach ($petaRows as $row) {
             $totalKasusRingkasan += (int)$row['kasus'];
         }
 
+        // Rata-rata kasus per wilayah terdampak
         $rataRataPerWilayah = $totalWilayahTerdampak > 0
             ? round($totalKasusRingkasan / $totalWilayahTerdampak, 1)
             : 0;
 
-        // Hitung kasus per kecamatan
+        // =========================
+        // HITUNG DATA KECAMATAN
+        // =========================
         $kecamatanData = [];
 
         foreach ($petaRows as $row) {
+
             $kecamatan = $row['kecamatan'];
 
             if (!isset($kecamatanData[$kecamatan])) {
+
                 $kecamatanData[$kecamatan] = [
                     'kecamatan'      => $kecamatan,
                     'total_kasus'    => 0,
@@ -177,7 +182,10 @@ class LandingTbc extends BaseController
             }
 
             $kecamatanData[$kecamatan]['total_kasus'] += (int)$row['kasus'];
-            $kecamatanData[$kecamatan]['jumlah_wilayah']++;
+
+            if ((int)$row['kasus'] > 0) {
+                $kecamatanData[$kecamatan]['jumlah_wilayah']++;
+            }
         }
 
         $kecamatanRows = array_values($kecamatanData);
@@ -194,6 +202,7 @@ class LandingTbc extends BaseController
             !empty($kecamatanTertinggi) &&
             (int)$kecamatanTertinggi['jumlah_wilayah'] > 0
         ) {
+
             $rataRataKecamatanTertinggi = round(
                 (int)$kecamatanTertinggi['total_kasus'] /
                 (int)$kecamatanTertinggi['jumlah_wilayah'],
@@ -211,7 +220,7 @@ class LandingTbc extends BaseController
         ];
 
         // =========================
-        // DATA BERITA
+        // DATA BERITA TBC
         // =========================
         $beritaTbc = $db->query("
             SELECT 
@@ -235,16 +244,18 @@ class LandingTbc extends BaseController
         // KIRIM DATA KE VIEW
         // =========================
         $data = [
+
             'slider_images' => [
                 base_url('img/banner1.png'),
                 base_url('img/banner2.png'),
                 base_url('img/banner3.png'),
             ],
 
-            'funfact' => $funfactModel->getFunfactTbc(9),
+            'funfacts' => $funfactModel->getFunfactTbc(9),
 
             'tahunTersedia' => $tahunTersedia,
-            'tahunAktif'    => $tahunAktif,
+
+            'tahunAktif' => $tahunAktif,
 
             'grafikTbc' => [
                 'labels' => $labels,
@@ -270,16 +281,18 @@ class LandingTbc extends BaseController
         helper(['url', 'text']);
 
         $funfactModel = new FunfactTbcModel();
+
         $item = $funfactModel->getDetailFunfactTbc($id);
 
         if (!$item) {
+
             throw PageNotFoundException::forPageNotFound(
                 'Funfact TBC tidak ditemukan'
             );
         }
 
         return view('gol_b/detail_funfact', [
-            'item' => $item
+            'item' => $item,
         ]);
     }
 }

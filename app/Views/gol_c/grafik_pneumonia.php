@@ -12,7 +12,7 @@ $this->setVar('footer_maskot', 'cynex.png');?>
 
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 ?>
 
 
@@ -124,7 +124,7 @@ body{
 
 <?php
 
-$query = mysqli_query($conn, "
+$query = $db->query("
 
     SELECT
 
@@ -144,9 +144,11 @@ $query = mysqli_query($conn, "
 
 ");
 
+$result = $query->getResultArray();
+
 $data = [];
 
-while($row = mysqli_fetch_assoc($query)){
+foreach($result as $row){
 
     $data[] = $row;
 
@@ -156,7 +158,7 @@ while($row = mysqli_fetch_assoc($query)){
    DATA GRAFIK WILAYAH
 =========================== */
 
-$queryWilayah = mysqli_query($conn, "
+$queryWilayah = $db->query("
 
 SELECT
 
@@ -182,13 +184,8 @@ GROUP BY
     YEAR(pasien.tgl_kunjungan)
 
 ");
-$dataWilayah = [];
 
-while($row = mysqli_fetch_assoc($queryWilayah)){
-
-    $dataWilayah[] = $row;
-
-}
+$dataWilayah = $queryWilayah->getResultArray();
 
 ?>
 
@@ -236,6 +233,7 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
+                <option value="2026">2026</option>
 
             </select>
 
@@ -281,25 +279,22 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
+                <option value="2026">2026</option>
 
             </select>
             <select id="filterUmur2" class="dropdown-btn">
 
-    <option value="All">Semua Usia</option>
-
-    <option value="Bayi">< 1 tahun</option>
-
-    <option value="Balita">1 - 4 tahun</option>
-
-    <option value="Anak">5 - 9 tahun</option>
-
-    <option value="Remaja">10 - 18 tahun</option>
-
-    <option value="Dewasa">19 - 59 tahun</option>
-
-    <option value="Lansia">≥ 60 tahun</option>
-
-    <option value="All">Semua Usia</option>
+    <option value="">Pilih Usia</option>
+    <option value="0-12 Bulan">< 0-12 Bulan</option>
+    <option value="1-5 Tahun">1 - 5 tahun</option>
+    <option value="6-11 Tahun">6 - 11 tahun</option>
+    <option value="12-16 Tahun">12 - 16 tahun</option>
+    <option value="17-25 Tahun">17 - 25 tahun</option>
+    <option value="25-35 Tahun">26 - 35 tahun</option>
+    <option value="36-45 Tahun">36 - 45 tahun</option>
+    <option value="46-55 Tahun">46 - 55 tahun</option>
+    <option value="56-65 Tahun">56 - 65 tahun</option>
+    <option value=">65 Tahun">> 65 tahun</option>
 
 </select>
 
@@ -326,6 +321,7 @@ while($row = mysqli_fetch_assoc($queryWilayah)){
 
 const pasienData = <?= json_encode($data); ?>;
 const wilayahData = <?= json_encode($dataWilayah); ?>;
+console.log(wilayahData);
 
 /* ===========================
    CHART 1
@@ -472,7 +468,7 @@ const wilayahLabels = [
     'Suka Makmur',
     'Klompangan',
     'Pancakarya',
-    'Manggaran',
+    'Mangaran',
     'Pasien Luar Wilayah',
 ];
 
@@ -518,27 +514,42 @@ function kategoriUmur(umur){
     umur = parseInt(umur);
 
     if(umur < 1){
-        return 'Bayi';
+        return '0-12 Bulan';
     }
 
-    if(umur >= 1 && umur <= 4){
-        return 'Balita';
+    if(umur >= 1 && umur <= 5){
+        return '1-5 Tahun';
     }
 
-    if(umur >= 5 && umur <= 9){
-        return 'Anak';
+    if(umur >= 6 && umur <= 11){
+        return '6-11 Tahun';
     }
 
-    if(umur >= 10 && umur <= 18){
-        return 'Remaja';
+    if(umur >= 12 && umur <= 16){
+        return '12-16 Tahun';
     }
 
-    if(umur >= 19 && umur <= 59){
-        return 'Dewasa';
+    if(umur >= 17 && umur <= 25){
+        return '17-25 Tahun';
     }
 
-    return 'Lansia';
+    if(umur >= 26 && umur <= 35){
+        return '26-35 Tahun';
+    }
 
+    if(umur >= 36 && umur <= 45){
+        return '36-45 Tahun';
+    }
+
+    if(umur >= 46 && umur <= 55){
+        return '46-55 Tahun';
+    }
+
+    if(umur >= 56 && umur <= 65){
+        return '56-65 Tahun';
+    }
+
+    return '>65 Tahun';
 }
 
 function updateChart2(){
@@ -561,7 +572,7 @@ function updateChart2(){
             || item.jenis_kelamin == filterGender2.value;
 
         let cocokUmur =
-            filterUmur2.value == 'All'
+            filterUmur2.value == ''
             || kategoriUmur(item.umur) == filterUmur2.value;
 
         if(
