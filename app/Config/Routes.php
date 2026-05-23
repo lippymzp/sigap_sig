@@ -79,8 +79,8 @@ $routes->post('updateProfil_kader', 'Profile3::updateProfil');
 /* PROFIL dan Logut Pneumonia*/
 /* ========================= */
 $routes->get('pneumonia/profil_admin', 'Profile_admin_pneumonia::profil_admin');
-$routes->post('uploadFoto_admin', 'Profile_admin_pneumonia::uploadFoto');
-$routes->post('updateProfil_admin', 'Profile_admin_pneumonia::updateProfil');
+$routes->post('pneumonia/uploadFoto_admin', 'Profile_admin_pneumonia::uploadFoto');
+$routes->post('pneumonia/updateProfil_admin', 'Profile_admin_pneumonia::updateProfil');
 
 /* ========================= */
 /* EKSPORT DATA PNEUMONIA */
