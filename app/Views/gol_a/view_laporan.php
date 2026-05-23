@@ -2,6 +2,7 @@
 $layout = $layout ?? 'layout/dashboard_layout_admin';
 ?>
 <?= $this->extend($layout) ?>
+
 <?= $this->section('style'); ?>
 <style>
     /* Import font Poppins dari Google Fonts */
@@ -83,6 +84,33 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
         
         <?php 
             /** @var array $laporan */
+            
+            // =========================================================================
+            // MAPPING MANUAL SESUAI DENGAN REKAP KADER
+            // =========================================================================
+            $id_kelurahan = $laporan['id_kelurahan'] ?? '-';
+            $nama_kelurahan = $id_kelurahan;
+
+            // Logika persis seperti di rekap_kader.php
+            if ($id_kelurahan == 1) {
+                $nama_kelurahan = 'Sumbersari';
+            } elseif ($id_kelurahan == 2) {
+                $nama_kelurahan = 'Wirolegi';
+            } elseif ($id_kelurahan == 3) {
+                $nama_kelurahan = 'Antirogo';
+            } elseif ($id_kelurahan == 4) {
+                $nama_kelurahan = 'Tegalgede';
+            } elseif ($id_kelurahan == 5) {
+                $nama_kelurahan = 'Karangrejo';
+            } else {
+                $nama_kelurahan = $laporan['kelurahan'] ?? $id_kelurahan;
+            }
+
+            // Mapping nama puskesmas
+            $id_puskesmas = $laporan['id_puskesmas'] ?? '-';
+            $nama_puskesmas = ($id_puskesmas == 1) ? 'Sumbersari' : $id_puskesmas;
+            // =========================================================================
+
             // LOGIKA KETERLAMBATAN
             $mingguNama = $laporan['minggu'] ?? '';
             $bulanNama  = $laporan['bulan'] ?? '';
@@ -109,7 +137,7 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
 
             $tgl_upload_date = date('Y-m-d', strtotime($createdAt));
 
-            // Format bulan Indonesia (hindari output English seperti "May")
+            // Format bulan Indonesia
             $tsUpload = strtotime($createdAt);
             $bulanIndo = [
                 'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April',
@@ -160,8 +188,8 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
                 <div class="info-item">
                     <div class="info-label">Wilayah Kerja</div>
                     <div class="info-value">
-                        Puskesmas: <?= $laporan['id_puskesmas'] == 1 ? 'Sumbersari' : ($laporan['id_puskesmas'] ?? '-') ?> <br>
-                        Kelurahan: <?= $laporan['id_kelurahan'] == 3 ? 'Sumbersari' : ($laporan['id_kelurahan'] ?? '-') ?> <br>
+                        Puskesmas: <?= $nama_puskesmas ?> <br>
+                        Kelurahan: <?= $nama_kelurahan ?> <br>
                         Pos Posyandu : Catleya <?= $laporan['id_posyandu'] ?? '-' ?>
                     </div>
                 </div>
@@ -219,7 +247,6 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
             <div class="grey-box-title">Galeri Pemeriksaan Jentik</div>
             <div class="gallery-grid">
                 <?php 
-                // PERBAIKAN FOTO: dukung format JSON array atau string tunggal + path yang konsisten
                 $fotosRaw = $laporan['foto'] ?? '';
                 $fotos = json_decode((string) $fotosRaw, true);
 
@@ -235,7 +262,6 @@ $layout = $layout ?? 'layout/dashboard_layout_admin';
                         $f = trim((string) $f);
                         if ($f === '') continue;
 
-                        // Jika di DB sudah menyimpan path (mis. "uploads/pelaporan/x.jpg"), pakai langsung
                         $isPath = (strpos($f, 'uploads/') !== false) || (strpos($f, 'uploads\\') !== false);
                         $src = $isPath
                             ? base_url(str_replace('\\', '/', $f))
