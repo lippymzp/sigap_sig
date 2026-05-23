@@ -2110,19 +2110,30 @@ $totalBerita = $queryBerita->getNumRows();
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($queryBerita->getResultArray() as $berita): ?>
 
                 <?php
                 $gambar = trim((string)($berita['gambar_berita'] ?? ''));
-                $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
                 $gambarFix = base_url('uploads/berita/default.jpeg');
 
-                if(
-                    $gambar !== '' &&
-                    strtolower($gambar) !== 'null' &&
-                    file_exists($pathFile)
-                ){
-                    $gambarFix = base_url('uploads/berita/' . $gambar);
+                if ($gambar !== '' && strtolower($gambar) !== 'null') {
+
+                    // CEK APAKAH URL INTERNET
+                    if (filter_var($gambar, FILTER_VALIDATE_URL)) {
+
+                        $gambarFix = $gambar;
+
+                    } else {
+
+                        // FILE LOKAL
+                        $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
+                        if (file_exists($pathFile)) {
+
+                            $gambarFix = base_url('uploads/berita/' . $gambar);
+                        }
+                    }
                 }
 
                 $urlBerita = !empty($berita['url_berita'])
@@ -2166,7 +2177,7 @@ $totalBerita = $queryBerita->getNumRows();
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 
