@@ -90,7 +90,7 @@ $this->setVar('footer_maskot', 'cynex.png');
 }
 
 .pneu-hero {
-    height: 400px;
+    height: 450px;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -100,8 +100,8 @@ $this->setVar('footer_maskot', 'cynex.png');
     background: 
     linear-gradient(
         to right,
-        rgba(0, 206, 209, 0.9) 40%,   /* Menggunakan Dark Turquoise #00CED1 */
-        rgba(0, 206, 209, 0.3) 70%,
+        rgba(0, 206, 209, 0.9) 5%,   /* Menggunakan Dark Turquoise #00CED1 */
+        rgba(0, 206, 209, 0.3) 35%,
         rgba(0, 206, 209, 0) 100%
     ),
     url("<?= base_url('img/pneumonia.png') ?>");

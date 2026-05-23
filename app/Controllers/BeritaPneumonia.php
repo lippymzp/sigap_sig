@@ -48,7 +48,8 @@ class BeritaPneumonia extends Controller
         $status  = $this->request->getGet('status') ?? '';
         $keyword = $this->request->getGet('keyword') ?? '';
 
-        $builder = $model->where('id_penyakit', 3);
+        $builder = $model
+            ->where('id_penyakit', 3);
 
         if ($status == 'publish') {
             $builder = $builder->where('status_berita', 'publish');
@@ -76,9 +77,9 @@ class BeritaPneumonia extends Controller
         ->countAllResults();
 
         $draft = $model
-        ->where('id_penyakit', 3)
-        ->where('status_berita', 'draft')
-        ->countAllResults();
+            ->where('id_penyakit', 3)
+            ->where('status_berita', 'draft')
+            ->countAllResults();
 
         $data = [
             'menu'            => 'berita',
@@ -102,7 +103,9 @@ class BeritaPneumonia extends Controller
 {
     $model = new BeritaPneumoniaModel();
 
-    $data['beritapneumonia'] = $model->find($id);
+    $data['beritapneumonia'] = $model
+        ->where('id_penyakit', 3)
+        ->find($id);
 
     if (!$data['beritapneumonia']) {
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -118,7 +121,9 @@ class BeritaPneumonia extends Controller
 {
     $model = new BeritaPneumoniaModel();
 
-    $data['beritapneumonia'] = $model->find($id);
+    $data['beritapneumonia'] = $model
+        ->where('id_penyakit', 3)
+        ->find($id);
 
     return view('gol_c/berita/view_user', $data);
 }
@@ -225,7 +230,9 @@ class BeritaPneumonia extends Controller
 {
     $model = new BeritaPneumoniaModel();
 
-    $data['beritapneumonia'] = $model->find($id);
+    $data['beritapneumonia'] = $model
+        ->where('id_penyakit', 3)
+        ->find($id);
 
     if (!$data['beritapneumonia']) {
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -241,7 +248,9 @@ class BeritaPneumonia extends Controller
     {
         $model = new BeritaPneumoniaModel();
 
-        $dataLama = $model->find($id);
+        $dataLama = $model
+            ->where('id_penyakit', 3)
+            ->find($id);
 
         if (!$dataLama) {
 
@@ -325,7 +334,9 @@ class BeritaPneumonia extends Controller
     {
         $model = new BeritaPneumoniaModel();
 
-        $data = $model->find($id);
+        $data = $model
+            ->where('id_penyakit', 3)
+            ->find($id);
 
         if (!$data) {
 
@@ -358,7 +369,7 @@ class BeritaPneumonia extends Controller
     {
         $model = new BeritaPneumoniaModel();
 
-       $data['berita'] = $model
+        $data['berita'] = $model
             ->where('id_penyakit', 3)
             ->where('status_berita', 'publish')
             ->orderBy('tanggal_berita', 'DESC')

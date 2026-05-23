@@ -27,23 +27,112 @@
 
 <!-- HERO -->
 <section class="hero">
-<div class="container">
-  <div class="row align-items-center">
 
-    <div class="col-md-6">
-      <h5 class="text-teal">Satu Peta, Satu Data</h5>
-      <h2>Apa itu Penyakit Menular?</h2>
-      <p>
-        Penyakit menular adalah penyakit yang dapat berpindah dari satu orang ke orang lain, baik melalui udara, air, makanan, maupun kontak langsung. Penyebabnya bisa berupa bakteri, virus, parasit, atau jamur yang masuk ke dalam tubuh dan mengganggu kesehatan.
-      </p>
+    <div class="hero-slider">
+
+        <button class="hero-arrow left" id="prevHero">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <button class="hero-arrow right" id="nextHero">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+
+        <div class="hero-track" id="heroTrack">
+
+            <!-- SLIDE 1 -->
+            <div class="hero-slide">
+
+                <div class="hero-bg"
+                    style="background-image:url('<?= base_url('img/portal1.png') ?>')">
+                </div>
+
+                <div class="hero-overlay"></div>
+
+                <div class="container hero-content">
+                    <div class="row align-items-center h-100">
+
+                        <div class="col-md-6">
+                            <div class="hero-text">
+
+                        <h2>SIGAP: Cepat Deteksi, Tepat Informasi, Sigap Bertindak</h2>
+
+                        <p>
+                            Dikembangkan untuk mendukung
+                            transparansi dan akses data kesehatan secara
+                            menyeluruh dan akurat
+                        </p>
+                        </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        <!-- SLIDE 2 -->
+        <div class="hero-slide">
+
+            <div class="hero-bg"
+                style="background-image:url('<?= base_url('img/portal2.png') ?>')">
+            </div>
+
+            <div class="hero-overlay"></div>
+
+            <div class="container hero-content">
+                <div class="row align-items-center h-100">
+
+                    <div class="col-md-6">
+                        <div class="hero-text">
+
+                        <h2>Satu Platform Untuk Memantau, Memetakan, dan Mendeteksi Penyakit</h2>
+
+                        <p>
+                            Sigap hadir sebagai solusi informasi geografis
+                            kesehatan yang mencakup penyakit DBD, Tuberkulosis, 
+                            Pneumonia, dan Diare secara terpadu
+                        </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="hero-slide">
+
+            <div class="hero-bg"
+                style="background-image:url('<?= base_url('img/portal3.png') ?>')">
+            </div>
+
+            <div class="hero-overlay"></div>
+
+            <div class="container hero-content">
+                <div class="row align-items-center h-100">
+
+                    <div class="col-md-6">
+                        <div class="hero-text">
+
+                        <h2>Interaktif, Terintegrasi, dan Berbasis Data Wilayah</h2>
+
+                        <p>
+                            - Peta persebaran penyakit<br>
+                            - Dashboard statistik interaktif<br>
+                            - Skrining mandiri gejala penyakit secara online<br>
+                            - Visualisasi data penyakit berbasis wilayah
+                        </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="col-md-6 text-center">
-      <img src="<?= base_url('img/dokterportal.png') ?>" class="img-fluid hero-img">
-    </div>
-
-  </div>
-</div>
 </section>
 
 <!-- MENU -->
@@ -612,6 +701,66 @@ function scrollCardRight() {
         behavior: 'smooth'
     });
 }
+
+const heroTrack =
+document.getElementById('heroTrack');
+
+const heroSlides =
+document.querySelectorAll('.hero-slide');
+
+const nextHero =
+document.getElementById('nextHero');
+
+const prevHero =
+document.getElementById('prevHero');
+
+let heroIndex = 0;
+
+function updateHeroSlider(){
+
+    heroTrack.style.transform =
+    `translateX(-${heroIndex * 100}%)`;
+
+}
+
+/* NEXT */
+nextHero.addEventListener('click', () => {
+
+    heroIndex++;
+
+    if(heroIndex >= heroSlides.length){
+        heroIndex = 0;
+    }
+
+    updateHeroSlider();
+
+});
+
+/* PREV */
+prevHero.addEventListener('click', () => {
+
+    heroIndex--;
+
+    if(heroIndex < 0){
+        heroIndex = heroSlides.length - 1;
+    }
+
+    updateHeroSlider();
+
+});
+
+/* AUTO SLIDE */
+setInterval(() => {
+
+    heroIndex++;
+
+    if(heroIndex >= heroSlides.length){
+        heroIndex = 0;
+    }
+
+    updateHeroSlider();
+
+}, 5000);
 </script>
 
 
@@ -625,41 +774,165 @@ function scrollCardRight() {
    FIX READABILITY (TANPA MERUSAK UI)
 ================================= */
 
-/* HERO */
+/* =========================
+   HERO MODERN SLIDER
+========================= */
+
 .hero{
     position: relative;
-    background: linear-gradient(
-        135deg,
-        rgba(184, 255, 243, 0.88),
-        rgba(0,206,209,0.82)
-    );
-    border-radius: 0 0 30px 30px;
+    margin: 0;
+    overflow: hidden;
+    background: none;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
-.hero::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    background: rgba(255,255,255,0.18);
-    border-radius: inherit;
-}
-
-.hero .container{
+/* WRAPPER */
+.hero-slider{
     position: relative;
-    z-index: 2;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
-/* TEXT HERO */
-.hero h2{
-    color:#083B3B !important;
-    font-weight:800;
-    text-shadow: 0 2px 8px rgba(255,255,255,0.55);
+/* TRACK */
+.hero-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    transition:transform .8s ease-in-out;
 }
 
-.hero p{
-    color:#1E4E4E !important;
-    font-weight:500;
+/* SLIDE */
+.hero-slide{
+    position:relative;
+
+    min-width:100%;
+    width:100%;
+    height:100%;
+
+    flex-shrink:0;
+    overflow:hidden;
 }
+
+/* BG */
+.hero-bg{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
+/* CONTENT */
+.hero-content{
+    position: relative;
+    z-index: 5;
+    height: 100%;
+}
+
+.hero-content .row{
+    height: 100%;
+    align-items: center;
+}
+
+/* TEXT */
+.hero-text{
+    max-width: 680px;
+}
+
+.hero-text h2{
+    color: white;
+    font-size: 44px;
+    line-height: 1.05;
+    font-weight: 800;
+
+    margin-bottom: 24px;
+}
+
+.hero-text p{
+    color: white;
+    font-size: 19px;
+    line-height: 1.9;
+    font-weight: 400;
+
+    max-width: 620px;
+}
+
+/* ARROW */
+.hero-arrow{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    z-index: 99;
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+    color: #10B8C7;
+
+    font-size: 24px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.18);
+
+    cursor: pointer;
+    transition: .3s;
+}
+
+.hero-arrow:hover{
+    transform: translateY(-50%) scale(1.08);
+}
+
+.hero-arrow.left{
+    left: 24px;
+}
+
+.hero-arrow.right{
+    right: 24px;
+}
+
+/* MOBILE */
+@media(max-width:992px){
+
+    .hero-slider{
+        height: 460px;
+    }
+
+    .hero-text{
+        text-align: center;
+        margin: auto;
+    }
+
+    .hero-text h2{
+        font-size: 42px;
+    }
+
+    .hero-text p{
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .hero-arrow{
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+}
+
 .disease-menu{
     display:flex;
     justify-content:center;
