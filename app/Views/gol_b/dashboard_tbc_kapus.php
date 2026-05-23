@@ -1,4 +1,4 @@
-<?= $this->extend('layout/dashboard_layout') ?>
+<?= $this->extend('layout/dashboard_layout_kepalatbc') ?>
 <?= $this->section('content') ?>
 <?php helper('text'); ?>
 
@@ -6,7 +6,7 @@
 <div class="welcome-box">
     <div class="welcome-text">
         <h5>Selamat datang kembali!</h5>
-        <h3>Anda masuk sebagai ADMIN</h3>
+        <h3>Anda masuk sebagai KEPALA PUSKESMAS</h3>
         <p>Puskesmas Kaliwates, Jember</p>
     </div>
 
@@ -90,166 +90,146 @@
     color: #555;
     margin-bottom: 1rem;
 }
+
+.label-desa-no-bg{
+    background:transparent !important;
+    border:none !important;
+}
+
+.label-desa-no-bg span{
+    display:block;
+    text-align:center;
+    white-space:nowrap;
+    text-shadow:
+        1px 1px 3px rgba(255,255,255,0.95),
+        -1px -1px 3px rgba(255,255,255,0.95);
+}
+.leaflet-control-attribution {
+    display: none !important;
+}
 </style>
 
-<!-- MAP -->
-    <div class="section-block" id="peta-sebaran">
-        <div class="section-header mb-3">
-            <div>
-<h2 class="fw-bold mb-1">Peta Interaktif Penyebaran</h2>
-<p class="text-muted mb-0">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
-            </div>
-            <div class="filter">
-                <span>Periode:</span>
-                <select id="selectPeriode">
-                    <?php for($i = date('Y')-2; $i<=date('Y'); $i++): ?>
-                        <option value="<?= $i ?>" <?= $i==date('Y')?'selected':'' ?>>
-                            <?= $i ?>
-                        </option>
-                    <?php endfor; ?>
-                </select>
-            </div>
+<!-- MAP SECTION -->
+<div class="section-block" id="peta-sebaran">
+    <div class="section-header mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">Peta Interaktif Penyebaran</h2>
+            <p class="text-muted mb-0">Visualisasi kepadatan kasus berdasarkan koordinat wilayah</p>
         </div>
-
-        <div class="inner-card mb-5">
-            <div id="map" style="height:400px; border-radius:15px;"></div>
+        <div class="filter">
+            <span>Periode:</span>
+            <select id="selectPeriode">
+                <?php for($i=date('Y')-2; $i<=date('Y'); $i++): ?>
+                    <option value="<?= $i ?>" <?= $i==date('Y')?'selected':'' ?>><?= $i ?></option>
+                <?php endfor; ?>
+            </select>
         </div>
     </div>
+    <div class="inner-card mb-5">
+        <div id="map" style="height:400px; border-radius:15px;"></div>
+    </div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-
-    // =========================
-    // DATA DARI PHP
-    // =========================
-    const dataWilayah = <?= json_encode($wilayah ?? []) ?>;
+    // const dataWilayah = <?= json_encode($wilayah ?? []) ?>;
+    const dataWilayah = <?= json_encode($mapTbc ?? []) ?>;
     const allTbc = <?= json_encode($mapTbc ?? []) ?>;
-    const pkmKelurahan = {
-                    'kaliwates': ['tegal_besar', 'kaliwates', 'kebon_agung'],
-                    'mangli': ['mangli', 'sempusari'],
-                    'jember_kidul': ['jember_kidul', 'kepatihan']
-                };  
 
-                // =========================
-                // FUNCTION FILTER DATA BERDASARKAN TAHUN
-                // =========================
-                function filterDataByYear(tahun) {
-                return allTbc
-                    .filter(item => parseInt(item.tahun) === parseInt(tahun))
-                    .reduce((acc, item) => {
-
-                        const wilayah = item.kelurahan?.trim();
-
-                        acc[wilayah] = {
-                            ...item
-                        };
-
-                        return acc;
-
-                    }, {});
-            }
-                function getDataWilayah(id) {
-                    return dataWilayah.find(w => parseInt(w.id_wilayah) === parseInt(id)) || null;
-                }
+    // Fungsi filter data by year
+    function filterDataByYear(year){
+        return allTbc.filter(item => parseInt(item.tahun) === parseInt(year))
+                     .reduce((acc,item) => {
+                         const key = item.kelurahan.trim();
+                         acc[key] = {...item};
+                         return acc;
+                     }, {});
+    }
 
     // =========================
     // INIT MAP
     // =========================
-    const map = L.map('map', { minZoom: 12, maxZoom: 14 }).setView([-8.1, 113.5], 12);
+    const map = L.map('map',{minZoom:12,maxZoom:14}).setView([-8.1,113.5],12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    setTimeout(() => map.invalidateSize(), 200);
+    setTimeout(()=>map.invalidateSize(),200);
 
     // =========================
     // KOMPAS
     // =========================
-    var CompassControl = L.Control.extend({
-    options: { position: 'topright' }, // otomatis ikut control layout Leaflet
-    onAdd: function(map) {
-        var container = L.DomUtil.create('div', 'leaflet-compass-control');
-        container.style.width = '70px';
-        container.style.height = '70px';
-        container.style.backgroundImage = 'url("/assets/icon/kompas.svg")';
-        container.style.backgroundSize = 'contain';
-        container.style.backgroundRepeat = 'no-repeat';
-        container.style.backgroundPosition = 'center';
-        container.style.pointerEvents = 'none'; // supaya klik di peta tetap jalan
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'center';
-        return container;
-    }
-});
+    const CompassControl = L.Control.extend({
+        options:{position:'topright'},
+        onAdd:function(map){
+            const c = L.DomUtil.create('div','leaflet-compass-control');
+            c.style.width='70px';
+            c.style.height='70px';
+            c.style.backgroundImage='url("/assets/icon/kompas.svg")';
+            c.style.backgroundSize='contain';
+            c.style.backgroundRepeat='no-repeat';
+            c.style.backgroundPosition='center';
+            c.style.pointerEvents='none';
+            c.style.display='flex';
+            c.style.alignItems='center';
+            c.style.justifyContent='center';
+            return c;
+        }
+    });
     map.addControl(new CompassControl());
 
     // =========================
     // KOORDINAT MOUSE
     // =========================
-                var coordDiv = L.control({
-                    position: 'bottomleft'
-                });
-                coordDiv.onAdd = function(map) {
-                    this._div = L.DomUtil.create('div', 'mouse-coords');
-                    this._div.style.background = 'rgba(255,255,255,0.85)';
-                    this._div.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
-                    this._div.style.padding = '6px 10px';
-                    this._div.style.borderRadius = '5px';
-                    this._div.style.fontSize = '13px';
-                    this._div.style.fontWeight = '600'; // bikin lebih tebal
-                    this._div.style.lineHeight = '1.4'; // biar jarak antar baris lebih rapat
-                    this._div.style.textAlign = 'left';
-                    this._div.innerHTML = 'Lat   : -<br>Lng    : -'; // baris atas-bawah
-                    return this._div;
-                };
-                coordDiv.addTo(map);
+    const coordDiv = L.control({position:'bottomleft'});
+    coordDiv.onAdd = function(map){
+        this._div = L.DomUtil.create('div','mouse-coords');
+        Object.assign(this._div.style,{
+            background:'rgba(255,255,255,0.85)',
+            boxShadow:'0 2px 6px rgba(0,0,0,0.25)',
+            padding:'6px 10px',
+            borderRadius:'5px',
+            fontSize:'13px',
+            fontWeight:'600',
+            lineHeight:'1.4',
+            textAlign:'left'
+        });
+        this._div.innerHTML='Lat : -<br>Lng : -';
+        return this._div;
+    };
+    coordDiv.addTo(map);
 
-                map.on('mousemove', function(e) {
-                    var lat = e.latlng.lat.toFixed(5);
-                    var lng = e.latlng.lng.toFixed(5);
-                    coordDiv._div.innerHTML = `Lat   : ${lat} <br>Lng    : ${lng}`;
-                });
-
-                map.on('mouseout', function(e) {
-                    coordDiv._div.innerHTML = 'Lat   : -<br>Lng  : -';
-                });
+    map.on('mousemove',e=>{
+        coordDiv._div.innerHTML=`Lat : ${e.latlng.lat.toFixed(5)}<br>Lng : ${e.latlng.lng.toFixed(5)}`;
+    });
+    map.on('mouseout',()=>{coordDiv._div.innerHTML='Lat : -<br>Lng : -';});
 
     // =========================
     // LEGEND
     // =========================
-                var legend = L.control({
-                    position: 'bottomright'
-                });
+    const legend = L.control({position:'bottomright'});
+    legend.onAdd=function(map){
+        const div = L.DomUtil.create('div','info legend');
+        Object.assign(div.style,{
+            background:'rgba(255,255,255,0.9)',
+            padding:'8px 12px',
+            borderRadius:'6px',
+            boxShadow:'0 2px 6px rgba(0,0,0,0.25)',
+            fontSize:'13px',
+            lineHeight:'1.5',
+            fontWeight:'600'
+        });
+        const grades = ['Tidak Ada','Rendah','Sedang','Tinggi'];
+        const colors = ['#999','#2a9d8f','#ff9800','#e63946'];
+        div.innerHTML='<b>Kategori Kasus</b><br>';
+        grades.forEach((g,i)=>{div.innerHTML+=`<i style="background:${colors[i]};width:18px;height:18px;display:inline-block;margin-right:6px;border-radius:3px;"></i> ${g}<br>`});
+        return div;
+    };
+    legend.addTo(map);
 
-                legend.onAdd = function(map) {
-                    var div = L.DomUtil.create('div', 'info legend');
-                    div.style.background = 'rgba(255,255,255,0.9)';
-                    div.style.padding = '8px 12px';
-                    div.style.borderRadius = '6px';
-                    div.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
-                    div.style.fontSize = '13px';
-                    div.style.lineHeight = '1.5';
-                    div.style.fontWeight = '600';
-
-                    var grades = ['Tidak Ada', 'Rendah', 'Sedang', 'Tinggi'];
-                    var colors = ['#999', '#2a9d8f', '#ff9800', '#e63946'];
-
-                    div.innerHTML = '<b>Kategori Kasus</b><br>';
-                    for (var i = 0; i < grades.length; i++) {
-                        div.innerHTML +=
-                            `<i style="background:${colors[i]}; width:18px; height:18px; display:inline-block; margin-right:6px; border-radius:3px;"></i> ${grades[i]}<br>`;
-                    }
-
-                    return div;
-                };
-
-
-                legend.addTo(map);
-   // =========================
-// RENDER MAP + MODAL REVISI
-// =========================
-let geoLayer = null;
-
-function renderMap(filteredData) {
-
+    // =========================
+    // RENDER MAP + MODAL REVISI
+    // =========================
+    let geoLayer = null;
+    let labelLayer = L.layerGroup().addTo(map);
+    function renderMap(filteredData) {
     if (geoLayer) geoLayer.remove();
 
     // NORMALISASI DATA AGAR NAMA WILAYAH MATCH
@@ -343,11 +323,19 @@ function renderMap(filteredData) {
                     L.marker(latlng, {
                         icon: L.divIcon({
                             className: 'label-desa-no-bg',
-                            html: `<span style="font-size:14px;color:#222;font-weight:600;">${feature.properties.NAMOBJ}</span>`,
+                            html: `
+                                <span style="
+                                    font-size:14px;
+                                    color:#222;
+                                    font-weight:600;
+                                ">
+                                    ${feature.properties.NAMOBJ}
+                                </span>
+                            `,
                             iconSize: [100,20]
                         }),
-                        interactive: false
-                    }).addTo(map);
+                        interactive:false
+                    }).addTo(labelLayer);
 
                     // POPUP & MODAL
                     const isi = `
@@ -372,62 +360,62 @@ function renderMap(filteredData) {
                     layer.bindPopup(isi, { closeButton:false });
 
                     // hover events
-                    layer.on('mouseover', () => { layer.openPopup(); layer.setStyle({weight:3}); });
-                    layer.on('mouseout', () => {
-                        const popup = layer.getPopup();
-                        if (!popup) return;
-                        setTimeout(() => {
-                            const popupEl = popup.getElement();
-                            if (!popupEl || !popupEl.matches(':hover')) {
-                                layer.closePopup();
-                                layer.setStyle({weight:2, fillOpacity:0.55});
-                            }
-                        }, 200);
-                    });
+                    // layer.on('mouseover', () => { layer.openPopup(); layer.setStyle({weight:3}); });
+                    layer.on('mouseover', () => {layer.openPopup(); layer.setStyle({weight:3}); });
+                    // HAPUS auto close popup
+                    layer.on('mouseout', () => {layer.setStyle({weight:2,fillOpacity:0.55}); });
 
                     // BUTTON MODAL DETAIL
                     layer.on('popupopen', function(e) {
-                        const popup = e.popup.getElement();
-                        L.DomEvent.disableClickPropagation(popup);
-                        L.DomEvent.disableScrollPropagation(popup);
 
-                        const btn = popup.querySelector('button');
-                        const idWilayah = btn.getAttribute('data-id');
+                    const popup = e.popup.getElement();
 
-                        btn.onclick = function(ev) {
-                            ev.stopPropagation();
-                            const itemData = normalizedData[idWilayah] || {
-                                kasus: 0, anak:0, dewasa:0, lansia:0, penduduk:0, kelurahan:'-'
-                            };
+                    L.DomEvent.disableClickPropagation(popup);
+                    L.DomEvent.disableScrollPropagation(popup);
 
-                            // HITUNG KATEGORI MODAL
-                            const modalTotal = parseInt(itemData.kasus) || 0;
-                            let modalTingkat, modalWarna;
-                            if(modalTotal === 0) {
-                                modalTingkat = "Tidak Ada"; modalWarna = "#999";
-                            } else if(modalTotal <= minVal + interval) {
-                                modalTingkat = "Rendah"; modalWarna = "#2a9d8f";
-                            } else if(modalTotal <= minVal + 2*interval) {
-                                modalTingkat = "Sedang"; modalWarna = "#ff9800";
-                            } else {
-                                modalTingkat = "Tinggi"; modalWarna = "#e63946";
-                            }
+                    const btn = popup.querySelector('button');
+                    const idWilayah = btn.getAttribute('data-id');
 
-                            // ====== UPDATE MODAL ELEMENTS ======
-                            document.getElementById('mdNama').innerText = `: ${itemData.kelurahan}`;
-                            document.getElementById('mdPenduduk').innerText = `: ${itemData.penduduk}`;
-                            document.getElementById('mdKasus').innerText = `: ${itemData.kasus}`;
-                            document.getElementById('mdKategori').innerText = `: ${modalTingkat}`;
-                            document.getElementById('mdAnak').innerText = `: ${itemData.anak}`;
-                            document.getElementById('mdDewasa').innerText = `: ${itemData.dewasa}`;
-                            document.getElementById('mdLansia').innerText = `: ${itemData.lansia}`;
+                    btn.onclick = function(ev) {
 
-                            // TAMPILKAN MODAL
-                            const modal = document.getElementById('modalTbc');
-                            modal.style.display = 'block';
+                        ev.stopPropagation();
+
+                        const itemData = normalizedData[idWilayah] || {
+                            kasus: 0,
+                            anak:0,
+                            dewasa:0,
+                            lansia:0,
+                            penduduk:0,
+                            kelurahan:'-'
                         };
+
+                        document.getElementById('mdNama').innerText =
+                            `: ${itemData.kelurahan}`;
+
+                        document.getElementById('mdPenduduk').innerText =
+                            `: ${itemData.penduduk}`;
+
+                        document.getElementById('mdKasus').innerText =
+                            `: ${itemData.kasus}`;
+
+                        document.getElementById('mdAnak').innerText =
+                            `: ${itemData.anak}`;
+
+                        document.getElementById('mdDewasa').innerText =
+                            `: ${itemData.dewasa}`;
+
+                        document.getElementById('mdLansia').innerText =
+                            `: ${itemData.lansia}`;
+
+                        document.getElementById('modalTbc').style.display = 'block';
+                    };
+
+                    // POPUP BARU HILANG SAAT CURSOR KELUAR DARI POPUP
+                    popup.addEventListener('mouseleave', () => {
+                        layer.closePopup();
                     });
 
+                });
                 }
 
             }).addTo(map);
@@ -436,6 +424,7 @@ function renderMap(filteredData) {
 
         });
 }
+      
 
     // =========================
     // EVENT SELECT PERIODE
@@ -443,22 +432,17 @@ function renderMap(filteredData) {
     const selectPeriode = document.getElementById('selectPeriode');
     selectPeriode.addEventListener('change', function(){
         renderMap(filterDataByYear(this.value));
-        const judulPeta = document.getElementById('judulPeta');
-        if(judulPeta) judulPeta.textContent = `Peta Sebaran Kasus ${this.value}`;
     });
 
     // =========================
     // INITIAL RENDER
     // =========================
     renderMap(filterDataByYear(selectPeriode.value));
-    const judulPeta = document.getElementById('judulPeta');
-    if(judulPeta) judulPeta.textContent = `Peta Sebaran Kasus ${selectPeriode.value}`;
-
 });
 </script>
     </div>
 
-   <!-- CHART -->
+    <!-- CHART -->
 
 <div class="container-fluid pb-5">
     <div class="card border-0 shadow-sm rounded-4 p-4" style="background:#EEF5F5;">
@@ -523,7 +507,7 @@ function renderMap(filteredData) {
                     </div>
                 </div>
 
-                <div id="grafik" style="height:400px;">
+                <div style="height:400px;">
                     <canvas id="mainChart">
                         <script>
 const grafikData = <?= $grafik ?>;
@@ -1392,15 +1376,331 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </script>
 
-
 <script>
+document.addEventListener("DOMContentLoaded", function() {
 
-var map = L.map('map').setView([-8.1727,113.7000],12);
+    // =========================
+    // DATA DARI PHP
+    // =========================
+    const dataWilayah = <?= json_encode($wilayah ?? []) ?>;
+    const allTbc = <?= json_encode($mapTbc ?? []) ?>;
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'&copy; OpenStreetMap'
-}).addTo(map);
+    // =========================
+    // FUNCTION FILTER DATA BERDASARKAN TAHUN
+    // =========================
+    function filterDataByYear(tahun) {
 
+        return allTbc
+            .filter(item => parseInt(item.tahun) === parseInt(tahun))
+            .reduce((acc, item) => {
+
+                const wilayah = item.kelurahan?.trim();
+
+                acc[wilayah] = {
+                    ...item
+                };
+
+                return acc;
+
+            }, {});
+    }
+
+    // =========================
+    // INIT MAP
+    // =========================
+    const map = L.map('map', {
+        minZoom: 12,
+        maxZoom: 14
+    }).setView([-8.1, 113.5], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        .addTo(map);
+
+    setTimeout(() => map.invalidateSize(), 200);
+
+    // =========================
+    // LEGEND
+    // =========================
+    var legend = L.control({
+        position: 'bottomright'
+    });
+
+    legend.onAdd = function(map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+
+        div.style.background = 'rgba(255,255,255,0.9)';
+        div.style.padding = '8px 12px';
+        div.style.borderRadius = '6px';
+        div.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
+        div.style.fontSize = '13px';
+        div.style.lineHeight = '1.5';
+        div.style.fontWeight = '600';
+
+        var grades = ['Tidak Ada', 'Rendah', 'Sedang', 'Tinggi'];
+        var colors = ['#999', '#2a9d8f', '#ff9800', '#e63946'];
+
+        div.innerHTML = '<b>Kategori Kasus</b><br>';
+
+        for (var i = 0; i < grades.length; i++) {
+
+            div.innerHTML +=
+                `<i style="background:${colors[i]}; width:18px; height:18px; display:inline-block; margin-right:6px; border-radius:3px;"></i> ${grades[i]}<br>`;
+        }
+
+        return div;
+    };
+
+    legend.addTo(map);
+
+    // =========================
+    // RENDER MAP
+    // =========================
+    let geoLayer = null;
+    let labelLayer = L.layerGroup().addTo(map);
+
+    function renderMap(filteredData) {
+
+        if (geoLayer) geoLayer.remove();
+        labelLayer.clearLayers();
+        const normalizedData = {};
+
+        Object.keys(filteredData).forEach(key => {
+
+            const normalizedKey =
+                key.trim().replace(/\s+/g, '').toLowerCase();
+
+            normalizedData[normalizedKey] = filteredData[key];
+        });
+
+        fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
+            .then(res => res.json())
+
+            .then(data => {
+
+                geoLayer = L.geoJSON(data, {
+
+                    style: function(feature) {
+
+                        const namaWilayah =
+                            feature.properties.NAMOBJ
+                            ?.trim()
+                            .replace(/\s+/g, '')
+                            .toLowerCase();
+
+                        const item = normalizedData[namaWilayah] || {
+                            kasus: 0,
+                            kelurahan: feature.properties.NAMOBJ
+                        };
+
+                        const totalKasus =
+                            parseInt(item.kasus) || 0;
+
+                        const values =
+                            Object.values(normalizedData)
+                            .map(x => parseInt(x.kasus) || 0);
+
+                        const minVal =
+                            values.length ? Math.min(...values) : 0;
+
+                        const maxVal =
+                            values.length ? Math.max(...values) : 0;
+
+                        const interval =
+                            (maxVal - minVal) / 3;
+
+                        let tingkat, warna;
+
+                        if (totalKasus === 0) {
+
+                            tingkat = "Tidak Ada";
+                            warna = "#999";
+
+                        } else if (totalKasus <= minVal + interval) {
+
+                            tingkat = "Rendah";
+                            warna = "#2a9d8f";
+
+                        } else if (totalKasus <= minVal + 2 * interval) {
+
+                            tingkat = "Sedang";
+                            warna = "#ff9800";
+
+                        } else {
+
+                            tingkat = "Tinggi";
+                            warna = "#e63946";
+                        }
+
+                        return {
+                            color: "#00bcd4",
+                            weight: 2,
+                            fillColor: warna,
+                            fillOpacity: 0.55
+                        };
+                    },
+
+                    onEachFeature: function(feature, layer) {
+
+                        const namaWilayah =
+                            feature.properties.NAMOBJ
+                            ?.trim()
+                            .replace(/\s+/g, '')
+                            .toLowerCase();
+
+                        const item = normalizedData[namaWilayah] || {
+                            kasus: 0,
+                            kelurahan: feature.properties.NAMOBJ,
+                            anak: 0,
+                            dewasa: 0,
+                            lansia: 0,
+                            penduduk: 0
+                        };
+
+                        const totalKasus =
+                            parseInt(item.kasus) || 0;
+
+                        const values =
+                            Object.values(normalizedData)
+                            .map(x => parseInt(x.kasus) || 0);
+
+                        const minVal =
+                            values.length ? Math.min(...values) : 0;
+
+                        const maxVal =
+                            values.length ? Math.max(...values) : 0;
+
+                        const interval =
+                            (maxVal - minVal) / 3;
+
+                        let tingkat, warna;
+
+                        if (totalKasus === 0) {
+
+                            tingkat = "Tidak Ada";
+                            warna = "#999";
+
+                        } else if (totalKasus <= minVal + interval) {
+
+                            tingkat = "Rendah";
+                            warna = "#2a9d8f";
+
+                        } else if (totalKasus <= minVal + 2 * interval) {
+
+                            tingkat = "Sedang";
+                            warna = "#ff9800";
+
+                        } else {
+
+                            tingkat = "Tinggi";
+                            warna = "#e63946";
+                        }
+
+                        const isi = `
+                            <div style="width:230px;font-family:Poppins,sans-serif;">
+
+                                <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#222;">
+                                    Kelurahan: ${item.kelurahan}
+                                </div>
+
+                                <div style="font-size:13px;color:#444;margin-bottom:4px;">
+                                    Total Kasus: <b>${totalKasus}</b>
+                                </div>
+
+                                <div style="font-size:13px;color:#444;margin-bottom:14px;">
+                                    Kategori: <b style="color:${warna}">${tingkat}</b>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onclick="openModal(
+                                        '${item.kelurahan}',
+                                        '${item.kasus}',
+                                        '${tingkat}',
+                                        '${item.anak}',
+                                        '${item.dewasa}',
+                                        '${item.lansia}',
+                                        '${item.penduduk}'
+                                    )"
+
+                                    style="background:#14c7d4;color:white;border:none;padding:10px 18px;border-radius:10px;font-weight:600;cursor:pointer;width:100%;">
+
+                                    Selengkapnya
+
+                                </button>
+
+                            </div>
+                        `;
+
+                        layer.bindPopup(isi, {
+                            closeButton:false
+                        });
+
+                        layer.on('popupopen', function(e) {
+
+                            const popup = e.popup.getElement();
+
+                            L.DomEvent.disableClickPropagation(popup);
+                            L.DomEvent.disableScrollPropagation(popup);
+
+                        });
+
+                        layer.on('mouseover', () => {
+
+                            layer.openPopup();
+
+                            layer.setStyle({
+                                weight:3
+                            });
+
+                        });
+
+                        layer.on('mouseout', () => {
+
+                        const popup = layer.getPopup();
+
+                        if (!popup) return;
+
+                        setTimeout(() => {
+
+                            const popupEl = popup.getElement();
+
+                            if (!popupEl || !popupEl.matches(':hover')) {
+
+                                layer.closePopup();
+
+                                layer.setStyle({
+                                    weight:2,
+                                    fillOpacity:0.55
+                                });
+
+                            }
+
+                        }, 1000);
+
+                    });
+
+                    }
+
+                }).addTo(map);
+
+                map.fitBounds(geoLayer.getBounds());
+
+            });
+    }
+
+    const selectPeriode =
+        document.getElementById('selectPeriode');
+
+    selectPeriode.addEventListener('change', function(){
+
+        renderMap(filterDataByYear(this.value));
+
+    });
+
+    renderMap(filterDataByYear(selectPeriode.value));
+
+});
 </script>
 
 <style>
@@ -1626,10 +1926,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
     z-index:1;
 }
 
- .leaflet-control-attribution {
-    display: none !important;
-}
-
 .modal-tbc{
     z-index:999999 !important;
 }
@@ -1645,6 +1941,7 @@ function openModal(
     anak = 0,
     dewasa = 0,
     lansia = 0,
+    penduduk = 0,
     laki = 0,
     perempuan = 0
 ){

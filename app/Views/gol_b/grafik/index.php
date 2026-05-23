@@ -105,52 +105,43 @@
         <div class="mt-4">
 
             <div class="row">
+        </div>
 
-    <!-- GRAFIK JK -->
-    <div class="col-md-6 mb-4">
+        <div class="card border-0 rounded-4 p-4 text-center">
+    <!-- TOMBOL -->
+    <div class="d-flex justify-content-center mb-4">
 
-        <div class="card border-0 rounded-4 p-3 h-100">
+        <div class="grafik-tabs">
 
-            <h5 class="fw-bold mb-3">
-                Grafik Jenis Kelamin
-            </h5>
+            <button class="tab-btn active"
+        onclick="gantiGrafik('status', this)">
 
-            <div style="height:280px; position:relative;">
-                <canvas id="chartJK"></canvas>
-            </div>
+    STATUS PASIEN
 
+</button>
+
+<button class="tab-btn"
+        onclick="gantiGrafik('jk', this)">
+
+    JENIS KELAMIN
+
+</button>
+
+<button class="tab-btn"
+        onclick="gantiGrafik('umur', this)">
+
+    KATEGORI UMUR
+
+</button>
         </div>
 
     </div>
 
-    <!-- GRAFIK STATUS -->
-    <div class="col-md-6 mb-4">
+    <!-- GRAFIK -->
+    <div style="height:400px;">
 
-        <div class="card border-0 rounded-4 p-3 h-100">
+        <canvas id="mainChart"></canvas>
 
-            <h5 class="fw-bold mb-3">
-                Grafik Status Pasien
-            </h5>
-
-            <div style="height:350px;">
-                <canvas id="chartStatus"></canvas>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- GRAFIK UMUR -->
-<div class="card border-0 rounded-4 p-3">
-
-    <h5 class="fw-bold mb-3">
-        Grafik Kategori Umur
-    </h5>
-
-    <div style="height:350px;">
-        <canvas id="chartUmur"></canvas>
     </div>
 
 </div>
@@ -169,6 +160,55 @@
 
 </div>
 
+<style>
+
+.grafik-tabs{
+    display:flex;
+    justify-content:center;
+    margin-bottom:30px;
+}
+
+.tab-btn{
+
+    padding:12px 28px;
+    border:1px solid #20C9C3;
+    background:white !important;
+    color:#20C9C3 !important;
+
+    font-weight:600;
+    font-size:13px;
+
+    cursor:pointer;
+    transition:0.3s;
+
+    min-width:170px;
+
+}
+
+.tab-btn:first-child{
+    border-radius:30px 0 0 30px;
+}
+
+.tab-btn:last-child{
+    border-radius:0 30px 30px 0;
+}
+
+.tab-btn.active{
+
+    background:#20C9C3 !important;
+    color:white !important;
+    border:1px solid #20C9C3 !important;
+
+}
+
+.tab-btn:not(.active){
+
+    background:white !important;
+    color:#20C9C3 !important;
+
+}
+
+</style>
 
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -178,12 +218,6 @@ const grafikData = <?= isset($grafik) ? $grafik : '{}' ?>;
 
 const wilayah = <?= isset($wilayah) ? $wilayah : '[]' ?>;
 
-
-const ctxJK = document.getElementById('chartJK');
-
-const ctxStatus = document.getElementById('chartStatus');
-
-const ctxUmur = document.getElementById('chartUmur');
 
 let kategoriAktif = 'Semua';
 let bulanAktif = 'Semua';
@@ -300,39 +334,6 @@ function getLabels(){
 
 }
 
-// ============================
-// CHART JK
-// ============================
-
-const chartJK = new Chart(ctxJK, {
-
-    type: 'bar',
-
-    data: {
-
-        labels: getLabels(),
-
-        datasets: [
-
-            {
-                label: 'Laki-laki',
-                data: ambilData('laki'),
-                backgroundColor:'#3AA6B9',
-                borderRadius:8
-            },
-
-            {
-                label: 'Perempuan',
-                data: ambilData('perempuan'),
-                backgroundColor:'#6EDCD9',
-                borderRadius:8
-            }
-
-        ]
-    }
-
-});
-
 
 // ============================
 // CHART STATUS
@@ -372,45 +373,6 @@ function hitungStatus(statusCari){
     return total;
 
 }
-
-const chartStatus = new Chart(ctxStatus, {
-
-    type:'bar',
-
-    data:{
-
-        labels:[
-            'Sembuh',
-            'Pengobatan',
-            'Meninggal'
-        ],
-
-        datasets:[{
-
-            label:'Jumlah',
-
-            data:[
-                <?= $jumlah_sembuh ?? 0 ?>,
-                <?= $jumlah_pengobatan ?? 0 ?>,
-                <?= $jumlah_meninggal ?? 0 ?>
-            ],
-
-            backgroundColor:[
-                '#7ED6DF',
-                '#20C9C3',
-                '#A5D8E8'
-            ],
-
-            borderRadius:8
-        }]
-    },
-
-    options:{
-        responsive:true,
-        maintainAspectRatio:false
-    }
-
-});
 
 // ============================
 // CHART UMUR
@@ -467,55 +429,6 @@ function hitungUmur(){
     return hasil;
 }
 
-const chartUmur = new Chart(ctxUmur, {
-
-    type:'line',
-
-    data:{
-
-        labels:umurLabels,
-
-        datasets:[{
-
-            label:'Jumlah Pasien',
-
-            data:hitungUmur(),
-
-            borderColor:'#20C9C3',
-
-            backgroundColor:'#20C9C3',
-
-            tension:0.4
-        }]
-    },
-
-    options:{
-        responsive:true,
-        maintainAspectRatio:false
-    }
-
-});
-
-// ================= FILTER UMUR =================
-
-document
-.getElementById('filterKategori')
-.addEventListener('change', function(){
-
-    kategoriAktif = this.value;
-
-    chartJK.data.datasets[0].data =
-    ambilData('laki');
-
-    chartJK.data.datasets[1].data =
-    ambilData('perempuan');
-
-    chartJK.data.labels = getLabels();
-
-    chartJK.update();
-
-});
-
 // ================= FILTER BULAN =================
 
 document
@@ -541,16 +454,236 @@ document
 
     wilayahAktif = this.value;
 
-    chart.data.datasets[0].data =
-    ambilData('laki');
-
-    chart.data.datasets[1].data =
-    ambilData('perempuan');
-
-    chart.update();
+    buatChartStatus();
 
 });
 
+const ctx = document.getElementById('mainChart');
+
+let mainChart;
+
+function buatChartStatus(){
+
+    if(mainChart){
+        mainChart.destroy();
+    }
+
+    mainChart = new Chart(ctx, {
+
+        type:'bar',
+
+        data:{
+
+            labels:[
+                'Jemberkidul',
+                'Tegalbesar',
+                'Kaliwates',
+                'Kebonagung',
+                'Sempusari',
+                'Mangli',
+                'Kepatihan'
+            ],
+
+            datasets:[
+
+                {
+                    label:'Sembuh',
+                    data:[
+                        <?= $status_sembuh_jemberkidul ?? 0 ?>,
+                        <?= $status_sembuh_tegalbesar ?? 0 ?>,
+                        <?= $status_sembuh_kaliwates ?? 0 ?>,
+                        <?= $status_sembuh_kebonagung ?? 0 ?>,
+                        <?= $status_sembuh_sempusari ?? 0 ?>,
+                        <?= $status_sembuh_mangli ?? 0 ?>,
+                        <?= $status_sembuh_kepatihan ?? 0 ?>
+                    ],
+                    backgroundColor:'#0B5D4B'
+                },
+
+                {
+                    label:'Pengobatan',
+                    data:[
+                        <?= $status_pengobatan_jemberkidul ?? 0 ?>,
+                        <?= $status_pengobatan_tegalbesar ?? 0 ?>,
+                        <?= $status_pengobatan_kaliwates ?? 0 ?>,
+                        <?= $status_pengobatan_kebonagung ?? 0 ?>,
+                        <?= $status_pengobatan_sempusari ?? 0 ?>,
+                        <?= $status_pengobatan_mangli ?? 0 ?>,
+                        <?= $status_pengobatan_kepatihan ?? 0 ?>
+                    ],
+                    backgroundColor:'#B7E4D7'
+                },
+
+                {
+                    label:'Meninggal',
+                    data:[
+                        <?= $status_meninggal_jemberkidul ?? 0 ?>,
+                        <?= $status_meninggal_tegalbesar ?? 0 ?>,
+                        <?= $status_meninggal_kaliwates ?? 0 ?>,
+                        <?= $status_meninggal_kebonagung ?? 0 ?>,
+                        <?= $status_meninggal_sempusari ?? 0 ?>,
+                        <?= $status_meninggal_mangli ?? 0 ?>,
+                        <?= $status_meninggal_kepatihan ?? 0 ?>
+                    ],
+                    backgroundColor:'#F4A300'
+                }
+
+            ]
+        },
+
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            indexAxis:'y'
+        }
+
+    });
+
+}
+
+function buatChartJK(){
+
+    if(mainChart){
+        mainChart.destroy();
+    }
+
+   mainChart = new Chart(ctx, {
+
+    type:'bar',
+
+    data:{
+
+        labels:[
+            'Jemberkidul',
+            'Tegalbesar',
+            'Kaliwates',
+            'Kebonagung',
+            'Sempusari',
+            'Mangli',
+            'Kepatihan',
+            'Lainnya'
+        ],
+
+        datasets:[
+
+            {
+                label:'Laki-laki',
+
+                data:[
+
+                    <?= $jk_laki_jemberkidul ?? 0 ?>,
+                    <?= $jk_laki_tegalbesar ?? 0 ?>,
+                    <?= $jk_laki_kaliwates ?? 0 ?>,
+                    <?= $jk_laki_kebonagung ?? 0 ?>,
+                    <?= $jk_laki_sempusari ?? 0 ?>,
+                    <?= $jk_laki_mangli ?? 0 ?>,
+                    <?= $jk_laki_kepatihan ?? 0 ?>,
+                    <?= $jk_laki_lainnya ?? 0 ?>
+
+                ],
+
+                backgroundColor:'#20C9C3'
+
+            },
+
+            {
+                label:'Perempuan',
+
+                data:[
+
+                    <?= $jk_perempuan_jemberkidul ?? 0 ?>,
+                    <?= $jk_perempuan_tegalbesar ?? 0 ?>,
+                    <?= $jk_perempuan_kaliwates ?? 0 ?>,
+                    <?= $jk_perempuan_kebonagung ?? 0 ?>,
+                    <?= $jk_perempuan_sempusari ?? 0 ?>,
+                    <?= $jk_perempuan_mangli ?? 0 ?>,
+                    <?= $jk_perempuan_kepatihan ?? 0 ?>,
+                    <?= $jk_perempuan_lainnya ?? 0 ?>
+
+                ],
+
+                backgroundColor:'#B7E4D7'
+
+            }
+
+        ]
+
+    },
+
+    options:{
+        responsive:true,
+        maintainAspectRatio:false
+    }
+
+});
+
+}
+
+function buatChartUmur(){
+
+    if(mainChart){
+        mainChart.destroy();
+    }
+
+    mainChart = new Chart(ctx, {
+
+        type:'line',
+
+        data:{
+            labels:[
+                'Balita',
+                'Anak-anak',
+                'Remaja',
+                'Dewasa',
+                'Lansia'
+            ],
+
+            datasets:[{
+                label:'Kategori Umur',
+                data:[
+
+                <?= $jumlah_balita ?? 0 ?>,
+                <?= $jumlah_anak ?? 0 ?>,
+                <?= $jumlah_remaja ?? 0 ?>,
+                <?= $jumlah_dewasa ?? 0 ?>,
+                <?= $jumlah_lansia ?? 0 ?>
+
+                ],
+                borderColor:'#20C9C3',
+                backgroundColor:'#20C9C3'
+            }]
+        }
+
+    });
+
+}
+
+function gantiGrafik(tipe, el){
+
+    document
+    .querySelectorAll('.tab-btn')
+    .forEach(btn => {
+
+        btn.classList.remove('active');
+
+    });
+
+    el.classList.add('active');
+
+    if(tipe == 'status'){
+        buatChartStatus();
+    }
+
+    if(tipe == 'jk'){
+        buatChartJK();
+    }
+
+    if(tipe == 'umur'){
+        buatChartUmur();
+    }
+
+}
+buatChartStatus();
 </script>
 
 <?= $this->endSection() ?>

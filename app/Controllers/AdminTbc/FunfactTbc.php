@@ -152,16 +152,16 @@ if ($cek) {
         return redirect()->to('/tbc/funfact');
     }
 
-    public function arsip(int $id)
-    {
-        $model = new FunfactTbcModel();
+   public function arsip(int $id)
+{
+    $model = new FunfactTbcModel();
 
-        $model->update($id, [
-            'status_funfact' => 'Draft'
-        ]);
+    $model->update($id, [
+        'status_funfact' => 'Arsip'
+    ]);
 
-        return redirect()->to('/tbc/funfact?status=Draft');
-    }
+    return redirect()->to('/tbc/funfact?status=Arsip');
+}
 
     public function publish(int $id)
     {

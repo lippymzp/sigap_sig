@@ -27,11 +27,6 @@ class Dashboard extends BaseController
         return view('hasil', ['menu' => 'hasil']);
     }
 
-    public function skrining()
-    {
-        return view('skrining_1', ['menu' => 'skrining']);
-    }
-
     public function peta()
     {
         return view('peta', ['menu' => 'peta']);
@@ -67,7 +62,7 @@ class Dashboard extends BaseController
     // =========================
     $builder = $db->table('pasien p');
     $builder->select('w.kelurahan as desa, COUNT(*) as kasus');
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+    $builder->join('wilayah wl', 'wl.id_wilayah = p.id_wilayah', 'left');
     $builder->whereIn('w.kelurahan', [
         'Sumbersari',
         'Wirolegi',
@@ -251,48 +246,145 @@ public function tbc()
 
     $db = \Config\Database::connect();
 
-    // BERITA
+    // =========================
+    // 1️⃣ BERITA
+    // =========================
     $berita = $beritaModel
         ->where('status_berita', 'Publish')
         ->orderBy('id_berita', 'DESC')
         ->findAll();
 
-    // FUNFACT
+    // =========================
+    // 2️⃣ FUNFACT
+    // =========================
     $funfact = $funfactModel
         ->where('status_funfact', 'Publish')
         ->orderBy('id_funfact', 'DESC')
         ->findAll();
 
-    // DATA PETA
-    $builder = $db->table('pasien p');
+    // =========================
+    // 3️⃣ AMBIL DATA PASIEN UNTUK CHART
+    // =========================
+    $tbc = $db->table('pasien')
+        ->where('id_penyakit', 2) // TBC
+        ->get()
+        ->getResultArray();
 
-    $builder->select('
-    w.kelurahan as desa,
-    w.latitude,
-    w.longitude,
-    COUNT(*) as kasus
-');
+    // =========================
+    // 4️⃣ AMBIL DATA UNTUK MAP + MODAL
+    // =========================
+    $mapTbc = $db->table('pasien p')
+        ->select('
+            p.id_wilayah,
+            wl.kelurahan,
+            YEAR(p.tgl_kunjungan) as tahun,
+            COUNT(p.id_pasien) as kasus,
+            SUM(CASE WHEN p.umur <= 12 THEN 1 ELSE 0 END) as anak,
+            SUM(CASE WHEN p.umur BETWEEN 13 AND 59 THEN 1 ELSE 0 END) as dewasa,
+            SUM(CASE WHEN p.umur >= 60 THEN 1 ELSE 0 END) as lansia,
+            COUNT(*) as penduduk
+        ')
+        ->join('wilayah wl', 'wl.id_wilayah = p.id_wilayah', 'left')
+        ->groupBy('p.id_wilayah, YEAR(p.tgl_kunjungan)')
+        ->get()
+        ->getResultArray();
 
-    $builder->join(
-        'wilayah w',
-        'w.id_wilayah = p.id_wilayah',
-        'left'
-    );
+    // =========================
+    // 5️⃣ SIAPKAN DATA UNTUK CHART
+    // =========================
+    $mappingWilayah = [
+        2001 => 'Jemberkidul',
+        2002 => 'Tegalbesar',
+        2003 => 'Kaliwates',
+        2004 => 'Kebonagung',
+        2005 => 'Sempusari',
+        2006 => 'Mangli',
+        2007 => 'Kepatihan'
+    ];
 
-    $builder->where('w.latitude IS NOT NULL');
-    $builder->where('w.longitude IS NOT NULL');
+    $wilayah = ['Jemberkidul','Tegalbesar','Kaliwates','Kebonagung','Sempusari','Mangli','Kepatihan','Lainnya'];
+    $bulanList = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    $kategoriList = ['Balita','Anak-anak','Remaja','Dewasa','Lansia'];
+    $statusList = ['Pengobatan Lengkap','Sembuh','Meninggal','Putus Berobat','Pindah'];
 
-    $builder->groupBy('w.kelurahan, w.latitude, w.longitude');
+    $grafik = [];
+    foreach($bulanList as $b){
+        foreach(['laki','perempuan'] as $gender){
+            foreach($kategoriList as $k){
+                foreach($wilayah as $w){
+                    foreach($statusList as $s){
+                        $grafik[$b][$gender][$k][$w][$s] = 0;
+                    }
+                }
+            }
+        }
+    }
 
-    $tbc = $builder->get()->getResultArray();
+    foreach($tbc as $p){
+        $umur = (int)$p['umur'];
+        if($umur <=4) $kategoriUmur='Balita';
+        elseif($umur<=9) $kategoriUmur='Anak-anak';
+        elseif($umur<=18) $kategoriUmur='Remaja';
+        elseif($umur<=59) $kategoriUmur='Dewasa';
+        else $kategoriUmur='Lansia';
 
+        $gender = ($p['jenis_kelamin']=='Perempuan') ? 'perempuan' : 'laki';
+        $kodeBulan = str_pad(date('m', strtotime($p['tgl_kunjungan'])),2,'0',STR_PAD_LEFT);
+        $namaWilayah = $mappingWilayah[$p['id_wilayah']] ?? 'Lainnya';
+        $status = $p['status_akhir'] ?? 'Pengobatan Lengkap';
+
+        $grafik[$kodeBulan][$gender][$kategoriUmur][$namaWilayah][$status]++;
+    }
+
+
+    // =========================
+    // 6️⃣ HITUNG STATUS PASIEN
+    // =========================
+    $jumlah_sembuh = $db->table('pasien')->where('status_akhir','Sembuh')->countAllResults();
+    $jumlah_pengobatan = $db->table('pasien')->where('status_akhir','Pengobatan')->countAllResults();
+    $jumlah_meninggal = $db->table('pasien')->where('status_akhir','Meninggal')->countAllResults();
+
+    // =========================
+    // 7️⃣ STATISTIK DASHBOARD
+    // =========================
+    $totalKasusAktif = $db->table('pasien')->where('status_akhir','Pengobatan Lengkap')->countAllResults();
+    $kasusBulanIni = $db->table('pasien')
+        ->where('MONTH(tgl_kunjungan)', date('m'))
+        ->where('YEAR(tgl_kunjungan)', date('Y'))
+        ->countAllResults();
+    $kelurahanTerdampak = $db->table('pasien')
+        ->where('id_penyakit',2)
+        ->select('id_wilayah')
+        ->groupBy('id_wilayah')
+        ->countAllResults();
+
+    // =========================
+    // 8️⃣ RETURN VIEW
+    // =========================
     return view('gol_b/dashboard_tbc', [
         'menu' => 'dashboard',
         'berita' => $berita,
         'funfact' => $funfact,
-        'tbc' => $tbc
+        'tbc' => $tbc,
+        'mapTbc' => $mapTbc, // kini lengkap untuk modal
+        'grafik' => json_encode($grafik),
+        'wilayah' => json_encode($wilayah),
+        'bulanList' => json_encode($bulanList),
+        'statusList' => json_encode($statusList),
+        'jumlah_sembuh' => $jumlah_sembuh,
+        'jumlah_pengobatan' => $jumlah_pengobatan,
+        'jumlah_meninggal' => $jumlah_meninggal,
+        'totalKasusAktif' => $totalKasusAktif,
+        'kasusBulanIni' => $kasusBulanIni,
+        'kelurahanTerdampak' => $kelurahanTerdampak
     ]);
 }
+public function grafik()
+{
+    // Redirect ke dashboard TBC dan scroll ke grafik
+    return redirect()->to('/tbc/dashboard#grafik-dashboard');
+}
+
   // DASHBOARD PNEUMONIA
 public function pneumonia()
 {

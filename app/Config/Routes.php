@@ -16,6 +16,11 @@ $routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
 $routes->get('/tbc', 'Home::tbc');
+$routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
+$routes->get('/kepalatbc/export', 'KepalaTbc::export');
+$routes->get('kepalatbc/dashboard', 'KepalaTbc::dashboard');
+$routes->get('kepalatbc/profil', 'KepalaTbc::profil');
+
 $routes->get('/skrining', 'Home::skrining');
 $routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');
 
@@ -32,7 +37,8 @@ $routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
 // ===============================================
 // Landingpage TBC 
 // ===============================================
-$routes->get('tbc/detail-funfact/(:num)', 'LandingTbc::detailFunfact/$1');
+$routes->get('tbc', 'LandingTbc::index');
+$routes->get('tbc/detail_funfact/(:num)', 'LandingTbc::detail_funfact/$1');
 
 /* ========================= */
 /* SKRINING Pneumonia */
@@ -369,7 +375,7 @@ $routes->post('tbc/update/(:num)', 'AdminTbc\Pasien::update/$1');
 
 $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
 
-$routes->get('tbc/grafik', 'AdminTbc\Pasien::grafik');
+$routes->get('tbc/dashboard', 'AdminTbc\Pasien::grafikTbc');
 $routes->get('tbc/create', 'AdminTbc\Pasien::create');
 
 $routes->get('tbc/get-tahun-list', 'AdminTbc\Pasien::getTahunList');
