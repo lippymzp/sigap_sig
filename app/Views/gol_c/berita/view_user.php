@@ -7,7 +7,7 @@ $this->setVar('footer_maskot', 'cynex.png');
 
 <?php
 
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$conn = mysqli_connect("localhost","root","","sigapsig");
 
 /*
 |--------------------------------------------------------------------------
