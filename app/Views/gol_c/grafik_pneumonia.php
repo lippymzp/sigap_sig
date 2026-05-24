@@ -164,7 +164,7 @@ SELECT
 
     wilayah.kelurahan as nama_wilayah,
     pasien.jenis_kelamin,
-    pasien.umur,
+    pasien.rentang_umur,
     MONTH(pasien.tgl_kunjungan) as bulan,
     YEAR(pasien.tgl_kunjungan) as tahun,
     COUNT(*) as jumlah
@@ -179,7 +179,7 @@ WHERE pasien.id_penyakit = 3
 GROUP BY
     wilayah.kelurahan,
     pasien.jenis_kelamin,
-    pasien.umur,
+    pasien.rentang_umur,
     MONTH(pasien.tgl_kunjungan),
     YEAR(pasien.tgl_kunjungan)
 
@@ -572,8 +572,9 @@ function updateChart2(){
             || item.jenis_kelamin == filterGender2.value;
 
         let cocokUmur =
-            filterUmur2.value == ''
-            || kategoriUmur(item.umur) == filterUmur2.value;
+        filterUmur2.value == ''
+        || filterUmur2.value == 'All'
+        || item.rentang_umur == filterUmur2.value;
 
         if(
             cocokBulan &&
