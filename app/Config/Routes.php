@@ -34,8 +34,9 @@ $routes->get('hapus-penduduk/(:num)', 'DashboardadminDbd::hapusPenduduk/$1');
 $routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
 
 
-// ===============================================
-// Landingpage TBC 
+
+//tes db
+$routes->get('landing-tbc/test-db', 'LandingTbc::testDB');
 // ===============================================
 $routes->get('tbc', 'LandingTbc::index');
 $routes->get('tbc/detail_funfact/(:num)', 'LandingTbc::detail_funfact/$1');

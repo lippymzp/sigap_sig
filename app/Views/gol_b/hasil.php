@@ -1,23 +1,33 @@
+<?php helper(['url', 'text']); ?>
+
 <?php $this->setVar('penyakit', 'tbc'); ?>
+<?php
+$this->setVar('custom_logo', 'respiora.png');
+$this->setVar('show_footer_maskot', true);
+$this->setVar('footer_maskot', 'logo_tbc.png');
+?>
 <?= $this->include('layout/header') ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hasil Skrining</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
 
     body{
         background:#eef1f3;
         font-family:Poppins;
     }
+      .tbc-logo {
+        width: 300px;
+        height: auto;
+    }
+
 
     .box{
         width:900px;
-        margin:40px auto;
+        margin:150px auto;
         background:white;
         border-radius:15px;
         padding:30px;
@@ -179,7 +189,7 @@ TABLE RINCIAN
 
 .box{
     width:900px;
-    margin:40px auto;
+margin-top: 150px;
     background:white;
     border-radius:18px;
     padding:30px;
@@ -968,7 +978,44 @@ $puskesmas = [
 
 </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
 
+        const footerDesc = document.querySelector(".footer-desc");
+
+        if (footerDesc) {
+
+            footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    RESPIORA
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Regional Early Detection Screening Platform Intelligent Observation Response Awareness
+                </p>
+
+            </div>
+
+        `);
+
+        }
+
+    });
+</script>
 </body>
 </html>
 
