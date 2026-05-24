@@ -588,6 +588,21 @@ $routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
 //super admin iki
 $routes->get('/superadmin', 'SuperAdmin::dashboard');
 $routes->get('superadmin/manajemen_admin','SuperAdmin::manajemen_admin');
+$routes->get('superadmin/manajemen_admin/tambah', 'SuperAdmin::manajemen_admin_tambah');
+$routes->post('superadmin/manajemen_admin/simpan', 'SuperAdmin::manajemen_admin_simpan');
+$routes->get(
+    'superadmin/manajemen_admin/edit/(:num)',
+    'SuperAdmin::manajemen_admin_edit/$1'
+);
+$routes->post(
+    'superadmin/manajemen_admin/update/(:num)',
+    'SuperAdmin::manajemen_admin_update/$1'
+);
+$routes->get(
+    'superadmin/manajemen_admin/hapus/(:num)',
+    'SuperAdmin::manajemen_admin_hapus/$1'
+);
+
 $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->get('/superadmin/admin', 'SuperAdmin::admin');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
