@@ -918,7 +918,9 @@ foreach ($listKelurahanAbj as $namaKelAbj) {
             'desaTertinggi'  => $desa_tertinggi,
             'penduduk'       => $pendudukData,
             'grafikMortalitas' => $grafikMortalitas,
-            'grafikAbj'        => $grafikAbj
+            'grafikAbj'        => $grafikAbj,
+             'show_footer_maskot' => true,
+            'footer_maskot' => 'logodenggisputih.png'
         ]);
     }
 
