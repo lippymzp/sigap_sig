@@ -1252,9 +1252,6 @@ $rataDesa = 0;
 $totalKasusRingkasan = 0;
     $desa_diizinkan = ['sumbersari', 'wirolegi', 'antirogo', 'tegalgede', 'karangrejo'];
     ?>
-</div>
-
-</div>
 <br>
 <br>
     <section id="mapSection" class="container mt-5 mb-5 p-0">
@@ -1272,10 +1269,6 @@ $totalKasusRingkasan = 0;
                 </select>
             </div>
         </div>
-
-     <div class="section-card">
-
-    <div class="section-block">
         <!-- CARD MAP -->
         <div class="inner-card">
             <div class="map-wrapper">
@@ -2899,6 +2892,8 @@ function sendMessage() {
         console.error('Error:', error);
     });
 }
+document.addEventListener("DOMContentLoaded", function(){
+
 const footerDesc = document.querySelector(".footer-desc");
 
     if(footerDesc){
@@ -2931,6 +2926,7 @@ const footerDesc = document.querySelector(".footer-desc");
         `);
 
 }
+});
 </script>
 
 <?= $this->include('layout/footer') ?>
