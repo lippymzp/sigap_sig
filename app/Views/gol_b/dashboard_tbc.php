@@ -1608,22 +1608,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
     font-weight:500;
 }
 
-.leaflet-popup-content button{
-    position:relative;
-    z-index:99999;
-    pointer-events:auto;
-}
-
-.leaflet-popup-content{
-    pointer-events:auto !important;
-}
-
-.leaflet-popup{
-    pointer-events:auto !important;
-}
-
-.leaflet-container{
-    z-index:1;
+.leaflet-control-attribution {
+    display: none !important;
 }
 
  .leaflet-control-attribution {

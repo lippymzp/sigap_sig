@@ -1130,10 +1130,15 @@ foreach ($pneumonia as $item) {
 }
 
 $tahunList = array_unique($tahunList);
+
+/* TAMBAHKAN TAHUN MANUAL */
+$tahunList = array_unique(array_merge(['2026', '2025'], $tahunList));
+
+/* URUTKAN DARI TAHUN TERBARU KE LAMA */
 rsort($tahunList);
 
 if(empty($tahunList)){
-    $tahunList = [2025];
+    $tahunList = [2026, 2025];
 }
 ?>
 
@@ -1182,7 +1187,7 @@ if(empty($tahunList)){
                             <div class="filter-group">
                                 <label>Periode</label>
                                 <select id="filterTahun">
-                                    <option value="">Semua Tahun</option>
+                                    <option value="">All</option>
                                     <?php foreach($tahunList as $tahun): ?>
                                         <option value="<?= $tahun ?>"><?= $tahun ?></option>
                                     <?php endforeach; ?>
@@ -1305,7 +1310,7 @@ if(empty($tahunList)){
                         <button
                             type="button"
                             class="period-btn"
-                            onclick="changeDetailYear(-1)"
+                            onclick="changeDetailYear(1)"
                         >
                             ‹
                         </button>
@@ -1317,7 +1322,7 @@ if(empty($tahunList)){
                         <button
                             type="button"
                             class="period-btn"
-                            onclick="changeDetailYear(1)"
+                            onclick="changeDetailYear(-1)"
                         >
                             ›
                         </button>
@@ -1370,6 +1375,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var geoJsonData;
     var currentDataFinal = {};
     var availableYears = <?= json_encode(array_values($tahunList)) ?>;
+    availableYears = Array.from(
+    new Set(
+        availableYears.concat(["2026", "2025"]).map(String)
+    )
+    ).sort(function(a, b){
+        return parseInt(b) - parseInt(a);
+    });
 
     var selectedYearIndex = 0;
 
@@ -1505,6 +1517,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return bulan[angka] || "Semua Bulan";
     }
 
+    function getWaktuSaatIni(){
+    var tanggalSekarang = new Date();
+
+    var bulanSekarang = tanggalSekarang.getMonth() + 1;
+    var tahunSekarang = tanggalSekarang.getFullYear();
+
+    return {
+        bulan: bulanSekarang,
+        tahun: tahunSekarang,
+        label: namaBulan(bulanSekarang) + " " + tahunSekarang
+    };
+   }                                    
+    
     function kategoriKasus(total){
         if(total >= 45){
             return "tinggi";
@@ -1913,26 +1938,131 @@ document.addEventListener("DOMContentLoaded", function () {
         map.fitBounds(geoLayer.getBounds());
     }
 
-    window.showDetailWilayah = function(key, namaWilayah){
+    function hitungKasusBaruTerkiniWilayah(keyWilayah){
 
-        selectedDetailKey = key;
-        selectedDetailNama = namaWilayah;
+    var waktuSaatIni = getWaktuSaatIni();
 
-        var item = currentDataFinal[key];
-        if(!item){
-            item = {
-                nama: namaWilayah,
+    var jk = document.getElementById("filterJk").value;
+    var filterJk = jk.toString().toLowerCase().trim();
+
+    var totalKasusBaru = 0;
+
+    dataPneu.forEach(function(item){
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+
+        // hanya wilayah yang diklik
+        if(desaKey !== keyWilayah){
+            return;
+        }
+
+        // hanya bulan dan tahun saat ini
+        if(itemTahun !== waktuSaatIni.tahun.toString()){
+            return;
+        }
+
+        if(itemBulan !== waktuSaatIni.bulan.toString()){
+            return;
+        }
+
+        // hanya berubah kalau filter jenis kelamin dipilih
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        totalKasusBaru += getKasus(item);
+    });
+
+    return totalKasusBaru;
+}                                    
+
+function buildDataDetailByYear(tahunDetail){
+
+    var bulan = document.getElementById("filterBulan").value;
+    var jk = document.getElementById("filterJk").value;
+
+    var hasil = {};
+
+    dataPneu.forEach(function(item){
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+        var filterJk = jk.toString().toLowerCase().trim();
+
+        if(itemTahun !== tahunDetail.toString()){
+            return;
+        }
+
+        if(bulan && itemBulan !== bulan){
+            return;
+        }
+
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        if(!hasil[desaKey]){
+            hasil[desaKey] = {
+                nama: desaAsli,
                 total: 0,
                 kasusBaru: 0,
                 kategori: "rendah"
             };
         }
 
-        var tahun = document.getElementById("filterTahun").value || availableYears[0] || "2025";
-        var bulan = document.getElementById("filterBulan").value || "";
+        var jumlahKasus = getKasus(item);
 
-        selectedDetailYear = parseInt(tahun);
-        selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+        hasil[desaKey].total += jumlahKasus;
+        hasil[desaKey].kasusBaru += jumlahKasus;
+    });
+
+    // hitung ulang kategori semua wilayah agar warna bar benar
+    for(var key in hasil){
+        hasil[key].kategori = kategoriKasus(hasil[key].total);
+    }
+
+    return hasil;
+}
+
+    window.showDetailWilayah = function(key, namaWilayah){
+
+        selectedDetailKey = key;
+            selectedDetailNama = namaWilayah;
+
+            var tahun = document.getElementById("filterTahun").value || availableYears[0] || "2025";
+
+            selectedDetailYear = parseInt(tahun);
+            selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+
+            if(selectedYearIndex < 0){
+                selectedYearIndex = 0;
+            }
+
+            // PENTING: hitung ulang data detail sesuai tahun saat pertama klik wilayah
+            currentDataFinal = buildDataDetailByYear(selectedDetailYear);
+
+            var item = currentDataFinal[key];
+
+            if(!item){
+                item = {
+                    nama: namaWilayah,
+                    total: 0,
+                    kasusBaru: 0,
+                    kategori: "rendah"
+                };
+            }
+
+            item.kategori = kategoriKasus(item.total);
 
         if(selectedYearIndex < 0){
             selectedYearIndex = 0;
@@ -1946,13 +2076,14 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
 
-        if(bulan){
-            document.getElementById("detailBulanLabel").innerText = "Kasus Baru (" + namaBulan(bulan) + " " + selectedDetailYear + ")";
-        }else{
-            document.getElementById("detailBulanLabel").innerText = "Kasus Baru (Semua Bulan " + selectedDetailYear + ")";
-        }
+        var waktuSaatIni = getWaktuSaatIni();
+        var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(key);
 
-        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+        document.getElementById("detailBulanLabel").innerText =
+            "Kasus Baru (" + waktuSaatIni.label + ")";
+
+        document.getElementById("detailKasusBaru").innerText =
+            kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);
@@ -1987,49 +2118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detailYear").innerText = selectedDetailYear;
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
 
-        var bulan = document.getElementById("filterBulan").value;
-        var jk = document.getElementById("filterJk").value;
-
-        var hasil = {};
-
-        dataPneu.forEach(function(item){
-
-            var itemTahun = getTahun(item).toString();
-            var itemBulan = getBulan(item).toString();
-            var itemJk = getJk(item).toString().toLowerCase().trim();
-            var filterJk = jk.toString().toLowerCase().trim();
-
-            if(itemTahun !== selectedDetailYear.toString()){
-                return;
-            }
-
-            if(bulan && itemBulan !== bulan){
-                return;
-            }
-
-            if(jk && itemJk !== filterJk){
-                return;
-            }
-
-            var desaAsli = getDesa(item);
-            var desaKey = fixKey(desaAsli);
-
-            if(!hasil[desaKey]){
-                hasil[desaKey] = {
-                    nama: desaAsli,
-                    total: 0,
-                    kasusBaru: 0,
-                    kategori: "rendah"
-                };
-            }
-
-            var jumlahKasus = getKasus(item);
-
-            hasil[desaKey].total += jumlahKasus;
-            hasil[desaKey].kasusBaru += jumlahKasus;
-        });
-
-        currentDataFinal = hasil;
+        currentDataFinal = buildDataDetailByYear(selectedDetailYear);
 
         var item = currentDataFinal[selectedDetailKey];
 
@@ -2045,7 +2134,15 @@ document.addEventListener("DOMContentLoaded", function () {
         item.kategori = kategoriKasus(item.total);
 
         document.getElementById("detailTotal").innerText = item.total + " kasus";
-        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+
+        var waktuSaatIni = getWaktuSaatIni();
+        var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(selectedDetailKey);
+
+        document.getElementById("detailBulanLabel").innerText =
+            "Kasus Baru (" + waktuSaatIni.label + ")";
+
+        document.getElementById("detailKasusBaru").innerText =
+            kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);

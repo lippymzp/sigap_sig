@@ -742,6 +742,7 @@ body{
                         <label class="form-label-small">Pilih Kelurahan</label>
                         <select name="desa" class="form-control custom-input" id="desa">
                             <option value="">Pilih Desa/Kelurahan</option>
+                            <option>Ajung</option>
                             <option>Klompangan</option>
                             <option>Mangaran</option>
                             <option>Pancakarya</option>
@@ -1056,7 +1057,7 @@ body{
                         <input type="hidden" name="nama" id="formNama">
                         <input type="hidden" name="tanggal" id="formTanggal">
                         <input type="hidden" name="jenis_kelamin" id="formJK">
-                        <input type="hidden" name="usia" id="formUsia">
+                        <input type="hidden" name="rentang_umur" id="formRentangUmur">
                         <input type="hidden" name="diagnosa" id="formDiagnosa">
                         <input type="hidden" name="antibiotik" id="formAntibiotik">
                         <input type="hidden" name="catatan" id="formCatatan">
@@ -1499,7 +1500,7 @@ function submitData(){
 
     document.getElementById('formNama').value = document.getElementById('nama').value;
     document.getElementById('formTanggal').value = document.getElementById('tanggal').value;
-    document.getElementById('formUsia').value = document.getElementById('usia').value;
+    document.getElementById('formRentangUmur').value = document.getElementById('usia').value;
     document.getElementById('formDiagnosa').value = document.getElementById('diagnosa').value;
 
     let jk = document.querySelector('input[name="jk"]:checked');
