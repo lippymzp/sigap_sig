@@ -2345,7 +2345,7 @@ body {
     }
 
     .tbc-logo {
-        width: 300px;
+        width: 250px;
         height: auto;
     }
     
@@ -2364,7 +2364,7 @@ body {
 }
 
 .chatbot-animate {
-    animation: shake 1.5s infinite;
+    animation: shake 4s infinite;
     transform-origin: center bottom;
 }
 
