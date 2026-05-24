@@ -3769,6 +3769,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'kasus' => [],
     ], JSON_NUMERIC_CHECK) ?>;
 
+    console.log(grafikTbc);
+
     const gradient = ctx.createLinearGradient(0, 0, 0, 420);
     gradient.addColorStop(0, '#00bfae');
     gradient.addColorStop(0.55, '#008f99');

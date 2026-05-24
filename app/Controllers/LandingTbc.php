@@ -22,17 +22,21 @@ class LandingTbc extends BaseController
             SELECT DISTINCT YEAR(tgl_kunjungan) AS tahun
             FROM pasien
             WHERE id_penyakit = 2
-              AND tgl_kunjungan IS NOT NULL
+            AND tgl_kunjungan IS NOT NULL
             ORDER BY tahun DESC
         ")->getResultArray();
 
         $tahunTersedia = array_column($tahunRows, 'tahun');
+
         $tahunRequest = $this->request->getGet('tahun');
 
-        if (!empty($tahunRequest) && in_array((int) $tahunRequest, array_map('intval', $tahunTersedia))) {
-            $tahunAktif = (int) $tahunRequest;
+        if (
+            !empty($tahunRequest) &&
+            in_array((int)$tahunRequest, array_map('intval', $tahunTersedia))
+        ) {
+            $tahunAktif = (int)$tahunRequest;
         } else {
-            $tahunAktif = (int) ($tahunTersedia[0] ?? date('Y'));
+            $tahunAktif = (int)($tahunTersedia[0] ?? date('Y'));
         }
 
         // =========================
@@ -62,8 +66,7 @@ class LandingTbc extends BaseController
                 COUNT(id_pasien) AS total
             FROM pasien
             WHERE id_penyakit = 2
-              AND tgl_kunjungan IS NOT NULL
-              AND YEAR(tgl_kunjungan) = ?
+            AND YEAR(tgl_kunjungan) = ?
             GROUP BY MONTH(tgl_kunjungan)
             ORDER BY MONTH(tgl_kunjungan) ASC
         ", [$tahunAktif])->getResultArray();
@@ -272,7 +275,7 @@ $funfactTbc = $db->query("
             'ringkasanTbc'            => $ringkasanTbc,
             'beritaTbc'               => $beritaTbc,
         ];
-dd($beritaTbc);
+
         return view('gol_b/tbc', $data);
     }
 
