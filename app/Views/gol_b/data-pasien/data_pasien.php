@@ -166,8 +166,10 @@
 
                         <input type="text"
                             class="form-control search-input"
-                            placeholder="Ketik untuk mencari...">
-                            
+                            id="searchInput"
+                            placeholder="Ketik untuk mencari..."
+                            onkeyup="cariPasien()">
+                                                    
 
                     </div>
 
@@ -268,10 +270,26 @@ else{
 
                             <!-- UMUR -->
                             <td>
+<?php
+    $umur = (int)$p['umur'];
+    $tglLahir = $p['tgl_lahir'] ?? null;
 
-                                <?= $p['umur']; ?> Th
-
-                            </td>
+    if($umur == 0){
+        if($tglLahir && $tglLahir != '0000-00-00'){
+            $lahir = new DateTime($tglLahir);
+            $now   = new DateTime();
+            $diff  = $lahir->diff($now);
+            $bulan = ($diff->y * 12) + $diff->m;
+            echo $bulan > 0 ? $bulan . ' Bln' : '< 1 Bln';
+        } else {
+            // tgl_lahir kosong, umur 0 → tampilkan < 1 Th
+            echo '< 1 Th';
+        }
+    } else {
+        echo $umur . ' Th';
+    }
+?>
+</td>
                             
                             <!-- STATUS -->
                             <td>
@@ -281,11 +299,23 @@ else{
                             <?php elseif($p['status_akhir'] == 'Meninggal'): ?>
                                 <span class="badge-status badge-meninggal">Meninggal</span>
 
-                            <?php elseif($p['status_akhir'] == 'Pengobatan'): ?>
-                                <span class="badge-status badge-pengobatan">Pengobatan</span>
+                            <?php elseif($p['status_akhir'] == 'Pengobatan Lengkap'): ?>
+                                <span class="badge-status badge-pengobatan">Pengobatan Lengkap</span>
+
+                            <?php elseif($p['status_akhir'] == 'Putus Berobat'): ?>
+                            <span class="badge-status"
+                                style="background:#FD7E14; color:white;">
+                                Putus Berobat
+                            </span>
+
+                            <?php elseif($p['status_akhir'] == 'Pindah'): ?>
+                            <span class="badge-status"
+                                style="background:#0D6EFD; color:white;">
+                                Pindah
+                            </span>
 
                             <?php else: ?>
-                                <span class="badge-status bg-secondary">Tidak Ada</span>
+                                <span class="badge-status bg-secondary"><?= $p['status_akhir'] ?></span>
                             <?php endif; ?>
                             </td>
                             <!-- TANGGAL -->
@@ -444,7 +474,7 @@ else{
                         Bulan
                     </label>
 
-                    <select class="form-select custom-input">
+                    <select id="filterBulan" class="form-select custom-input">
 
                         <option>Semua</option>
                         <option>Januari</option>
@@ -471,7 +501,7 @@ else{
                         Periode Tahun
                     </label>
 
-                    <input type="number"
+                    <input type="number" id="filterTahun"
                            class="form-control custom-input"
                            placeholder="2026"
                            min="2020"
@@ -486,11 +516,16 @@ else{
                         Kelurahan
                     </label>
 
-                    <select class="form-select custom-input">
+                    <select id="filterKelurahan" class="form-select custom-input">
 
                         <option>Semua</option>
                         <option>Jemberkidul</option>
-                        <option>Sumbersari</option>
+                        <option>Kepatihan</option>
+                        <option>Sempursari</option>
+                        <option>Mangli</option>
+                        <option>Kebon Agung</option>
+                        <option>Kaliwates</option>
+                        <option>Tegal Besar</option>
 
                     </select>
 
@@ -503,7 +538,7 @@ else{
                         Urutkan
                     </label>
 
-                    <select class="form-select custom-input">
+                    <select id="filterUrutan" class="form-select custom-input">
 
                         <option>Default</option>
                         <option>Terbaru</option>
@@ -518,10 +553,8 @@ else{
             <!-- FOOTER -->
             <div class="modal-footer border-0">
 
-                <button class="btn btn-secondary rounded-3 px-4">
-
+                <button class="btn btn-secondary rounded-3 px-4" onclick="resetFilter()">
                     Reset
-
                 </button>
 
                 <button class="btn btn-secondary rounded-3 px-4"
@@ -532,10 +565,9 @@ else{
                 </button>
 
                 <button class="btn text-white rounded-3 px-4"
-                        style="background:#20C9C3;">
-
+                        style="background:#20C9C3;"
+                        onclick="terapkanFilter()">
                     Terapkan
-
                 </button>
 
             </div>
@@ -545,4 +577,119 @@ else{
     </div>
 
 </div>
+<script>
+function cariPasien(){
+    let input = document.getElementById('searchInput').value.toLowerCase();
+    let rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(function(row){
+        let text = row.innerText.toLowerCase();
+        if(text.includes(input)){
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+const namaBulan = ['','januari','februari','maret','april','mei','juni',
+                   'juli','agustus','september','oktober','november','desember'];
+
+function terapkanFilter(){
+
+    let bulan   = document.getElementById('filterBulan').value.toLowerCase();
+
+    let tahun   = document.getElementById('filterTahun').value;
+
+    let urutan  = document.getElementById('filterUrutan').value;
+
+    let rows = Array.from(document.querySelectorAll('tbody tr'));
+
+    rows.forEach(function(row){
+
+        let tglKunjungan = row.cells[6].innerText.trim();
+
+        let show = true;
+
+        // FILTER BULAN
+        if(bulan !== 'semua'){
+
+            let bln = parseInt(tglKunjungan.split('-')[1]);
+
+            if(namaBulan[bln] !== bulan){
+                show = false;
+            }
+
+        }
+
+        // FILTER TAHUN
+        if(tahun){
+
+            let thn = tglKunjungan.split('-')[2];
+
+            if(thn !== tahun){
+                show = false;
+            }
+
+        }
+
+        row.style.display = show ? '' : 'none';
+
+    });
+
+    // SORTING
+    let tbody = document.querySelector('tbody');
+
+    let visibleRows =
+        rows.filter(r => r.style.display !== 'none');
+
+    visibleRows.sort(function(a,b){
+
+        let tglA =
+            a.cells[6].innerText.trim()
+            .split('-')
+            .reverse()
+            .join('-');
+
+        let tglB =
+            b.cells[6].innerText.trim()
+            .split('-')
+            .reverse()
+            .join('-');
+
+        if(urutan === 'Terbaru'){
+            return tglB.localeCompare(tglA);
+        }
+
+        if(urutan === 'Terlama'){
+            return tglA.localeCompare(tglB);
+        }
+
+        return 0;
+
+    });
+
+    visibleRows.forEach(r => tbody.appendChild(r));
+
+    bootstrap.Modal
+    .getInstance(document.getElementById('filterModal'))
+    .hide();
+
+}
+
+function resetFilter(){
+
+    document.getElementById('filterBulan').value = 'Semua';
+
+    document.getElementById('filterTahun').value = '';
+
+    document.getElementById('filterKelurahan').value = 'Semua';
+
+    document.getElementById('filterUrutan').value = 'Default';
+
+    document.querySelectorAll('tbody tr')
+    .forEach(r => r.style.display = '');
+
+}
+</script>
+
 <?= $this->endSection() ?>

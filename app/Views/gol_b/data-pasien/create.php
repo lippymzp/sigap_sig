@@ -448,14 +448,17 @@
                 <div class="col-md-6">
                     <label>Usia</label>
                     <input name="umur" type="number" class="form-control custom-input" placeholder="Usia otomatis" id="usia" readonly>
+                    <small id="labelUsia" class="text-muted mt-1 d-block"></small>
                 </div>
                 <div class="col-md-6">
                 <label>Status Akhir</label>
                 <select name="status_akhir" id="status_akhir" class="form-control">
                     <option value="">Pilih Status</option>
-                    <option value="Pengobatan">Pengobatan</option>
+                    <option value="Pengobatan Lengkap">Pengobatan Lengkap</option>
                     <option value="Sembuh">Sembuh</option>
                     <option value="Meninggal">Meninggal</option>
+                    <option value="Putus Berobat">Putus Berobat</option>
+                    <option value="Pindah">Pindah</option>
                 </select>
                 </div>
                 <div class="col-md-12">
@@ -781,11 +784,17 @@ function nextStep(step){
 
         document.getElementById('sumJK').innerText = jk;
         document.getElementById('sumLahir').innerText = tanggalLahir;
-        document.getElementById('sumUsia').innerText = usia;
+        let usiaEl = document.getElementById('usia');
+        let usiaLabel = usiaEl.dataset.label || usiaEl.value + ' tahun';
+        document.getElementById('sumUsia').innerText = usiaLabel;
         document.getElementById('sumStatus').innerText = status;
         document.getElementById('sumTanggal').innerText = tanggal;
         document.getElementById('sumCatatan').innerText = catatan;
 
+        setTimeout(() => {
+        usiaChart.resize();
+        usiaChart.update();
+    }, 100);
     }
 
 }
@@ -793,14 +802,11 @@ function nextStep(step){
 // ===== SUBMIT =====
 function submitData(){
     if(!document.getElementById('confirm').checked){
+        document.getElementById('popupGagalText').innerText = 'Silakan centang konfirmasi data terlebih dahulu';
+        document.getElementById('popupGagal').style.display = 'flex';
+        return false;
+    }
 
-    document.getElementById('popupGagalText').innerText =
-    'Silakan centang konfirmasi data terlebih dahulu';
-
-    document.getElementById('popupGagal').style.display = 'flex';
-
-    return false;
-}
     // STEP 1
     document.getElementById('formProvinsi').value = document.getElementById('provinsi').value;
     document.getElementById('formKabupaten').value = document.getElementById('kabupaten').value;
@@ -825,143 +831,88 @@ function submitData(){
     let jk = document.querySelector('input[name="jenis_kelamin"]:checked');
     document.getElementById('formJK').value = jk ? jk.value : '';
 
-    // popup
-        document.getElementById('popupSuccess').style.display = 'flex';
-
-        // submit langsung
-        document.getElementById('formPasien').submit();
-
-        return true;
-        }
+    // SUBMIT LANGSUNG TANPA POPUP DULU
+    document.getElementById('formPasien').submit();
+    return false; // cegah double submit
+}
         function closePopup(){
             document.getElementById('popupSuccess').style.display = 'none';
         }
         document.getElementById('tgl_lahir').addEventListener('change', function(){
 
-            let lahir = new Date(this.value);
-            let today = new Date();
+    let lahir = new Date(this.value);
+    let today = new Date();
 
-            let usia = today.getFullYear() - lahir.getFullYear();
+    let tahun = today.getFullYear() - lahir.getFullYear();
+    let bulan = today.getMonth() - lahir.getMonth();
 
-            let m = today.getMonth() - lahir.getMonth();
+    if(today.getDate() < lahir.getDate()) bulan--;
+    if(bulan < 0){ tahun--; bulan += 12; }
 
-            if(m < 0 || (m === 0 && today.getDate() < lahir.getDate())){
-                usia--;
-            }
+    let totalBulan = (tahun * 12) + bulan;
+    let labelUsia, nilaiUsia;
 
-            document.getElementById('usia').value = usia;
-
-            // ===== KATEGORI =====
-            let kategori = '';
-
-            if(usia <= 4){
-
-                kategori = 'Balita';
-
-            }else if(usia <= 9){
-
-                kategori = 'Anak-anak';
-
-            }else if(usia <= 18){
-
-                kategori = 'Remaja';
-
-            }else if(usia <= 59){
-
-                kategori = 'Dewasa';
-
-            }else{
-
-                kategori = 'Lansia';
-
-            }
-
-            let dataBar = [0,0,0,0,0];
-
-if(usia <= 4){
-
-    dataBar = [1,0,0,0,0];
-
-}else if(usia <= 9){
-
-    dataBar = [0,1,0,0,0];
-
-}else if(usia <= 18){
-
-    dataBar = [0,0,1,0,0];
-
-}else if(usia <= 59){
-
-    dataBar = [0,0,0,1,0];
-
-}else{
-
-    dataBar = [0,0,0,0,1];
-
-}
-
-usiaChart.data.datasets[0].data = dataBar;
-usiaChart.update();
-
-        });
-        const ctxUsia =
-document.getElementById('usiaChart');
-
-const usiaChart = new Chart(ctxUsia, {
-
-    type: 'bar',
-
-    data: {
-
-        labels: [
-            'Balita',
-            'Anak-anak',
-            'Remaja',
-            'Dewasa',
-            'Lansia'
-        ],
-
-        datasets: [{
-
-            data: [0,0,0,0,0],
-
-            backgroundColor: [
-                '#7ED7C1',
-                '#65B741',
-                '#FFD166',
-                '#3AA6B9',
-                '#2F4858'
-            ],
-
-            borderRadius: 12
-
-        }]
-    },
-
-    options: {
-
-        responsive:true,
-
-        plugins:{
-            legend:{
-                display:false
-            }
-        },
-
-        scales:{
-            y:{
-                beginAtZero:true,
-                ticks:{
-                    stepSize:1
-                }
-            }
-        }
+    if(totalBulan === 0){
+        labelUsia = 'Kurang dari 1 bulan';
+        nilaiUsia = 0;
+    } else if(totalBulan < 12){
+        labelUsia = totalBulan + ' bulan';
+        nilaiUsia = 0;
+    } else {
+        labelUsia = tahun + ' tahun';
+        nilaiUsia = tahun;
     }
+
+    if(totalBulan < 12){
+    // tampilkan teks bulan langsung di input
+    document.getElementById('usia').removeAttribute('type');
+    document.getElementById('usia').setAttribute('type', 'text');
+    document.getElementById('usia').value = labelUsia; // "2 bulan"
+} else {
+    document.getElementById('usia').setAttribute('type', 'number');
+    document.getElementById('usia').value = tahun;
+}
+document.getElementById('usia').dataset.label = labelUsia;
+document.getElementById('labelUsia').innerText = ''; // sembunyikan label bawah
+
+
+    // update chart step 3
+    let dataBar = [0,0,0,0,0];
+    if(totalBulan < 12 || tahun <= 4)   dataBar = [1,0,0,0,0];
+    else if(tahun <= 9)                  dataBar = [0,1,0,0,0];
+    else if(tahun <= 18)                 dataBar = [0,0,1,0,0];
+    else if(tahun <= 59)                 dataBar = [0,0,0,1,0];
+    else                                 dataBar = [0,0,0,0,1];
+
+    usiaChart.data.datasets[0].data = dataBar;
+    usiaChart.update();
 });
 
 function closePopupGagal(){
     document.getElementById('popupGagal').style.display = 'none';
 }
+
+// ===== INISIALISASI CHART USIA =====
+const ctxUsia = document.getElementById('usiaChart');
+
+const usiaChart = new Chart(ctxUsia, {
+    type: 'bar',
+    data: {
+        labels: ['Balita\n(0-4)', 'Anak-anak\n(5-9)', 'Remaja\n(10-18)', 'Dewasa\n(19-59)', 'Lansia\n(60+)'],
+        datasets: [{
+            data: [0,0,0,0,0],
+            backgroundColor: ['#7ED7C1','#65B741','#FFD166','#3AA6B9','#2F4858'],
+            borderRadius: 12
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        }
+    }
+});
 </script>
     
 <!-- POPUP GAGAL -->

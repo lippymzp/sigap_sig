@@ -197,7 +197,7 @@ class Auth extends BaseController
             'id_petugas' => $user['id_petugas'],
             'email' => $user['email'],
             'id_jabatan' => $user['id_jabatan'],
-            'id_penyakit' => $user['id_penyakit']
+            'id_penyakit' => $user['id_penyakit'],
         ]);
 
         // HAPUS SESSION OTP
