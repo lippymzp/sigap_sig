@@ -40,16 +40,7 @@
     object-fit:contain;
 }
 
-/* ===== HEADER KHUSUS DIARE ===== */
-.brand-diare{
-    gap:12px;
-}
 
-.diare-logo{
-    width:120px;
-    height:120px;
-    object-fit:contain;
-}
 
 .diare-title{
     font-family:'Baloo 2', cursive !important;
@@ -260,6 +251,89 @@ body .nav-link{
     .btn-login{
         margin-top: 10px;
     }
+/* HEADER DIARE */
+
+
+
+
+/* ===== HEADER KHUSUS DIARE ===== */
+.brand-diare{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.diare-logo{
+    width:48px !important;
+    height:48px !important;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+/* ===== HEADER KHUSUS DIARE ===== */
+.brand-diare{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.diagis-text-logo{
+    width:150px !important;
+    height:auto !important;
+    object-fit:contain;
+    display:block;
+}
+
+/* navbar */
+.navbar-custom{
+    background:#fff;
+    box-shadow:0 2px 14px rgba(0,0,0,0.06);
+    padding:8px 0 !important;
+    border-bottom:1px solid #f2f2f2;
+    border-top:4px solid #0d5b5b;
+}
+
+/* login */
+.btn-login{
+    background:#14c8d0 !important;
+    color:white !important;
+    border-radius:12px !important;
+    padding:10px 28px !important;
+    font-weight:700;
+    border:none;
+    text-decoration:none;
+}
+
+/* menu */
+.nav-link{
+    font-size:15px !important;
+    font-weight:500;
+}
+
+/* navbar lebih ramping */
+.navbar-custom{
+    padding:8px 0 !important;
+    border-top:4px solid #0d5b5b;
+}
+
+/* spacing menu */
+.nav-link{
+    font-size:15px !important;
+}
+
+/* tombol login */
+.btn-login{
+    padding:10px 24px !important;
+    border-radius:14px;
+}
+/* KHUSUS TEXT LOGO DIARE DESKTOP */
+.diagis-text-logo{
+    width: 180px !important;
+    height: auto !important;
+    object-fit: contain;
+    display: block;
+}
+
 }
 </style>
 
@@ -296,6 +370,14 @@ $isPneumoniaPage = in_array($uri, [
     'hasil-pneumonia'
 ]) || strpos(current_url(), 'pneumonia') !== false;
 
+$isTbcPage = in_array($uri, [
+    'tbc',
+    'skrining-tbc',
+    'hasil-tbc',
+    'tbc-detail',
+    'berita-tbc'
+]) || strpos(current_url(), 'tbc') !== false;
+
 /*
 |--------------------------------------------------------------------------
 | LOGIN PAGES
@@ -320,39 +402,38 @@ $showLoginPages = [
 
     <a href="<?= base_url('/') ?>" class="brand-wrapper <?= (($penyakit ?? '') == 'diare') ? 'brand-diare' : '' ?>">
 
-    <?php if ($isDiarePage): ?>
+   <?php if ($isDiarePage): ?>
 
-        <img src="<?= base_url('img/logo_diare.png') ?>" 
-             alt="diagis"
-             class="brand-logo diare-logo">
+    <!-- LOGO DIARE TETAP -->
+    <img src="<?= base_url('img/logo_diare.png') ?>" 
+         alt="diagis"
+         class="brand-logo diare-logo">
 
-        <div class="brand-text">
-            <h1 class="brand-name diare-title">diagis</h1>
-            <p class="brand-subtitle diare-subtitle">
-                Diarrhea Geographic Information System
-            </p>
-        </div>
+    <!-- NAMA DIGANTI GAMBAR -->
+   <img src="<?= base_url('img/namaa.png') ?>" 
+     alt="Diagis Text"
+     class="diagis-text-logo"
+     style="width:180px !important; height:auto !important;">
 
-    <?php elseif ($isPneumoniaPage): ?>
+<?php elseif ($isPneumoniaPage): ?>
 
         <img src="<?= base_url('img/pulmora.png') ?>" 
             alt="Pulmora"
             class="brand-logo pneu-logo">
 
-    <?php else: ?>
+  <?php elseif ($isTbcPage): ?>
 
-        <img src="<?= base_url('img/logo_sigap.png') ?>" 
-             alt="SIGAP"
-             class="brand-logo">
+    <img src="<?= base_url('img/logotbc_navbar.png') ?>" alt="TBC Logo" class="brand-logo tbc-logo">
 
-        <div class="brand-text">
-            <h1 class="brand-name">SIGAP</h1>
-            <p class="brand-subtitle">
-                Sistem Informasi, Geografis Analisis & Pemantauan
-            </p>
-        </div>
+<?php else: ?>
 
-    <?php endif; ?>
+    <img src="<?= base_url('img/logo_sigap.png') ?>" alt="SIGAP" class="brand-logo">
+    <div class="brand-text">
+        <h1 class="brand-name">SIGAP</h1>
+        <p class="brand-subtitle">Sistem Informasi, Geografis Analisis & Pemantauan</p>
+    </div>
+
+<?php endif; ?>
 
 </a>
 
@@ -419,7 +500,4 @@ $showLoginPages = [
 
 </nav>
 
-<!-- SPACING NAVBAR -->
-<div style="margin-top:55px"></div>
-<!-- SPACING -->
-<div style="margin-top:100px;"></div>
+<div style="margin-top:90px;"></div>

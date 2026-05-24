@@ -1,4 +1,4 @@
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 
 <?php
 
@@ -233,10 +233,13 @@ body{
 /* PRINT */
 @media print {
 
-    /* Sembunyikan tombol */
+    /* Sembunyikan tombol & footer */
     .btn-wrapper,
     .btn-cetak,
-    .cetak-wrapper{
+    .cetak-wrapper,
+    .footer-text,
+    footer,
+    .footer {
         display:none !important;
     }
 
@@ -245,7 +248,6 @@ body{
         margin:0 !important;
         padding:0 !important;
 
-        /* ganti zoom */
         transform:scale(.95);
         transform-origin:top left;
         width:105%;
@@ -258,112 +260,6 @@ body{
         padding:10px !important;
         border:none !important;
         box-shadow:none !important;
-    }
-
-    /* Hindari section penting pecah */
-    .data-box,
-    .hasil-box,
-    .tips-card{
-        page-break-inside:avoid !important;
-        break-inside:avoid !important;
-    }
-
-    /* Informasi umum tetap 2 kolom */
-    .row{
-        display:flex !important;
-        flex-wrap:wrap !important;
-    }
-
-    .col-md-6{
-        width:50% !important;
-    }
-
-    .form-control{
-        height:auto !important;
-        min-height:35px;
-        font-size:12px;
-        padding:6px 10px;
-
-        white-space:normal !important;
-        overflow:visible !important;
-    }
-
-    /* ===== TABEL ===== */
-
-    .table,
-    table{
-        width:100% !important;
-        font-size:12px;
-        border-collapse:collapse !important;
-    }
-
-    thead{
-        display:table-header-group !important;
-    }
-
-    tfoot{
-        display:table-footer-group !important;
-    }
-
-    tbody{
-        display:table-row-group !important;
-    }
-
-    tbody tr{
-        page-break-inside:auto !important;
-        break-inside:auto !important;
-    }
-
-    th,
-    td{
-        padding:6px !important;
-        vertical-align:middle !important;
-        white-space:normal !important;
-        overflow-wrap:break-word !important;
-        word-break:break-word !important;
-    }
-
-    /* lebar kolom */
-    td:nth-child(1),
-    th:nth-child(1){
-        width:8%;
-    }
-
-    td:nth-child(2),
-    th:nth-child(2){
-        width:72%;
-    }
-
-    td:nth-child(3),
-    th:nth-child(3){
-        width:20%;
-    }
-
-    /* Footer */
-    .footer-text{
-        margin-top:20px;
-    }
-/* HASIL pindah ke halaman baru */
-.section-title:nth-of-type(3){
-    page-break-before: always !important;
-    break-before: page !important;
-}
-
-/* REKOMENDASI pindah ke halaman baru */
-.section-title:nth-of-type(4){
-    page-break-before: always !important;
-    break-before: page !important;
-}
-
-/* Isi card jangan terpotong */
-.hasil-box,
-.tips-card{
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-}
-    @page{
-        size:A4;
-        margin:10mm;
     }
 }
 
@@ -458,23 +354,39 @@ body{
 <tbody>
 
 <?php 
+
 $pertanyaan = [
-    "Apakah Anda menguras Tempat Penampungan Air?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di dalam rumah?",
-    "Apakah Anda menutup rapat-rapat tempat penampungan air yang berada di luar rumah?",
+    "Apakah Anda menguras TPA (Tempat Penampungan Air)?",
+    
+    "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada didalam rumah?",
+    
+    "Apakah Anda menutup rapat-rapat TPA (Tempat Penampungan Air) yang berada di luar rumah?",
+    
     "Apakah Anda mengubur barang bekas yang dapat menampung air hujan?",
+    
     "Apakah Anda membuang barang bekas yang dapat menampung air hujan?",
+    
     "Apakah Anda mendaur ulang barang bekas yang dapat menampung air hujan?",
-    "Apakah Anda menaburkan larvasida seperti abate pada tempat penampungan yang sulit dibersihkan?",
-    "Apakah Anda menaburkan abate sesuai dengan aturan pakai?",
+    
+    "Apakah Anda menaburkan larvasida (obat pembunuh jentik) seperti abate pada tempat penampungan yang sulit di bersihkan?",
+    
+    "Apakah Anda menaburkan  larvasida (obat pembunuh jentik) seperti abate sesuai dengan aturan pakai?",
+    
     "Apakah Anda menggunakan obat nyamuk atau anti nyamuk?",
-    "Apakah Anda menanam tanaman pengusir nyamuk?",
-    "Apakah Anda mengatur cahaya dan ventilasi di dalam rumah?",
-    "Apakah Anda rutin mengecek keberadaan jentik di rumah?",
-    "Apakah talang air dan saluran pembuangan rutin dibersihkan?",
-    "Apakah hanya orang tertentu dalam keluarga yang melakukan 3M?",
-    "Apakah Anda menggantungkan baju di rumah?"
+    
+    "Apakah Anda menanam tanaman pengusir nyamuk seperti serai wangi, lavender, dll?",
+    
+    "Apakah Anda mengatur pencahayaan dan ventilasi di dalam rumah?",
+    
+    "Apakah Anda rutin (minimal 1 minggu sekali) mengecek dan memantau keberadaan jentik di rumah Anda?",
+    
+    "Apakah tidak hanya orang-orang tertentu dalam keluarga Anda yang melakukan kegiatan 3M Plus (Menguras, Menutup, Mendaur ulang)?",
+    
+    "Apakah Anda tidak menggantungkan baju di rumah?",
+    
+    "Apakah semua anggota keluarga Anda tidak menggantungkan baju di rumah?"
 ];
+
 ?>
 
 <?php foreach($pertanyaan as $i => $text): ?>
@@ -676,7 +588,7 @@ function confirmBack(event) {
         }).then((result) => {
 
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('/') ?>";
+                window.location.href = "<?= base_url('/dbd') ?>";
             }
 
         });

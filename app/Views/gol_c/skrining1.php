@@ -20,6 +20,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 120px;
 }
 .step {
     display: inline-flex;
@@ -152,7 +153,7 @@ body {
 <h4><b>Informasi Umum</b></h4>
 <p class="mb-5">Lengkapi beberapa info dasar sebelum Skrining dimulai</p>
 
-<form method="post" action="/skriningpneumonia/skriningpneumonia2" id="formSkrining">
+<form method="post" action="<?= base_url('pneumonia/skrining/step2') ?>" id="formSkrining">
 
 <div class="row gy-4">
 
@@ -198,10 +199,12 @@ body {
 <!-- KANAN -->
 <div class="col-md-6">
 
+<div class="mb-3">
 <label>Provinsi</label>
 <select name="provinsi" id="provinsi" class="form-select"></select>
-<div class="mb-3">
+</div>
 
+<div class="mb-3">
 <label>Kabupaten</label>
 <select name="kabupaten" id="kabupaten" class="form-select"></select>
 </div>

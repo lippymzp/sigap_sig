@@ -370,8 +370,9 @@ $instansiList = [
 
     <div class="pegawai-toolbar">
         <div class="pegawai-tab">
-            <a href="<?= base_url('index.php/pneumonia/pegawai') ?>" class="btn-tab active">
-                Pegawai
+            <a href="<?= base_url('index.php/pneumonia/export_pegawai_pdf') ?>" 
+            class="btn-tab active">
+                <i class="fa-solid fa-file-pdf"></i> Export PDF
             </a>
         </div>
 

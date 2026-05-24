@@ -4,11 +4,21 @@ namespace App\Controllers\AdminTbc;
 
 use Dompdf\Dompdf;
 use App\Controllers\BaseController;
+use App\Models\SkriningTBCModel;
 
 class Dashboard extends BaseController
 {
+    // 🔹 Inisialisasi properti model
+    protected $skriningModel;
+
+    // 🔹 Constructor untuk set model
+    public function __construct()
+    {
+        $this->skriningModel = new SkriningTBCModel();
+    }
+
     // =========================
-    // STEP 1 (FORM DATA DIRI)
+    // STEP 1
     // =========================
     public function step1()
     {
@@ -26,9 +36,26 @@ class Dashboard extends BaseController
     // =========================
     public function step2()
     {
-        session()->set([
+        $nik = $this->request->getPost('nik');
+        $tanggalSkrining = date('Y-m-d');
+        $bulanIni = date('Y-m', strtotime($tanggalSkrining));
 
-            'nik' => $this->request->getPost('nik'),
+        $skriningModel = new \App\Models\SkriningTBCModel();
+
+        // Cek NIK sudah skrining bulan ini?
+        $cek = $this->skriningModel
+            ->where('nik', $nik)
+            ->like('created_at', $bulanIni, 'after')
+            ->first();
+
+        if ($cek) {
+            session()->setFlashdata('error', 'Anda sudah melakukan skrining bulan ini!');
+            return redirect()->back()->withInput();
+        }
+
+        // Simpan ke session kalau belum ada
+        session()->set([
+            'nik' => $nik,
             'nama' => $this->request->getPost('nama'),
             'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
             'tanggal_lahir' => $this->request->getPost('tanggal_lahir'),
@@ -42,7 +69,6 @@ class Dashboard extends BaseController
 
             'rt' => $this->request->getPost('rt'),
             'rw' => $this->request->getPost('rw')
-
         ]);
 
         return view('gol_b/skrining_form');
@@ -158,7 +184,7 @@ class Dashboard extends BaseController
 
             'id_pasien_skrining' => $id_pasien_skrining,
 
-            'id_penyakit' => 1,
+            'id_penyakit' => 2,
 
             'tanggal' => date('Y-m-d'),
 

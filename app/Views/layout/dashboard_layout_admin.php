@@ -183,14 +183,9 @@ $fotoNavbar = (!empty($profil['foto_profil']))
     <i class="fa-regular fa-file-lines me-2"></i>Rekap Skrining
 </a>
 
-        <a href="<?= base_url('dbd/pelaporan-kader/admin') ?>"
+        <a href="<?= base_url('kepala/pelaporan_kader') ?>"
             class="<?= ($menu == 'pelaporan_kader') ? 'active' : '' ?>">
             <i class="fa-regular fa-folder-open me-2"></i> Pelaporan Kader
-        </a>
-
-        <a href="<?= base_url('dbd/export-hasil-data-pasien') ?>"
-            class="<?= ($menu == 'export') ? 'active' : '' ?>">
-            <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Export Data
         </a>
 
 <div class="menu-label">Informasi</div>
@@ -207,8 +202,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
   <i class="fa-solid fa-video me-2"></i> Video
 </a>
 
-<a href="<?= base_url('profil_admin') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
-  <i class="fa-solid fa-user me-2"></i> Profil User
+<a href="<?= base_url('profil_kader') ?>" class="<?= ($menu == 'profil') ? 'active' : '' ?>">
+            <i class="fa-regular fa-user me-2"></i> Profil Admin
 </a>
 
 <div class="menu-label">Master Data</div>
@@ -216,17 +211,8 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 <a href="<?= base_url('manajemen-user') ?>" class="<?= ($menu == 'manajemen_user') ? 'active' : '' ?>">
     <i class="fa-solid fa-users me-2"></i> Manajemen User
 </a>
-
-<a href="<?= base_url('dbd/admin/manajemen_puskesmas') ?>" class="<?= ($menu == 'puskesmas') ? 'active' : '' ?>">
-  <i class="fa-solid fa-hospital me-2"></i> Manajemen Puskesmas
-</a>
-
 <a href="<?= base_url('bannerDbd') ?>" class="<?= ($menu == 'manajemen_banner') ? 'active' : '' ?>">
   <i class="fa-solid fa-hospital me-2"></i> Manajemen Banner
-</a>
-
-<a href="<?= base_url('profil_sistem') ?>" class="<?= ($menu == 'sistem') ? 'active' : '' ?>">
-  <i class="fa-solid fa-gear me-2"></i> Profil Sistem
 </a>
 
 </div>
@@ -261,7 +247,7 @@ $fotoNavbar = (!empty($profil['foto_profil']))
 
                 <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li>
-                        <a class="dropdown-item" href="<?= base_url('profil_admin') ?>">
+                        <a class="dropdown-item" href="<?= base_url('profil_kader') ?>">
                             <i class="fa-regular fa-user me-2"></i> Profile
                         </a>
                     </li>

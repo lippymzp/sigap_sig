@@ -96,13 +96,20 @@
                         </div>
 
                         <div class="filter-group">
-                            <label>Periode</label>
-                            <select id="filterTahun">
-                                <option value="">Semua Tahun</option>
-                                <?php foreach($tahunList as $tahun): ?>
-                                    <option value="<?= $tahun ?>"><?= $tahun ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <label>Periode</label>
+
+                        <?php
+                        $tahunList = $tahunList ?? [];
+                        $tahunList = array_unique(array_merge(['2026', '2025'], $tahunList));
+                        rsort($tahunList);
+                        ?>
+
+                        <select id="filterTahun">
+                            <option value="">All</option>
+                            <?php foreach($tahunList as $tahun): ?>
+                                <option value="<?= $tahun ?>"><?= $tahun ?></option>
+                            <?php endforeach; ?>
+                        </select>
                         </div>
 
                         <div class="filter-group">
@@ -227,7 +234,7 @@
                     <button
                         type="button"
                         class="period-btn"
-                        onclick="changeDetailYear(-1)"
+                        onclick="changeDetailYear(1)"
                     >
                         ‹
                     </button>
@@ -239,7 +246,7 @@
                     <button
                         type="button"
                         class="period-btn"
-                        onclick="changeDetailYear(1)"
+                        onclick="changeDetailYear(-1)"
                     >
                         ›
                     </button>
@@ -291,6 +298,14 @@ document.addEventListener("DOMContentLoaded", function () {
     var geoJsonData;
     var currentDataFinal = {};
     var availableYears = <?= json_encode(array_values($tahunList)) ?>;
+
+    availableYears = Array.from(
+    new Set(
+        availableYears.concat(["2026", "2025"]).map(String)
+    )
+).sort(function(a, b){
+    return parseInt(b) - parseInt(a);
+});
 
     var selectedYearIndex = 0;
 
@@ -426,6 +441,19 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         return bulan[angka] || "Juni";
     }
+
+    function getWaktuSaatIni(){
+    var tanggalSekarang = new Date();
+
+    var bulanSekarang = tanggalSekarang.getMonth() + 1;
+    var tahunSekarang = tanggalSekarang.getFullYear();
+
+    return {
+        bulan: bulanSekarang,
+        tahun: tahunSekarang,
+        label: namaBulan(bulanSekarang) + " " + tahunSekarang
+    };
+}
 
     function kategoriKasus(total){
         if(total >= 45){
@@ -774,12 +802,120 @@ document.addEventListener("DOMContentLoaded", function () {
         map.fitBounds(geoLayer.getBounds());
     }
 
+    function hitungKasusBaruTerkiniWilayah(keyWilayah){
+
+    var waktuSaatIni = getWaktuSaatIni();
+
+    var jk = document.getElementById("filterJk").value;
+    var filterJk = jk.toString().toLowerCase().trim();
+
+    var totalKasusBaru = 0;
+
+    dataPneu.forEach(function(item){
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+
+        // hanya wilayah/kelurahan yang sedang diklik
+        if(desaKey !== keyWilayah){
+            return;
+        }
+
+        // hanya data bulan dan tahun saat ini
+        if(itemTahun !== waktuSaatIni.tahun.toString()){
+            return;
+        }
+
+        if(itemBulan !== waktuSaatIni.bulan.toString()){
+            return;
+        }
+
+        // hanya berubah jika filter jenis kelamin dipilih
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        totalKasusBaru += getKasus(item);
+    });
+
+    return totalKasusBaru;
+}                                
+
+function buildDataDetailByYear(tahunDetail){
+
+    var bulan = document.getElementById("filterBulan").value;
+    var jk = document.getElementById("filterJk").value;
+
+    var hasil = {};
+
+    dataPneu.forEach(function(item){
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+        var filterJk = jk.toString().toLowerCase().trim();
+
+        if(itemTahun !== tahunDetail.toString()){
+            return;
+        }
+
+        if(bulan && itemBulan !== bulan){
+            return;
+        }
+
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        if(!hasil[desaKey]){
+            hasil[desaKey] = {
+                nama: desaAsli,
+                total: 0,
+                kasusBaru: 0,
+                kategori: "rendah"
+            };
+        }
+
+        var jumlahKasus = getKasus(item);
+
+        hasil[desaKey].total += jumlahKasus;
+        hasil[desaKey].kasusBaru += jumlahKasus;
+    });
+
+    for(var key in hasil){
+        hasil[key].kategori = kategoriKasus(hasil[key].total);
+    }
+
+    return hasil;
+}
+
     window.showDetailWilayah = function(key, namaWilayah){
 
         selectedDetailKey = key;
         selectedDetailNama = namaWilayah;
 
+        var tahun = document.getElementById("filterTahun").value || availableYears[0] || "2025";
+
+        selectedDetailYear = parseInt(tahun);
+        selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+
+        if(selectedYearIndex < 0){
+            selectedYearIndex = 0;
+        }
+
+        // PENTING: hitung ulang data detail sesuai tahun yang tampil
+        currentDataFinal = buildDataDetailByYear(selectedDetailYear);
+
         var item = currentDataFinal[key];
+
         if(!item){
             item = {
                 nama: namaWilayah,
@@ -789,25 +925,24 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         }
 
-        var tahun = document.getElementById("filterTahun").value || "2025";
-        var bulan = document.getElementById("filterBulan").value || "6";
-
-        selectedDetailYear = parseInt(tahun);
-        selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
-
-        if(selectedYearIndex < 0){
-            selectedYearIndex = 0;
-        }
+        item.kategori = kategoriKasus(item.total);
 
         document.getElementById("mapPage").style.display = "none";
         document.getElementById("detailPage").style.display = "block";
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
         document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
-        document.getElementById("detailBulanLabel").innerText = "Kasus Baru (" + namaBulan(bulan) + " " + selectedDetailYear + ")";
-        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+
+        var waktuSaatIni = getWaktuSaatIni();
+        var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(key);
+
+        document.getElementById("detailBulanLabel").innerText =
+        "Kasus Baru (" + waktuSaatIni.label + ")";
+
+        document.getElementById("detailKasusBaru").innerText =
+        kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);
@@ -842,49 +977,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detailYear").innerText = selectedDetailYear;
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
 
-        var bulan = document.getElementById("filterBulan").value;
-        var jk = document.getElementById("filterJk").value;
-
-        var hasil = {};
-
-        dataPneu.forEach(function(item){
-
-            var itemTahun = getTahun(item).toString();
-            var itemBulan = getBulan(item).toString();
-            var itemJk = getJk(item).toString().toLowerCase().trim();
-            var filterJk = jk.toString().toLowerCase().trim();
-
-            if(itemTahun !== selectedDetailYear.toString()){
-                return;
-            }
-
-            if(bulan && itemBulan !== bulan){
-                return;
-            }
-
-            if(jk && itemJk !== filterJk){
-                return;
-            }
-
-            var desaAsli = getDesa(item);
-            var desaKey = fixKey(desaAsli);
-
-            if(!hasil[desaKey]){
-                hasil[desaKey] = {
-                    nama: desaAsli,
-                    total: 0,
-                    kasusBaru: 0,
-                    kategori: "rendah"
-                };
-            }
-
-            var jumlahKasus = getKasus(item);
-
-            hasil[desaKey].total += jumlahKasus;
-            hasil[desaKey].kasusBaru += jumlahKasus;
-        });
-
-        currentDataFinal = hasil;
+        currentDataFinal = buildDataDetailByYear(selectedDetailYear);
 
         var item = currentDataFinal[selectedDetailKey];
 
@@ -900,7 +993,15 @@ document.addEventListener("DOMContentLoaded", function () {
         item.kategori = kategoriKasus(item.total);
 
         document.getElementById("detailTotal").innerText = item.total + " kasus";
-        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+
+        var waktuSaatIni = getWaktuSaatIni();
+        var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(selectedDetailKey);
+
+        document.getElementById("detailBulanLabel").innerText =
+            "Kasus Baru (" + waktuSaatIni.label + ")";
+
+        document.getElementById("detailKasusBaru").innerText =
+            kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);
@@ -2088,16 +2189,16 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$totalBerita = $queryBerita->getNumRows();
 ?>
 
 <div class="news-slider-admin">
@@ -2110,19 +2211,30 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($queryBerita->getResultArray() as $berita): ?>
 
                 <?php
                 $gambar = trim((string)($berita['gambar_berita'] ?? ''));
-                $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
                 $gambarFix = base_url('uploads/berita/default.jpeg');
 
-                if(
-                    $gambar !== '' &&
-                    strtolower($gambar) !== 'null' &&
-                    file_exists($pathFile)
-                ){
-                    $gambarFix = base_url('uploads/berita/' . $gambar);
+                if ($gambar !== '' && strtolower($gambar) !== 'null') {
+
+                    // CEK APAKAH URL INTERNET
+                    if (filter_var($gambar, FILTER_VALIDATE_URL)) {
+
+                        $gambarFix = $gambar;
+
+                    } else {
+
+                        // FILE LOKAL
+                        $pathFile = FCPATH . 'uploads/berita/' . $gambar;
+
+                        if (file_exists($pathFile)) {
+
+                            $gambarFix = base_url('uploads/berita/' . $gambar);
+                        }
+                    }
                 }
 
                 $urlBerita = !empty($berita['url_berita'])
@@ -2166,7 +2278,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 

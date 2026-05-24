@@ -4,7 +4,7 @@
 <style>
     /* --- STYLE DASAR --- */
     .page-wrapper { background-color: #E6F4F1; padding: 20px; border-radius: 15px; min-height: 100vh; }
-    .banner-top { background-color: #51C2B8; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .banner-top { background-color: #00BBC2; border-radius: 15px; padding: 20px 25px; color: white; display: flex; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     .banner-icon { background: rgba(255, 255, 255, 0.2); padding: 12px 15px; border-radius: 10px; margin-right: 20px; font-size: 24px; display: flex; align-items: center; justify-content: center; }
     .banner-text h4 { margin: 0; font-weight: 700; font-size: 18px; }
     .banner-text p { margin: 0; font-size: 13px; opacity: 0.9; margin-top: 3px; }
@@ -46,9 +46,9 @@
 
     /* --- STYLE COUNTER & WARNING --- */
     .counter-container { display: flex; align-items: center; margin-bottom: 5px; }
-    .btn-counter { background: #FFF; border: 2px solid #555; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; color: #333; transition: 0.2s; }
+    .btn-counter { background: #FFF; border: 2px solid #555; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; color: #333; transition: 0.2s; flex-shrink: 0; }
     .btn-counter:hover { background: #F0F0F0; }
-    .counter-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; height: 40px; flex: 1; margin: 0 10px; text-align: center; font-weight: bold; font-size: 16px; outline: none; }
+    .counter-input { background-color: #F4F6F8; border: 1px solid #EAEFEF; border-radius: 10px; height: 40px; flex: 1; margin: 0 10px; text-align: center; font-weight: bold; font-size: 16px; outline: none; min-width: 0; }
     .counter-input::-webkit-outer-spin-button, .counter-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .warning-text { color: #DC3545; font-size: 11px; margin-top: 5px; margin-bottom: 15px; display: none; align-items: center; gap: 5px; }
 
@@ -83,7 +83,7 @@
     .camera-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
     .camera-container { position: relative; width: 100%; max-width: 500px; padding: 20px; }
     #liveCamera { width: 100%; border-radius: 15px; background: #222; transform: scaleX(-1); }
-    .camera-controls { display: flex; justify-content: space-around; width: 100%; max-width: 500px; margin-top: 20px; }
+    .camera-controls { display: flex; justify-content: space-around; width: 100%; max-width: 500px; margin-top: 20px; flex-wrap: wrap; gap: 10px; }
     .btn-close-cam { background: #DC3545; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .btn-snap-cam { background: #00CED1; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
@@ -94,6 +94,20 @@
     .btn-kirim { flex: 1; background: #00CED1; border: 1px solid #00CED1; color: #FFF; border-radius: 25px; padding: 12px; font-weight: bold; transition: 0.3s; cursor: pointer; }
     .btn-kirim:hover { background: #00B3B5; }
     .btn-kirim:disabled { background: #A0EBEB; border-color: #A0EBEB; cursor: not-allowed; }
+
+    /* --- RESPONSIVE MOBILE FIXES --- */
+    @media (max-width: 768px) {
+        .page-wrapper { padding: 10px; }
+        .banner-top { flex-direction: column; text-align: center; padding: 20px 15px; gap: 10px; }
+        .banner-icon { margin-right: 0; width: 50px; height: 50px; }
+        .form-card { padding: 20px; }
+        .calendar-popup { max-width: 100%; padding: 15px; left: 50%; transform: translateX(-50%); width: calc(100% - 20px); }
+        .upload-options-box { flex-direction: column; gap: 20px; padding: 20px; }
+        .preview-item { width: 140px; height: 100px; }
+        .action-buttons { flex-direction: column; gap: 10px; }
+        .btn-batal, .btn-kirim { width: 100%; }
+        .row.mt-4 > div { margin-bottom: 15px; }
+    }
 </style>
 
 <div class="page-wrapper">
@@ -149,6 +163,7 @@
                 </select>
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
+            <input type="hidden" name="kelurahan" id="hiddenKelurahan" value="<?= $laporan['kelurahan'] ?>">
 
             <label class="form-label">Pos Posyandu</label>
             <div class="input-icon-wrap">
@@ -248,20 +263,33 @@
     function loadPosyandu(kelId) {
         const select = document.getElementById('posyanduSelect');
         select.innerHTML = '<option value="" disabled selected>Pilih pos posyandu</option>';
+        
         if (posyanduData[kelId]) {
             posyanduData[kelId].forEach(name => {
                 let idMatch = name.match(/CATLEYA\s([0-9A-Z]+)/);
                 let id = idMatch ? idMatch[1] : name;
                 let opt = document.createElement('option');
-                opt.value = id; opt.text = name;
-                if(id === savedPosyanduId) opt.selected = true;
+                opt.value = id; 
+                opt.text = name;
+                
+                // PERBAIKAN: Gunakan perbandingan (==) atau parseInt agar nilai "01" dan "1" tetap dianggap sama
+                if (id == savedPosyanduId || parseInt(id, 10) == parseInt(savedPosyanduId, 10)) {
+                    opt.selected = true;
+                }
+                
                 select.appendChild(opt);
             });
         }
     }
-    document.getElementById('kelurahanSelect').addEventListener('change', function() { loadPosyandu(this.value); });
-    loadPosyandu(document.getElementById('kelurahanSelect').value);
+    document.getElementById('kelurahanSelect').addEventListener('change', function() { 
+        // PERBAIKAN: MENGAMBIL TEKS NAMA KELURAHAN KE HIDDEN INPUT
+        const kelurahanText = this.options[this.selectedIndex].text;
+        document.getElementById('hiddenKelurahan').value = kelurahanText;
 
+        loadPosyandu(this.value); 
+    });
+    
+    loadPosyandu(document.getElementById('kelurahanSelect').value);
     /* ----- 2. LOGIKA UPLOAD & KAMERA LIVE ----- */
     let keepPhotos = <?= !empty($laporan['foto']) ? $laporan['foto'] : '[]' ?>; // Foto dari DB
     let newPhotos = []; // Foto baru

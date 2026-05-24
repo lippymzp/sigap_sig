@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class DiareModel extends Model
 {
-    protected $table = 'diare';
+    protected $table = 'data_diare';
 
     protected $primaryKey = 'id';
 
@@ -19,36 +19,31 @@ class DiareModel extends Model
     protected $protectFields = true;
 
     protected $allowedFields = [
-        'nama',
+        'nama_pasien',
         'desa',
-        'kasus',
-        'kategori'
+        'tanggal_kunjungan',
+        'diagnosis'
     ];
 
-    // timestamps (opsional tapi bagus)
-    protected $useTimestamps = true;
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    // JANGAN pakai timestamps karena tabel data_diare tidak punya created_at / updated_at
+    protected $useTimestamps = false;
 
     /*
     =========================
-    CUSTOM FUNCTION 🔥
+    CUSTOM FUNCTION
     =========================
     */
 
-    // ambil semua data
     public function getAllData()
     {
         return $this->findAll();
     }
 
-    // ambil berdasarkan desa (buat peta nanti)
     public function getByDesa($desa)
     {
-        return $this->where('desa', $desa)->first();
+        return $this->where('desa', $desa)->findAll();
     }
 
-    // ambil data unik desa (buat dropdown/filter)
     public function getDesaList()
     {
         return $this->select('desa')

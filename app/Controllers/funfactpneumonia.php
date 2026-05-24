@@ -65,6 +65,7 @@ class funfactpneumonia extends BaseController
             ->countAllResults();
 
         $query = (clone $model)
+            ->where('id_penyakit', 3)
             ->where('status_funfact', $status);
 
         if($keyword){

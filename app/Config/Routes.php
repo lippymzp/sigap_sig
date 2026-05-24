@@ -9,9 +9,9 @@ use CodeIgniter\Router\RouteCollection;
 /* ========================= */
 /* HALAMAN UTAMA */
 /* ========================= */
+$routes->get('diare/dashboardd', 'Diare::dashboardd');
 
 $routes->get('/', 'Home::index');
-$routes->get('tbc', 'LandingTbc::index');
 $routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
@@ -28,23 +28,38 @@ $routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');
 // ROUTE Landingpage DBD dan Dasboard
 // ===============================================
 $routes->get('/dbd', 'LandingpageDbd::index');
-$routes->post('chagoo/send', 'Chagoo::send');
 $routes->get('/dbd/dashboard/admin', 'DashboardadminDbd::index');
 $routes->post('simpan-penduduk', 'DashboardadminDbd::simpanPenduduk');
 $routes->get('hapus-penduduk/(:num)', 'DashboardadminDbd::hapusPenduduk/$1');
 $routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
 
+
 // ===============================================
 // Landingpage TBC 
 // ===============================================
-$routes->get('tbc/detail-funfact/(:num)', 'LandingTbc::detailFunfact/$1');
+$routes->get('tbc', 'LandingTbc::index');
+$routes->get('tbc/detail_funfact/(:num)', 'LandingTbc::detail_funfact/$1');
 
 /* ========================= */
 /* SKRINING Pneumonia */
 /* ========================= */
-$routes->get('/skriningpneumonia', 'Pneumonia::skriningpneumonia');
-$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia2', 'Pneumonia::skriningpneumonia2');
-$routes->match(['get', 'post'], '/skriningpneumonia/skriningpneumonia3', 'Pneumonia::skriningpneumonia3');
+$routes->get(
+    'pneumonia/skrining',
+    'Pneumonia::skriningpneumonia'
+);
+
+$routes->match(
+    ['get', 'post'],
+    'pneumonia/skrining/step2',
+    'Pneumonia::skriningpneumonia2'
+);
+
+$routes->match(
+    ['get', 'post'],
+    'pneumonia/skrining/step3',
+    'Pneumonia::skriningpneumonia3'
+);
+
 $routes->get('/chat-pneumonia', 'ChatPneumonia::index');
 $routes->post('/chat-pneumonia/send', 'ChatPneumonia::send');
 
@@ -52,11 +67,11 @@ $routes->get('/pneumonia/rekapskrining/admin', 'Pneumonia::rekapskrining');
 /* ========================= */
 /* SKRINING DBD */
 /* ========================= */
-$routes->get('/skriningdbd', 'Dbd::skriningdbd');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Dbd::skriningdbd2');
-$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Dbd::skriningdbd3');
+$routes->get('/skriningdbd', 'Skriningdbd::skriningdbd');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd2', 'Skriningdbd::skriningdbd2');
+$routes->match(['get', 'post'], '/skriningdbd/skriningdbd3', 'Skriningdbd::skriningdbd3');
 $routes->get('/dbd/rekap_skrining', 'Dbd::rekap_skrining');
-$routes->get('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
+$routes->post('dbd/hapus_skrining/(:num)', 'Dbd::hapus_skrining/$1');
 
 /* ========================= */
 /* PROFIL dan Logut */
@@ -68,6 +83,7 @@ $routes->get('/profil_admin', 'Profile2::profil_admin');
 $routes->post('uploadFoto_admin', 'Profile2::uploadFoto');
 $routes->post('updateProfil_admin', 'Profile2::updateProfil');
 $routes->get('/profil_kader', 'Profile3::profil_kader');
+$routes->get('/hapusFoto_kader', 'Profile3::hapusFoto');
 $routes->post('uploadFoto_kader', 'Profile3::uploadFoto');
 $routes->post('updateProfil_kader', 'Profile3::updateProfil');
 
@@ -79,7 +95,7 @@ $routes->post('pneumonia/uploadFoto_admin', 'Profile_admin_pneumonia::uploadFoto
 $routes->post('pneumonia/updateProfil_admin', 'Profile_admin_pneumonia::updateProfil');
 
 /* ========================= */
-/* EKSPORT DATA PASIEN PNEUMONIA */
+/* EKSPORT DATA PNEUMONIA */
 /* ========================= */
 $routes->get('pneumonia/get-data-pasien-by-tahun', 'pneumonia::get_data_pasien_by_tahun');
 $routes->get('pneumonia/export_hasil_data_pasien', 'pneumonia::export_hasil_data_pasien');
@@ -87,6 +103,8 @@ $routes->get('pneumonia/get-tahun-list', 'pneumonia::get_tahun_list');
 $routes->get('pneumonia/export-hasil-data-pasien/pdf', 'pneumonia::export_pdf_pasien');
 $routes->get('pneumonia/export-hasil-data-pasien/excel', 'pneumonia::export_excel_pasien');
 $routes->get('pneumonia/preview-export', 'Pneumonia::preview_export');
+
+$routes->get('pneumonia/export_pegawai_pdf', 'Pegawai::exportPdf');
 
 /* ========================= */
 /* ADMIN GRAFIK PNEUMONIA */
@@ -146,7 +164,7 @@ $routes->get('pneumonia-funfact', 'FunfactPneumoniaLanding::index');
 /* ========================= */
 
 $routes->get('/diare-detail', 'Home::diare_detail');
-$routes->get('/diare', 'Diare::index');
+
 
 /* ========================= */
 /* LOGIN */
@@ -170,16 +188,22 @@ $routes->post('/otp-reset', 'Auth::verifyOtpReset');
 $routes->get('/dashboard', 'Dashboard::index');
 $routes->get('dbd/dashboard/admin', 'Dashboard::dbd');
 $routes->get('dbd/input_data', 'Dbd::inputData');
-$routes->get('dbd/hasil', 'Dbd::hasil_data');
-$routes->get('data_kepala/hasil', 'Dbd::hasil_data_kepala');
+
+
 $routes->post('dbd/simpan', 'dbd::simpan');
 $routes->get('dbd/export', 'Dbd::export');
 $routes->get('tbc/dashboard', 'Dashboard::tbc');
 $routes->get('tbc/dashboard/admin', 'Dashboard::tbc');
+$routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('pneumonia/dashboard/admin', 'Dashboard::pneumonia');
+$routes->get('pneumonia/peta_sebaran', 'Dashboard::peta_sebaran_pneumonia');
 $routes->get('pneumonia/input_data', 'pneumonia::inputData');
+$routes->get('pneumonia/edit/(:num)','Pneumonia::editData/$1');
 $routes->get('pneumonia/hasil', 'pneumonia::hasil_data');
+$routes->get('pneumonia/hasil/(:num)', 'Pneumonia::hasil_data/$1');
+$routes->post('pneumonia/updatepasien','Pneumonia::updatePasien');
 $routes->post('pneumonia/simpandatapasien', 'pneumonia::simpandatapasien');
+$routes->get('pneumonia/hapuspasien/(:num)','Pneumonia::hapusPasien/$1');
 $routes->get('pneumonia/export', 'pneumonia::export');
 
 $routes->get('diare/dashboardd/', 'Dashboard::diare');
@@ -194,7 +218,7 @@ $routes->post('pneumonia/pegawai/update/(:num)', 'Pegawai::update/$1');
 $routes->get('pneumonia/pegawai/hapus/(:num)', 'Pegawai::hapus/$1');
 $routes->post('diare/simpan', 'diare::simpan');
 $routes->get('/diare/export', 'Diare::export');
-$routes->get('dbd/dashboard/kader', 'dbd::dashboard');
+$routes->get('dbd/dashboard/kader', 'Dbd::dashboard');
 $routes->get('cekdb', 'Home::cekdb');
 $routes->get('peta_sebaran', 'dbd::peta');
 $routes->get('dashboard', 'Kepala::dashboard');
@@ -321,6 +345,20 @@ $routes->get('admin/artikel/(:num)', 'Admin\Artikel::show/$1');
 $routes->post('dbd/simpandatapasien', 'Dbd::simpandatapasien');
 
 
+// ================= DETAIL & CRUD PASIEN PER KELURAHAN =================
+$routes->get('dbd/detail-pasien', 'HasilDataPasienA::detail_pasien');
+$routes->post('dbd/update-pasien/(:num)', 'HasilDataPasienA::update_pasien/$1');
+$routes->get('dbd/delete-pasien/(:num)', 'HasilDataPasienA::delete_pasien/$1');
+
+// ================= EXPORT HASIL DATA PASIEN =================
+$routes->get('dbd/hasil', 'HasilDataPasienA::hasil_data');
+$routes->get('dbd/get-data-pasien-by-tahun', 'HasilDataPasienA::get_data_pasien_by_tahun');
+$routes->get('dbd/export-hasil-data-pasien', 'HasilDataPasienA::export_hasil_data_pasien');
+$routes->get('dbd/get-tahun-list', 'HasilDataPasienA::get_tahun_list');
+$routes->get('dbd/export-hasil-data-pasien/pdf', 'HasilDataPasienA::export_hasil_data_pasien');
+$routes->get('dbd/export-hasil-data-pasien/excel', 'HasilDataPasienA::export_hasil_data_pasien');
+
+
 // ================= PSN KADER =================
 $routes->get('formkader/riwayat_lapor_jentik', 'Dbd::riwayat_jentik');
 $routes->get('formkader/formulir_tambah_data', 'Dbd::tambah_pelaporan');
@@ -334,11 +372,7 @@ $routes->get('formkader/rekap', 'Dbd::rekappsn');
 $routes->get('formkader/detail/(:any)', 'Dbd::detailpsn/$1');
 $routes->get('dbd/exportrekappsn', 'Dbd::exportrekappsn');
 
-// ================= EXPORT HASIL DATA PASIEN =================
-$routes->get('dbd/get-data-pasien-by-tahun', 'Dbd::get_data_pasien_by_tahun');
-$routes->get('dbd/export-hasil-data-pasien', 'Dbd::export_hasil_data_pasien');
 
-$routes->get('dbd/get-tahun-list', 'Dbd::get_tahun_list');
 
 // ================= Berita DBD =================
 $routes->get('/berita/tambah', 'BeritaDbd::tambah');
@@ -357,14 +391,11 @@ $routes->get('berita/list_berita', 'LandingpageDbd::list_berita');
 $routes->get('/berita/view_user/(:num)', 'BeritaDbd::viewUser/$1');
 $routes->post('berita/upload-editor-image', 'BeritaDbd::uploadEditorImage');
 
-$routes->get('dbd/export-hasil-data-pasien/pdf', 'Dbd::export_pdf_pasien');
-$routes->get('dbd/export-hasil-data-pasien/excel', 'Dbd::export_excel_pasien');
+
 
 $routes->get('tbc/hasil', 'AdminTbc\Pasien::index');
 
 $routes->get('tbc/input_data', 'AdminTbc\Pasien::create');
-
-$routes->get('tbc/export', 'AdminTbc\Pasien::export');
 
 $routes->post('tbc/store', 'AdminTbc\Pasien::store');
 
@@ -376,16 +407,6 @@ $routes->get('tbc/delete/(:num)', 'AdminTbc\Pasien::delete/$1');
 
 $routes->get('tbc/dashboard', 'AdminTbc\Pasien::grafikTbc');
 $routes->get('tbc/create', 'AdminTbc\Pasien::create');
-
-$routes->get('tbc/get-tahun-list', 'AdminTbc\Pasien::getTahunList');
-
-$routes->get(
-    'tbc/export-hasil-data-pasien', 'AdminTbc\Pasien::export'
-);
-
-$routes->get(
-    'tbc/export-data', 'AdminTbc\Pasien::exportData'
-);
 
 /* ========================= */
 /* Landing Page TBC */
@@ -455,7 +476,7 @@ $routes->get('/video/video_dbd/(:num)', 'VideoDbd::view/$1');
 
 $routes->get('/video/tambah1', 'VideoDbd::tambah1');
 $routes->post('/video/simpan', 'VideoDbd::simpan');
-
+$routes->get('/video/tambahBaru', 'VideoDbd::tambahBaru');
 $routes->get('/video/tambah1/(:num)', 'VideoDbd::edit/$1');
 $routes->post('/video/update/(:num)', 'VideoDbd::update/$1');
 
@@ -475,6 +496,13 @@ $routes->get('bannerDbd/delete/(:num)','ManajemenBanner::delete/$1');
 $routes->get('bannerDbd/preview/(:num)', 'ManajemenBanner::preview/$1');
 $routes->post('bannerDbd/updateUrutan/(:num)','ManajemenBanner::updateUrutan/$1');
 
+// ===============================================
+// ROUTE Landingpage TB
+// ===============================================
+$routes->get('tbc', 'LandingTbc::index');
+$routes->get('tbc/detail_funfact/(:num)', 'LandingTbc::detail_funfact/$1');
+
+
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen-user', 'ManajemenUser::index');
 
@@ -489,26 +517,24 @@ $routes->get('/manajemen-user/view/(:num)', 'ManajemenUser::form/$1/view');
 $routes->get('/manajemen-user/hapus/(:num)', 'ManajemenUser::hapus/$1');
 
 // ================= FUNFACT =================
-$routes->get('funfact', 'dbd::funfact');
-$routes->get('dbd/unggahfunfact', 'dbd::unggahfunfact');
-$routes->get('dbd/unggahfunfact/(:num)', 'dbd::unggahfunfact/$1');
-$routes->post('funfact/simpan', 'dbd::simpanFunfact');
-$routes->get('funfact/edit/(:num)', 'dbd::editFunfact/$1');
-$routes->post('funfact/update/(:num)', 'dbd::updateFunfact/$1');
-$routes->get('funfact/hapus/(:num)', 'dbd::hapusFunfact/$1');
-$routes->get('funfact/upload/(:num)', 'dbd::uploadFunfact/$1');
-$routes->get('funfact/simpan-draft/(:num)', 'Funfact::simpanDraft/$1');
-$routes->get('funfact/view/(:num)', 'dbd::view/$1');;
-
-$routes->get('berita/funfact_user/(:num)', 'dbd::Funfactview/$1');
+$routes->get('funfact', 'Dbd::funfact');
+$routes->get('dbd/unggahfunfact', 'Dbd::unggahfunfact');
+$routes->get('dbd/unggahfunfact/(:num)', 'Dbd::unggahfunfact/$1');
+$routes->post('funfact/simpan', 'Dbd::simpanFunfact');
+$routes->get('funfact/edit/(:num)', 'Dbd::editFunfact/$1');
+$routes->post('funfact/update/(:num)', 'Dbd::updateFunfact/$1');
+$routes->get('funfact/hapus/(:num)', 'Dbd::hapusFunfact/$1');
+$routes->get('funfact/upload/(:num)', 'Dbd::uploadFunfact/$1');
+$routes->get('funfact/simpan-draft/(:num)', 'Dbd::simpanDraft/$1');
+$routes->get('funfact/view/(:num)', 'Dbd::view/$1');;
+$routes->get('/tentang-kami', 'SuperAdmin::tentang_kami');
+$routes->get('berita/funfact_user/(:num)', 'Dbd::Funfactview/$1');
 
 // PROFIL SISTEM
 $routes->get('superadmin/profil_sistem', 'SuperAdmin::profil_sistem');
 $routes->get('superadmin/profil', 'SuperAdmin::profil');
 $routes->get('superadmin/profil_sistem/edit', 'SuperAdmin::edit');
 $routes->post('superadmin/profil_sistem/update', 'SuperAdmin::update');
-
-$routes->get('tentang-kami', 'SuperAdmin::tentang_kami');
 
 // ================= PELAPORAN KADER DI ADMIN =================
 $routes->get('dbd/pelaporan-kader/admin', 'Dbd::pelaporan_kader');
@@ -517,6 +543,8 @@ $routes->get('pelaporan-kader/delete/(:num)', 'Dbd::delete_laporan/$1');
 $routes->get('hasil_data_kepala/hasil', 'Dbd::hasil_data_kepala');
 $routes->get('dbd/view_laporan_kader/admin/(:num)', 'Dbd::view_laporan/$1');
 $routes->get('dbd/view_laporan/(:num)', 'Dbd::view_laporan/$1');
+// ================= CHAGOO ================= //
+$routes->post('chagoo/send', 'Chagoo::send');
 
 // ================= MANEJEMEN USER =================
 $routes->get('/manajemen_user', 'ManajemenUser::index');
@@ -532,7 +560,6 @@ $routes->get('tentangkamiDBD', 'Dashboard::tentangkamiDBD');
 $routes->get('skrining-diare', 'Diare::skrining');
 $routes->post('skrining-diare-step2', 'Diare::step2');
 $routes->post('skrining-diare-step3', 'Diare::step3');
-$routes->post('skrining-diare-step4', 'Diare::step4');
 $routes->post('skrining-diare-hasil', 'Diare::hasil');
 $routes->get('skrining-diare-pdf', 'Diare::pdf');
 $routes->get('pdf-diare', 'Diare::pdf');
@@ -543,7 +570,7 @@ $routes->get('admind/skrining', 'AdminD::skrining');
 $routes->get('admind/funfact', 'AdminD::funfact');
 $routes->get('admind/profil', 'AdminD::profil');
 $routes->get('admind/export', 'AdminD::export');
-
+$routes->get('ping', 'AI::ping');
 
 $routes->get('admind/berita', 'AdminD::berita');
 $routes->get('admind/berita/tambah', 'AdminD::tambahBerita');
@@ -561,6 +588,7 @@ $routes->get('admind/berita/detail/(:num)', 'AdminD::detailBerita/$1');
 
 //super admin iki
 $routes->get('/superadmin', 'SuperAdmin::dashboard');
+$routes->get('superadmin/manajemen_admin','SuperAdmin::manajemen_admin');
 $routes->get('/superadmin/iklan', 'SuperAdmin::iklan');
 $routes->get('/superadmin/admin', 'SuperAdmin::admin');
 $routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
@@ -587,50 +615,43 @@ $routes->post('superadmin/iklan/update/(:num)', 'SuperAdmin::updateIklan/$1');
 $routes->get('superadmin/iklan/hapus/(:num)', 'SuperAdmin::hapusIklan/$1');
 
 
-//
-$routes->get('/admind/funfact', 'diare::funfact');
+// MANAJEMEN PUSKESMAS
+$routes->get('/superadmin/puskesmas/create', 'SuperAdmin::create');  
+$routes->post('/superadmin/puskesmas/store', 'SuperAdmin::storePuskesmas'); 
+$routes->post('/superadmin/puskesmas/update/(:num)', 'SuperAdmin::updatePkm/$1'); 
+$routes->get('/superadmin/puskesmas/delete/(:num)', 'SuperAdmin::deletePkm/$1'); 
+$routes->get('/superadmin/get-kodepos/(:num)', 'SuperAdmin::getKodePos/$1'); 
+$routes->get('/superadmin/puskesmas/view/(:num)', 'SuperAdmin::viewPkm/$1');
+$routes->get('/superadmin/puskesmas/edit/(:num)', 'SuperAdmin::editPkm/$1');
+$routes->get('/superadmin/puskesmas', 'SuperAdmin::puskesmas');
+
+// TANYA RORA
+$routes->post('api/gemini', 'RoraController::chat');
+$routes->post('api/rora/voiceToText', 'App\Controllers\RoraController::voiceToText');
+
+///* FUNFACT DIARE */
 $routes->get('admind/funfact', 'AdminD::funfact');
 $routes->get('admind/funfact/tambah', 'AdminD::tambahFunfact');
 $routes->post('admind/funfact/simpan', 'AdminD::simpanFunfact');
+
 $routes->get('admind/funfact/edit/(:num)', 'AdminD::editFunfact/$1');
 $routes->post('admind/funfact/update/(:num)', 'AdminD::updateFunfact/$1');
+
 $routes->get('admind/funfact/hapus/(:num)', 'AdminD::hapusFunfact/$1');
+
 $routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
 $routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
+
+/* LANDING */
+$routes->get('diare', 'Diare::index');
+$routes->get('diare-detail', 'Home::diare_detail');
 $routes->get('diare-detail/(:num)', 'Home::diare_detail/$1');
 
-$routes->get('admind/funfact/draft/(:num)', 'AdminD::draftFunfact/$1');
+$routes->match(['get','post'], '/skrining-diare-hasil', 'Diare::hasil');
 
-$routes->get('admind/funfact/publish/(:num)', 'AdminD::publishFunfact/$1');
-$routes->get('/diare-detail', 'Home::diare_detail');
-$routes->get('/diare', 'Diare::index');
-// Superadmin Manajemen Admin
-$routes->get(
-    'superadmin/manajemen_admin',
-    'superadmin::manajemen_admin'
-);
 
-$routes->get(
-    'superadmin/manajemen_admin/tambah',
-    'superadmin::manajemen_admin_tambah'
-);
 
-$routes->post(
-    'superadmin/manajemen_admin/simpan',
-    'superadmin::manajemen_admin_simpan'
-);
-
-$routes->get(
-    'superadmin/manajemen_admin/edit/(:num)',
-    'superadmin::manajemen_admin_edit/$1'
-);
-
-$routes->post(
-    'superadmin/manajemen_admin/update/(:num)',
-    'superadmin::manajemen_admin_update/$1'
-);
-
-$routes->get(
-    'superadmin/manajemen_admin/hapus/(:num)',
-    'superadmin::manajemen_admin_hapus/$1'
-);
+//
+$routes->get('diare/dashboard/(:any)', function () {
+    return redirect()->to('/diare/dashboardd');
+});

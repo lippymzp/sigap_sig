@@ -9,6 +9,7 @@ use App\Models\SkriningPneumoniaModel;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use DateTime;
 
 class Pneumonia extends BaseController
 {
@@ -54,65 +55,122 @@ class Pneumonia extends BaseController
         ]);
         
     }
-
-    public function hasil_data()
+    public function editData($id)
 {
-    $tahun = date('Y');
-
     $db = \Config\Database::connect();
+
     $builder = $db->table('pasien p');
 
     $builder->select("
-        MONTH(p.tgl_kunjungan) as bulan_angka,
-        COALESCE(w.kelurahan, '-') as kelurahan,
+        p.*,
 
-        SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
-        SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
-
-        SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
-        SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
-
-        COUNT(*) as jumlah
+        w.provinsi,
+        w.kabupaten,
+        w.kecamatan,
+        w.kelurahan,
+        w.rt,
+        w.rw,
+        w.alamat_lengkap,
+        w.latitude,
+        w.longitude
     ");
 
-    $builder->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
-    $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
-    $builder->where('p.id_penyakit', 3);
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah',
+        'left'
+    );
 
-    $builder->groupBy('MONTH(p.tgl_kunjungan), w.kelurahan');
-    $builder->orderBy('bulan_angka', 'ASC');
+    $builder->where('p.id_pasien', $id);
 
-    $data = $builder->get()->getResultArray();
+    $pasien = $builder->get()->getRowArray();
 
-    $bulanMap = [
-        1 => 'Januari',
-        2 => 'Februari',
-        3 => 'Maret',
-        4 => 'April',
-        5 => 'Mei',
-        6 => 'Juni',
-        7 => 'Juli',
-        8 => 'Agustus',
-        9 => 'September',
-        10 => 'Oktober',
-        11 => 'November',
-        12 => 'Desember'
-    ];
+    return view('gol_c/input_data', [
 
-    foreach ($data as &$d) {
-        $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
-    }
-
-    return view('gol_c/hasil_data_pasien/hasil_data_c', [
-        'menu' => 'hasil',
+        'menu' => 'inputdata',
         'penyakit' => 'pneumonia',
-        'judul' => 'Hasil Data Pasien',
-        'tahun' => $tahun,
-        'data' => $data, 
+        'judul' => 'Edit Data Pasien',
+
+        'pasien' => $pasien,
+
         'notif' => $this->getNotif()
     ]);
 }
 
+public function hasil_data($tahun = null)
+{
+    $tahun = $tahun ?? date('Y');
+
+    $model = new \App\Models\InputDataPasienModel();
+
+    $db = \Config\Database::connect();
+
+    $builder = $db->table('pasien p');
+
+    $builder->select("
+        p.id_pasien,
+        p.id_wilayah,
+        p.nama_pasien,
+        p.jenis_kelamin,
+        p.rentang_umur,
+        p.ctt_klinis,
+        p.antibiotik,
+        p.tgl_kunjungan,
+        
+       w.kelurahan,
+w.rt,
+w.rw,
+
+        CONCAT(
+            w.provinsi, ', ',
+            w.kabupaten, ', ',
+            w.kecamatan, ', ',
+            w.kelurahan
+        ) as wilayah
+    ");
+
+    $builder->join(
+        'wilayah w',
+        'w.id_wilayah = p.id_wilayah',
+        'left'
+    );
+
+    $builder->where('p.id_penyakit', 3);
+
+    $builder->where(
+        'YEAR(p.tgl_kunjungan)',
+        $tahun
+    );
+
+    $builder->orderBy('p.id_pasien', 'DESC');
+
+   // ================= PAGINATION =================
+
+$perPage = 10;
+
+$currentPage = (int) ($this->request->getVar('page_data') ?? 1);
+
+$totalData = $builder->countAllResults(false);
+
+$totalPages = ceil($totalData / $perPage);
+
+$data = $builder
+    ->limit($perPage, ($currentPage - 1) * $perPage)
+    ->get()
+    ->getResultArray();
+
+    return view('gol_c/hasil_data_pasien/hasil_data_c', [
+
+        'menu' => 'hasil',
+        'penyakit' => 'pneumonia',
+        'judul' => 'Hasil Data Pasien',
+        'tahun' => $tahun,
+        'data' => $data,
+'totalPages'  => $totalPages,
+'currentPage' => $currentPage,
+        'notif' => $this->getNotif()
+    ]);
+}
     // ==================================
     // HASIL DATA PASIEN EXPOR PDF EXCEL
     // ==================================
@@ -171,9 +229,11 @@ class Pneumonia extends BaseController
             12 => 'Desember'
         ];
 
-        foreach ($data as &$d) {
+        foreach ($hasil as &$d) {
             $d['bulan'] = $bulanMap[$d['bulan_angka']] ?? '-';
         }
+
+return $this->response->setJSON($hasil);
 
         return $this->response->setJSON($data);
     }
@@ -839,6 +899,96 @@ class Pneumonia extends BaseController
         );
     }
 
+public function updatePasien()
+{
+    $id = $this->request->getPost('id_pasien');
+
+    $db = \Config\Database::connect();
+
+    $builder = $db->table('pasien');
+
+    $builder->where('id_pasien', $id);
+
+    $builder->update([
+
+    'nama_pasien' => $this->request->getPost('nama_pasien'),    
+
+    'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+
+        'rentang_umur' => $this->request->getPost('rentang_umur'),
+
+        'ctt_klinis' => $this->request->getPost('ctt_klinis'),
+
+        'antibiotik' => $this->request->getPost('antibiotik'),
+
+        'tgl_kunjungan' => $this->request->getPost('tgl_kunjungan')
+    ]);
+
+    // ================= UPDATE WILAYAH =================
+
+$db->table('wilayah')
+
+   ->where(
+       'id_wilayah',
+       $this->request->getPost('id_wilayah')
+   )
+
+   ->update([
+
+        'kelurahan' =>
+            $this->request->getPost('kelurahan'),
+
+        'rt' =>
+            $this->request->getPost('rt'),
+
+        'rw' =>
+            $this->request->getPost('rw'),
+
+        'alamat_lengkap' =>
+            $this->request->getPost('alamat')
+
+   ]);
+
+    return redirect()->back();
+}
+
+public function hapusPasien($id)
+{
+    $db = \Config\Database::connect();
+
+    // ======================
+    // AMBIL ID WILAYAH
+    // ======================
+
+    $pasien = $db->table('pasien')
+        ->where('id_pasien', $id)
+        ->get()
+        ->getRowArray();
+
+    if($pasien){
+
+        $idWilayah = $pasien['id_wilayah'];
+
+        // ======================
+        // HAPUS PASIEN
+        // ======================
+
+        $db->table('pasien')
+            ->where('id_pasien', $id)
+            ->delete();
+
+        // ======================
+        // HAPUS WILAYAH
+        // ======================
+
+        $db->table('wilayah')
+            ->where('id_wilayah', $idWilayah)
+            ->delete();
+    }
+
+    return redirect()->back();
+}
+
     public function simpandatapasien()
     {
         $model = new InputDataPasienModel();
@@ -876,7 +1026,7 @@ class Pneumonia extends BaseController
             
             'antibiotik' => $this->request->getPost('antibiotik'),
 
-            'usia' => $this->request->getPost('usia'),
+            'rentang_umur' => $this->request->getPost('rentang_umur'),
 
             'catatan' => $this->request->getPost('catatan'),
 
@@ -1040,12 +1190,56 @@ public function rekapskrining()
     return view('gol_c/rekapskrining', $data);
 }
 
+// ======================
+// FUNCTION ENTROPY
+// ======================
+private function entropy($data)
+{
+    $total = count($data);
+
+    if ($total == 0) {
+        return 0;
+    }
+
+    $berisiko = 0;
+    $tidak = 0;
+
+    foreach ($data as $d) {
+
+        if ($d['hasil'] == 'Berisiko') {
+            $berisiko++;
+        } else {
+            $tidak++;
+        }
+    }
+
+    $p1 = $berisiko / $total;
+    $p2 = $tidak / $total;
+
+    $entropy = 0;
+
+    if ($p1 > 0) {
+        $entropy -= $p1 * log($p1, 2);
+    }
+
+    if ($p2 > 0) {
+        $entropy -= $p2 * log($p2, 2);
+    }
+
+    return $entropy;
+}
+
 public function skriningpneumonia3()
 {
     $nama = $this->request->getPost('nama');
     $jenis_kelamin = $this->request->getPost('jenis_kelamin');
     $tanggal_lahir = $this->request->getPost('tanggal_lahir');
-    $kategori_usia = $this->request->getPost('kategori_usia');
+    $tanggal_lahir = $this->request->getPost('tanggal_lahir');
+
+    $lahir = new DateTime($tanggal_lahir);
+    $today = new DateTime();
+
+    $usia = $today->diff($lahir)->y;
     $nik = $this->request->getPost('nik');
     $telepon = $this->request->getPost('telepon');
 
@@ -1101,7 +1295,7 @@ public function skriningpneumonia3()
         'nama_pasien_skrining' => $nama,
         'jenis_kelamin' => $jenis_kelamin,
         'tanggal_lahir' => $tanggal_lahir,
-        'usia' => $kategori_usia,
+        'usia' => $usia,
         'no_hp' => $telepon,
         'created_at' => date('Y-m-d H:i:s'),
         'id_wilayah' => $id_wilayah
@@ -1161,50 +1355,10 @@ public function skriningpneumonia3()
     ];
 
     // ======================
-    // FUNCTION ENTROPY
-    // ======================
-
-    function entropy($data)
-    {
-        $total = count($data);
-
-        if ($total == 0) {
-            return 0;
-        }
-
-        $berisiko = 0;
-        $tidak = 0;
-
-        foreach ($data as $d) {
-
-            if ($d['hasil'] == 'Berisiko') {
-                $berisiko++;
-            } else {
-                $tidak++;
-            }
-        }
-
-        $p1 = $berisiko / $total;
-        $p2 = $tidak / $total;
-
-        $entropy = 0;
-
-        if ($p1 > 0) {
-            $entropy -= $p1 * log($p1, 2);
-        }
-
-        if ($p2 > 0) {
-            $entropy -= $p2 * log($p2, 2);
-        }
-
-        return $entropy;
-    }
-
-    // ======================
     // HITUNG ENTROPY TOTAL
     // ======================
 
-    $entropyTotal = entropy($dataTraining);
+    $entropyTotal = $this->entropy($dataTraining);
 
     // ======================
     // HITUNG GAIN
@@ -1230,8 +1384,8 @@ public function skriningpneumonia3()
 
         $totalData = count($dataTraining);
 
-        $entropyIya = entropy($iya);
-        $entropyTidak = entropy($tidak);
+        $entropyIya = $this->entropy($iya);
+        $entropyTidak = $this->entropy($tidak);
 
         $gain =
             $entropyTotal -
@@ -1352,7 +1506,7 @@ public function skriningpneumonia3()
     $data['kabupaten'] = $kabupaten;
     $data['kecamatan'] = $kecamatan;
     $data['kelurahan'] = $kelurahan;
-
+ 
     $data['hasil'] = $hasil;
     $data['alasan'] = $alasan;
 
@@ -1406,4 +1560,3 @@ public function skriningpneumonia3()
         echo "</table>";
     }
 }
-

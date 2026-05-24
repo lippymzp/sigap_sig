@@ -18,8 +18,23 @@
 
 <body>
     <?php
-    $penyakit = session('penyakit') ?? 'pneumonia';
-    $menu = $menu ?? '';?>
+$penyakit = session('penyakit') ?? 'pneumonia';
+$menu = $menu ?? '';
+
+$idPetugasLogin = session()->get('id_petugas');
+
+$petugasLogin = null;
+
+if ($idPetugasLogin) {
+    $modelPetugas = new \App\Models\PetugasModel();
+    $petugasLogin = $modelPetugas->getProfil($idPetugasLogin);
+}
+
+$fotoTopbar = (!empty($petugasLogin['foto_profil']))
+    ? base_url('uploads/profil/' . $petugasLogin['foto_profil'])
+    : null;
+?>
+
     <div class="wrapper" id="wrapper">
         <div class="sidebar">
 
@@ -62,7 +77,7 @@
                 <i class="fa-solid fa-file-lines me-2"></i> Rekap Skrining
             </a>
 
-            <a href="<?= base_url('index.php/' . $penyakit . '/dashboard/admin#petaSebaran') ?>"
+            <a href="<?= base_url('index.php/' . $penyakit . '/peta_sebaran') ?>"
                 class="<?= ($menu == 'peta') ? 'active' : '' ?>">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Peta Sebaran
             </a>
@@ -115,7 +130,15 @@
                     </div>
                     <div class="dropdown avatar-dropdown">
                         <div class="avatar-circle" data-bs-toggle="dropdown" style="cursor:pointer;">
-                            <i class="fa-regular fa-user text-white"></i>
+                            <?php if (!empty($fotoTopbar)) : ?>
+
+                                <img src="<?= $fotoTopbar ?>" class="topbar-foto-profil" alt="Foto Profil">
+
+                            <?php else : ?>
+
+                                <i class="fa-regular fa-user text-white"></i>
+
+                            <?php endif; ?>
                         </div>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -478,6 +501,18 @@
                 align-items: center;
                 justify-content: center;
                 border: 2px solid white;
+            }
+
+            .avatar-circle{
+                overflow:hidden;
+            }
+
+            .topbar-foto-profil{
+                width:100%;
+                height:100%;
+                border-radius:50%;
+                object-fit:cover;
+                display:block;
             }
 
             /* FOOTER */

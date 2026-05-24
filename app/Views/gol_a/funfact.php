@@ -581,6 +581,16 @@ body{
     </form>
 
     <!-- STAT -->
+    <?php
+        $idPetugas = session()->get('id_petugas');
+
+        $db = \Config\Database::connect();
+
+        $totalFunfact = $db->table('funfact')
+            ->where('id_petugas', $idPetugas)
+            ->where('id_penyakit', 1)
+            ->countAllResults();
+        ?>
 
     <div class="stat-box">
 

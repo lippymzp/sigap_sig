@@ -90,7 +90,7 @@ $this->setVar('footer_maskot', 'cynex.png');
 }
 
 .pneu-hero {
-    height: 400px;
+    height: 450px;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -100,8 +100,8 @@ $this->setVar('footer_maskot', 'cynex.png');
     background: 
     linear-gradient(
         to right,
-        rgba(0, 206, 209, 0.9) 40%,   /* Menggunakan Dark Turquoise #00CED1 */
-        rgba(0, 206, 209, 0.3) 70%,
+        rgba(0, 206, 209, 0.9) 5%,   /* Menggunakan Dark Turquoise #00CED1 */
+        rgba(0, 206, 209, 0.3) 35%,
         rgba(0, 206, 209, 0) 100%
     ),
     url("<?= base_url('img/pneumonia.png') ?>");
@@ -365,16 +365,18 @@ fitur.forEach(btn => {
 <h4 class="text-center mb-4 fw-bold">Telusuri Informasi Berikut</h4>
 
 <?php
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
-$queryBerita = mysqli_query($conn, "
+$queryBerita = $db->query("
     SELECT *
     FROM berita
     WHERE id_penyakit = 3
     ORDER BY tanggal_berita DESC
 ");
 
-$totalBerita = mysqli_num_rows($queryBerita);
+$beritaList = $queryBerita->getResultArray();
+
+$totalBerita = count($beritaList);
 ?>
 
 <div class="news-slider">
@@ -387,7 +389,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
         <?php if($totalBerita > 0): ?>
 
-            <?php while($berita = mysqli_fetch_assoc($queryBerita)): ?>
+            <?php foreach($beritaList as $berita): ?>
 
                 <?php
                 // CEK GAMBAR
@@ -451,7 +453,7 @@ $totalBerita = mysqli_num_rows($queryBerita);
 
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
 
@@ -896,7 +898,7 @@ prevBtn.addEventListener('click', () => {
         <span style="color:red;">skrining</span> sejak dini!
     </p>
 
-    <a href="<?= base_url('skriningpneumonia') ?>"
+    <a href="<?= base_url('pneumonia/skrining') ?>"
        class="btn btn-teal px-4 py-2 shadow">
 
         Mulai Skrining
@@ -926,7 +928,7 @@ prevBtn.addEventListener('click', () => {
 
 <?php
 
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $bulanLabels = [
     'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Juni',
@@ -936,8 +938,9 @@ $bulanLabels = [
 $laki = array_fill(0, 12, 0);
 $wanita = array_fill(0, 12, 0);
 
-$query = mysqli_query($conn, "
+$db = \Config\Database::connect();
 
+$query = $db->query("
     SELECT 
         MONTH(tgl_kunjungan) as bulan,
         jenis_kelamin,
@@ -951,10 +954,11 @@ $query = mysqli_query($conn, "
     GROUP BY 
         MONTH(tgl_kunjungan),
         jenis_kelamin
-
 ");
 
-while($row = mysqli_fetch_assoc($query)){
+$result = $query->getResultArray();
+
+foreach($result as $row){
 
     $index = $row['bulan'] - 1;
 
@@ -1026,7 +1030,7 @@ new Chart(ctx, {
             },
 
             {
-                label: 'Wanita',
+                label: 'Perempuan',
                 data: dataWanita,
                 backgroundColor: '#a7d7d3',
                 borderRadius: 6
@@ -1126,10 +1130,15 @@ foreach ($pneumonia as $item) {
 }
 
 $tahunList = array_unique($tahunList);
+
+/* TAMBAHKAN TAHUN MANUAL */
+$tahunList = array_unique(array_merge(['2026', '2025'], $tahunList));
+
+/* URUTKAN DARI TAHUN TERBARU KE LAMA */
 rsort($tahunList);
 
 if(empty($tahunList)){
-    $tahunList = [2025];
+    $tahunList = [2026, 2025];
 }
 ?>
 
@@ -1178,7 +1187,7 @@ if(empty($tahunList)){
                             <div class="filter-group">
                                 <label>Periode</label>
                                 <select id="filterTahun">
-                                    <option value="">Semua Tahun</option>
+                                    <option value="">All</option>
                                     <?php foreach($tahunList as $tahun): ?>
                                         <option value="<?= $tahun ?>"><?= $tahun ?></option>
                                     <?php endforeach; ?>
@@ -1301,7 +1310,7 @@ if(empty($tahunList)){
                         <button
                             type="button"
                             class="period-btn"
-                            onclick="changeDetailYear(-1)"
+                            onclick="changeDetailYear(1)"
                         >
                             ‹
                         </button>
@@ -1313,7 +1322,7 @@ if(empty($tahunList)){
                         <button
                             type="button"
                             class="period-btn"
-                            onclick="changeDetailYear(1)"
+                            onclick="changeDetailYear(-1)"
                         >
                             ›
                         </button>
@@ -1366,6 +1375,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var geoJsonData;
     var currentDataFinal = {};
     var availableYears = <?= json_encode(array_values($tahunList)) ?>;
+    availableYears = Array.from(
+    new Set(
+        availableYears.concat(["2026", "2025"]).map(String)
+    )
+    ).sort(function(a, b){
+        return parseInt(b) - parseInt(a);
+    });
 
     var selectedYearIndex = 0;
 
@@ -1501,6 +1517,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return bulan[angka] || "Semua Bulan";
     }
 
+    function getWaktuSaatIni(){
+    var tanggalSekarang = new Date();
+
+    var bulanSekarang = tanggalSekarang.getMonth() + 1;
+    var tahunSekarang = tanggalSekarang.getFullYear();
+
+    return {
+        bulan: bulanSekarang,
+        tahun: tahunSekarang,
+        label: namaBulan(bulanSekarang) + " " + tahunSekarang
+    };
+   }                                    
+    
     function kategoriKasus(total){
         if(total >= 45){
             return "tinggi";
@@ -1909,26 +1938,131 @@ document.addEventListener("DOMContentLoaded", function () {
         map.fitBounds(geoLayer.getBounds());
     }
 
-    window.showDetailWilayah = function(key, namaWilayah){
+    function hitungKasusBaruTerkiniWilayah(keyWilayah){
 
-        selectedDetailKey = key;
-        selectedDetailNama = namaWilayah;
+    var waktuSaatIni = getWaktuSaatIni();
 
-        var item = currentDataFinal[key];
-        if(!item){
-            item = {
-                nama: namaWilayah,
+    var jk = document.getElementById("filterJk").value;
+    var filterJk = jk.toString().toLowerCase().trim();
+
+    var totalKasusBaru = 0;
+
+    dataPneu.forEach(function(item){
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+
+        // hanya wilayah yang diklik
+        if(desaKey !== keyWilayah){
+            return;
+        }
+
+        // hanya bulan dan tahun saat ini
+        if(itemTahun !== waktuSaatIni.tahun.toString()){
+            return;
+        }
+
+        if(itemBulan !== waktuSaatIni.bulan.toString()){
+            return;
+        }
+
+        // hanya berubah kalau filter jenis kelamin dipilih
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        totalKasusBaru += getKasus(item);
+    });
+
+    return totalKasusBaru;
+}                                    
+
+function buildDataDetailByYear(tahunDetail){
+
+    var bulan = document.getElementById("filterBulan").value;
+    var jk = document.getElementById("filterJk").value;
+
+    var hasil = {};
+
+    dataPneu.forEach(function(item){
+
+        var itemTahun = getTahun(item).toString();
+        var itemBulan = getBulan(item).toString();
+        var itemJk = getJk(item).toString().toLowerCase().trim();
+        var filterJk = jk.toString().toLowerCase().trim();
+
+        if(itemTahun !== tahunDetail.toString()){
+            return;
+        }
+
+        if(bulan && itemBulan !== bulan){
+            return;
+        }
+
+        if(jk && itemJk !== filterJk){
+            return;
+        }
+
+        var desaAsli = getDesa(item);
+        var desaKey = fixKey(desaAsli);
+
+        if(!hasil[desaKey]){
+            hasil[desaKey] = {
+                nama: desaAsli,
                 total: 0,
                 kasusBaru: 0,
                 kategori: "rendah"
             };
         }
 
-        var tahun = document.getElementById("filterTahun").value || availableYears[0] || "2025";
-        var bulan = document.getElementById("filterBulan").value || "";
+        var jumlahKasus = getKasus(item);
 
-        selectedDetailYear = parseInt(tahun);
-        selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+        hasil[desaKey].total += jumlahKasus;
+        hasil[desaKey].kasusBaru += jumlahKasus;
+    });
+
+    // hitung ulang kategori semua wilayah agar warna bar benar
+    for(var key in hasil){
+        hasil[key].kategori = kategoriKasus(hasil[key].total);
+    }
+
+    return hasil;
+}
+
+    window.showDetailWilayah = function(key, namaWilayah){
+
+        selectedDetailKey = key;
+            selectedDetailNama = namaWilayah;
+
+            var tahun = document.getElementById("filterTahun").value || availableYears[0] || "2025";
+
+            selectedDetailYear = parseInt(tahun);
+            selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+
+            if(selectedYearIndex < 0){
+                selectedYearIndex = 0;
+            }
+
+            // PENTING: hitung ulang data detail sesuai tahun saat pertama klik wilayah
+            currentDataFinal = buildDataDetailByYear(selectedDetailYear);
+
+            var item = currentDataFinal[key];
+
+            if(!item){
+                item = {
+                    nama: namaWilayah,
+                    total: 0,
+                    kasusBaru: 0,
+                    kategori: "rendah"
+                };
+            }
+
+            item.kategori = kategoriKasus(item.total);
 
         if(selectedYearIndex < 0){
             selectedYearIndex = 0;
@@ -1939,16 +2073,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
         document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kecamatan " + namaWilayah;
+        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
         document.getElementById("detailTotal").innerText = item.total + " kasus";
 
-        if(bulan){
-            document.getElementById("detailBulanLabel").innerText = "Kasus Baru (" + namaBulan(bulan) + " " + selectedDetailYear + ")";
-        }else{
-            document.getElementById("detailBulanLabel").innerText = "Kasus Baru (Semua Bulan " + selectedDetailYear + ")";
-        }
+        var waktuSaatIni = getWaktuSaatIni();
+        var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(key);
 
-        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+        document.getElementById("detailBulanLabel").innerText =
+            "Kasus Baru (" + waktuSaatIni.label + ")";
+
+        document.getElementById("detailKasusBaru").innerText =
+            kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);
@@ -1983,49 +2118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detailYear").innerText = selectedDetailYear;
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
 
-        var bulan = document.getElementById("filterBulan").value;
-        var jk = document.getElementById("filterJk").value;
-
-        var hasil = {};
-
-        dataPneu.forEach(function(item){
-
-            var itemTahun = getTahun(item).toString();
-            var itemBulan = getBulan(item).toString();
-            var itemJk = getJk(item).toString().toLowerCase().trim();
-            var filterJk = jk.toString().toLowerCase().trim();
-
-            if(itemTahun !== selectedDetailYear.toString()){
-                return;
-            }
-
-            if(bulan && itemBulan !== bulan){
-                return;
-            }
-
-            if(jk && itemJk !== filterJk){
-                return;
-            }
-
-            var desaAsli = getDesa(item);
-            var desaKey = fixKey(desaAsli);
-
-            if(!hasil[desaKey]){
-                hasil[desaKey] = {
-                    nama: desaAsli,
-                    total: 0,
-                    kasusBaru: 0,
-                    kategori: "rendah"
-                };
-            }
-
-            var jumlahKasus = getKasus(item);
-
-            hasil[desaKey].total += jumlahKasus;
-            hasil[desaKey].kasusBaru += jumlahKasus;
-        });
-
-        currentDataFinal = hasil;
+        currentDataFinal = buildDataDetailByYear(selectedDetailYear);
 
         var item = currentDataFinal[selectedDetailKey];
 
@@ -2041,7 +2134,15 @@ document.addEventListener("DOMContentLoaded", function () {
         item.kategori = kategoriKasus(item.total);
 
         document.getElementById("detailTotal").innerText = item.total + " kasus";
-        document.getElementById("detailKasusBaru").innerText = item.kasusBaru + " kasus";
+
+        var waktuSaatIni = getWaktuSaatIni();
+        var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(selectedDetailKey);
+
+        document.getElementById("detailBulanLabel").innerText =
+            "Kasus Baru (" + waktuSaatIni.label + ")";
+
+        document.getElementById("detailKasusBaru").innerText =
+            kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);
@@ -2729,7 +2830,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <?php
 /* RINGKASAN DATA PNEUMONIA  */
-$conn = mysqli_connect("localhost","root","","sigap_db");
+$db = \Config\Database::connect();
 
 $dataRingkasan = [];
 
@@ -2741,7 +2842,7 @@ $tertinggi = [
 $rataRata = 0;
 $diAtasRata = 0;
 
-$queryRingkasan = mysqli_query($conn, "
+$queryRingkasan = $db->query("
 
     SELECT 
         wilayah.kelurahan,
@@ -2762,7 +2863,7 @@ $queryRingkasan = mysqli_query($conn, "
 
 if($queryRingkasan){
 
-    while($r = mysqli_fetch_assoc($queryRingkasan)){
+    foreach($queryRingkasan->getResultArray() as $r){
         $dataRingkasan[] = $r;
     }
 
@@ -2887,7 +2988,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </script>
 <!-- FLOATING CHAT BUTTON -->
 <div id="chatbot-toggle">
-    <i class="fa-solid fa-comment-medical"></i>
+    <img src="<?= base_url('img/pneu_chat.png') ?>" alt="chatbot">
 </div>
 
 <!-- CHAT POPUP -->
@@ -2913,10 +3014,10 @@ document.addEventListener("DOMContentLoaded", function(){
     position:fixed;
     bottom:20px;
     right:20px;
-    width:65px;
-    height:65px;
+    width:75px;
+    height:75px;
     border-radius:50%;
-    background:linear-gradient(135deg,#00CED1,#40EDD0);
+    background:rgb(46, 138, 224);
     color:white;
     display:flex;
     justify-content:center;
@@ -2928,6 +3029,18 @@ document.addEventListener("DOMContentLoaded", function(){
     animation:pulse 1.8s infinite;
     transition:0.3s;
 }
+
+#chatbot-toggle img{
+    width: 64px !important;
+    height: 64px !important;
+
+    max-width: 54px;
+    max-height: 54px;
+
+    object-fit: contain;
+    display: block;
+}
+
 /* HOVER */
 #chatbot-toggle:hover{
     transform:scale(1.08);

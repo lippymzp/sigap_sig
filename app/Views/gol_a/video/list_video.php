@@ -1,5 +1,5 @@
 <?php /** @var array $video */ ?>
-<?= $this->include('layout/header') ?>
+<?= $this->include('layout/header_a') ?>
 
 <?php
 $status = $_GET['status'] ?? '';
@@ -27,9 +27,9 @@ body{
 
 /* ================= WRAPPER ================= */
 .video-page{
-    max-width:1280px;
+    max-width:1100px;
     margin:auto;
-    padding:0 16px 40px;
+    padding:0 20px 40px;
 }
 
 /* ================= HERO (INI YANG KAMU KIRA HILANG) ================= */
@@ -94,15 +94,17 @@ body{
 
 /* ================= CARD ================= */
 .video-card{
-    position:relative;
-    display:flex;
-    gap:16px;
-    background:#edf7f7;
-    border:1px solid #cfdede;
-    border-radius:8px;
-    padding:10px;
-    margin-bottom:18px;
-    box-shadow:0 2px 5px rgba(0,0,0,.08);
+    max-width:1100px;
+    margin:auto;
+    padding:0 20px 40px;
+    position: relative;
+    display: flex;
+    gap: 16px;
+    background: #edf7f7;
+    border: 1px solid #cfdede;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
 }
 
 /* AREA LINK VIDEO */
@@ -116,11 +118,12 @@ body{
 
 /* THUMB */
 .video-thumb{
-    width:210px;
-    height:118px;
+    width:220px;
+    height:130px;
     border-radius:10px;
     overflow:hidden;
     background:#000;
+    flex-shrink:0;
 }
 
 .video-thumb video{
@@ -200,6 +203,42 @@ body{
     text-align:center;
     border-radius:10px;
 }
+.info-row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:30px;
+}
+
+.data-count{
+    font-size:14px;
+    color:#555;
+    text-align:center;
+    font-weight:500;
+}
+
+.data-count span{
+    color:black;
+    font-weight:700;
+}
+/* Tambahkan Media Query di paling bawah style agar di HP/Layar Kecil tampilannya tidak rusak */
+@media (max-width: 576px) {
+    .video-card {
+        flex-direction: column; /* Ubah jadi vertikal kalau di HP */
+    }
+    .video-main {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .video-thumb {
+        width: 100%;
+        height: 180px;
+    }
+    .video-menu {
+        top: auto;
+        bottom: 50px;
+    }
+}
 
 </style>
 
@@ -213,10 +252,22 @@ body{
         <p>Temukan video edukasi yang menarik dan bermanfaat</p>
 
         <div class="breadcrumb">
-            <span>Beranda</span>
+            <a href="<?= base_url('dbd'); ?>" class="breadcrumb-link">Beranda</a>
             <span>›</span>
             <span>Video</span>
         </div>
+
+        <style>
+        .breadcrumb-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb-link:hover {
+            color: white;
+            text-decoration: none;
+        }
+        </style>
 
     </div>
 
@@ -310,6 +361,12 @@ body{
         </div>
 
     <?php endif; ?>
+    <!-- INFO JUMLAH DATA -->
+    <div class="info-row">
+        <div class="data-count">
+            Menampilkan data <span><?= !empty($video) ? count($video) : 0 ?></span> dari data keseluruhan
+        </div>
+    </div>
 
 </div>
 

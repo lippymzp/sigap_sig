@@ -10,6 +10,7 @@ $this->setVar('show_footer_maskot', true);
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <div class="diare-page">
+    
 <style>
 .diare-page,
 .diare-page *{
@@ -907,22 +908,22 @@ body{
 <div class="row g-4 justify-content-center">
 
     <div class="col-lg col-md-4 col-6">
-        <div class="fitur-box shadow-sm">
-            📊 Grafik Kesehatan
-        </div>
-    </div>
+    <a href="#grafik" class="fitur-box shadow-sm">
+        📊 Grafik Kesehatan
+    </a>
+</div>
 
     <div class="col-lg col-md-4 col-6">
-        <div class="fitur-box shadow-sm">
-            🗺️ Peta Persebaran
-        </div>
-    </div>
+    <a href="#peta" class="fitur-box shadow-sm">
+        🗺️ Peta Persebaran
+    </a>
+</div>
 
     <div class="col-lg col-md-4 col-6">
-        <div class="fitur-box shadow-sm">
-            📄 Artikel Kesehatan
-        </div>
-    </div>
+    <a href="#artikel" class="fitur-box shadow-sm">
+        📄 Artikel Kesehatan
+    </a>
+</div>
 
     <div class="col-lg col-md-4 col-6">
         <a href="<?= base_url('skrining-diare') ?>"
@@ -940,7 +941,7 @@ body{
 
 </div>
 </section>
-<section class="container mt-5 insight-premium" data-aos="fade-up">
+<section id="artikel" class="container mt-5 insight-premium" data-aos="fade-up">
 
     <div class="section-head">
         <span>INSIGHTS</span>
@@ -1040,9 +1041,25 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 <h4 class="text-teal mb-3 fw-bold">Grafik Diare</h4>
 
 <div class="row mb-3">
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kelurahan</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Kategori</option></select></div>
-<div class="col-md-3"><select class="form-control shadow-sm"><option>Tahun</option></select></div>
+
+<div class="col-md-4">
+    <select id="filterDesa" class="form-control shadow-sm">
+        <option value="">Semua Desa</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <select id="filterDiagnosis" class="form-control shadow-sm">
+        <option value="">Semua Diagnosis</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <select id="filterTahun" class="form-control shadow-sm">
+        <option value="">Semua Tahun</option>
+    </select>
+</div>
+
 </div>
 
 <div class="row">
@@ -1066,16 +1083,16 @@ Yuk lakukan <span style="color:red;">skrining</span> sejak dini!
 </section>
 
 <!-- MAP -->
-<section class="container mt-5" data-aos="fade-up">
+<section id="peta" class="container mt-5" data-aos="fade-up">
 
 <h4 class="text-teal mb-3 fw-bold">Peta Persebaran Penyakit</h4>
 
 <div id="mapDiare" style="height:400px; border-radius:15px;"></div>
 
 <div class="mt-3 d-flex gap-2">
-<span class="badge bg-warning">Rendah</span>
-<span class="badge bg-danger">Sedang</span>
-<span class="badge bg-dark">Tinggi</span>
+    <span class="badge bg-success">Rendah</span>
+    <span class="badge bg-warning text-dark">Sedang</span>
+    <span class="badge bg-danger">Tinggi</span>
 </div>
 
 </section>
@@ -1096,7 +1113,32 @@ var aliasDesa = {
     "kemuningsarilor": "kemuning sari lor"
 };
 
+console.log(<?= json_encode($diare ?? []) ?>);
 var dataDiare = <?= json_encode($diare ?? []) ?>;
+
+function applyFilters(){
+
+    let desa = document.getElementById('filterDesa').value;
+    let diagnosis = document.getElementById('filterDiagnosis').value;
+    let tahun = document.getElementById('filterTahun').value;
+
+    let filtered = dataDiare.filter(item => {
+
+        let cocokDesa =
+            !desa || item.desa === desa;
+
+        let cocokDiagnosis =
+            !diagnosis || item.diagnosis === diagnosis;
+
+        let cocokTahun =
+            !tahun || item.tanggal_kunjungan.startsWith(tahun);
+
+        return cocokDesa && cocokDiagnosis && cocokTahun;
+    });
+
+    buildMap(filtered);
+    renderChart(filtered);
+}
 
 var dataFinal = {};
 
@@ -1115,108 +1157,335 @@ dataDiare.forEach(item => {
         };
     }
 
-    dataFinal[desa].total += parseInt(item.kasus);
+    dataFinal[desa].total++;
     dataFinal[desa].jumlah++;
 });
 
 for(var key in dataFinal){
+
     var rata = dataFinal[key].total / dataFinal[key].jumlah;
 
-    if(rata >= 20) dataFinal[key].kategori = "tinggi";
-    else if(rata >= 10) dataFinal[key].kategori = "sedang";
-    else dataFinal[key].kategori = "rendah";
+    if(rata >= 15){
+        dataFinal[key].kategori = "tinggi";
+    }
+    else if(rata >= 5){
+        dataFinal[key].kategori = "sedang";
+    }
+    else{
+        dataFinal[key].kategori = "rendah";
+    }
 }
 
-</script>
+// =========================
+// RINGKASAN DINAMIS
+// =========================
+var desaTertinggi = '-';
+var kasusTertinggi = 0;
+var totalSemuaKasus = 0;
+var jumlahDesa = 0;
+var desaDiAtasRata = 0;
 
-<script>
+for(var key in dataFinal){
+    totalSemuaKasus += dataFinal[key].total;
+    jumlahDesa++;
+
+    if(dataFinal[key].total > kasusTertinggi){
+        kasusTertinggi = dataFinal[key].total;
+        desaTertinggi = key;
+    }
+}
+
+var rataKasus = jumlahDesa > 0
+    ? Math.round(totalSemuaKasus / jumlahDesa)
+    : 0;
+
+for(var key in dataFinal){
+    if(dataFinal[key].total > rataKasus){
+        desaDiAtasRata++;
+    }
+}
 document.addEventListener("DOMContentLoaded", function(){
 
-new Chart(document.getElementById('chartDiare'), {
-    type: 'bar',
-    data: {
-        labels: ['Jan','Feb','Mar','Apr','Mei'],
-        datasets: [
-            { label:'Sembuh', data:[100,80,70,60,150], backgroundColor:'#8ecae6' },
-            { label:'Pengobatan', data:[90,150,120,90,95], backgroundColor:'#219ebc' },
-            { label:'Meninggal', data:[40,20,40,40,60], backgroundColor:'#90dbf4' }
-        ]
+    const filterDesa = document.getElementById('filterDesa');
+    const filterDiagnosis = document.getElementById('filterDiagnosis');
+    const filterTahun = document.getElementById('filterTahun');
+
+    let chartDiare;
+    let map = L.map('mapDiare').setView([-8.1,113.5], 12);
+    let geoLayer;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+    .addTo(map);
+
+
+       function populateFilters(){
+
+    let desaSet = new Set();
+    let diagnosisSet = new Set();
+    let tahunSet = new Set();
+
+    filterDesa.innerHTML = '<option value="">Semua Desa</option>';
+    filterDiagnosis.innerHTML = '<option value="">Semua Diagnosis</option>';
+    filterTahun.innerHTML = '<option value="">Semua Tahun</option>';
+
+    dataDiare.forEach(item => {
+
+        let desa = item.desa ? item.desa.trim() : "";
+        let diagnosis = item.diagnosis_diare
+            ? item.diagnosis_diare.trim()
+            : "";
+
+        if(desa) desaSet.add(desa);
+        if(diagnosis) diagnosisSet.add(diagnosis);
+
+        if(
+            item.tanggal_kunjungan &&
+            item.tanggal_kunjungan !== '0000-00-00'
+        ){
+            let tahun = item.tanggal_kunjungan.substring(0,4);
+            tahunSet.add(tahun);
+        }
+    });
+
+    desaSet.forEach(d=>{
+        filterDesa.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+
+    diagnosisSet.forEach(d=>{
+        filterDiagnosis.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+
+    tahunSet.forEach(t=>{
+        filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
+    });
+}
+
+    function renderChart(filteredData){
+
+        let bulanan = {};
+
+        filteredData.forEach(item => {
+            let bulan = new Date(item.tanggal_kunjungan)
+                .toLocaleString('id-ID', { month: 'short' });
+
+            if(!bulanan[bulan]){
+                bulanan[bulan] = 0;
+            }
+
+            bulanan[bulan]++;
+        });
+
+        if(chartDiare){
+            chartDiare.destroy();
+        }
+
+        chartDiare = new Chart(document.getElementById('chartDiare'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(bulanan),
+                datasets: [{
+                    label: 'Kasus Diare',
+                    data: Object.values(bulanan),
+                    backgroundColor: '#219ebc'
+                }]
+            }
+        });
+    }
+
+    function buildMap(filteredData){
+
+        let finalData = {};
+
+        filteredData.forEach(item => {
+
+    let desa = fixNama(item.desa);
+
+    if(aliasDesa[desa]){
+        desa = aliasDesa[desa];
+    }
+
+    if(!finalData[desa]){
+        finalData[desa] = {
+            total: 0,
+            diagnosis: {},
+            tahunTerakhir: 0
+        };
+    }
+
+    finalData[desa].total++;
+
+    // hitung diagnosis
+    let diag = item.diagnosis || "Tidak diketahui";
+
+    if(!finalData[desa].diagnosis[diag]){
+        finalData[desa].diagnosis[diag] = 0;
+    }
+
+    finalData[desa].diagnosis[diag]++;
+
+    // tahun terbaru
+    let tahun = parseInt(item.tanggal_kunjungan.substring(0,4));
+
+    if(tahun > finalData[desa].tahunTerakhir){
+        finalData[desa].tahunTerakhir = tahun;
     }
 });
 
-var map = L.map('mapDiare').setView([-8.1,113.5], 12);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-.addTo(map);
-
-fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
-.then(res => res.json())
-.then(data => {
-
-    var geo = L.geoJSON(data, {
-
-        style: function(feature){
-
-            var nama = fixNama(feature.properties.NAMOBJ);
-
-            if(aliasDesa[nama]){
-                nama = aliasDesa[nama];
-            }
-
-            var item = dataFinal[nama];
-
-            var warna = "#cccccc";
-
-            if(item){
-                if(item.kategori == "tinggi") warna = "#dc3545";
-                else if(item.kategori == "sedang") warna = "#ffc107";
-                else if(item.kategori == "rendah") warna = "#28a745";
-            }
-
-            return {
-                color: "#00CED1",
-                weight: 2,
-                fillColor: warna,
-                fillOpacity: 0.7
-            };
-        },
-
-        onEachFeature: function(feature, layer){
-
-            var namaAsli = feature.properties.NAMOBJ || "Desa";
-            var namaFix  = fixNama(namaAsli);
-
-            if(aliasDesa[namaFix]){
-                namaFix = aliasDesa[namaFix];
-            }
-
-            var item = dataFinal[namaFix];
-
-            var isi = "<b>Desa: " + namaAsli + "</b>";
-
-            if(item){
-                isi += "<br>Total Kasus: " + item.total;
-                isi += "<br>Kategori: " + item.kategori;
-            } else {
-                isi += "<br><span style='color:red'>Data tidak ditemukan</span>";
-            }
-
-            layer.bindPopup(isi);
-
-            layer.bindTooltip(namaAsli, {
-                permanent: true,
-                direction: "center",
-                className: "label-desa"
-            });
-
+        if(geoLayer){
+            map.removeLayer(geoLayer);
         }
 
-    }).addTo(map);
+        fetch("<?= base_url('assets/peta/panti_6_desa.geojson') ?>")
+        .then(res => res.json())
+        .then(data => {
+let totals = Object.values(finalData)
+    .map(d => d.total)
+    .sort((a,b) => a - b);
 
-    map.fitBounds(geo.getBounds());
+let batasSedang = 0;
+let batasTinggi = 0;
 
-});
+if(totals.length > 0){
+    batasSedang = totals[Math.floor(totals.length / 3)];
+    batasTinggi = totals[Math.floor((totals.length * 2) / 3)];
+}
+            geoLayer = L.geoJSON(data, {
 
+                style: function(feature){
+
+                    let nama = fixNama(feature.properties.NAMOBJ);
+
+                    if(aliasDesa[nama]){
+                        nama = aliasDesa[nama];
+                    }
+
+                    let total = finalData[nama]?.total || 0;
+
+let warna = "#28a745"; // hijau
+
+if(total > batasTinggi){
+    warna = "#dc3545"; // merah
+}
+else if(total >= batasSedang){
+    warna = "#ffc107"; // kuning
+}
+
+                    return {
+                        color:"#00CED1",
+                        weight:2,
+                        fillColor:warna,
+                        fillOpacity:0.7
+                    };
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    let nama = fixNama(feature.properties.NAMOBJ);
+
+                    if(aliasDesa[nama]){
+                        nama = aliasDesa[nama];
+                    }
+
+                    let info = finalData[nama] || {
+    total: 0,
+    diagnosis: {},
+    tahunTerakhir: '-'
+};
+
+let total = info.total;
+
+                    let kategori = "Rendah";
+
+if(total > batasTinggi){
+    kategori = "Tinggi";
+}
+else if(total >= batasSedang){
+    kategori = "Sedang";
+}
+
+
+
+let diagnosisDominan = "-";
+
+if(info){
+    let max = 0;
+
+    for(let d in info.diagnosis){
+        if(info.diagnosis[d] > max){
+            max = info.diagnosis[d];
+            diagnosisDominan = d;
+        }
+    }
+}
+
+layer.bindPopup(`
+    <div style="min-width:220px;">
+        <h6 style="margin-bottom:10px; color:#00BBC2;">
+            📍 ${feature.properties.NAMOBJ}
+        </h6>
+
+        <p style="margin:4px 0;">
+            👥 <b>Total Kasus:</b> ${total}
+        </p>
+
+        <p style="margin:4px 0;">
+            🚨 <b>Status:</b> ${kategori}
+        </p>
+
+        <p style="margin:4px 0;">
+            🏥 <b>Diagnosis Dominan:</b> ${diagnosisDominan}
+        </p>
+
+        <p style="margin:4px 0;">
+            📅 <b>Update Terakhir:</b> ${info?.tahunTerakhir || '-'}
+        </p>
+
+        <hr>
+
+        <small style="color:#666;">
+            Desa ini memiliki pemantauan kasus diare aktif pada sistem SIGAP.
+        </small>
+    </div>
+`);
+                }
+
+            }).addTo(map);
+
+            map.fitBounds(geoLayer.getBounds());
+        });
+    }
+
+    function applyFilters(){
+
+        let desa = filterDesa.value;
+        let diagnosis = filterDiagnosis.value;
+        let tahun = filterTahun.value;
+
+        let filtered = dataDiare.filter(item => {
+
+            let cocokDesa =
+                !desa || item.desa === desa;
+
+            let cocokDiagnosis =
+                !diagnosis || item.diagnosis === diagnosis;
+
+            let cocokTahun =
+                !tahun || item.tanggal_kunjungan.startsWith(tahun);
+
+            return cocokDesa && cocokDiagnosis && cocokTahun;
+        });
+
+        renderChart(filtered);
+        buildMap(filtered);
+    }
+
+    filterDesa.addEventListener('change', applyFilters);
+    filterDiagnosis.addEventListener('change', applyFilters);
+    filterTahun.addEventListener('change', applyFilters);
+
+    populateFilters();
+    renderChart(dataDiare);
+    buildMap(dataDiare);
 });
 </script>
 
@@ -1305,27 +1574,24 @@ slider.addEventListener("touchend", e=>{
 
     <h4 class="fw-bold mb-3">Ringkasan Data</h4>
 
-    <p>
-        Kasus diare tertinggi terjadi di Desa 
-        <span class="highlight-red">Panti</span> 
-        yang masuk kategori sangat tinggi dibanding wilayah lain
+    <p id="ringkasan1">
+        Memuat data...
     </p>
 
-    <p>
-        Terdapat <b>2 desa</b> dengan kasus di atas rata-rata
+    <p id="ringkasan2">
+        Memuat data...
     </p>
 
-    <p>
-        Rata-rata kasus diare di tiap desa adalah 
-        <span class="highlight-red">60 kasus</span>
+    <p id="ringkasan3">
+        Memuat data...
     </p>
 
-    <p>
-        Rata-rata kasus diare di kecamatan Panti adalah 
-        <span class="highlight-red">120 kasus</span>
+    <p id="ringkasan4">
+        Memuat data...
     </p>
 
 </div>
+
 </section>
 <!-- TOMBOL AI -->
 <!-- TOMBOL AI -->
@@ -1571,4 +1837,35 @@ async function sendMessage(){
     </div>
 
 </section>
+<script>
+setInterval(function() {
+    fetch("<?= base_url('ping') ?>")
+        .then(res => res.json())
+        .then(data => console.log('DOXY keep alive:', data.status))
+        .catch(err => console.log('Ping error:', err));
+}, 300000);
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    document.getElementById('ringkasan1').innerHTML =
+        `Kasus diare tertinggi terjadi di Desa 
+        <span class="highlight-red">${desaTertinggi}</span> 
+        dengan total <b>${kasusTertinggi}</b> kasus`;
+
+    document.getElementById('ringkasan2').innerHTML =
+        `Terdapat <b>${desaDiAtasRata}</b> desa dengan kasus di atas rata-rata`;
+
+    document.getElementById('ringkasan3').innerHTML =
+        `Rata-rata kasus diare tiap desa adalah 
+        <span class="highlight-red">${rataKasus} kasus</span>`;
+
+    document.getElementById('ringkasan4').innerHTML =
+        `Total seluruh kasus diare tercatat sebanyak 
+        <span class="highlight-red">${totalSemuaKasus} kasus</span>`;
+});
+</script>
+
 <?= $this->include('layout/footer') ?>

@@ -1,4 +1,7 @@
-<?= $this->extend('layout/dashboard_layout_kepala'); ?>
+<?php
+$layout = $layout ?? 'layout/dashboard_layout_admin';
+?>
+<?= $this->extend($layout) ?>
 
 <?= $this->section('style'); ?>
 <style>
@@ -33,8 +36,18 @@
 
     /* Statistik Box Putih */
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .stat-card { background: #fff; border-radius: 10px; padding: 25px; text-align: center; }
-    .stat-card-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 15px; }
+    .stat-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 25px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .stat-card-title { font-size: 13px; font-weight: 700; color: #333; margin: 0; }
     .stat-card-value { font-size: 40px; font-weight: 800; color: #111; line-height: 1; }
 
     /* ABJ Box Putih */
@@ -71,6 +84,33 @@
         
         <?php 
             /** @var array $laporan */
+            
+            // =========================================================================
+            // MAPPING MANUAL SESUAI DENGAN REKAP KADER
+            // =========================================================================
+            $id_kelurahan = $laporan['id_kelurahan'] ?? '-';
+            $nama_kelurahan = $id_kelurahan;
+
+            // Logika persis seperti di rekap_kader.php
+            if ($id_kelurahan == 1) {
+                $nama_kelurahan = 'Sumbersari';
+            } elseif ($id_kelurahan == 2) {
+                $nama_kelurahan = 'Wirolegi';
+            } elseif ($id_kelurahan == 3) {
+                $nama_kelurahan = 'Antirogo';
+            } elseif ($id_kelurahan == 4) {
+                $nama_kelurahan = 'Tegalgede';
+            } elseif ($id_kelurahan == 5) {
+                $nama_kelurahan = 'Karangrejo';
+            } else {
+                $nama_kelurahan = $laporan['kelurahan'] ?? $id_kelurahan;
+            }
+
+            // Mapping nama puskesmas
+            $id_puskesmas = $laporan['id_puskesmas'] ?? '-';
+            $nama_puskesmas = ($id_puskesmas == 1) ? 'Sumbersari' : $id_puskesmas;
+            // =========================================================================
+
             // LOGIKA KETERLAMBATAN
             $mingguNama = $laporan['minggu'] ?? '';
             $bulanNama  = $laporan['bulan'] ?? '';
@@ -96,7 +136,15 @@
             }
 
             $tgl_upload_date = date('Y-m-d', strtotime($createdAt));
-            $tgl_upload_indo = date('d F Y', strtotime($createdAt));
+
+            // Format bulan Indonesia
+            $tsUpload = strtotime($createdAt);
+            $bulanIndo = [
+                'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April',
+                'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus',
+                'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+            ];
+            $tgl_upload_indo = date('d', $tsUpload) . ' ' . ($bulanIndo[date('F', $tsUpload)] ?? date('F', $tsUpload)) . ' ' . date('Y', $tsUpload);
             
             $statusText = '';
             $statusClass = '';
@@ -140,8 +188,8 @@
                 <div class="info-item">
                     <div class="info-label">Wilayah Kerja</div>
                     <div class="info-value">
-                        Puskesmas: <?= $laporan['id_puskesmas'] == 1 ? 'Sumbersari' : ($laporan['id_puskesmas'] ?? '-') ?> <br>
-                        Kelurahan: <?= $laporan['id_kelurahan'] == 3 ? 'Sumbersari' : ($laporan['id_kelurahan'] ?? '-') ?> <br>
+                        Puskesmas: <?= $nama_puskesmas ?> <br>
+                        Kelurahan: <?= $nama_kelurahan ?> <br>
                         Pos Posyandu : Catleya <?= $laporan['id_posyandu'] ?? '-' ?>
                     </div>
                 </div>
@@ -199,15 +247,30 @@
             <div class="grey-box-title">Galeri Pemeriksaan Jentik</div>
             <div class="gallery-grid">
                 <?php 
-                // PERBAIKAN: Menggunakan json_decode dan folder uploads/pelaporan persis seperti kode Kader
-                $fotos = json_decode($laporan['foto'], true);
-                if (!empty($fotos) && is_array($fotos)): 
+                $fotosRaw = $laporan['foto'] ?? '';
+                $fotos = json_decode((string) $fotosRaw, true);
+
+                if (empty($fotos) || !is_array($fotos)) {
+                    $fotos = [];
+                    if (!empty($fotosRaw) && $fotosRaw !== 'null') {
+                        $fotos = [(string) $fotosRaw];
+                    }
+                }
+
+                if (!empty($fotos) && is_array($fotos)):
                     foreach($fotos as $f):
+                        $f = trim((string) $f);
+                        if ($f === '') continue;
+
+                        $isPath = (strpos($f, 'uploads/') !== false) || (strpos($f, 'uploads\\') !== false);
+                        $src = $isPath
+                            ? base_url(str_replace('\\', '/', $f))
+                            : base_url('uploads/pelaporan/' . $f);
                 ?>
-                        <img src="<?= base_url('uploads/pelaporan/' . $f) ?>" class="gallery-img" alt="Foto Jentik">
-                <?php 
+                        <img src="<?= $src ?>" class="gallery-img" alt="Foto Jentik">
+                <?php
                     endforeach;
-                else: 
+                else:
                 ?>
                     <div class="w-100 text-center py-4" style="color: #999;">
                         <p style="font-style: italic;">Tidak ada foto yang diunggah.</p>

@@ -48,7 +48,8 @@ class BeritaPneumonia extends Controller
         $status  = $this->request->getGet('status') ?? '';
         $keyword = $this->request->getGet('keyword') ?? '';
 
-        $builder = $model;
+        $builder = $model
+            ->where('id_penyakit', 3);
 
         if ($status == 'publish') {
             $builder = $builder->where('status_berita', 'publish');
@@ -70,8 +71,15 @@ class BeritaPneumonia extends Controller
             ->orderBy('tanggal_berita', 'DESC')
             ->findAll();
 
-        $publish = $model->where('status_berita', 'publish')->countAllResults();
-        $draft   = $model->where('status_berita', 'draft')->countAllResults();
+        $publish = $model
+        ->where('id_penyakit', 3)
+        ->where('status_berita', 'publish')
+        ->countAllResults();
+
+        $draft = $model
+            ->where('id_penyakit', 3)
+            ->where('status_berita', 'draft')
+            ->countAllResults();
 
         $data = [
             'menu'            => 'berita',
@@ -95,7 +103,9 @@ class BeritaPneumonia extends Controller
 {
     $model = new BeritaPneumoniaModel();
 
-    $data['beritapneumonia'] = $model->find($id);
+    $data['beritapneumonia'] = $model
+        ->where('id_penyakit', 3)
+        ->find($id);
 
     if (!$data['beritapneumonia']) {
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -111,7 +121,9 @@ class BeritaPneumonia extends Controller
 {
     $model = new BeritaPneumoniaModel();
 
-    $data['beritapneumonia'] = $model->find($id);
+    $data['beritapneumonia'] = $model
+        ->where('id_penyakit', 3)
+        ->find($id);
 
     return view('gol_c/berita/view_user', $data);
 }
@@ -156,6 +168,25 @@ class BeritaPneumonia extends Controller
         if (!$judul) {
             $judul = $this->request->getPost('judul_berita1');
         }
+        $url = $this->request->getPost('url_berita');
+
+        $gambarURL = null;
+
+        if (!empty($url)) {
+
+            $html = @file_get_contents($url);
+
+            if ($html !== false) {
+
+                preg_match('/<meta property="og:image" content="(.*?)"/', $html, $gambar);
+
+                if (!empty($gambar[1])) {
+
+                    $gambarURL = $gambar[1];
+
+                }
+            }
+        }
 
         // DATA
         $data = [
@@ -166,7 +197,7 @@ class BeritaPneumonia extends Controller
             'isi_berita'       => $this->request->getPost('isi_berita'),
             'deskripsi_berita' => $this->request->getPost('deskripsi_berita'),
             'url_berita'       => $this->request->getPost('url_berita'),
-            'gambar_berita'    => $namaFile,
+            'gambar_berita'    => $gambarURL ?? $namaFile,
             'tanggal_berita'   => $this->request->getPost('tanggal_berita'),
             'penulis'   => $this->request->getPost('penulis'),
             'status_berita'    => $this->request->getPost('status_berita') ?? 'draft'
@@ -199,7 +230,9 @@ class BeritaPneumonia extends Controller
 {
     $model = new BeritaPneumoniaModel();
 
-    $data['beritapneumonia'] = $model->find($id);
+    $data['beritapneumonia'] = $model
+        ->where('id_penyakit', 3)
+        ->find($id);
 
     if (!$data['beritapneumonia']) {
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
@@ -215,7 +248,9 @@ class BeritaPneumonia extends Controller
     {
         $model = new BeritaPneumoniaModel();
 
-        $dataLama = $model->find($id);
+        $dataLama = $model
+            ->where('id_penyakit', 3)
+            ->find($id);
 
         if (!$dataLama) {
 
@@ -299,7 +334,9 @@ class BeritaPneumonia extends Controller
     {
         $model = new BeritaPneumoniaModel();
 
-        $data = $model->find($id);
+        $data = $model
+            ->where('id_penyakit', 3)
+            ->find($id);
 
         if (!$data) {
 
@@ -333,6 +370,7 @@ class BeritaPneumonia extends Controller
         $model = new BeritaPneumoniaModel();
 
         $data['berita'] = $model
+            ->where('id_penyakit', 3)
             ->where('status_berita', 'publish')
             ->orderBy('tanggal_berita', 'DESC')
             ->findAll();

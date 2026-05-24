@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use App\Models\BeritaModelDD;
 use App\Models\FunfactModelD;
+use App\Models\DataDiareModel;
 class AdminD extends BaseController
 {
     
@@ -351,5 +352,33 @@ public function draftFunfact($id)
 
     return redirect()->to('/admind/funfact?status=draft');
 }
+public function dashboardd()
+{
+    $beritaModel = new \App\Models\BeritaModelDD();
+    $diareModel = new \App\Models\DataDiareModel();
 
+    $dataDiare = $diareModel->findAll();
+
+    $hariIni = date('Y-m-d');
+
+    $kasusBaru = count(array_filter($dataDiare, function($d) use ($hariIni){
+        if(empty($d['tanggal_kunjungan'])) return false;
+
+        return date('Y-m-d', strtotime($d['tanggal_kunjungan'])) === $hariIni;
+    }));
+
+    $data = [
+        'judul' => 'Dashboard',
+        'menu' => 'dashboard',
+        'diare' => $dataDiare,
+        'kasusBaru' => $kasusBaru,
+        'berita' => $beritaModel
+            ->where('id_penyakit', 4)
+            ->where('status_berita', 'publish')
+            ->orderBy('id_berita', 'DESC')
+            ->findAll()
+    ];
+
+    return view('gol_d/dashboard_diare', $data);
+}
 }

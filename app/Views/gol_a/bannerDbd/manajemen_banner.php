@@ -259,10 +259,6 @@ Swal.fire({
 
 <div class="main">
 
-    <div class="page-title">
-        Manajemen Banner
-    </div>
-
     <div class="banner-wrapper">
 
         <!-- SEARCH -->

@@ -1612,6 +1612,10 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
     display: none !important;
 }
 
+ .leaflet-control-attribution {
+    display: none !important;
+}
+
 .modal-tbc{
     z-index:999999 !important;
 }

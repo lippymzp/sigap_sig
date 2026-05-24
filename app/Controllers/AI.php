@@ -4,134 +4,76 @@ namespace App\Controllers;
 
 class AI extends BaseController
 {
-
     public function chat()
     {
+        $message = trim($this->request->getPost('message'));
 
-        $message = $this->request->getPost('message');
+        if (!$message) {
+            return $this->response->setJSON([
+                'answer' => 'Pesan kosong.'
+            ]);
+        }
 
-        /*
-        =====================================
-        API KEY OPENROUTER
-        =====================================
-        */
+        // API KEY GROQ
+        $apiKey = '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';
 
-        $apiKey = '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';
-
-        /*
-        =====================================
-        DATA
-        =====================================
-        */
-
-        $data = [
-
-            "model" => "openai/gpt-3.5-turbo",
-
+        $payload = [
+            "model" => "llama-3.1-8b-instant",
             "messages" => [
-
                 [
                     "role" => "system",
-                    "content" => "
-                    Kamu adalah SIGAP AI,
-                    asisten kesehatan tentang diare.
-
-                    Jawab:
-                    - bahasa indonesia
-                    - khusus penyakit
-                    - singkat
-                    - jelas
-                    - ramah
-                    "
+                    "content" => "Kamu adalah DOXY AI, asisten kesehatan yang HANYA menjawab tentang penyakit diare, gejala diare, penyebab, pencegahan, pengobatan dasar. Jika ditanya di luar topik, tolak dengan sopan."
                 ],
-
                 [
                     "role" => "user",
                     "content" => $message
                 ]
-
-            ]
-
+            ],
+            "temperature" => 0.7,
+            "max_tokens" => 500
         ];
-
-        /*
-        =====================================
-        CURL
-        =====================================
-        */
 
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://openrouter.ai/api/v1/chat/completions');
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($ch, CURLOPT_POST, true);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-
-            'Content-Type: application/json',
-
-            'Authorization: Bearer ' . $apiKey
-
+        curl_setopt_array($ch, [
+            CURLOPT_URL => 'https://api.groq.com/openai/v1/chat/completions',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: Bearer ' . $apiKey,
+                'Content-Type: application/json'
+            ]
         ]);
 
         $result = curl_exec($ch);
 
-        /*
-        =====================================
-        ERROR CURL
-        =====================================
-        */
-
-        if(curl_errno($ch)){
-
+        if (curl_errno($ch)) {
             return $this->response->setJSON([
-                'answer' => curl_error($ch)
+                'answer' => 'CURL ERROR: ' . curl_error($ch)
             ]);
-
         }
 
         curl_close($ch);
 
-        /*
-        =====================================
-        JSON
-        =====================================
-        */
-
         $response = json_decode($result, true);
 
-        /*
-        =====================================
-        AMBIL JAWABAN
-        =====================================
-        */
-
-        if(isset($response['choices'][0]['message']['content'])){
-
-            $answer = $response['choices'][0]['message']['content'];
-
-        }else{
-
-            $answer = '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>';
-
+        if (isset($response['choices'][0]['message']['content'])) {
+            return $this->response->setJSON([
+                'answer' => nl2br($response['choices'][0]['message']['content'])
+            ]);
         }
 
-        /*
-        =====================================
-        RETURN
-        =====================================
-        */
-
         return $this->response->setJSON([
-
-            'answer' => nl2br($answer)
-
+            'answer' => '<pre>' . json_encode($response, JSON_PRETTY_PRINT) . '</pre>'
         ]);
-
+    }
+       public function ping()
+    {
+        return $this->response->setJSON([
+            'status' => 'alive'
+        ]);
     }
 
 }

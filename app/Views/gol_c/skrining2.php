@@ -20,6 +20,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 120px;
 }
 .step {
     display: inline-flex;
@@ -184,7 +185,7 @@ body {
     <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background:#00BBC2;"></div>
 </div>
 
-<form method="post" action="/skriningpneumonia/skriningpneumonia3">
+<form method="post" action="<?= base_url('pneumonia/skrining/step3') ?>">
 
 <!-- DATA HIDDEN -->
 <input type="hidden" name="nik" value="<?= $nik ?? '' ?>">
