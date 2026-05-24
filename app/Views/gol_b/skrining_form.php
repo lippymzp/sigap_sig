@@ -1,8 +1,18 @@
+<?php helper(['url', 'text']); ?>
+
 <?php $this->setVar('penyakit', 'tbc'); ?>
+<?php
+$this->setVar('custom_logo', 'respiora.png');
+$this->setVar('show_footer_maskot', true);
+$this->setVar('footer_maskot', 'logo_tbc.png');
+?>
 <?= $this->include('layout/header') ?>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <title>Skrining</title>
 
 <style>
@@ -21,6 +31,10 @@
     --text-light: #6B8A8A;
 }
 
+ .tbc-logo {
+        width: 300px;
+        height: auto;
+    }
 /* GLOBAL */
 body{
     margin:0;
@@ -449,6 +463,44 @@ function jawab(nilai){
 
 tampilPertanyaan();
 
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const footerDesc = document.querySelector(".footer-desc");
+
+        if (footerDesc) {
+
+            footerDesc.insertAdjacentHTML("afterend", `
+        
+            <div class="cynex-info mt-4">
+
+                <h3 style="
+                    color:#fff;
+                    font-weight:700;
+                    font-size:2rem;
+                    margin-bottom:12px;
+                    line-height:1;
+                ">
+                    RESPIORA
+                </h3>
+
+                <p style="
+                    color:#E8FFFF;
+                    font-size:1.1rem;
+                    line-height:1.8;
+                    margin-bottom:0;
+                ">
+                    Regional Early Detection Screening Platform Intelligent Observation Response Awareness
+                </p>
+
+            </div>
+
+        `);
+
+        }
+
+    });
 </script>
 
 </body>

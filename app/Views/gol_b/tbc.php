@@ -1,5 +1,7 @@
 
 <?php helper('text'); ?>
+<?php helper(['url', 'text']); ?>
+
 <?php $this->setVar('penyakit', 'tbc'); ?>
 <?php
 $this->setVar('custom_logo', 'respiora.png');
@@ -15,6 +17,19 @@ $this->setVar('footer_maskot', 'logo_tbc.png');
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
+
+    html {
+    scroll-behavior: smooth;
+}
+
+#artikel,
+#skrining-tbc,
+#grafik-tbc,
+#peta-tbc {
+    scroll-margin-top: 110px;
+}
+
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -22,7 +37,6 @@ body {
     background: #fff;
     color: #1f3a3a;
 }
-
 
     :root {
         --primary: #40EDD0;
@@ -687,6 +701,40 @@ body {
     object-fit: cover;
 }
 
+.banner-dots {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    z-index: 15;
+}
+
+.banner-dot {
+    width: 11px;
+    height: 11px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16);
+    transition: all 0.3s ease;
+}
+
+.banner-dot.active {
+    width: 32px;
+    background: #ebebeb;
+}
+
+.banner-dot:hover {
+    background: #d3d2d2;
+    transform: scale(1.08);
+}
+
 .platform-section {
     text-align: center;
     padding: 55px 10% 70px;
@@ -934,6 +982,36 @@ body {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+}
+
+.insight-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    margin-top: 22px;
+}
+
+.insight-dot {
+    width: 9px;
+    height: 9px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(0, 91, 97, 0.22);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.28s ease;
+}
+
+.insight-dot.active {
+    width: 28px;
+    background: #005b61;
+    box-shadow: 0 8px 18px rgba(0, 91, 97, 0.25);
+}
+
+.insight-dot:hover {
+    background: #00bfae;
+    transform: scale(1.12);
 }
 
 @media (max-width: 992px) {
@@ -2069,6 +2147,7 @@ body {
     position: relative;
     padding: 85px 0 100px;
     background:
+    url('<?= base_url("img/pattern.png") ?>') repeat,
         radial-gradient(circle at 14% 18%, rgba(0, 191, 174, 0.11), transparent 30%),
         radial-gradient(circle at 86% 70%, rgba(0, 174, 191, 0.13), transparent 32%),
         linear-gradient(180deg, #ffffff 0%, #f0fbfc 50%, #ffffff 100%);
@@ -3047,6 +3126,7 @@ body {
     80% { transform: rotate(2deg) translateX(0); }
     90% { transform: rotate(1deg) translateX(0); }
     100% { transform: rotate(0deg) translateX(0); }
+    }
 }
 
 @media (max-width: 576px) {
@@ -3077,6 +3157,7 @@ body {
     position: relative;
     padding: 90px 0 105px;
     background:
+        url('<?= base_url("img/pattern.png") ?>') repeat,
         radial-gradient(circle at 12% 20%, rgba(0, 191, 174, 0.08), transparent 30%),
         radial-gradient(circle at 88% 70%, rgba(0, 174, 191, 0.10), transparent 32%),
         linear-gradient(180deg, #ffffff 0%, #f7ffff 100%);
@@ -3136,6 +3217,165 @@ body {
     align-items: end;
 }
 
+/* FIX BERITA SLIDER RESPONSIVE */
+.tbc-news-right {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.tbc-news-viewport {
+    width: 100%;
+    overflow: hidden;
+    padding: 8px 2px 18px;
+}
+
+.tbc-news-track {
+    display: flex;
+    gap: 34px;
+    transition: transform 0.65s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+
+}
+
+.tbc-news-card {
+    flex: 0 0 calc((100% - 68px) / 3);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card-text {
+    height: 112px;
+    min-height: 112px;
+    margin-bottom: 16px;
+}
+
+.news-card-text h3 {
+    min-height: 72px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-card-text span {
+    margin-top: 4px;
+}
+
+.news-image-wrap {
+    height: 142px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 992px) {
+    .tbc-news-container {
+        grid-template-columns: 1fr;
+        gap: 38px;
+    }
+
+    .tbc-news-left p {
+        max-width: 600px;
+    }
+
+    .tbc-news-card {
+        flex: 0 0 calc((100% - 34px) / 2);
+    }
+}
+
+@media (max-width: 768px) {
+    .tbc-news-card {
+        flex: 0 0 100%;
+    }
+
+    .news-card-text {
+        height: auto;
+        min-height: 96px;
+    }
+
+    .news-image-wrap {
+        height: 210px;
+    }
+
+    .tbc-news-left h2 {
+        font-size: 28px;
+    }
+}
+.tbc-news-viewport {
+    width: 100%;
+    overflow: hidden;
+    padding: 8px 2px 18px;
+}
+
+.tbc-news-track {
+    display: flex;
+    gap: 34px;
+    transition: transform 0.65s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+}
+
+.tbc-news-card {
+    position: relative;
+    flex: 0 0 calc((100% - 68px) / 3);
+}
+
+.tbc-news-nav {
+    position: absolute;
+    top: 63%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #00aeb8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 14px 32px rgba(0, 82, 91, 0.16);
+    transition: 0.28s ease;
+}
+
+.tbc-news-nav:hover {
+    background: #00bfae;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.08);
+}
+
+.newsPrevBtn {
+    left: -22px;
+}
+
+.newsNextBtn {
+    right: -22px;
+}
+
+.tbc-news-nav.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.tbc-news-viewport {
+    width: 100%;
+    overflow: hidden;
+    padding: 8px 2px 18px;
+}
+
+.tbc-news-track {
+    display: flex;
+    gap: 34px;
+    transition: transform 0.65s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+}
+
+.tbc-news-card {
+    position: relative;
+    flex: 0 0 calc((100% - 68px) / 3);
+}
+
 .tbc-news-card {
     position: relative;
 }
@@ -3169,6 +3409,8 @@ body {
     box-shadow: 0 20px 42px rgba(0, 82, 91, 0.12);
     text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .news-image-wrap img {
@@ -3219,6 +3461,8 @@ body {
 .tbc-news-card:hover .news-image-wrap {
     transform: translateY(-8px);
     box-shadow: 0 30px 56px rgba(0, 82, 91, 0.18);
+    box-shadow: 0 12px 26px rgba(0, 82, 91, 0.06) !important;
+    filter: brightness(1.03);
 }
 
 .tbc-news-card:hover .news-image-wrap img {
@@ -3358,6 +3602,23 @@ body {
         height: auto;
     }
 
+}
+
+
+
+    .news-image-wrap {
+        height: 210px;
+    }
+
+    .tbc-news-left h2 {
+        font-size: 28px;
+    }
+
+    .tbc-logo {
+        width: 250px;
+        height: auto;
+    }
+    
     @keyframes shake {
     0% { transform: rotate(0deg) translateX(0); }
     10% { transform: rotate(-15deg) translateX(-2px); }
@@ -3371,6 +3632,7 @@ body {
     90% { transform: rotate(1deg) translateX(0); }
     100% { transform: rotate(0deg) translateX(0); }
 }
+
 .chatbot-animate {
     animation: shake 1.5s infinite;
     transform-origin: center bottom;
@@ -3394,11 +3656,49 @@ body {
 <section class="landing-banner">
     <div class="banner-slider" id="bannerSlider">
         <?php foreach ($slider_images as $index => $img): ?>
+
+.chatbot-animate {
+    animation: shake 4s infinite;
+    transform-origin: center bottom;
+}
+
+
+@media (max-width: 992px) {
+    .tbc-news-card {
+        flex: 0 0 calc((100% - 34px) / 2);
+    }
+}
+
+@media (max-width: 768px) {
+    .tbc-news-card {
+        flex: 0 0 100%;
+    } 
+}
+
+</style>
+
+<?php $slider_images = [
+    base_url('img/banner1.png'),
+    base_url('img/banner2.png'),
+    base_url('img/banner3.png'),
+]; ?>
+
+<section class="landing-banner">
+    <div class="banner-slider" id="bannerSlider">
+        <?php foreach ($slider_images as $img): ?>
+
             <div class="banner-slide">
                 <img src="<?= esc($img) ?>" alt="Banner">
             </div>
         <?php endforeach; ?>
     </div>
+
+    <div class="banner-dots" id="bannerDots">
+        <?php foreach ($slider_images as $index => $img): ?>
+            <button type="button" class="banner-dot <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>"></button>
+        <?php endforeach; ?>
+    </div>
+
 </section>
 
 <section class="platform-section">
@@ -3425,6 +3725,27 @@ body {
             <span>Skrining TB</span>
         </a>
     </div>
+
+    <a href="#peta-tbc" class="platform-btn">
+        <i class="fa fa-map"></i>
+        <span>Peta Sebaran</span>
+    </a>
+
+    <a href="#grafik-tbc" class="platform-btn">
+        <i class="fa fa-chart-line"></i>
+        <span>Grafik Kasus</span>
+    </a>
+
+    <a href="#artikel" class="platform-btn">
+        <i class="fa fa-book"></i>
+        <span>Artikel Kesehatan</span>
+    </a>
+
+    <a href="#skrining-tbc" class="platform-btn">
+        <i class="fa fa-file-alt"></i>
+        <span>Skrining TB</span>
+    </a>
+</div>
 </section>
 
 <!-- =========================================
@@ -3470,6 +3791,7 @@ $getImageUrl = static function ($gambar) {
         <div class="insight-slider-wrapper">
 
             <!-- BUTTON LEFT -->
+
             <button type="button" class="insight-nav prevBtn" id="funfactPrev" aria-label="Sebelumnya">
                 <i class="fas fa-arrow-left"></i>
             </button>
@@ -3541,6 +3863,7 @@ $getImageUrl = static function ($gambar) {
 </section>
                     <?php if (!empty($funfact)): ?>
                         <?php foreach ($funfact as $item): ?>
+
                             <?php
                                 $judul = $cleanText($item['judul_funfact'] ?? 'Informasi TBC');
                                 $deskripsi = $cleanText($item['deskripsi_funfact'] ?? $item['isi_funfact'] ?? '');
@@ -3566,6 +3889,22 @@ $getImageUrl = static function ($gambar) {
                                             Selengkapnya
                                             <i class="fas fa-arrow-right"></i>
                                         </a>
+
+                                        <?php
+$linkArtikel = trim($item['url'] ?? '');
+
+if ($linkArtikel === '') {
+    $linkArtikel = '#';
+} elseif (!filter_var($linkArtikel, FILTER_VALIDATE_URL)) {
+    $linkArtikel = base_url($linkArtikel);
+}
+?>
+
+<a href="<?= esc($linkArtikel) ?>" class="btn-insight" target="_blank" rel="noopener">
+    Selengkapnya
+    <i class="fas fa-arrow-right"></i>
+</a>
+
                                     </div>
                                 </div>
                             </article>
@@ -3582,6 +3921,7 @@ $getImageUrl = static function ($gambar) {
                 </div>
             </div>
 
+<div class="insight-dots" id="insightDots"></div>
             <button type="button" class="insight-nav nextBtn" id="funfactNext" aria-label="Selanjutnya">
                 <i class="fas fa-arrow-right"></i>
             </button>
@@ -3594,7 +3934,11 @@ $getImageUrl = static function ($gambar) {
 <!-- =========================================
     SKRINING TBC SECTION
 ========================================= -->
+
 <section class="tb-screening-section">
+
+<section class="tb-screening-section" id="skrining-tbc">
+
     <div class="tb-screening-container">
 
         <div class="tb-screening-card">
@@ -4018,6 +4362,9 @@ $getBeritaLink = static function ($berita) {
         </div>
 
         <div class="tbc-news-right">
+
+    <div class="tbc-news-viewport">
+        <div class="tbc-news-track" id="newsSlider">
             <?php if (!empty($beritaTbc)): ?>
                 <?php foreach ($beritaTbc as $berita): ?>
                     <?php
@@ -4056,7 +4403,13 @@ $getBeritaLink = static function ($berita) {
                     <p>Data berita akan tampil setelah ditambahkan pada tabel berita.</p>
                 </div>
             <?php endif; ?>
+
         </div>
+
+        </div>
+    </div>
+</div>
+
 
     </div>
 </section>
@@ -5218,4 +5571,802 @@ sendMessage("Maaf, Rora tidak bisa mendeteksi suara. Coba ulangi ya!");    } fin
 
     });
 </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const newsSlider = document.getElementById('newsSlider');
+
+    if (!newsSlider) return;
+
+    let currentPage = 0;
+    let autoplay = null;
+
+    function cardsPerView() {
+        if (window.innerWidth <= 768) return 1;
+        if (window.innerWidth <= 992) return 2;
+        return 3;
+    }
+
+    function getCards() {
+        return Array.from(newsSlider.querySelectorAll('.tbc-news-card'));
+    }
+
+    function totalPages() {
+        return Math.ceil(getCards().length / cardsPerView());
+    }
+
+    function showNewsPage(page) {
+        const cards = getCards();
+        const totalCards = cards.length;
+        const perView = cardsPerView();
+        const pages = totalPages();
+
+        if (!totalCards || pages <= 1) {
+            newsSlider.style.transform = 'translateX(0)';
+            return;
+        }
+
+        if (page >= pages) {
+            currentPage = 0;
+        } else if (page < 0) {
+            currentPage = pages - 1;
+        } else {
+            currentPage = page;
+        }
+
+        let startIndex = currentPage * perView;
+
+        const maxStartIndex = Math.max(0, totalCards - perView);
+        startIndex = Math.min(startIndex, maxStartIndex);
+
+        const cardWidth = cards[0].getBoundingClientRect().width;
+        const gap = parseFloat(getComputedStyle(newsSlider).gap) || 0;
+        const moveX = startIndex * (cardWidth + gap);
+
+        newsSlider.style.transform = `translateX(-${moveX}px)`;
+    }
+
+    function nextNewsPage() {
+        showNewsPage(currentPage + 1);
+    }
+
+    function startAutoplay() {
+        stopAutoplay();
+
+        if (totalPages() > 1) {
+            autoplay = setInterval(nextNewsPage, 4500);
+        }
+    }
+
+    function stopAutoplay() {
+        if (autoplay) {
+            clearInterval(autoplay);
+            autoplay = null;
+        }
+    }
+
+    newsSlider.addEventListener('mouseenter', stopAutoplay);
+    newsSlider.addEventListener('mouseleave', startAutoplay);
+
+    window.addEventListener('resize', function () {
+        currentPage = 0;
+        showNewsPage(0);
+        startAutoplay();
+    });
+
+    showNewsPage(0);
+    startAutoplay();
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const insightSlider = document.getElementById('insightSlider');
+    const prevBtn = document.getElementById('funfactPrev');
+    const nextBtn = document.getElementById('funfactNext');
+    const dotsContainer = document.getElementById('insightDots');
+
+    if (!insightSlider || !prevBtn || !nextBtn || !dotsContainer) return;
+
+    let currentPage = 0;
+    let autoplay = null;
+
+    function cardsPerView() {
+        if (window.innerWidth <= 576) return 1;
+        if (window.innerWidth <= 992) return 2;
+        return 3;
+    }
+
+    function getCards() {
+        return Array.from(insightSlider.querySelectorAll('.insight-card'));
+    }
+
+    function totalPages() {
+        const totalCards = getCards().length;
+        return Math.ceil(totalCards / cardsPerView());
+    }
+
+    function buildDots() {
+        const pages = totalPages();
+        dotsContainer.innerHTML = '';
+
+        if (pages <= 1) {
+            dotsContainer.style.display = 'none';
+            return;
+        }
+
+        dotsContainer.style.display = 'flex';
+
+        for (let i = 0; i < pages; i++) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'insight-dot';
+            dot.dataset.page = i;
+            dot.setAttribute('aria-label', 'Slide artikel ' + (i + 1));
+
+            dot.addEventListener('click', function () {
+                showPage(i);
+                startAutoplay();
+            });
+
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    function updateDots() {
+        const dots = dotsContainer.querySelectorAll('.insight-dot');
+
+        dots.forEach(function (dot, index) {
+            dot.classList.toggle('active', index === currentPage);
+        });
+    }
+
+    function updateNav() {
+        if (totalPages() <= 1) {
+            prevBtn.classList.add('is-hidden');
+            nextBtn.classList.add('is-hidden');
+        } else {
+            prevBtn.classList.remove('is-hidden');
+            nextBtn.classList.remove('is-hidden');
+        }
+    }
+
+    function showPage(page) {
+        const cards = getCards();
+        const totalCards = cards.length;
+        const perView = cardsPerView();
+        const pages = totalPages();
+
+        if (!totalCards) return;
+
+        if (page >= pages) {
+            currentPage = 0;
+        } else if (page < 0) {
+            currentPage = pages - 1;
+        } else {
+            currentPage = page;
+        }
+
+        let startIndex = currentPage * perView;
+
+        if (currentPage === pages - 1) {
+            startIndex = Math.max(0, totalCards - perView);
+        }
+
+        const cardWidth = cards[0].getBoundingClientRect().width;
+        const gap = parseFloat(getComputedStyle(insightSlider).gap) || 0;
+        const moveX = startIndex * (cardWidth + gap);
+
+        insightSlider.style.transform = `translateX(-${moveX}px)`;
+
+        updateDots();
+        updateNav();
+    }
+
+    function nextPage() {
+        showPage(currentPage + 1);
+    }
+
+    function prevPage() {
+        showPage(currentPage - 1);
+    }
+
+    function startAutoplay() {
+        stopAutoplay();
+
+        autoplay = setInterval(function () {
+            nextPage();
+        }, 5000);
+    }
+
+    function stopAutoplay() {
+        if (autoplay) {
+            clearInterval(autoplay);
+            autoplay = null;
+        }
+    }
+
+    nextBtn.addEventListener('click', function () {
+        nextPage();
+        startAutoplay();
+    });
+
+    prevBtn.addEventListener('click', function () {
+        prevPage();
+        startAutoplay();
+    });
+
+    insightSlider.addEventListener('mouseenter', stopAutoplay);
+    insightSlider.addEventListener('mouseleave', startAutoplay);
+
+    window.addEventListener('resize', function () {
+        buildDots();
+
+        if (currentPage >= totalPages()) {
+            currentPage = 0;
+        }
+
+        showPage(currentPage);
+    });
+
+    buildDots();
+    showPage(0);
+    startAutoplay();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const bannerSlider = document.getElementById('bannerSlider');
+    const bannerSlides = document.querySelectorAll('.banner-slide');
+    const bannerDots = document.querySelectorAll('.banner-dot');
+
+    if (!bannerSlider || bannerSlides.length <= 1) return;
+
+    let bannerIndex = 0;
+    let bannerInterval = null;
+
+    function updateDots() {
+        bannerDots.forEach(function (dot, index) {
+            dot.classList.toggle('active', index === bannerIndex);
+        });
+    }
+
+    function showBanner(index) {
+        bannerIndex = index;
+
+        if (bannerIndex >= bannerSlides.length) {
+            bannerIndex = 0;
+        }
+
+        if (bannerIndex < 0) {
+            bannerIndex = bannerSlides.length - 1;
+        }
+
+        bannerSlider.style.transform = `translateX(-${bannerIndex * 100}%)`;
+        updateDots();
+    }
+
+    function startBannerAutoSlide() {
+        stopBannerAutoSlide();
+
+        bannerInterval = setInterval(function () {
+            showBanner(bannerIndex + 1);
+        }, 4000);
+    }
+
+    function stopBannerAutoSlide() {
+        if (bannerInterval) {
+            clearInterval(bannerInterval);
+            bannerInterval = null;
+        }
+    }
+
+    bannerDots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+            const index = Number(this.dataset.index);
+            showBanner(index);
+            startBannerAutoSlide();
+        });
+    });
+
+    showBanner(0);
+    startBannerAutoSlide();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tbSection = document.querySelector('.tb-screening-section');
+
+    if (!tbSection) return;
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                tbSection.classList.add('show-animate');
+                observer.unobserve(tbSection);
+            }
+        });
+    }, {
+        threshold: 0.35
+    });
+
+    observer.observe(tbSection);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const canvas = document.getElementById('tbcMonthlyChart');
+
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    const grafikTbc = <?= json_encode($grafikTbc ?? [
+        'labels' => [],
+        'kasus' => [],
+    ], JSON_NUMERIC_CHECK) ?>;
+
+    console.log(grafikTbc);
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 420);
+    gradient.addColorStop(0, '#00bfae');
+    gradient.addColorStop(0.55, '#008f99');
+    gradient.addColorStop(1, '#005b61');
+
+    new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: grafikTbc.labels,
+            datasets: [
+                {
+                    label: 'Jumlah Kasus',
+                    data: grafikTbc.kasus,
+                    backgroundColor: gradient,
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    maxBarThickness: 42,
+                    hoverBackgroundColor: '#00bfae'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1200,
+                easing: 'easeOutQuart'
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    align: 'center',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        boxWidth: 9,
+                        boxHeight: 9,
+                        color: '#334155',
+                        padding: 18,
+                        font: {
+                            family: 'Poppins',
+                            size: 13,
+                            weight: '800'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#ffffff',
+                    titleColor: '#0f172a',
+                    bodyColor: '#334155',
+                    borderColor: 'rgba(0, 91, 99, 0.16)',
+                    borderWidth: 1,
+                    padding: 13,
+                    cornerRadius: 12,
+                    displayColors: false,
+                    titleFont: {
+                        family: 'Poppins',
+                        size: 13,
+                        weight: '800'
+                    },
+                    bodyFont: {
+                        family: 'Poppins',
+                        size: 12,
+                        weight: '600'
+                    },
+                    callbacks: {
+                        title: function (items) {
+                            return 'Bulan ' + items[0].label;
+                        },
+                        label: function (context) {
+                            return context.raw + ' kasus TBC';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#475569',
+                        font: {
+                            family: 'Poppins',
+                            size: 12,
+                            weight: '700'
+                        }
+                    },
+                    border: {
+                        display: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0,
+                        color: '#475569',
+                        font: {
+                            family: 'Poppins',
+                            size: 12,
+                            weight: '600'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Jumlah Kasus',
+                        color: '#334155',
+                        font: {
+                            family: 'Poppins',
+                            size: 13,
+                            weight: '800'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(15, 23, 42, 0.08)',
+                        drawBorder: false
+                    },
+                    border: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tahunSelect = document.getElementById('tahun');
+
+    if (tahunSelect) {
+        tahunSelect.addEventListener('change', function () {
+            this.form.submit();
+        });
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mapElement = document.getElementById('mapTbc');
+
+    if (!mapElement) return;
+
+    const petaTbc = <?= json_encode($petaTbc ?? [], JSON_NUMERIC_CHECK) ?>;
+
+    const wilayahKaliwates = {
+        "2001": "Jember Kidul",
+        "2002": "Kepatihan",
+        "2003": "Sempusari",
+        "2004": "Mangli",
+        "2005": "Kebon Agung",
+        "2006": "Kaliwates",
+        "2007": "Tegal Besar"
+    };
+
+    function normalisasiNama(value) {
+        return String(value || '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, '')
+            .trim();
+    }
+
+    const kasusById = {};
+    const idByNama = {
+        'jemberkidul': '2001',
+        'kepatihan': '2002',
+        'sempusari': '2003',
+        'mangli': '2004',
+        'kebonagung': '2005',
+        'kebongagung': '2005',
+        'kaliwates': '2006',
+        'tegalbesar': '2007'
+    };
+
+    petaTbc.forEach(function (item) {
+        const id = String(item.id_wilayah);
+        const nama = item.kelurahan || wilayahKaliwates[id];
+
+        kasusById[id] = Number(item.kasus || 0);
+
+        if (nama) {
+            idByNama[normalisasiNama(nama)] = id;
+        }
+    });
+
+    const values = Object.values(kasusById).filter(function (value) {
+        return value > 0;
+    });
+
+    const minVal = values.length ? Math.min(...values) : 0;
+    const maxVal = values.length ? Math.max(...values) : 0;
+    const interval = maxVal > minVal ? (maxVal - minVal) / 3 : 1;
+
+    function getKategori(kasus) {
+        kasus = Number(kasus || 0);
+
+        if (kasus === 0) {
+            return {
+                label: 'Tidak Ada',
+                color: '#999999',
+                bg: 'rgba(153,153,153,0.12)',
+                range: '0 kasus'
+            };
+        }
+
+        if (kasus <= minVal + interval) {
+            return {
+                label: 'Rendah',
+                color: '#2a9d8f',
+                bg: 'rgba(42,157,143,0.13)',
+                range: `${Math.ceil(minVal)} - ${Math.floor(minVal + interval)} kasus`
+            };
+        }
+
+        if (kasus <= minVal + 2 * interval) {
+            return {
+                label: 'Sedang',
+                color: '#ff9800',
+                bg: 'rgba(255,152,0,0.14)',
+                range: `${Math.floor(minVal + interval) + 1} - ${Math.floor(minVal + 2 * interval)} kasus`
+            };
+        }
+
+        return {
+            label: 'Tinggi',
+            color: '#e63946',
+            bg: 'rgba(230,57,70,0.13)',
+            range: `> ${Math.floor(minVal + 2 * interval)} kasus`
+        };
+    }
+
+    function getNamaWilayah(feature) {
+        const props = feature.properties || {};
+
+        return (
+            props.kelurahan ||
+            props.KELURAHAN ||
+            props.nama ||
+            props.NAMA ||
+            props.name ||
+            props.NAMOBJ ||
+            props.DESA ||
+            props.desa ||
+            'Wilayah'
+        );
+    }
+
+    function getIdWilayah(feature) {
+        const props = feature.properties || {};
+
+        const idDariGeojson = String(
+            props.id_wilayah ||
+            props.ID_WILAYAH ||
+            props.id ||
+            props.ID ||
+            ''
+        );
+
+        if (idDariGeojson && wilayahKaliwates[idDariGeojson]) {
+            return idDariGeojson;
+        }
+
+        const namaGeojson = normalisasiNama(getNamaWilayah(feature));
+
+        return idByNama[namaGeojson] || '';
+    }
+
+    const map = L.map('mapTbc', {
+        scrollWheelZoom: false,
+        zoomControl: true,
+        attributionControl: false,
+    }).setView([-8.1724, 113.7000], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: ''
+}).addTo(map);
+
+/* KOORDINAT LATITUDE & LONGITUDE */
+const coordDiv = L.control({
+    position: 'bottomleft'
+});
+
+coordDiv.onAdd = function () {
+    this._div = L.DomUtil.create('div', 'mouse-coords-premium');
+    this._div.innerHTML = 'Lat : -<br>Lng : -';
+    return this._div;
+};
+
+coordDiv.addTo(map);
+
+map.on('mousemove', function (e) {
+    coordDiv._div.innerHTML = `
+        Lat : ${e.latlng.lat.toFixed(5)}<br>
+        Lng : ${e.latlng.lng.toFixed(5)}
+    `;
+});
+
+map.on('mouseout', function () {
+    coordDiv._div.innerHTML = 'Lat : -<br>Lng : -';
+});
+
+setTimeout(function () {
+    map.invalidateSize();
+}, 300);
+
+    const legend = L.control({
+        position: 'bottomright'
+    });
+
+    legend.onAdd = function () {
+        const div = L.DomUtil.create('div', 'custom-map-legend');
+
+        div.innerHTML = `
+            <h4>Kategori Kasus</h4>
+            <div><i style="background:#999999"></i>Tidak Ada</div>
+            <div><i style="background:#2a9d8f"></i>Rendah</div>
+            <div><i style="background:#ff9800"></i>Sedang</div>
+            <div><i style="background:#e63946"></i>Tinggi</div>
+            </div>
+        `;
+
+        return div;
+    };
+
+    legend.addTo(map);
+
+    fetch("<?= base_url('assets/peta/tbc.geojson') ?>")
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('File GeoJSON tidak ditemukan');
+            }
+
+            return response.json();
+        })
+        .then(function (geojson) {
+            const geoLayer = L.geoJSON(geojson, {
+                filter: function (feature) {
+                    const idWilayah = getIdWilayah(feature);
+                    return wilayahKaliwates[idWilayah] !== undefined;
+                },
+
+                style: function (feature) {
+                    const idWilayah = getIdWilayah(feature);
+                    const kasus = kasusById[idWilayah] || 0;
+                    const kategori = getKategori(kasus);
+
+                    return {
+                        color: '#00bcd4',
+                        weight: 2,
+                        fillColor: kategori.color,
+                        fillOpacity: kasus > 0 ? 0.65 : 0.30
+                    };
+                },
+
+                onEachFeature: function (feature, layer) {
+                    const idWilayah = getIdWilayah(feature);
+                    const namaWilayah = wilayahKaliwates[idWilayah] || getNamaWilayah(feature);
+                    const kasus = kasusById[idWilayah] || 0;
+                    const kategori = getKategori(kasus);
+
+                    layer.bindPopup(`
+                        <div class="map-popup-tbc">
+                            <span class="popup-badge" style="background:${kategori.bg};color:${kategori.color};">
+                                ${kategori.label}
+                            </span>
+
+                            <h4>${namaWilayah}</h4>
+
+                            <div class="map-popup-row">
+                                <span>Jumlah Kasus</span>
+                                <strong>${kasus}</strong>
+                            </div>
+
+                            <div class="map-popup-row">
+                                <span>Kategori</span>
+                                <strong style="color:${kategori.color};">${kategori.label}</strong>
+                            </div>
+
+                            <div class="map-popup-row">
+                                <span>Rentang</span>
+                                <strong>${kategori.range}</strong>
+                            </div>
+
+                            <div class="map-popup-row">
+                                <span>Tahun</span>
+                                <strong><?= esc($tahunAktif ?? date('Y')) ?></strong>
+                            </div>
+                        </div>
+                    `, {
+                        closeButton: false
+                    });
+
+                    layer.on('mouseover', function () {
+                        layer.openPopup();
+                        layer.setStyle({
+                            weight: 3.5,
+                            fillOpacity: kasus > 0 ? 0.85 : 0.45
+                        });
+                    });
+
+                    layer.on('mouseout', function () {
+                        layer.closePopup();
+                        layer.setStyle({
+                            weight: 2,
+                            fillOpacity: kasus > 0 ? 0.65 : 0.30
+                        });
+                    });
+
+                    layer.on('click', function () {
+                        map.fitBounds(layer.getBounds(), {
+                            padding: [40, 40],
+                            maxZoom: 15
+                        });
+                    });
+                }
+            }).addTo(map);
+
+            if (geoLayer.getLayers().length === 0) {
+                mapElement.innerHTML = `
+                    <div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;color:#64748b;background:#f8ffff;">
+                        <div>
+                            <i class="fas fa-map-location-dot" style="font-size:38px;color:#00aeb8;margin-bottom:12px;"></i>
+                            <h3 style="margin:0 0 8px;color:#12232d;">Wilayah Kaliwates Tidak Cocok</h3>
+                            <p style="margin:0;">Cek nama kelurahan atau id_wilayah pada file GeoJSON.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            map.fitBounds(geoLayer.getBounds(), {
+                padding: [24, 24]
+            });
+
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 500);
+        })
+        .catch(function (error) {
+            console.error(error);
+
+            mapElement.innerHTML = `
+                <div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;color:#64748b;background:#f8ffff;">
+                    <div>
+                        <i class="fas fa-map-location-dot" style="font-size:38px;color:#00aeb8;margin-bottom:12px;"></i>
+                        <h3 style="margin:0 0 8px;color:#12232d;">File Peta Belum Ditemukan</h3>
+                        <p style="margin:0;">Pastikan file ada di <b>public/assets/peta/tbc.geojson</b>.</p>
+                    </div>
+                </div>
+            `;
+        });
+});
+</script>
+
 <?= $this->include('layout/footer') ?>

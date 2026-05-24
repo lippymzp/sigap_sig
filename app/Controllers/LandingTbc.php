@@ -22,6 +22,7 @@ class LandingTbc extends BaseController
             FROM pasien
             WHERE id_penyakit = 2
               AND tgl_kunjungan IS NOT NULL
+            AND tgl_kunjungan IS NOT NULL
             ORDER BY tahun DESC
         ")->getResultArray();
 
@@ -57,7 +58,6 @@ class LandingTbc extends BaseController
         ];
 
         $labels = array_values($bulanIndo);
-
         $kasus = array_fill(0, 12, 0);
 
         $grafikRows = $db->query("
@@ -68,14 +68,16 @@ class LandingTbc extends BaseController
             WHERE id_penyakit = 2
               AND tgl_kunjungan IS NOT NULL
               AND YEAR(tgl_kunjungan) = ?
+            AND YEAR(tgl_kunjungan) = ?
             GROUP BY MONTH(tgl_kunjungan)
             ORDER BY MONTH(tgl_kunjungan) ASC
         ", [$tahunAktif])->getResultArray();
 
         foreach ($grafikRows as $row) {
-
             $bulan = (int)$row['bulan'];
             $total = (int)$row['total'];
+            $bulan = (int) $row['bulan'];
+            $total = (int) $row['total'];
 
             if ($bulan >= 1 && $bulan <= 12) {
                 $kasus[$bulan - 1] = $total;
@@ -117,6 +119,7 @@ class LandingTbc extends BaseController
 
         foreach ($kasusWilayahRows as $row) {
             $kasusMap[(int)$row['id_wilayah']] = (int)$row['kasus'];
+            $kasusMap[(int) $row['id_wilayah']] = (int) $row['kasus'];
         }
 
         // Gabungkan data wilayah + jumlah kasus
@@ -125,6 +128,7 @@ class LandingTbc extends BaseController
         foreach ($wilayahKaliwates as $wilayah) {
 
             $idWilayah = (int)$wilayah['id_wilayah'];
+            $idWilayah = (int) $wilayah['id_wilayah'];
 
             $petaRows[] = [
                 'id_wilayah' => $idWilayah,
@@ -140,6 +144,7 @@ class LandingTbc extends BaseController
         foreach ($petaRows as $row) {
 
             if ((int)$row['kasus'] > 0) {
+            if ((int) $row['kasus'] > 0) {
                 $totalWilayahTerdampak++;
             }
         }
@@ -156,6 +161,7 @@ class LandingTbc extends BaseController
 
         foreach ($petaRows as $row) {
             $totalKasusRingkasan += (int)$row['kasus'];
+            $totalKasusRingkasan += (int) $row['kasus'];
         }
 
         // Rata-rata kasus per wilayah terdampak
@@ -173,7 +179,13 @@ class LandingTbc extends BaseController
             $kecamatan = $row['kecamatan'];
 
             if (!isset($kecamatanData[$kecamatan])) {
+        // Hitung data kecamatan
+        $kecamatanData = [];
 
+        foreach ($petaRows as $row) {
+            $kecamatan = $row['kecamatan'];
+
+            if (!isset($kecamatanData[$kecamatan])) {
                 $kecamatanData[$kecamatan] = [
                     'kecamatan'      => $kecamatan,
                     'total_kasus'    => 0,
@@ -184,6 +196,9 @@ class LandingTbc extends BaseController
             $kecamatanData[$kecamatan]['total_kasus'] += (int)$row['kasus'];
 
             if ((int)$row['kasus'] > 0) {
+            $kecamatanData[$kecamatan]['total_kasus'] += (int) $row['kasus'];
+
+            if ((int) $row['kasus'] > 0) {
                 $kecamatanData[$kecamatan]['jumlah_wilayah']++;
             }
         }
@@ -206,11 +221,15 @@ class LandingTbc extends BaseController
             $rataRataKecamatanTertinggi = round(
                 (int)$kecamatanTertinggi['total_kasus'] /
                 (int)$kecamatanTertinggi['jumlah_wilayah'],
+        if (!empty($kecamatanTertinggi) && (int) $kecamatanTertinggi['jumlah_wilayah'] > 0) {
+            $rataRataKecamatanTertinggi = round(
+                (int) $kecamatanTertinggi['total_kasus'] / (int) $kecamatanTertinggi['jumlah_wilayah'],
                 1
             );
         }
 
         $ringkasanTbc = [
+
             'wilayah_tertinggi'             => $wilayahTertinggi,
             'kecamatan_tertinggi'           => $kecamatanTertinggi,
             'rata_rata_per_wilayah'         => $rataRataPerWilayah,
@@ -218,6 +237,37 @@ class LandingTbc extends BaseController
             'jumlah_wilayah_terdampak'      => $totalWilayahTerdampak,
             'total_kasus_ringkasan'         => $totalKasusRingkasan,
         ];
+
+        // =========================
+            'wilayah_tertinggi'              => $wilayahTertinggi,
+            'kecamatan_tertinggi'            => $kecamatanTertinggi,
+            'rata_rata_per_wilayah'          => $rataRataPerWilayah,
+            'rata_rata_kecamatan_tertinggi'  => $rataRataKecamatanTertinggi,
+            'jumlah_wilayah_terdampak'       => $totalWilayahTerdampak,
+            'total_kasus_ringkasan'          => $totalKasusRingkasan,
+        ];
+
+        // =========================
+// DATA FUNFACT TBC
+// =========================
+$funfactTbc = $db->query("
+    SELECT
+        id_funfact,
+        id_petugas,
+        id_penyakit,
+        judul_funfact,
+        isi_funfact,
+        deskripsi_funfact,
+        gambar_funfact,
+        tanggal_funfact,
+        url,
+        status_funfact,
+        penulis
+    FROM funfact
+    WHERE id_penyakit = 2
+    ORDER BY tanggal_funfact DESC, id_funfact DESC
+    LIMIT 9
+")->getResultArray();
 
         // =========================
         // DATA BERITA TBC
@@ -237,6 +287,7 @@ class LandingTbc extends BaseController
             FROM berita
             WHERE id_penyakit = 2
             ORDER BY tanggal_berita DESC
+
             LIMIT 3
         ")->getResultArray();
 
@@ -257,6 +308,11 @@ class LandingTbc extends BaseController
 
             'tahunAktif' => $tahunAktif,
 
+            'funfact' => $funfactModel->getFunfactTbc(9),
+
+            'tahunTersedia' => $tahunTersedia,
+            'tahunAktif'    => $tahunAktif,
+
             'grafikTbc' => [
                 'labels' => $labels,
                 'kasus'  => $kasus,
@@ -271,6 +327,11 @@ class LandingTbc extends BaseController
             'ringkasanTbc' => $ringkasanTbc,
 
             'beritaTbc' => $beritaTbc,
+
+            'petaTbc'                 => $petaRows,
+            'totalWilayahTerdampak'   => $totalWilayahTerdampak,
+            'ringkasanTbc'            => $ringkasanTbc,
+            'beritaTbc'               => $beritaTbc,
         ];
 
         return view('gol_b/tbc', $data);
@@ -289,6 +350,12 @@ class LandingTbc extends BaseController
             throw PageNotFoundException::forPageNotFound(
                 'Funfact TBC tidak ditemukan'
             );
+
+        $item = $funfactModel->getDetailFunfactTbc($id);
+
+        if (!$item) {
+            throw PageNotFoundException::forPageNotFound('Funfact TBC tidak ditemukan');
+
         }
 
         return view('gol_b/detail_funfact', [

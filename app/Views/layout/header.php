@@ -373,7 +373,7 @@ $isPneumoniaPage = in_array($uri, [
 $isTbcPage = in_array($uri, [
     'tbc',
     'skrining-tbc',
-    'hasil-tbc',
+    'hasil',
     'tbc-detail',
     'berita-tbc'
 ]) || strpos(current_url(), 'tbc') !== false;

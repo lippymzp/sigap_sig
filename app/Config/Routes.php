@@ -15,7 +15,6 @@ $routes->get('/', 'Home::index');
 $routes->get('/logout', 'Auth::logout');
 $routes->get('/kontak', 'Home::kontak');
 $routes->get('/pneumonia', 'Home::pneumonia');
-$routes->get('/tbc', 'Home::tbc');
 $routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('/kepalatbc/export', 'KepalaTbc::export');
 $routes->get('tbc/export', 'AdminTbc\Pasien::export');
@@ -39,10 +38,10 @@ $routes->get('hapus-penduduk/(:num)', 'DashboardadminDbd::hapusPenduduk/$1');
 $routes->get('edit-penduduk/(:num)', 'DashboardadminDbd::editPenduduk/$1');
 
 
+
+//tes db
+$routes->get('landing-tbc/test-db', 'LandingTbc::testDB');
 // ===============================================
-// Landingpage TBC 
-// ===============================================
-$routes->get('tbc', 'LandingTbc::index');
 $routes->get('tbc/detail_funfact/(:num)', 'LandingTbc::detail_funfact/$1');
 
 /* ========================= */
