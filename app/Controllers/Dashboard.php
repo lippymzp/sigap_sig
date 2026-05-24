@@ -333,7 +333,12 @@ public function tbc()
         $namaWilayah = $mappingWilayah[$p['id_wilayah']] ?? 'Lainnya';
         $status = $p['status_akhir'] ?? 'Pengobatan Lengkap';
 
-        $grafik[$kodeBulan][$gender][$kategoriUmur][$namaWilayah][$status]++;
+        if($p['id_penyakit'] != 2) continue;
+        if(!isset($mappingWilayah[$p['id_wilayah']])) continue;
+ 
+
+        $grafik[$kodeBulan][$gender][$kategoriUmur][$namaWilayah][$status] 
+    = ($grafik[$kodeBulan][$gender][$kategoriUmur][$namaWilayah][$status] ?? 0) + 1;
     }
 
 

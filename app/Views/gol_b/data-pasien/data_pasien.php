@@ -182,7 +182,7 @@
 
                     </button>
                         <!-- EXPORT -->
-                        <a href="<?= base_url('tbc/export-hasil-data-pasien') ?>"
+                        <a href="<?= base_url('tbc/export') ?>"
                         class="btn-export">
 
                             <i class="fa-solid fa-file-export me-2"></i>

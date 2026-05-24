@@ -17,9 +17,10 @@ class Pasien extends BaseController
     // ================= DATA PASIEN =================
     public function index()
 {
-    $data = [
-
-        'pasien' => $this->pasienModel->findAll(),
+$data = [
+    'pasien' => $this->pasienModel
+                     ->where('id_penyakit', 2)
+                     ->findAll(),
 
         'jumlah_sembuh' =>
             $this->pasienModel
@@ -76,6 +77,7 @@ class Pasien extends BaseController
             'umur' => $this->request->getPost('umur'),
             'tgl_kunjungan' => $this->request->getPost('tgl_kunjungan'),
             'status_akhir' => $this->request->getPost('status_akhir'),
+            'id_penyakit'  => 2,
             'ctt_klinis' => $this->request->getPost('ctt_klinis'),
             'id_petugas' => 3
 
@@ -260,27 +262,46 @@ public function exportPage()
 }
 public function exportData()
 {
-    $type = $this->request->getGet('type');
+    $type   = $this->request->getGet('type');       // excel / pdf
+    $mode   = $this->request->getGet('mode');       // bulanan / triwulan / semester / tahunan
+    $tahun  = $this->request->getGet('tahun');      // 2026
+    $waktu  = $this->request->getGet('waktu');      // bulan / triwulan / semester
+    $kel    = $this->request->getGet('kelurahan');  // semua / nama kelurahan
 
     $pasienModel = new \App\Models\PasienModel();
 
-    $data['pasien'] = $pasienModel
-    ->select('pasien.*, wilayah.kelurahan')
-    ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah')
-    ->findAll();
+    $builder = $pasienModel
+        ->select('pasien.*, wilayah.kelurahan')
+        ->join('wilayah', 'wilayah.id_wilayah = pasien.id_wilayah');
 
-    // ================= EXCEL =================
-    if($type == 'excel'){
-
-        header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=data_pasien.xls");
-
-        echo view('gol_b/export/excel', $data);
+    if($kel != 'semua') {
+        $builder->where('wilayah.kelurahan', $kel);
     }
 
-    // ================= PDF =================
-    else{
+    if($tahun) {
+        $builder->where('YEAR(pasien.tgl_kunjungan)', $tahun);
+    }
 
+    // Jika mau filter bulanan / triwulan / semester
+    if($mode == 'bulanan' && $waktu) {
+        $builder->where('MONTH(pasien.tgl_kunjungan)', $waktu);
+    } elseif($mode == 'triwulan' && $waktu) {
+        $start = ($waktu-1)*3 + 1;
+        $builder->where('MONTH(pasien.tgl_kunjungan) >=', $start)
+                ->where('MONTH(pasien.tgl_kunjungan) <=', $start+2);
+    } elseif($mode == 'semester' && $waktu) {
+        $start = ($waktu-1)*6 + 1;
+        $builder->where('MONTH(pasien.tgl_kunjungan) >=', $start)
+                ->where('MONTH(pasien.tgl_kunjungan) <=', $start+5);
+    }
+
+    $data['pasien'] = $builder->findAll();
+
+    if($type == 'excel'){
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=data_pasien.xls");
+        echo view('gol_b/export/excel', $data);
+    } else {
         echo view('gol_b/export/pdf', $data);
     }
 }

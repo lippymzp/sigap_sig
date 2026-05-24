@@ -18,8 +18,13 @@ $routes->get('/pneumonia', 'Home::pneumonia');
 $routes->get('/tbc', 'Home::tbc');
 $routes->get('tbc/profil_admin', 'AdminTbc\Profile::profil_admin');
 $routes->get('/kepalatbc/export', 'KepalaTbc::export');
+$routes->get('tbc/export', 'AdminTbc\Pasien::export');
+$routes->get('tbc/export-data', 'AdminTbc\Pasien::exportData');
+$routes->get('tbc/export/pdf', 'AdminTbc\Pasien::exportData');
+$routes->get('tbc/export/excel', 'AdminTbc\Pasien::exportData');
 $routes->get('kepalatbc/dashboard', 'KepalaTbc::dashboard');
 $routes->get('kepalatbc/profil', 'KepalaTbc::profil');
+$routes->get('kepalatbc/export-data', 'KepalaTbc::exportData');
 
 $routes->get('/skrining', 'Home::skrining');
 $routes->get('/grafik_pneumonia', 'Home::grafikPneumonia');

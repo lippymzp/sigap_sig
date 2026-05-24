@@ -306,14 +306,13 @@ function loadWaktu() {
 // ======================
 // EXPORT
 // ======================
-    function exportData(type) {
-
+function exportData(type) {
     let tahun = document.getElementById('tahun').value;
     let waktu = document.getElementById('waktu').value;
-    let kel = document.getElementById('kelurahan').value;
+    let kel   = document.getElementById('kelurahan').value;
 
-    let url =
-    `<?= base_url('tbc/export-data') ?>?type=${type}&mode=${mode}&tahun=${tahun}&waktu=${waktu}&kelurahan=${kel}`;
+    // Ganti 'kepalatbc/export' → 'kepalatbc/export-data'
+    let url = `<?= base_url('kepalatbc/export-data') ?>?type=${type}&mode=${mode}&tahun=${tahun}&waktu=${waktu}&kelurahan=${kel}`;
 
     window.location.href = url;
 }

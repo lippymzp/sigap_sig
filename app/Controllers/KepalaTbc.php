@@ -201,4 +201,49 @@ class KepalaTbc extends BaseController
             'petugas' => $petugas
         ]);
     }
+
+    public function exportData()
+{
+    $type  = $this->request->getGet('type');
+    $mode  = $this->request->getGet('mode');
+    $tahun = $this->request->getGet('tahun');
+    $waktu = $this->request->getGet('waktu');
+    $kel   = $this->request->getGet('kelurahan');
+
+    $db = \Config\Database::connect();
+
+    $builder = $db->table('pasien p')
+        ->select('p.*, w.kelurahan')
+        ->join('wilayah w', 'w.id_wilayah = p.id_wilayah', 'left');
+
+    if ($kel != 'semua') {
+        $builder->where('w.kelurahan', $kel);
+    }
+
+    if ($tahun) {
+        $builder->where('YEAR(p.tgl_kunjungan)', $tahun);
+    }
+
+    if ($mode == 'bulanan' && $waktu) {
+        $builder->where('MONTH(p.tgl_kunjungan)', $waktu);
+    } elseif ($mode == 'triwulan' && $waktu) {
+        $start = ($waktu - 1) * 3 + 1;
+        $builder->where('MONTH(p.tgl_kunjungan) >=', $start)
+                ->where('MONTH(p.tgl_kunjungan) <=', $start + 2);
+    } elseif ($mode == 'semester' && $waktu) {
+        $start = ($waktu - 1) * 6 + 1;
+        $builder->where('MONTH(p.tgl_kunjungan) >=', $start)
+                ->where('MONTH(p.tgl_kunjungan) <=', $start + 5);
+    }
+
+    $data['pasien'] = $builder->get()->getResultArray();
+
+    if ($type == 'excel') {
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=data_pasien_tbc.xls");
+        echo view('gol_b/export/excel', $data);
+    } else {
+        echo view('gol_b/export/pdf', $data);
+    }
+}
 }
