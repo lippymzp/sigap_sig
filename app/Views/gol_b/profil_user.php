@@ -172,7 +172,7 @@ $passBintang = str_repeat('*', strlen($petugas['password']));
             <!-- BUTTON KEMBALI -->
             <div class="d-flex justify-content-end mt-3">
 
-<a href="<?= base_url('index.php/tbc/dashboard') ?>"
+<a href="<?= base_url('index.php/kepalatbc/dashboard') ?>"
     class="btn btn-kembali">
 
     Kembali

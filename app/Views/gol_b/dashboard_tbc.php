@@ -24,7 +24,7 @@
         </div>
         <div class="stat-info">
             <h3 class="blue"><?= $totalKasusAktif ?></h3>
-            <p>Total Kasus Aktif</p>
+            <p>Total Kasus</p>
         </div>
     </div>
 
@@ -102,8 +102,7 @@
             <div class="filter">
                 <span>Periode:</span>
                 <select id="selectPeriode">
-                    <?php for($i = date('Y')-2; $i<=date('Y'); $i++): ?>
-                        <option value="<?= $i ?>" <?= $i==date('Y')?'selected':'' ?>>
+<?php for($i = 2023; $i<=2025; $i++): ?>                        <option value="<?= $i ?>" <?= $i==date('Y')?'selected':'' ?>>
                             <?= $i ?>
                         </option>
                     <?php endfor; ?>

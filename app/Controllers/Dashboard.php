@@ -352,11 +352,14 @@ public function tbc()
     // =========================
     // 7️⃣ STATISTIK DASHBOARD
     // =========================
-    $totalKasusAktif = $db->table('pasien')->where('status_akhir','Pengobatan Lengkap')->countAllResults();
-    $kasusBulanIni = $db->table('pasien')
-        ->where('MONTH(tgl_kunjungan)', date('m'))
-        ->where('YEAR(tgl_kunjungan)', date('Y'))
-        ->countAllResults();
+$totalKasusAktif = $db->table('pasien')
+    ->where('id_penyakit', 2)
+    ->countAllResults();
+      $kasusBulanIni = $db->table('pasien')
+    ->where('id_penyakit', 2)
+    ->where('MONTH(tgl_kunjungan)', date('m'))
+    ->where('YEAR(tgl_kunjungan)', date('Y'))
+    ->countAllResults();
     $kelurahanTerdampak = $db->table('pasien')
         ->where('id_penyakit',2)
         ->select('id_wilayah')

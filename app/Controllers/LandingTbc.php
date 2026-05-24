@@ -22,21 +22,16 @@ class LandingTbc extends BaseController
             FROM pasien
             WHERE id_penyakit = 2
               AND tgl_kunjungan IS NOT NULL
-            AND tgl_kunjungan IS NOT NULL
             ORDER BY tahun DESC
         ")->getResultArray();
 
         $tahunTersedia = array_column($tahunRows, 'tahun');
-
         $tahunRequest = $this->request->getGet('tahun');
 
-        if (
-            !empty($tahunRequest) &&
-            in_array((int)$tahunRequest, array_map('intval', $tahunTersedia))
-        ) {
-            $tahunAktif = (int)$tahunRequest;
+        if (!empty($tahunRequest) && in_array((int) $tahunRequest, array_map('intval', $tahunTersedia))) {
+            $tahunAktif = (int) $tahunRequest;
         } else {
-            $tahunAktif = (int)($tahunTersedia[0] ?? date('Y'));
+            $tahunAktif = (int) ($tahunTersedia[0] ?? date('Y'));
         }
 
         // =========================
@@ -68,14 +63,11 @@ class LandingTbc extends BaseController
             WHERE id_penyakit = 2
               AND tgl_kunjungan IS NOT NULL
               AND YEAR(tgl_kunjungan) = ?
-            AND YEAR(tgl_kunjungan) = ?
             GROUP BY MONTH(tgl_kunjungan)
             ORDER BY MONTH(tgl_kunjungan) ASC
         ", [$tahunAktif])->getResultArray();
 
         foreach ($grafikRows as $row) {
-            $bulan = (int)$row['bulan'];
-            $total = (int)$row['total'];
             $bulan = (int) $row['bulan'];
             $total = (int) $row['total'];
 
@@ -118,7 +110,6 @@ class LandingTbc extends BaseController
         $kasusMap = [];
 
         foreach ($kasusWilayahRows as $row) {
-            $kasusMap[(int)$row['id_wilayah']] = (int)$row['kasus'];
             $kasusMap[(int) $row['id_wilayah']] = (int) $row['kasus'];
         }
 
@@ -126,8 +117,6 @@ class LandingTbc extends BaseController
         $petaRows = [];
 
         foreach ($wilayahKaliwates as $wilayah) {
-
-            $idWilayah = (int)$wilayah['id_wilayah'];
             $idWilayah = (int) $wilayah['id_wilayah'];
 
             $petaRows[] = [
@@ -142,8 +131,6 @@ class LandingTbc extends BaseController
         $totalWilayahTerdampak = 0;
 
         foreach ($petaRows as $row) {
-
-            if ((int)$row['kasus'] > 0) {
             if ((int) $row['kasus'] > 0) {
                 $totalWilayahTerdampak++;
             }
@@ -160,7 +147,6 @@ class LandingTbc extends BaseController
         $totalKasusRingkasan = 0;
 
         foreach ($petaRows as $row) {
-            $totalKasusRingkasan += (int)$row['kasus'];
             $totalKasusRingkasan += (int) $row['kasus'];
         }
 
@@ -169,16 +155,6 @@ class LandingTbc extends BaseController
             ? round($totalKasusRingkasan / $totalWilayahTerdampak, 1)
             : 0;
 
-        // =========================
-        // HITUNG DATA KECAMATAN
-        // =========================
-        $kecamatanData = [];
-
-        foreach ($petaRows as $row) {
-
-            $kecamatan = $row['kecamatan'];
-
-            if (!isset($kecamatanData[$kecamatan])) {
         // Hitung data kecamatan
         $kecamatanData = [];
 
@@ -193,9 +169,6 @@ class LandingTbc extends BaseController
                 ];
             }
 
-            $kecamatanData[$kecamatan]['total_kasus'] += (int)$row['kasus'];
-
-            if ((int)$row['kasus'] > 0) {
             $kecamatanData[$kecamatan]['total_kasus'] += (int) $row['kasus'];
 
             if ((int) $row['kasus'] > 0) {
@@ -213,14 +186,6 @@ class LandingTbc extends BaseController
 
         $rataRataKecamatanTertinggi = 0;
 
-        if (
-            !empty($kecamatanTertinggi) &&
-            (int)$kecamatanTertinggi['jumlah_wilayah'] > 0
-        ) {
-
-            $rataRataKecamatanTertinggi = round(
-                (int)$kecamatanTertinggi['total_kasus'] /
-                (int)$kecamatanTertinggi['jumlah_wilayah'],
         if (!empty($kecamatanTertinggi) && (int) $kecamatanTertinggi['jumlah_wilayah'] > 0) {
             $rataRataKecamatanTertinggi = round(
                 (int) $kecamatanTertinggi['total_kasus'] / (int) $kecamatanTertinggi['jumlah_wilayah'],
@@ -229,16 +194,6 @@ class LandingTbc extends BaseController
         }
 
         $ringkasanTbc = [
-
-            'wilayah_tertinggi'             => $wilayahTertinggi,
-            'kecamatan_tertinggi'           => $kecamatanTertinggi,
-            'rata_rata_per_wilayah'         => $rataRataPerWilayah,
-            'rata_rata_kecamatan_tertinggi' => $rataRataKecamatanTertinggi,
-            'jumlah_wilayah_terdampak'      => $totalWilayahTerdampak,
-            'total_kasus_ringkasan'         => $totalKasusRingkasan,
-        ];
-
-        // =========================
             'wilayah_tertinggi'              => $wilayahTertinggi,
             'kecamatan_tertinggi'            => $kecamatanTertinggi,
             'rata_rata_per_wilayah'          => $rataRataPerWilayah,
@@ -287,26 +242,17 @@ $funfactTbc = $db->query("
             FROM berita
             WHERE id_penyakit = 2
             ORDER BY tanggal_berita DESC
-
-            LIMIT 3
         ")->getResultArray();
 
         // =========================
         // KIRIM DATA KE VIEW
         // =========================
         $data = [
-
             'slider_images' => [
                 base_url('img/banner1.png'),
                 base_url('img/banner2.png'),
                 base_url('img/banner3.png'),
             ],
-
-            'funfacts' => $funfactModel->getFunfactTbc(9),
-
-            'tahunTersedia' => $tahunTersedia,
-
-            'tahunAktif' => $tahunAktif,
 
             'funfact' => $funfactModel->getFunfactTbc(9),
 
@@ -319,14 +265,6 @@ $funfactTbc = $db->query("
             ],
 
             'totalKasusTbc' => $totalKasusTbc,
-
-            'petaTbc' => $petaRows,
-
-            'totalWilayahTerdampak' => $totalWilayahTerdampak,
-
-            'ringkasanTbc' => $ringkasanTbc,
-
-            'beritaTbc' => $beritaTbc,
 
             'petaTbc'                 => $petaRows,
             'totalWilayahTerdampak'   => $totalWilayahTerdampak,
@@ -342,20 +280,10 @@ $funfactTbc = $db->query("
         helper(['url', 'text']);
 
         $funfactModel = new FunfactTbcModel();
-
-        $item = $funfactModel->getDetailFunfactTbc($id);
-
-        if (!$item) {
-
-            throw PageNotFoundException::forPageNotFound(
-                'Funfact TBC tidak ditemukan'
-            );
-
         $item = $funfactModel->getDetailFunfactTbc($id);
 
         if (!$item) {
             throw PageNotFoundException::forPageNotFound('Funfact TBC tidak ditemukan');
-
         }
 
         return view('gol_b/detail_funfact', [
