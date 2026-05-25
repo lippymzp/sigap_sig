@@ -101,6 +101,20 @@
                 </div>
 
                 <div class="col-md-6 mb-4">
+                    <label class="form-label">Penyakit</label>
+
+                    <select name="id_penyakit" class="form-control">
+                        <option value="">Pilih Penyakit</option>
+
+                        <?php foreach($penyakit as $p): ?>
+                            <option value="<?= $p['id_penyakit']; ?>">
+                                <?= $p['nama_penyakit']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-4">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control" placeholder="Masukkan Email">
                 </div>
@@ -111,16 +125,16 @@
                 </div>
 
                 <div class="col-md-6 mb-4">
-                    <label class="form-label">Alamat</label>
-                    <input type="text" name="alamat" class="form-control" placeholder="Masukkan Alamat">
-                </div>
-
-                <div class="col-md-6 mb-4">
                     <label class="form-label">Password</label>
                     <input type="text"
                             name="password"
                             class="form-control"
                             placeholder="Kosongkan jika tidak diubah">
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">Alamat</label>
+                    <input type="text" name="alamat" class="form-control" placeholder="Masukkan Alamat">
                 </div>
 
             </div>

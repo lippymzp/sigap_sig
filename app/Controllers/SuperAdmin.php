@@ -500,12 +500,21 @@ class SuperAdmin extends BaseController
 
     public function manajemen_admin_tambah()
     {
+        $db = \Config\Database::connect();
+
+        $penyakit = $db
+            ->table('penyakit')
+            ->get()
+            ->getResultArray();
+
         return view(
             'superadmin/manajemen_admin_tambah',
             [
                 'menu' => 'manajemen_admin',
 
-                'judul' => 'Tambah Admin'
+                'judul' => 'Tambah Admin',
+
+                'penyakit' => $penyakit
             ]
         );
     }
@@ -527,6 +536,9 @@ class SuperAdmin extends BaseController
 
             'id_instansi' =>
             $this->request->getPost('id_instansi'),
+
+            'id_penyakit' => 
+            $this->request->getPost('id_penyakit'),
 
             'email' =>
             $this->request->getPost('email'),
@@ -563,6 +575,8 @@ class SuperAdmin extends BaseController
             ->get()
             ->getRowArray();
 
+        $penyakit = $db->table('penyakit')->get()->getResultArray();
+
         return view(
             'superadmin/manajemen_admin_edit',
             [
@@ -570,7 +584,9 @@ class SuperAdmin extends BaseController
 
                 'menu' => 'manajemen_admin',
 
-                'judul' => 'Edit Admin'
+                'judul' => 'Edit Admin',
+
+                'penyakit' => $penyakit
             ]
         );
     }
@@ -601,6 +617,9 @@ class SuperAdmin extends BaseController
 
             'no_telp' =>
             $this->request->getPost('no_telp'),
+
+            'id_penyakit' =>
+            $this->request->getPost('id_penyakit'),
         ];
 
         // password optional
