@@ -115,6 +115,36 @@ body{
     height:400px; 
 }
 
+.button-wrapper{
+    display:flex;
+    justify-content:flex-end;
+
+    margin-top:20px;
+    margin-right:300px;
+}
+
+.btn-kembali{
+    display:inline-block;
+    padding:12px 28px;
+
+    background:#14b8c4;
+    color:white;
+
+    text-decoration:none;
+    font-weight:600;
+    font-size:16px;
+
+    border-radius:10px;
+
+    transition:0.3s ease;
+}
+
+.btn-kembali:hover{
+    background:#0f9aa5;
+    color:white;
+
+    transform:translateY(-2px);
+}
 
 </style>
 
@@ -618,6 +648,12 @@ filterGender2.addEventListener('change', updateChart2);
 updateChart2();
 
 </script>
+
+<div class="button-wrapper">
+    <a href="<?= base_url('pneumonia') ?>" class="btn-kembali">
+        Kembali 
+    </a>
+</div>
 
 <?php if(!$embed): ?>
 <?= $this->include('layout/footer') ?>
