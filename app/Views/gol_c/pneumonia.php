@@ -2829,7 +2829,7 @@ function buildDataDetailByYear(tahunDetail){
 
 
 <?php
-/* RINGKASAN DATA PNEUMONIA  */
+/* RINGKASAN DATA PNEUMONIA */
 $db = \Config\Database::connect();
 
 $dataRingkasan = [];
@@ -2841,33 +2841,51 @@ $tertinggi = [
 
 $rataRata = 0;
 $diAtasRata = 0;
+$totalKasus = 0;
 
 $queryRingkasan = $db->query("
-
-    SELECT 
-        wilayah.kelurahan,
-        COUNT(pasien.id_pasien) as total
-
-    FROM pasien
-
-    JOIN wilayah 
-        ON wilayah.id_wilayah = pasien.id_wilayah
-
-    WHERE pasien.id_penyakit = 3
-
-    GROUP BY wilayah.id_wilayah
-
-    ORDER BY total DESC
-
+    SELECT
+        w.kelurahan,
+        p.id_pasien
+    FROM pasien p
+    INNER JOIN wilayah w
+        ON p.id_wilayah = w.id_wilayah
+    WHERE p.id_penyakit = 3
 ");
 
 if($queryRingkasan){
 
-    foreach($queryRingkasan->getResultArray() as $r){
-        $dataRingkasan[] = $r;
+    $rows = $queryRingkasan->getResultArray();
+
+    $hasil = [];
+
+    foreach($rows as $r){
+
+        $desa = $r['kelurahan'];
+
+        if(!isset($hasil[$desa])){
+            $hasil[$desa] = 0;
+        }
+
+        // sama seperti logika peta
+        $hasil[$desa] += 1;
     }
 
-    if(count($dataRingkasan) > 0){
+    foreach($hasil as $desa => $jumlah){
+
+        $dataRingkasan[] = [
+            'kelurahan' => $desa,
+            'total' => $jumlah
+        ];
+    }
+
+    usort($dataRingkasan, function($a, $b){
+        return $b['total'] - $a['total'];
+    });
+
+    if(!empty($dataRingkasan)){
+
+        $tertinggi = $dataRingkasan[0];
 
         $totalKasus = array_sum(
             array_column($dataRingkasan, 'total')
@@ -2877,11 +2895,9 @@ if($queryRingkasan){
             $totalKasus / count($dataRingkasan)
         );
 
-        $tertinggi = $dataRingkasan[0];
-
         foreach($dataRingkasan as $d){
 
-            if($d['total'] > $rataRata){
+            if($d['total'] >= 45){
                 $diAtasRata++;
             }
 
@@ -2923,6 +2939,12 @@ if($queryRingkasan){
 
                     desa dengan kasus di atas rata-rata
                 </p>
+                <p>
+                Total seluruh kasus pneumonia adalah
+                <span class="highlight-red">
+                 <?= $totalKasus ?> kasus
+                </span>
+                    </p>
 
                 <p>
                     Rata-rata kasus pneumonia tiap desa adalah 
