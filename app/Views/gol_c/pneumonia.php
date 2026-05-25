@@ -942,18 +942,23 @@ $db = \Config\Database::connect();
 
 $query = $db->query("
     SELECT 
+        YEAR(tgl_kunjungan) as tahun,
         MONTH(tgl_kunjungan) as bulan,
         jenis_kelamin,
         COUNT(*) as total
 
     FROM pasien
 
-    WHERE YEAR(tgl_kunjungan) = 2025
-    AND id_penyakit = 3
+    WHERE id_penyakit = 3
 
     GROUP BY 
+        YEAR(tgl_kunjungan),
         MONTH(tgl_kunjungan),
         jenis_kelamin
+
+    ORDER BY 
+        YEAR(tgl_kunjungan),
+        MONTH(tgl_kunjungan)
 ");
 
 $result = $query->getResultArray();
