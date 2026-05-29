@@ -80,25 +80,27 @@
                     <label class="form-label">Role</label>
                     <select name="id_jabatan" class="form-control" required>
                         <option value="">Pilih Role</option>
-                        <option value="1">Kepala</option>
-                        <option value="2">Kader</option>
                         <option value="3">Admin</option>
                         <option value="4">Superadmin</option>
                     </select>
                 </div>
 
                 <div class="col-md-6 mb-4">
-                    <label class="form-label">Instansi</label>
-                    <select name="id_instansi" class="form-control" required>
-                        <option value="">Pilih Instansi</option>
-                        <option value="1">Puskesmas Sumbersari</option>
-                        <option value="2">Puskesmas Kaliwates</option>
-                        <option value="3">Puskesmas Ajung</option>
-                        <option value="4">Puskesmas Panti</option>
-                        <option value="5">Dinas Kesehatan</option>
-                        <option value="6">Politeknik Negeri Jember</option>
-                    </select>
-                </div>
+                <label class="form-label">Instansi</label>
+
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    value="Puskesmas Ajung" 
+                    readonly
+                >
+
+                <input 
+                    type="hidden" 
+                    name="id_instansi" 
+                    value="3"
+                >
+            </div>
 
                 <div class="col-md-6 mb-4">
                     <label class="form-label">Email</label>

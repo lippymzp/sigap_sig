@@ -338,8 +338,6 @@
 
 <?php
 $jabatanList = [
-    1 => 'Kepala',
-    2 => 'Kader',
     3 => 'Admin',
     4 => 'Superadmin'
 ];

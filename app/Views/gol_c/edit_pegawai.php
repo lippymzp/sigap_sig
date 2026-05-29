@@ -80,8 +80,6 @@
                     <label class="form-label">Role</label>
                     <select name="id_jabatan" class="form-control" required>
                         <option value="">Pilih Role</option>
-                        <option value="1" <?= ($petugas['id_jabatan'] == 1) ? 'selected' : '' ?>>Kepala</option>
-                        <option value="2" <?= ($petugas['id_jabatan'] == 2) ? 'selected' : '' ?>>Kader</option>
                         <option value="3" <?= ($petugas['id_jabatan'] == 3) ? 'selected' : '' ?>>Admin</option>
                         <option value="4" <?= ($petugas['id_jabatan'] == 4) ? 'selected' : '' ?>>Superadmin</option>
                     </select>
@@ -90,14 +88,10 @@
                 <div class="col-md-6 mb-4">
                     <label class="form-label">Instansi</label>
                     <select name="id_instansi" class="form-control" required>
-                        <option value="">Pilih Instansi</option>
-                        <option value="1" <?= ($petugas['id_instansi'] == 1) ? 'selected' : '' ?>>Puskesmas Sumbersari</option>
-                        <option value="2" <?= ($petugas['id_instansi'] == 2) ? 'selected' : '' ?>>Puskesmas Kaliwates</option>
-                        <option value="3" <?= ($petugas['id_instansi'] == 3) ? 'selected' : '' ?>>Puskesmas Ajung</option>
-                        <option value="4" <?= ($petugas['id_instansi'] == 4) ? 'selected' : '' ?>>Puskesmas Panti</option>
-                        <option value="5" <?= ($petugas['id_instansi'] == 5) ? 'selected' : '' ?>>Dinas Kesehatan</option>
-                        <option value="6" <?= ($petugas['id_instansi'] == 6) ? 'selected' : '' ?>>Politeknik Negeri Jember</option>
-                    </select>
+                    <option value="3" <?= ($petugas['id_instansi'] == 3) ? 'selected' : '' ?>>
+                        Puskesmas Ajung
+                    </option>
+                </select>
                 </div>
 
                 <div class="col-md-6 mb-4">
