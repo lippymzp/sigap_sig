@@ -847,17 +847,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 var penduduk = item ? item.penduduk : getPenduduk(key);
                 var kategori = item ? item.kategori : "rendah";
 
+                var pprTeks  = (ppr && ppr > 0) ? formatPPR(ppr) + " / 100.000" : "Tidak tersedia";
+                var popTeks  = penduduk > 0 ? penduduk.toLocaleString("id-ID") + " jiwa" : "Data tidak tersedia";
+
                 var statusData = (!item || !getPenduduk(key))
-                    ? "<br><span class='popup-empty'>Data penduduk tidak ditemukan</span>"
+                    ? "<br><span class='popup-empty'>Data populasi tidak tersedia</span>"
                     : "";
 
                 var isiPopup = `
                     <div class="popup-informasi" onclick="showDetailWilayah('${key}', decodeURIComponent('${encodeURIComponent(nama)}'))">
-                        <b>Informasi :</b><br>
-                        <span>Desa/Kelurahan : ${nama}</span><br>
-                        <span>Jumlah Kasus : ${total}</span><br>
-                        <span>Jumlah Penduduk : ${penduduk > 0 ? penduduk.toLocaleString("id-ID") : "-"}</span><br>
-                        <span>PPR : <b>${formatPPR(ppr)}</b> per 100.000 penduduk</span><br>
+                        <b>Informasi Epidemiologi :</b><br>
+                        <span>Desa : <b>${nama}</b></span><br>
+                        <span>Jumlah Kasus : <b>${total}</b></span><br>
+                        <span>Jumlah Penduduk : <b>${popTeks}</b></span><br>
+                        <span>PPR : <b style="color:#0aa9b5;">${pprTeks}</b></span><br>
                         <span>
                             Tingkat Risiko :
                             <b class="popup-${kategori}">${textKategori(kategori)}</b>
@@ -1378,7 +1381,7 @@ document.addEventListener("DOMContentLoaded", function () {
 .popup-informasi{
     min-width:200px;
     font-size:12px;
-    line-height:1.6;
+    line-height:1.7;
     cursor:pointer;
 }
 
@@ -1398,8 +1401,9 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 .popup-tinggi{ color:red !important; }
-.popup-sedang{ color:#d77b00 !important; }
+.popup-sedang{ color:#b07d00 !important; }
 .popup-rendah{ color:green !important; }
+.popup-nodata{ color:#888 !important; }
 .popup-empty { color:#d62828; font-weight:800; }
 
 .leaflet-popup-content-wrapper{ border-radius:8px; }
