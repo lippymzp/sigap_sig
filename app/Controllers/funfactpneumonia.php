@@ -31,9 +31,6 @@ class funfactpneumonia extends BaseController
         ->where('s.hasil', 'Berisiko')
 
         ->orderBy('s.id_skrining', 'DESC')
-
-        ->limit(3)
-
         ->get()
 
         ->getResultArray();

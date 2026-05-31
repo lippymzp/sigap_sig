@@ -38,10 +38,32 @@ class Pneumonia extends BaseController
 
         ->orderBy('s.id_skrining', 'DESC')
 
-        ->limit(3)
-
         ->get()
 
+        ->getResultArray();
+}
+
+private function getNotifModal()
+{
+    $db = \Config\Database::connect();
+
+    return $db->table('skrining s')
+        ->select('
+            p.nama_pasien_skrining,
+            p.jenis_kelamin,
+            p.usia,
+            s.tanggal,
+            s.hasil
+        ')
+        ->join(
+            'pasien_skrining p',
+            'p.id_pasien_skrining = s.id_pasien_skrining'
+        )
+        ->where('s.id_penyakit', 3)
+        ->where('s.hasil', 'Berisiko')
+        ->orderBy('s.id_skrining', 'DESC')
+        ->limit(3)
+        ->get()
         ->getResultArray();
 }
 
@@ -51,7 +73,8 @@ class Pneumonia extends BaseController
             'menu' => 'inputdata',
             'penyakit' => 'pneumonia',
             'judul' => 'Input Data Pasien',
-            'notif' => $this->getNotif()
+            'notif' => $this->getNotif(), 
+            'notifModal' => $this->getNotifModal()
         ]);
         
     }
@@ -93,7 +116,8 @@ class Pneumonia extends BaseController
 
         'pasien' => $pasien,
 
-        'notif' => $this->getNotif()
+        'notif' => $this->getNotif(),
+        'notifModal' => $this->getNotifModal()
     ]);
 }
 
@@ -168,7 +192,8 @@ $data = $builder
         'data' => $data,
 'totalPages'  => $totalPages,
 'currentPage' => $currentPage,
-        'notif' => $this->getNotif()
+        'notif' => $this->getNotif(),
+        'notifModal' => $this->getNotifModal()
     ]);
 }
     // ==================================
@@ -188,8 +213,33 @@ $data = $builder
             MONTH(p.tgl_kunjungan) as bulan_angka,
             w.kelurahan,
 
-            SUM(CASE WHEN p.umur <= 18 THEN 1 ELSE 0 END) as anak,
-            SUM(CASE WHEN p.umur >= 19 THEN 1 ELSE 0 END) as dewasa,
+            SUM(
+    CASE
+        WHEN p.rentang_umur IN (
+            '0-12 Bulan',
+            '1-5 Tahun',
+            '6-11 Tahun',
+            '12-16 Tahun',
+            '17-25 Tahun'
+        )
+        THEN 1
+        ELSE 0
+    END
+) as anak,
+
+SUM(
+    CASE
+        WHEN p.rentang_umur IN (
+            '26-35 Tahun',
+            '36-45 Tahun',
+            '46-55 Tahun',
+            '56-65 Tahun',
+            '>65 Tahun'
+        )
+        THEN 1
+        ELSE 0
+    END
+) as dewasa,
 
             SUM(CASE WHEN p.jenis_kelamin = 'Laki-laki' THEN 1 ELSE 0 END) as laki,
             SUM(CASE WHEN p.jenis_kelamin = 'Perempuan' THEN 1 ELSE 0 END) as perempuan,
@@ -348,19 +398,32 @@ return $this->response->setJSON($hasil);
             w.kelurahan,
 
             SUM(
-                CASE
-                    WHEN p.umur < 18 THEN 1
-                    ELSE 0
-                END
-            ) as anak,
+    CASE
+        WHEN p.rentang_umur IN (
+            '0-5 Tahun',
+            '6-11 Tahun',
+            '12-16 Tahun',
+            '17-25 Tahun'
+        )
+        THEN 1
+        ELSE 0
+    END
+) as anak,
 
-            SUM(
-                CASE
-                    WHEN p.umur >= 18 THEN 1
-                    ELSE 0
-                END
-            ) as dewasa,
-
+SUM(
+    CASE
+        WHEN p.rentang_umur IN (
+            '26-35 Tahun',
+            '36-45 Tahun',
+            '46-55 Tahun',
+            '56-65 Tahun',
+            '>65 Tahun'
+        )
+        THEN 1
+        ELSE 0
+    END
+) as dewasa,
+ 
             SUM(
                 CASE
                     WHEN p.jenis_kelamin = 'Laki-laki'
@@ -832,19 +895,31 @@ return $this->response->setJSON($hasil);
             w.kelurahan,
 
             SUM(
-                CASE
-                    WHEN p.umur < 18 THEN 1
-                    ELSE 0
-                END
-            ) as anak,
+    CASE
+        WHEN p.rentang_umur IN (
+            '0-5 Tahun',
+            '6-11 Tahun',
+            '12-16 Tahun',
+            '17-25 Tahun'
+        )
+        THEN 1
+        ELSE 0
+    END
+) as anak,
 
-            SUM(
-                CASE
-                    WHEN p.umur >= 18 THEN 1
-                    ELSE 0
-                END
-            ) as dewasa,
-
+SUM(
+    CASE
+        WHEN p.rentang_umur IN (
+            '26-35 Tahun',
+            '36-45 Tahun',
+            '46-55 Tahun',
+            '56-65 Tahun',
+            '>65 Tahun'
+        )
+        THEN 1
+        ELSE 0
+    END
+) as dewasa,
             SUM(
                 CASE
                     WHEN p.jenis_kelamin = 'Laki-laki'

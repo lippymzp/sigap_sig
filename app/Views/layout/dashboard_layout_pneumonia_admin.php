@@ -1100,9 +1100,12 @@ $fotoTopbar = (!empty($petugasLogin['foto_profil']))
                                     <th>Status</th>
                                 </tr>
                             </thead>
+                            <?php
+                                $notifModal = array_slice($notif ?? [], 0, 3);
+                            ?>
                             <tbody>
-                                <?php if(isset($notif) && !empty($notif)): ?>
-                                <?php foreach($notif as $n): ?>
+                                <?php if(!empty($notifModal)): ?>
+                                <?php foreach($notifModal as $n): ?>
                                 <tr>
                                     <td>
                                         <?= esc($n['nama_pasien_skrining']) ?>

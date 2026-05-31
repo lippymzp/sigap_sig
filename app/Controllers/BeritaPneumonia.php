@@ -32,8 +32,6 @@ class BeritaPneumonia extends Controller
 
         ->orderBy('s.id_skrining', 'DESC')
 
-        ->limit(3)
-
         ->get()
 
         ->getResultArray();

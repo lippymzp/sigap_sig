@@ -591,8 +591,6 @@ $builder->groupBy("
 
         ->orderBy('s.id_skrining', 'DESC')
 
-        ->limit(3)
-
         ->get()
 
         ->getResultArray();
@@ -732,7 +730,6 @@ public function peta_sebaran_pneumonia()
         ->where('s.id_penyakit', 3)
         ->where('s.hasil', 'Berisiko')
         ->orderBy('s.id_skrining', 'DESC')
-        ->limit(3)
         ->get()
         ->getResultArray();
 
