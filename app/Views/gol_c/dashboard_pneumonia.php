@@ -141,21 +141,41 @@
 
                     <!-- KETERANGAN -->
                     <div class="map-legend-box">
-                        <h6>Keterangan:</h6>
+                        <h6>Keterangan PPR:</h6>
 
                         <div class="legend-item">
                             <span class="legend-color legend-tinggi"></span>
-                            <b>Risiko Tinggi</b>
+                            <div>
+                                <b>Risiko Tinggi</b>
+                                <div style="font-size:10px;color:#666;" id="legendTinggiLabel">33% tertinggi</div>
+                            </div>
                         </div>
 
                         <div class="legend-item">
                             <span class="legend-color legend-sedang"></span>
-                            <b>Risiko Sedang</b>
+                            <div>
+                                <b>Risiko Sedang</b>
+                                <div style="font-size:10px;color:#666;" id="legendSedangLabel">33% tengah</div>
+                            </div>
                         </div>
 
                         <div class="legend-item">
                             <span class="legend-color legend-rendah"></span>
-                            <b>Risiko Rendah</b>
+                            <div>
+                                <b>Risiko Rendah</b>
+                                <div style="font-size:10px;color:#666;" id="legendRendahLabel">33% terendah</div>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-color" style="background:#d9d9d9;"></span>
+                            <div>
+                                <b>Tidak Ada Data</b>
+                            </div>
+                        </div>
+
+                        <div style="font-size:9px;color:#888;margin-top:6px;line-height:1.4;">
+                            *Klasifikasi Quantile<br>berdasarkan data lokal<br>(Jenks Natural Breaks)
                         </div>
                     </div>
 
@@ -262,6 +282,12 @@
                         <p class="detail-label">Total Kasus</p>
                         <h4 id="detailTotal">0 kasus</h4>
 
+                        <p class="detail-label">Point Prevalence Rate (PPR)</p>
+                        <h4 id="detailPPR">0 per 100.000 penduduk</h4>
+
+                        <p class="detail-label">Jumlah Penduduk</p>
+                        <h4 id="detailPenduduk">-</h4>
+
                         <p class="detail-label" id="detailBulanLabel">Kasus Baru (Juni 2025)</p>
                         <h4 id="detailKasusBaru">0 kasus</h4>
                     </div>
@@ -269,7 +295,7 @@
                     <span id="detailKategori" class="badge-risk rendah">Rendah</span>
                 </div>
 
-                <h4 class="chart-title">10 Wilayah dengan Kasus Tertinggi</h4>
+                <h4 class="chart-title">10 Wilayah dengan PPR Tertinggi</h4>
 
                 <div id="rankingChart" class="ranking-chart"></div>
 
@@ -291,8 +317,29 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+    // =====================================================
+    // DATA PASIEN DARI DATABASE (dari PHP controller)
+    // =====================================================
     var dataPneu = <?= json_encode($pneumonia ?? []) ?>;
 
+    // =====================================================
+    // DATA JUMLAH PENDUDUK PER DESA (Kec. Ajung, Kab. Jember)
+    // Sumber: Dinas Kependudukan dan Pencatatan Sipil Kab. Jember
+    // =====================================================
+    var PENDUDUK = {
+        "sukamakmur":  12351,
+        "manggaran":   14255,  // "Mangaran" di data resmi, "Manggaran" di DB wilayah
+        "mangaran":    14255,
+        "pancakarya":  12899,
+        "ajung":       19339,
+        "klompangan":  11201,
+        "wirowongso":  11142,
+        "rowoindah":    5935
+    };
+
+    // =====================================================
+    // VARIABEL PETA & STATE
+    // =====================================================
     var map;
     var geoLayer;
     var geoJsonData;
@@ -300,12 +347,12 @@ document.addEventListener("DOMContentLoaded", function () {
     var availableYears = <?= json_encode(array_values($tahunList)) ?>;
 
     availableYears = Array.from(
-    new Set(
-        availableYears.concat(["2026", "2025"]).map(String)
-    )
-).sort(function(a, b){
-    return parseInt(b) - parseInt(a);
-});
+        new Set(
+            availableYears.concat(["2026", "2025"]).map(String)
+        )
+    ).sort(function(a, b){
+        return parseInt(b) - parseInt(a);
+    });
 
     var selectedYearIndex = 0;
 
@@ -314,10 +361,16 @@ document.addEventListener("DOMContentLoaded", function () {
         ? parseInt(availableYears[0])
         : 2025;
 
-    // PERBAIKAN BUG: Dideklarasikan di scope luar agar bisa diakses semua fungsi
-    var selectedDetailKey = "";
+    var selectedDetailKey  = "";
     var selectedDetailNama = "";
 
+    // Threshold dinamis hasil quantile (diupdate tiap renderGeoJson)
+    var thresholdTinggi = 0;
+    var thresholdSedang = 0;
+
+    // =====================================================
+    // FUNGSI NORMALISASI NAMA
+    // =====================================================
     function fixNama(nama){
         return (nama || "")
             .toString()
@@ -338,22 +391,37 @@ document.addEventListener("DOMContentLoaded", function () {
         var key = fixNama(nama).replace(/\s+/g, "");
 
         var alias = {
-            "klompongan": "klompangan",
+            "klompongan":  "klompangan",
             "klomplangan": "klompangan",
-            "rowoindah": "rowoindah",
-            "pancakarya": "pancakarya",
-            "pancakarya": "pancakarya",
-            "sukamakmur": "sukamakmur",
-            "wirowongso": "wirowongso",
-            "mangaran": "manggaran",
-            "ajung": "ajung"
+            "rowoindah":   "rowoindah",
+            "rowindah":    "rowoindah",
+            "sukamakmur":  "sukamakmur",
+            "pancakarya":  "pancakarya",
+            "wirowongso":  "wirowongso",
+            "mangaran":    "manggaran",
+            "manggaran":   "manggaran",
+            "ajung":       "ajung"
         };
 
-        if(alias[key]){
-            return alias[key];
-        }
+        return alias[key] !== undefined ? alias[key] : key;
+    }
 
-        return key;
+    function getPenduduk(key){
+        // Cari langsung, lalu cari dengan alias
+        if(PENDUDUK[key] !== undefined){
+            return PENDUDUK[key];
+        }
+        // Coba tanpa normalisasi lanjut
+        for(var k in PENDUDUK){
+            if(k === key){ return PENDUDUK[k]; }
+        }
+        return 0;
+    }
+
+    function hitungPPR(jumlahKasus, keyDesa){
+        var penduduk = getPenduduk(keyDesa);
+        if(!penduduk || penduduk === 0){ return 0; }
+        return (jumlahKasus / penduduk) * 100000;
     }
 
     function getDesa(item){
@@ -374,26 +442,6 @@ document.addEventListener("DOMContentLoaded", function () {
             || item.WADMKD
             || item.wadmkd
             || "";
-    }
-
-    function getKasus(item){
-        var nilai = item.kasus
-            || item.KASUS
-            || item.jumlah_kasus
-            || item.JUMLAH_KASUS
-            || item.total_kasus
-            || item.TOTAL_KASUS
-            || item.total
-            || item.TOTAL
-            || item.jumlah
-            || item.JUMLAH
-            || item.nilai
-            || item.NILAI
-            || 0;
-
-        nilai = nilai.toString().replace(/[^0-9]/g, "");
-
-        return parseInt(nilai || 0);
     }
 
     function getTahun(item){
@@ -426,119 +474,202 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function namaBulan(angka){
         var bulan = {
-            "1":"Januari",
-            "2":"Februari",
-            "3":"Maret",
-            "4":"April",
-            "5":"Mei",
-            "6":"Juni",
-            "7":"Juli",
-            "8":"Agustus",
-            "9":"September",
-            "10":"Oktober",
-            "11":"November",
-            "12":"Desember"
+            "1":"Januari","2":"Februari","3":"Maret","4":"April",
+            "5":"Mei","6":"Juni","7":"Juli","8":"Agustus",
+            "9":"September","10":"Oktober","11":"November","12":"Desember"
         };
-        return bulan[angka] || "Juni";
+        return bulan[String(angka)] || "Juni";
     }
 
     function getWaktuSaatIni(){
-    var tanggalSekarang = new Date();
+        var t = new Date();
+        return {
+            bulan: t.getMonth() + 1,
+            tahun: t.getFullYear(),
+            label: namaBulan(t.getMonth() + 1) + " " + t.getFullYear()
+        };
+    }
 
-    var bulanSekarang = tanggalSekarang.getMonth() + 1;
-    var tahunSekarang = tanggalSekarang.getFullYear();
+    // =====================================================
+    // QUANTILE THRESHOLD — DIHITUNG OTOMATIS DARI DATA
+    // Referensi metode: Natural Breaks / Quantile Classification
+    // (Supratiknyo & Siwiendrayanti, HIGEIA 2024; Spatial Modeling
+    //  of Risk Factors for Under-Five Pneumonia, NIH/PMC 2025)
+    // =====================================================
+    function hitungThresholdQuantile(dataFinal){
+        var pprValues = [];
 
-    return {
-        bulan: bulanSekarang,
-        tahun: tahunSekarang,
-        label: namaBulan(bulanSekarang) + " " + tahunSekarang
-    };
-}
+        for(var k in dataFinal){
+            var ppr = dataFinal[k].ppr || 0;
+            if(ppr > 0){
+                pprValues.push(ppr);
+            }
+        }
 
-    function kategoriKasus(total){
-        if(total >= 45){
-            return "tinggi";
-        }else if(total >= 25){
-            return "sedang";
-        }else{
-            return "rendah";
+        if(pprValues.length === 0){
+            thresholdTinggi = 0;
+            thresholdSedang = 0;
+            return;
+        }
+
+        pprValues.sort(function(a, b){ return a - b; });
+
+        var n = pprValues.length;
+
+        // Potong di 33% dan 66% dari distribusi aktual
+        var idxSedang = Math.floor(n * 0.33);
+        var idxTinggi = Math.floor(n * 0.66);
+
+        thresholdSedang = pprValues[idxSedang] || 0;
+        thresholdTinggi = pprValues[idxTinggi] || 0;
+
+        // Jika semua nilai sama (hanya 1 desa punya data), pakai pembagian manual
+        if(thresholdTinggi === thresholdSedang && thresholdTinggi > 0){
+            thresholdSedang = thresholdTinggi * 0.5;
+            thresholdTinggi = thresholdTinggi * 1.0;
         }
     }
 
+    function kategoriDariPPR(ppr){
+        if(thresholdTinggi > 0 && ppr >= thresholdTinggi){ return "tinggi"; }
+        if(thresholdSedang > 0 && ppr >= thresholdSedang){ return "sedang"; }
+        return "rendah";
+    }
+
     function warnaKategori(kategori){
-        if(kategori === "tinggi"){
-            return "#ff3131";
-        }
-        if(kategori === "sedang"){
-            return "#ffff00";
-        }
+        if(kategori === "tinggi"){ return "#ff3131"; }
+        if(kategori === "sedang"){ return "#ffcc00"; }
         return "#42a447";
     }
 
     function textKategori(kategori){
-        if(kategori === "tinggi"){
-            return "Tinggi";
-        }
-        if(kategori === "sedang"){
-            return "Sedang";
-        }
+        if(kategori === "tinggi"){ return "Tinggi"; }
+        if(kategori === "sedang"){ return "Sedang"; }
         return "Rendah";
     }
 
+    function formatPPR(ppr){
+        if(!ppr || ppr === 0){ return "0"; }
+        return parseFloat(ppr.toFixed(2)).toLocaleString("id-ID");
+    }
+
+    // Update teks legend dinamis di peta
+    function updateLegendLabel(){
+        var elTinggi = document.getElementById("legendTinggiLabel");
+        var elSedang = document.getElementById("legendSedangLabel");
+        var elRendah = document.getElementById("legendRendahLabel");
+
+        if(thresholdTinggi > 0 && thresholdSedang > 0){
+            if(elTinggi){ elTinggi.innerText = "PPR ≥ " + formatPPR(thresholdTinggi) + " /100rb"; }
+            if(elSedang){ elSedang.innerText = "PPR " + formatPPR(thresholdSedang) + "–" + formatPPR(thresholdTinggi) + " /100rb"; }
+            if(elRendah){ elRendah.innerText = "PPR < " + formatPPR(thresholdSedang) + " /100rb"; }
+        } else {
+            if(elTinggi){ elTinggi.innerText = "33% tertinggi"; }
+            if(elSedang){ elSedang.innerText = "33% tengah"; }
+            if(elRendah){ elRendah.innerText = "33% terendah"; }
+        }
+    }
+
+    // =====================================================
+    // BUILD DATA FINAL (dengan PPR)
+    // Setiap record di dataPneu = 1 pasien (1 kasus)
+    // PPR = (jumlah_kasus / jumlah_penduduk) × 100.000
+    // Filter JK: hanya hitung pasien JK yang dipilih,
+    //            pembagi tetap total penduduk desa
+    // =====================================================
     function buildDataFinal(){
-        var bulan = document.getElementById("filterBulan").value;
-        var tahun = document.getElementById("filterTahun").value;
-        var jk = document.getElementById("filterJk").value;
+        var bulan    = document.getElementById("filterBulan").value;
+        var tahun    = document.getElementById("filterTahun").value;
+        var jk       = document.getElementById("filterJk").value;
+        var filterJk = jk.toLowerCase().trim();
 
         var hasil = {};
 
         dataPneu.forEach(function(item){
-
             var itemTahun = getTahun(item).toString();
             var itemBulan = getBulan(item).toString();
-            var itemJk = getJk(item).toString().toLowerCase().trim();
-            var filterJk = jk.toString().toLowerCase().trim();
+            var itemJk    = getJk(item).toLowerCase().trim();
 
-            if(tahun && itemTahun && itemTahun !== tahun){
-                return;
-            }
-
-            if(bulan && itemBulan && itemBulan !== bulan){
-                return;
-            }
-
-            if(jk && itemJk && itemJk !== filterJk){
-                return;
-            }
+            if(tahun && itemTahun && itemTahun !== tahun){ return; }
+            if(bulan && itemBulan && itemBulan !== bulan){ return; }
+            if(jk && itemJk && itemJk !== filterJk){ return; }
 
             var desaAsli = getDesa(item);
-            var desaKey = fixKey(desaAsli);
-
-            if(!desaKey){
-                return;
-            }
+            var desaKey  = fixKey(desaAsli);
+            if(!desaKey){ return; }
 
             if(!hasil[desaKey]){
                 hasil[desaKey] = {
-                    nama: desaAsli,
-                    total: 0,
-                    kasusBaru: 0,
+                    nama:      desaAsli,
+                    total:     0,
+                    penduduk:  getPenduduk(desaKey),
+                    ppr:       0,
+                    kategori:  "rendah"
+                };
+            }
+
+            hasil[desaKey].total += 1; // setiap record = 1 kasus
+        });
+
+        // Hitung PPR per desa
+        for(var key in hasil){
+            hasil[key].ppr      = hitungPPR(hasil[key].total, key);
+        }
+
+        // Hitung threshold quantile dari semua PPR
+        hitungThresholdQuantile(hasil);
+
+        // Baru tentukan kategori setelah threshold diketahui
+        for(var key2 in hasil){
+            hasil[key2].kategori = kategoriDariPPR(hasil[key2].ppr);
+        }
+
+        currentDataFinal = hasil;
+        return hasil;
+    }
+
+    function buildDataDetailByYear(tahunDetail){
+        var bulan    = document.getElementById("filterBulan").value;
+        var jk       = document.getElementById("filterJk").value;
+        var filterJk = jk.toLowerCase().trim();
+
+        var hasil = {};
+
+        dataPneu.forEach(function(item){
+            var itemTahun = getTahun(item).toString();
+            var itemBulan = getBulan(item).toString();
+            var itemJk    = getJk(item).toLowerCase().trim();
+
+            if(itemTahun !== tahunDetail.toString()){ return; }
+            if(bulan && itemBulan !== bulan){ return; }
+            if(jk && itemJk !== filterJk){ return; }
+
+            var desaAsli = getDesa(item);
+            var desaKey  = fixKey(desaAsli);
+            if(!desaKey){ return; }
+
+            if(!hasil[desaKey]){
+                hasil[desaKey] = {
+                    nama:     desaAsli,
+                    total:    0,
+                    penduduk: getPenduduk(desaKey),
+                    ppr:      0,
                     kategori: "rendah"
                 };
             }
 
-            var jumlahKasus = getKasus(item);
-
-            hasil[desaKey].total += jumlahKasus;
-            hasil[desaKey].kasusBaru += jumlahKasus;
-
+            hasil[desaKey].total += 1;
         });
 
         for(var key in hasil){
-            hasil[key].kategori = kategoriKasus(hasil[key].total);
+            hasil[key].ppr = hitungPPR(hasil[key].total, key);
         }
 
-        currentDataFinal = hasil;
+        hitungThresholdQuantile(hasil);
+
+        for(var key2 in hasil){
+            hasil[key2].kategori = kategoriDariPPR(hasil[key2].ppr);
+        }
 
         return hasil;
     }
@@ -560,151 +691,106 @@ document.addEventListener("DOMContentLoaded", function () {
     /* =======================
        AIR QUALITY INDEX - IQAIR API
     ======================= */
-
-    var IQAIR_API_KEY = "d1160a02-9aa4-4404-86cd-4514f1e18d18";
-
-    var AQI_LAT = -8.1739;
-    var AQI_LON = 113.6473;
-
+    var IQAIR_API_KEY  = "d1160a02-9aa4-4404-86cd-4514f1e18d18";
+    var AQI_LAT        = -8.1739;
+    var AQI_LON        = 113.6473;
     var AQI_NAMA_LOKASI = "Kecamatan Ajung, Kabupaten Jember, Jawa Timur, Indonesia";
     var AQI_JUDUL_POPUP = "Kualitas Udara Kecamatan Ajung";
 
     function getKategoriAQI(aqi){
         aqi = parseInt(aqi || 0);
-
-        if(aqi <= 50){
-            return { teks: "Baik", className: "aqi-status-baik" };
-        }
-        if(aqi <= 100){
-            return { teks: "Sedang", className: "aqi-status-sedang" };
-        }
-        if(aqi <= 150){
-            return { teks: "Tidak Sehat (Sensitif)", className: "aqi-status-sensitif" };
-        }
-        if(aqi <= 200){
-            return { teks: "Tidak Sehat", className: "aqi-status-tidak-sehat" };
-        }
-        if(aqi <= 300){
-            return { teks: "Sangat Tidak Sehat", className: "aqi-status-sangat-tidak-sehat" };
-        }
-        return { teks: "Berbahaya", className: "aqi-status-berbahaya" };
+        if(aqi <= 50)  return { teks:"Baik",                   className:"aqi-status-baik" };
+        if(aqi <= 100) return { teks:"Sedang",                 className:"aqi-status-sedang" };
+        if(aqi <= 150) return { teks:"Tidak Sehat (Sensitif)", className:"aqi-status-sensitif" };
+        if(aqi <= 200) return { teks:"Tidak Sehat",            className:"aqi-status-tidak-sehat" };
+        if(aqi <= 300) return { teks:"Sangat Tidak Sehat",     className:"aqi-status-sangat-tidak-sehat" };
+        return             { teks:"Berbahaya",              className:"aqi-status-berbahaya" };
     }
 
     function formatTanggalAQI(tanggalApi){
         if(!tanggalApi){ return "-"; }
-
-        var tanggal = new Date(tanggalApi);
-
-        if(isNaN(tanggal.getTime())){ return tanggalApi; }
-
-        return tanggal.toLocaleString("id-ID", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        });
+        var t = new Date(tanggalApi);
+        if(isNaN(t.getTime())){ return tanggalApi; }
+        return t.toLocaleString("id-ID",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
     }
 
     function setStatusClassAQI(element, className){
         element.classList.remove(
-            "aqi-status-baik",
-            "aqi-status-sedang",
-            "aqi-status-sensitif",
-            "aqi-status-tidak-sehat",
-            "aqi-status-sangat-tidak-sehat",
-            "aqi-status-berbahaya"
+            "aqi-status-baik","aqi-status-sedang","aqi-status-sensitif",
+            "aqi-status-tidak-sehat","aqi-status-sangat-tidak-sehat","aqi-status-berbahaya"
         );
         element.classList.add(className);
     }
 
     function isiDataAQI(dataApi){
-
         if(!dataApi || dataApi.status !== "success"){
-            document.getElementById("aqiMiniValue").innerText = "-";
+            document.getElementById("aqiMiniValue").innerText  = "-";
             document.getElementById("aqiMiniStatus").innerText = "Gagal";
             document.getElementById("aqiPopupValue").innerText = "-";
             document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
             return;
         }
+        var data      = dataApi.data;
+        var pollution = data.current && data.current.pollution ? data.current.pollution : {};
+        var weather   = data.current && data.current.weather   ? data.current.weather   : {};
+        var aqi       = pollution.aqius || 0;
+        var kategori  = getKategoriAQI(aqi);
 
-        var data = dataApi.data;
-
-        var pollution = data.current && data.current.pollution
-            ? data.current.pollution : {};
-
-        var weather = data.current && data.current.weather
-            ? data.current.weather : {};
-
-        var aqi = pollution.aqius || 0;
-        var kategori = getKategoriAQI(aqi);
-
-        document.getElementById("aqiMiniValue").innerText = aqi;
-        document.getElementById("aqiMiniStatus").innerText = kategori.teks;
-
-        document.getElementById("aqiPopupTitle").innerText = AQI_JUDUL_POPUP;
-        document.getElementById("aqiPopupValue").innerText = aqi;
+        document.getElementById("aqiMiniValue").innerText   = aqi;
+        document.getElementById("aqiMiniStatus").innerText  = kategori.teks;
+        document.getElementById("aqiPopupTitle").innerText  = AQI_JUDUL_POPUP;
+        document.getElementById("aqiPopupValue").innerText  = aqi;
         document.getElementById("aqiPopupStatus").innerText = kategori.teks;
+        document.getElementById("aqiLocation").innerText    = AQI_NAMA_LOKASI;
+        document.getElementById("aqiTemp").innerText        = weather.tp  ?? "-";
+        document.getElementById("aqiHumidity").innerText    = weather.hu  ?? "-";
+        document.getElementById("aqiPressure").innerText    = weather.pr  ?? "-";
+        document.getElementById("aqiUpdated").innerText     = formatTanggalAQI(pollution.ts);
 
-        document.getElementById("aqiLocation").innerText = AQI_NAMA_LOKASI;
-        document.getElementById("aqiTemp").innerText = weather.tp ?? "-";
-        document.getElementById("aqiHumidity").innerText = weather.hu ?? "-";
-        document.getElementById("aqiPressure").innerText = weather.pr ?? "-";
-        document.getElementById("aqiUpdated").innerText = formatTanggalAQI(pollution.ts);
-
-        setStatusClassAQI(document.getElementById("aqiMiniStatus"), kategori.className);
+        setStatusClassAQI(document.getElementById("aqiMiniStatus"),  kategori.className);
         setStatusClassAQI(document.getElementById("aqiPopupStatus"), kategori.className);
     }
 
     function ambilDataAQI(){
-
-        var url = "https://api.airvisual.com/v2/nearest_city" +
-                  "?lat=" + AQI_LAT +
-                  "&lon=" + AQI_LON +
-                  "&key=" + IQAIR_API_KEY;
-
+        var url = "https://api.airvisual.com/v2/nearest_city"
+                + "?lat=" + AQI_LAT + "&lon=" + AQI_LON + "&key=" + IQAIR_API_KEY;
         fetch(url)
-            .then(function(response){ return response.json(); })
-            .then(function(data){ isiDataAQI(data); })
-            .catch(function(error){
-                console.error("Gagal mengambil data AQI:", error);
-                document.getElementById("aqiMiniValue").innerText = "-";
-                document.getElementById("aqiMiniStatus").innerText = "Gagal";
-                document.getElementById("aqiPopupValue").innerText = "-";
+            .then(function(r){ return r.json(); })
+            .then(function(d){ isiDataAQI(d); })
+            .catch(function(e){
+                console.error("Gagal mengambil data AQI:", e);
+                document.getElementById("aqiMiniValue").innerText   = "-";
+                document.getElementById("aqiMiniStatus").innerText  = "Gagal";
+                document.getElementById("aqiPopupValue").innerText  = "-";
                 document.getElementById("aqiPopupStatus").innerText = "Data gagal dimuat";
             });
     }
 
     function aktifkanPopupAQI(){
-
-        var miniBox = document.getElementById("aqiMiniBox");
+        var miniBox  = document.getElementById("aqiMiniBox");
         var popupBox = document.getElementById("aqiPopupBox");
-
         if(!miniBox || !popupBox){ return; }
-
         miniBox.addEventListener("click", function(e){
             e.stopPropagation();
             popupBox.style.display = "block";
         });
-
         popupBox.addEventListener("click", function(e){
             e.stopPropagation();
             popupBox.style.display = "none";
         });
-
         document.addEventListener("click", function(){
             popupBox.style.display = "none";
         });
     }
 
+    // =====================================================
+    // INISIALISASI PETA
+    // =====================================================
     function initMap(){
         var mapElement = document.getElementById("map");
-
         if(!mapElement){ return; }
 
-        map = L.map("map", {
-            zoomControl: true
-        }).setView([-7.9, 112.6], 10);
+        map = L.map("map", { zoomControl: true }).setView([-7.9, 112.6], 10);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: "Leaflet"
@@ -720,53 +806,60 @@ document.addEventListener("DOMContentLoaded", function () {
                 renderGeoJson();
             });
 
-        setTimeout(function(){
-            map.invalidateSize();
-        }, 300);
+        setTimeout(function(){ map.invalidateSize(); }, 300);
     }
 
+    // =====================================================
+    // RENDER GEOJSON — WARNA BERDASARKAN PPR + QUANTILE
+    // =====================================================
     function renderGeoJson(){
         var dataFinal = buildDataFinal();
 
-        if(geoLayer){
-            map.removeLayer(geoLayer);
-        }
+        // Update label legend setelah threshold dihitung
+        updateLegendLabel();
+
+        if(geoLayer){ map.removeLayer(geoLayer); }
 
         geoLayer = L.geoJSON(geoJsonData, {
 
             style: function(feature){
-                var nama = getNamaGeo(feature);
-                var key = fixKey(nama);
-                var item = dataFinal[key];
-
+                var nama     = getNamaGeo(feature);
+                var key      = fixKey(nama);
+                var item     = dataFinal[key];
                 var kategori = item ? item.kategori : "rendah";
-                var warna = item ? warnaKategori(kategori) : "#d9d9d9";
+                var warna    = item ? warnaKategori(kategori) : "#d9d9d9";
 
                 return {
-                    color: "#23a39a",
-                    weight: 2,
-                    fillColor: warna,
+                    color:       "#23a39a",
+                    weight:      2,
+                    fillColor:   warna,
                     fillOpacity: item ? 0.75 : 0.55
                 };
             },
 
             onEachFeature: function(feature, layer){
+                var nama     = getNamaGeo(feature);
+                var key      = fixKey(nama);
+                var item     = dataFinal[key];
 
-                var nama = getNamaGeo(feature);
-                var key = fixKey(nama);
-                var item = dataFinal[key];
-
-                var total = item ? item.total : 0;
+                var total    = item ? item.total    : 0;
+                var ppr      = item ? item.ppr      : 0;
+                var penduduk = item ? item.penduduk : getPenduduk(key);
                 var kategori = item ? item.kategori : "rendah";
-                var statusData = item ? "" : `<br><span class="popup-empty">Data tidak ditemukan</span>`;
+
+                var statusData = (!item || !getPenduduk(key))
+                    ? "<br><span class='popup-empty'>Data penduduk tidak ditemukan</span>"
+                    : "";
 
                 var isiPopup = `
                     <div class="popup-informasi" onclick="showDetailWilayah('${key}', decodeURIComponent('${encodeURIComponent(nama)}'))">
                         <b>Informasi :</b><br>
-                        <span>Desa : ${nama}</span><br>
+                        <span>Desa/Kelurahan : ${nama}</span><br>
                         <span>Jumlah Kasus : ${total}</span><br>
+                        <span>Jumlah Penduduk : ${penduduk > 0 ? penduduk.toLocaleString("id-ID") : "-"}</span><br>
+                        <span>PPR : <b>${formatPPR(ppr)}</b> per 100.000 penduduk</span><br>
                         <span>
-                            Tingkat Kasus :
+                            Tingkat Risiko :
                             <b class="popup-${kategori}">${textKategori(kategori)}</b>
                         </span>
                         ${statusData}
@@ -776,25 +869,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
 
                 layer.bindPopup(isiPopup, {
-                    closeButton: true,
-                    className: "popup-info-custom"
+                    closeButton:  true,
+                    className:    "popup-info-custom"
                 });
 
                 layer.bindTooltip(nama, {
-                    permanent: true,
-                    direction: "center",
-                    className: "label-desa"
+                    permanent:  true,
+                    direction:  "center",
+                    className:  "label-desa"
                 });
 
-                layer.on("click", function(){ layer.openPopup(); });
-
-                layer.on("mouseover", function(){
-                    layer.setStyle({ weight: 4, fillOpacity: 0.85 });
-                });
-
-                layer.on("mouseout", function(){
-                    geoLayer.resetStyle(layer);
-                });
+                layer.on("click",     function(){ layer.openPopup(); });
+                layer.on("mouseover", function(){ layer.setStyle({ weight: 4, fillOpacity: 0.85 }); });
+                layer.on("mouseout",  function(){ geoLayer.resetStyle(layer); });
             }
 
         }).addTo(map);
@@ -802,220 +889,133 @@ document.addEventListener("DOMContentLoaded", function () {
         map.fitBounds(geoLayer.getBounds());
     }
 
+    // =====================================================
+    // HITUNG KASUS BARU BULAN TERKINI UNTUK SATU WILAYAH
+    // =====================================================
     function hitungKasusBaruTerkiniWilayah(keyWilayah){
+        var waktu    = getWaktuSaatIni();
+        var jk       = document.getElementById("filterJk").value;
+        var filterJk = jk.toLowerCase().trim();
+        var total    = 0;
 
-    var waktuSaatIni = getWaktuSaatIni();
+        dataPneu.forEach(function(item){
+            var desaKey   = fixKey(getDesa(item));
+            var itemTahun = getTahun(item).toString();
+            var itemBulan = getBulan(item).toString();
+            var itemJk    = getJk(item).toLowerCase().trim();
 
-    var jk = document.getElementById("filterJk").value;
-    var filterJk = jk.toString().toLowerCase().trim();
+            if(desaKey !== keyWilayah)                    { return; }
+            if(itemTahun !== waktu.tahun.toString())      { return; }
+            if(itemBulan !== waktu.bulan.toString())      { return; }
+            if(jk && itemJk !== filterJk)                 { return; }
 
-    var totalKasusBaru = 0;
+            total += 1;
+        });
 
-    dataPneu.forEach(function(item){
-
-        var desaAsli = getDesa(item);
-        var desaKey = fixKey(desaAsli);
-
-        var itemTahun = getTahun(item).toString();
-        var itemBulan = getBulan(item).toString();
-
-        var itemJk = getJk(item).toString().toLowerCase().trim();
-
-        // hanya wilayah/kelurahan yang sedang diklik
-        if(desaKey !== keyWilayah){
-            return;
-        }
-
-        // hanya data bulan dan tahun saat ini
-        if(itemTahun !== waktuSaatIni.tahun.toString()){
-            return;
-        }
-
-        if(itemBulan !== waktuSaatIni.bulan.toString()){
-            return;
-        }
-
-        // hanya berubah jika filter jenis kelamin dipilih
-        if(jk && itemJk !== filterJk){
-            return;
-        }
-
-        totalKasusBaru += getKasus(item);
-    });
-
-    return totalKasusBaru;
-}                                
-
-function buildDataDetailByYear(tahunDetail){
-
-    var bulan = document.getElementById("filterBulan").value;
-    var jk = document.getElementById("filterJk").value;
-
-    var hasil = {};
-
-    dataPneu.forEach(function(item){
-
-        var itemTahun = getTahun(item).toString();
-        var itemBulan = getBulan(item).toString();
-        var itemJk = getJk(item).toString().toLowerCase().trim();
-        var filterJk = jk.toString().toLowerCase().trim();
-
-        if(itemTahun !== tahunDetail.toString()){
-            return;
-        }
-
-        if(bulan && itemBulan !== bulan){
-            return;
-        }
-
-        if(jk && itemJk !== filterJk){
-            return;
-        }
-
-        var desaAsli = getDesa(item);
-        var desaKey = fixKey(desaAsli);
-
-        if(!hasil[desaKey]){
-            hasil[desaKey] = {
-                nama: desaAsli,
-                total: 0,
-                kasusBaru: 0,
-                kategori: "rendah"
-            };
-        }
-
-        var jumlahKasus = getKasus(item);
-
-        hasil[desaKey].total += jumlahKasus;
-        hasil[desaKey].kasusBaru += jumlahKasus;
-    });
-
-    for(var key in hasil){
-        hasil[key].kategori = kategoriKasus(hasil[key].total);
+        return total;
     }
 
-    return hasil;
-}
-
+    // =====================================================
+    // TAMPILKAN HALAMAN DETAIL WILAYAH
+    // =====================================================
     window.showDetailWilayah = function(key, namaWilayah){
-
-        selectedDetailKey = key;
+        selectedDetailKey  = key;
         selectedDetailNama = namaWilayah;
 
         var tahun = document.getElementById("filterTahun").value || availableYears[0] || "2025";
-
         selectedDetailYear = parseInt(tahun);
-        selectedYearIndex = availableYears.indexOf(selectedDetailYear.toString());
+        selectedYearIndex  = availableYears.indexOf(selectedDetailYear.toString());
+        if(selectedYearIndex < 0){ selectedYearIndex = 0; }
 
-        if(selectedYearIndex < 0){
-            selectedYearIndex = 0;
-        }
-
-        // PENTING: hitung ulang data detail sesuai tahun yang tampil
         currentDataFinal = buildDataDetailByYear(selectedDetailYear);
 
-        var item = currentDataFinal[key];
+        var item = currentDataFinal[key] || {
+            nama:     namaWilayah,
+            total:    0,
+            penduduk: getPenduduk(key),
+            ppr:      0,
+            kategori: "rendah"
+        };
 
-        if(!item){
-            item = {
-                nama: namaWilayah,
-                total: 0,
-                kasusBaru: 0,
-                kategori: "rendah"
-            };
-        }
-
-        item.kategori = kategoriKasus(item.total);
-
-        document.getElementById("mapPage").style.display = "none";
+        document.getElementById("mapPage").style.display    = "none";
         document.getElementById("detailPage").style.display = "block";
 
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
-        document.getElementById("detailYear").innerText = selectedDetailYear;
-        document.getElementById("detailWilayah").innerText = "Kelurahan " + namaWilayah;
-        document.getElementById("detailTotal").innerText = item.total + " kasus";
+        document.getElementById("detailYear").innerText        = selectedDetailYear;
+        document.getElementById("detailWilayah").innerText     = "Kelurahan " + namaWilayah;
+        document.getElementById("detailTotal").innerText       = item.total + " kasus";
+        document.getElementById("detailPPR").innerText         = formatPPR(item.ppr) + " per 100.000 penduduk";
+        document.getElementById("detailPenduduk").innerText    = item.penduduk > 0
+            ? item.penduduk.toLocaleString("id-ID") + " jiwa"
+            : "Data tidak tersedia";
 
-        var waktuSaatIni = getWaktuSaatIni();
+        var waktu          = getWaktuSaatIni();
         var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(key);
 
-        document.getElementById("detailBulanLabel").innerText =
-        "Kasus Baru (" + waktuSaatIni.label + ")";
-
-        document.getElementById("detailKasusBaru").innerText =
-        kasusBaruTerkini + " kasus";
+        document.getElementById("detailBulanLabel").innerText  = "Kasus Baru (" + waktu.label + ")";
+        document.getElementById("detailKasusBaru").innerText   = kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
-        badge.innerText = textKategori(item.kategori);
-        badge.className = "badge-risk " + item.kategori;
+        badge.innerText  = textKategori(item.kategori);
+        badge.className  = "badge-risk " + item.kategori;
 
         renderRankingChart();
-    }
+    };
 
     window.backToMap = function(){
         document.getElementById("detailPage").style.display = "none";
-        document.getElementById("mapPage").style.display = "block";
-
-        setTimeout(function(){
-            map.invalidateSize();
-        }, 300);
-    }
+        document.getElementById("mapPage").style.display    = "block";
+        setTimeout(function(){ map.invalidateSize(); }, 300);
+    };
 
     window.changeDetailYear = function(step){
-
         selectedYearIndex += step;
-
-        if(selectedYearIndex < 0){
-            selectedYearIndex = 0;
-        }
-
-        if(selectedYearIndex >= availableYears.length){
-            selectedYearIndex = availableYears.length - 1;
-        }
+        if(selectedYearIndex < 0)                            { selectedYearIndex = 0; }
+        if(selectedYearIndex >= availableYears.length)       { selectedYearIndex = availableYears.length - 1; }
 
         selectedDetailYear = parseInt(availableYears[selectedYearIndex]);
 
-        document.getElementById("detailYear").innerText = selectedDetailYear;
+        document.getElementById("detailYear").innerText        = selectedDetailYear;
         document.getElementById("detailTitleHeader").innerText = "Peta Sebaran Kasus " + selectedDetailYear;
 
         currentDataFinal = buildDataDetailByYear(selectedDetailYear);
 
-        var item = currentDataFinal[selectedDetailKey];
+        var item = currentDataFinal[selectedDetailKey] || {
+            nama:     selectedDetailNama,
+            total:    0,
+            penduduk: getPenduduk(selectedDetailKey),
+            ppr:      0,
+            kategori: "rendah"
+        };
 
-        if(!item){
-            item = {
-                nama: selectedDetailNama,
-                total: 0,
-                kasusBaru: 0,
-                kategori: "rendah"
-            };
-        }
+        document.getElementById("detailTotal").innerText    = item.total + " kasus";
+        document.getElementById("detailPPR").innerText      = formatPPR(item.ppr) + " per 100.000 penduduk";
+        document.getElementById("detailPenduduk").innerText = item.penduduk > 0
+            ? item.penduduk.toLocaleString("id-ID") + " jiwa"
+            : "Data tidak tersedia";
 
-        item.kategori = kategoriKasus(item.total);
-
-        document.getElementById("detailTotal").innerText = item.total + " kasus";
-
-        var waktuSaatIni = getWaktuSaatIni();
+        var waktu = getWaktuSaatIni();
         var kasusBaruTerkini = hitungKasusBaruTerkiniWilayah(selectedDetailKey);
 
-        document.getElementById("detailBulanLabel").innerText =
-            "Kasus Baru (" + waktuSaatIni.label + ")";
-
-        document.getElementById("detailKasusBaru").innerText =
-            kasusBaruTerkini + " kasus";
+        document.getElementById("detailBulanLabel").innerText = "Kasus Baru (" + waktu.label + ")";
+        document.getElementById("detailKasusBaru").innerText  = kasusBaruTerkini + " kasus";
 
         var badge = document.getElementById("detailKategori");
         badge.innerText = textKategori(item.kategori);
         badge.className = "badge-risk " + item.kategori;
 
         renderRankingChart();
-    }
+    };
 
+    // =====================================================
+    // CHART RANKING PPR (bukan kasus mentah)
+    // =====================================================
     function renderRankingChart(){
-
         var chart = document.getElementById("rankingChart");
 
         var ranking = Object.values(currentDataFinal)
-            .sort(function(a, b){ return b.total - a.total; })
+            .filter(function(d){ return d.ppr > 0; })
+            .sort(function(a, b){ return b.ppr - a.ppr; })
             .slice(0, 10);
 
         if(ranking.length === 0){
@@ -1027,21 +1027,20 @@ function buildDataDetailByYear(tahunDetail){
             return;
         }
 
-        var max = ranking[0].total || 1;
-        var html = "";
+        var maxPPR = ranking[0].ppr || 1;
+        var html   = "";
 
         ranking.forEach(function(item){
-
-            var width = (item.total / max) * 100;
+            var width    = (item.ppr / maxPPR) * 100;
             var kategori = item.kategori;
+            var pprLabel = formatPPR(item.ppr);
 
             html += `
                 <div class="rank-row">
                     <div class="rank-name">${item.nama.toUpperCase()}</div>
-
                     <div class="rank-bar-area">
                         <div class="rank-bar ${kategori}" style="width:${width}%;">
-                            <span>${item.total}</span>
+                            <span title="PPR: ${pprLabel}/100rb | Kasus: ${item.total}">${pprLabel}</span>
                         </div>
                     </div>
                 </div>
@@ -1051,6 +1050,9 @@ function buildDataDetailByYear(tahunDetail){
         chart.innerHTML = html;
     }
 
+    // =====================================================
+    // EVENT LISTENER FILTER
+    // =====================================================
     document.getElementById("filterTahun").addEventListener("change", function(){
         renderGeoJson();
     });
@@ -1062,8 +1064,7 @@ function buildDataDetailByYear(tahunDetail){
     document.getElementById("btnReset").addEventListener("click", function(){
         document.getElementById("filterBulan").value = "";
         document.getElementById("filterTahun").value = "";
-        document.getElementById("filterJk").value = "";
-
+        document.getElementById("filterJk").value    = "";
         renderGeoJson();
     });
 
@@ -1085,9 +1086,6 @@ function buildDataDetailByYear(tahunDetail){
     font-family:'Poppins', Arial, sans-serif;
 }
 
-/* =========================
-   TARGET SCROLL PETA SEBARAN
-========================= */
 #petaSebaran{
     scroll-margin-top:95px;
 }
@@ -1097,9 +1095,6 @@ function buildDataDetailByYear(tahunDetail){
     border-radius:16px;
 }
 
-/* =========================
-   HEADER MAP
-========================= */
 .section-header{
     display:flex;
     justify-content:space-between;
@@ -1120,20 +1115,14 @@ function buildDataDetailByYear(tahunDetail){
     margin:0;
 }
 
-/* =========================
-   CARD MAP
-========================= */
 .inner-card{
     background:#ffffff;
     width:100%;
     border-radius:18px;
-    overflow:hidden; /* pastikan konten tidak bocor */
+    overflow:hidden;
     box-shadow:0 2px 9px rgba(0,0,0,0.08);
 }
 
-/* =========================
-   FILTER
-========================= */
 .filter-wrapper{
     display:flex;
     justify-content:space-between;
@@ -1204,17 +1193,12 @@ function buildDataDetailByYear(tahunDetail){
     cursor:pointer;
 }
 
-/* =========================
-   MAP WRAPPER — FIX BUG MELAYANG
-   Tambahan: isolation:isolate agar elemen absolute
-   (legend & AQI box) tidak bocor keluar saat scroll
-========================= */
 .map-wrapper{
     position:relative;
     width:100%;
     border-radius:0;
     overflow:hidden;
-    isolation:isolate; /* ← FIX: mencegah elemen absolute bocor keluar saat scroll */
+    isolation:isolate;
 }
 
 #map{
@@ -1223,9 +1207,6 @@ function buildDataDetailByYear(tahunDetail){
     border-radius:0;
 }
 
-/* =========================
-   LABEL WILAYAH
-========================= */
 .label-desa{
     background:rgba(65,65,65,0.88);
     color:white;
@@ -1237,19 +1218,18 @@ function buildDataDetailByYear(tahunDetail){
     box-shadow:0 2px 6px rgba(0,0,0,0.35);
 }
 
+
 /* =========================
-   KETERANGAN DI DALAM MAP — FIX BUG MELAYANG
+   LEGEND — sesuai tampilan contoh
 ========================= */
 .map-legend-box{
     position:absolute;
     left:14px;
     bottom:14px;
-    width:175px;
-    z-index:999; /* ← pastikan z-index tetap di dalam stacking context wrapper */
-
+    width:195px;
+    z-index:999;
     background:#ffffff;
-    padding:12px 14px 8px;
-
+    padding:12px 14px 10px;
     border-radius:8px;
     box-shadow:0 2px 8px rgba(0,0,0,0.25);
 }
@@ -1274,36 +1254,26 @@ function buildDataDetailByYear(tahunDetail){
     width:21px;
     height:21px;
     display:inline-block;
+    flex-shrink:0;
 }
 
-.legend-tinggi{
-    background:#ff0000;
-}
-
-.legend-sedang{
-    background:#ffff00;
-}
-
-.legend-rendah{
-    background:#00ff00;
-}
+.legend-tinggi{ background:#ff3131; }
+.legend-sedang{ background:#ffcc00; }
+.legend-rendah{ background:#42a447; }
 
 /* =========================
-   AIR QUALITY INDEX — FIX BUG MELAYANG
+   AQI BOX — geser sesuai lebar legend
 ========================= */
 .aqi-mini-box{
     position:absolute;
-    left:203px;
+    left:223px;
     bottom:14px;
     width:125px;
-    z-index:1000; /* ← tetap di dalam stacking context wrapper */
-
+    z-index:1000;
     background:#ffffff;
     border-radius:10px;
     padding:10px 12px;
-
     box-shadow:0 4px 14px rgba(0,0,0,0.25);
-
     cursor:pointer;
     font-family:'Poppins', Arial, sans-serif;
 }
@@ -1323,32 +1293,25 @@ function buildDataDetailByYear(tahunDetail){
 .aqi-mini-status{
     margin-top:5px;
     display:inline-block;
-
     padding:4px 8px;
     border-radius:6px;
-
     font-size:12px;
     font-weight:700;
-
     background:#dcfce7;
     color:#16a34a;
 }
 
 .aqi-popup-box{
     display:none;
-
     position:absolute;
-    left:203px;
+    left:223px;
     bottom:14px;
     width:360px;
-    z-index:1002; /* ← tetap di dalam stacking context wrapper */
-
+    z-index:1002;
     background:#ffffff;
     border-radius:12px;
     padding:12px;
-
     box-shadow:0 8px 25px rgba(0,0,0,0.28);
-
     font-family:'Poppins', Arial, sans-serif;
     cursor:pointer;
 }
@@ -1365,7 +1328,6 @@ function buildDataDetailByYear(tahunDetail){
     border:1px solid #d1d5db;
     border-radius:12px;
     padding:14px 16px;
-
     box-shadow:inset 0 2px 8px rgba(0,0,0,0.08);
 }
 
@@ -1376,121 +1338,51 @@ function buildDataDetailByYear(tahunDetail){
     line-height:1.1;
 }
 
-.aqi-popup-icon{
-    color:#1976d2;
-    font-weight:900;
-}
+.aqi-popup-icon{ color:#1976d2; font-weight:900; }
 
 .aqi-popup-status{
     display:inline-block;
-
     margin-top:6px;
     padding:5px 10px;
     border-radius:6px;
-
     font-size:12px;
     font-weight:800;
-
     background:#dcfce7;
     color:#16a34a;
 }
 
-.aqi-popup-info{
-    margin-top:16px;
-}
+.aqi-popup-info{ margin-top:16px; }
+.aqi-popup-info p{ margin:0 0 9px; font-size:12px; color:#111827; line-height:1.5; }
 
-.aqi-popup-info p{
-    margin:0 0 9px;
-    font-size:12px;
-    color:#111827;
-    line-height:1.5;
-}
+.aqi-index-list{ margin-top:18px; }
+.aqi-index-list b{ display:block; margin-bottom:9px; font-size:12px; color:#111827; }
+.aqi-index-list p{ margin:0 0 7px; font-size:11px; font-weight:600; }
 
-.aqi-index-list{
-    margin-top:18px;
-}
+.aqi-good     { color:#16a34a; }
+.aqi-moderate { color:#f59e0b; }
+.aqi-sensitive{ color:#f97316; }
+.aqi-unhealthy{ color:#dc2626; }
+.aqi-very     { color:#9333ea; }
+.aqi-hazard   { color:#4c1d95; }
 
-.aqi-index-list b{
-    display:block;
-    margin-bottom:9px;
-    font-size:12px;
-    color:#111827;
-}
-
-.aqi-index-list p{
-    margin:0 0 7px;
-    font-size:11px;
-    font-weight:600;
-}
-
-.aqi-good{
-    color:#16a34a;
-}
-
-.aqi-moderate{
-    color:#f59e0b;
-}
-
-.aqi-sensitive{
-    color:#f97316;
-}
-
-.aqi-unhealthy{
-    color:#dc2626;
-}
-
-.aqi-very{
-    color:#9333ea;
-}
-
-.aqi-hazard{
-    color:#4c1d95;
-}
-
-/* WARNA STATUS AQI */
-.aqi-status-baik{
-    background:#dcfce7 !important;
-    color:#16a34a !important;
-}
-
-.aqi-status-sedang{
-    background:#fef3c7 !important;
-    color:#f59e0b !important;
-}
-
-.aqi-status-sensitif{
-    background:#ffedd5 !important;
-    color:#f97316 !important;
-}
-
-.aqi-status-tidak-sehat{
-    background:#fee2e2 !important;
-    color:#dc2626 !important;
-}
-
-.aqi-status-sangat-tidak-sehat{
-    background:#f3e8ff !important;
-    color:#9333ea !important;
-}
-
-.aqi-status-berbahaya{
-    background:#ede9fe !important;
-    color:#4c1d95 !important;
-}
+.aqi-status-baik             { background:#dcfce7 !important; color:#16a34a !important; }
+.aqi-status-sedang           { background:#fef3c7 !important; color:#f59e0b !important; }
+.aqi-status-sensitif         { background:#ffedd5 !important; color:#f97316 !important; }
+.aqi-status-tidak-sehat      { background:#fee2e2 !important; color:#dc2626 !important; }
+.aqi-status-sangat-tidak-sehat{ background:#f3e8ff !important; color:#9333ea !important; }
+.aqi-status-berbahaya        { background:#ede9fe !important; color:#4c1d95 !important; }
 
 /* =========================
    POPUP
 ========================= */
 .popup-informasi{
-    min-width:160px;
+    min-width:200px;
     font-size:12px;
-    line-height:1.5;
+    line-height:1.6;
     cursor:pointer;
 }
 
-.popup-informasi b{
-    color:#000;
-}
+.popup-informasi b{ color:#000; }
 
 .popup-informasi hr{
     margin:8px -8px 4px;
@@ -1505,33 +1397,16 @@ function buildDataDetailByYear(tahunDetail){
     font-size:10px;
 }
 
-.popup-tinggi{
-    color:red !important;
-}
+.popup-tinggi{ color:red !important; }
+.popup-sedang{ color:#d77b00 !important; }
+.popup-rendah{ color:green !important; }
+.popup-empty { color:#d62828; font-weight:800; }
 
-.popup-sedang{
-    color:#d77b00 !important;
-}
-
-.popup-rendah{
-    color:green !important;
-}
-
-.popup-empty{
-    color:#d62828;
-    font-weight:800;
-}
-
-.leaflet-popup-content-wrapper{
-    border-radius:8px;
-}
-
-.leaflet-popup-content{
-    margin:9px 11px;
-}
+.leaflet-popup-content-wrapper{ border-radius:8px; }
+.leaflet-popup-content{ margin:9px 11px; }
 
 /* =====================================================
-   DETAIL PAGE MODERN
+   DETAIL PAGE
 ===================================================== */
 .detail-card{
     background:#ffffff;
@@ -1566,14 +1441,8 @@ function buildDataDetailByYear(tahunDetail){
     color:#111827;
 }
 
-.detail-period span{
-    font-weight:400;
-}
-
-.detail-period b{
-    font-size:18px;
-    font-weight:700;
-}
+.detail-period span{ font-weight:400; }
+.detail-period b   { font-size:18px; font-weight:700; }
 
 .period-btn{
     border:none;
@@ -1633,20 +1502,9 @@ function buildDataDetailByYear(tahunDetail){
     white-space:nowrap;
 }
 
-.badge-risk.tinggi{
-    background:#fee2e2;
-    color:#dc2626;
-}
-
-.badge-risk.sedang{
-    background:#fef3c7;
-    color:#b45309;
-}
-
-.badge-risk.rendah{
-    background:#dcfce7;
-    color:#15803d;
-}
+.badge-risk.tinggi{ background:#fee2e2; color:#dc2626; }
+.badge-risk.sedang{ background:#fef3c7; color:#b45309; }
+.badge-risk.rendah{ background:#dcfce7; color:#15803d; }
 
 .chart-title{
     margin-top:22px;
@@ -1656,9 +1514,6 @@ function buildDataDetailByYear(tahunDetail){
     color:#111827;
 }
 
-/* =========================
-   CHART BATANG DETAIL
-========================= */
 .ranking-chart{
     width:72%;
     min-width:560px;
@@ -1694,25 +1549,15 @@ function buildDataDetailByYear(tahunDetail){
     font-weight:700;
     text-align:center;
     line-height:23px;
-    min-width:26px;
+    min-width:40px;
     border-radius:0 3px 3px 0;
 }
 
-.rank-bar.tinggi{
-    background:#8b0000;
-}
+.rank-bar.tinggi{ background:#8b0000; }
+.rank-bar.sedang{ background:#e76f51; }
+.rank-bar.rendah{ background:#16a34a; }
 
-.rank-bar.sedang{
-    background:#e76f51;
-}
-
-.rank-bar.rendah{
-    background:#16a34a;
-}
-
-.rank-bar span{
-    font-size:13px;
-}
+.rank-bar span{ font-size:12px; }
 
 .empty-chart{
     padding:18px 30px;
@@ -1739,178 +1584,52 @@ function buildDataDetailByYear(tahunDetail){
     cursor:pointer;
 }
 
-.btn-kembali:hover{
-    background:#079bad;
-}
+.btn-kembali:hover{ background:#079bad; }
 
 /* =========================
    RESPONSIVE
 ========================= */
 @media(max-width:768px){
-
-    .section-card{
-        padding:12px;
-    }
-
-    .section-header{
-        flex-direction:column;
-        gap:12px;
-    }
-
-    .section-header h5{
-        font-size:22px;
-    }
-
-    .section-header .sub{
-        font-size:14px;
-    }
-
-    .filter-wrapper{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .filter-left{
-        width:100%;
-        gap:8px;
-    }
-
-    .filter-group label{
-        font-size:13px;
-        margin-bottom:6px;
-    }
-
-    .filter-group select{
-        width:115px;
-        height:34px;
-        font-size:13px;
-    }
-
-    .filter-right{
-        width:100%;
-        justify-content:flex-end;
-    }
-
-    .btn-filter,
-    .btn-reset{
-        height:36px;
-        font-size:14px;
-        padding:0 16px;
-    }
-
-    #map{
-        height:330px !important;
-    }
-
-    .map-legend-box{
-        width:155px;
-        padding:10px 12px 6px;
-    }
-
-    .map-legend-box h6{
-        font-size:13px;
-    }
-
-    .legend-item{
-        font-size:10px;
-        margin-bottom:8px;
-    }
-
-    .legend-color{
-        width:19px;
-        height:19px;
-    }
-
-    .label-desa{
-        font-size:10px;
-        padding:3px 6px;
-    }
-
-    .popup-informasi{
-        min-width:150px;
-        font-size:12px;
-    }
-
-    .detail-card{
-        padding:14px;
-    }
-
-    .detail-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
-    }
-
-    .detail-header h5{
-        font-size:18px;
-    }
-
-    .detail-period{
-        font-size:15px;
-    }
-
-    .detail-inner{
-        padding:24px 18px 32px;
-    }
-
-    .detail-top{
-        flex-direction:column;
-        gap:16px;
-        margin-bottom:26px;
-    }
-
-    .detail-top h3{
-        font-size:21px;
-    }
-
-    .detail-label{
-        font-size:15px;
-    }
-
-    .detail-top h4{
-        font-size:17px;
-    }
-
-    .badge-risk{
-        font-size:14px;
-        padding:7px 14px;
-    }
-
-    .chart-title{
-        font-size:19px;
-    }
-
-    .ranking-chart{
-        width:100%;
-        min-width:100%;
-    }
-
-    .rank-name{
-        width:115px;
-        font-size:11px;
-        letter-spacing:2px;
-        padding-right:10px;
-    }
-
-    .rank-bar-area{
-        height:30px;
-    }
-
-    .rank-bar{
-        height:22px;
-        line-height:22px;
-    }
-
-    .btn-kembali{
-        width:100%;
-        padding:10px 20px;
-    }
+    .section-card{ padding:12px; }
+    .section-header{ flex-direction:column; gap:12px; }
+    .section-header h5{ font-size:22px; }
+    .section-header .sub{ font-size:14px; }
+    .filter-wrapper{ flex-direction:column; align-items:flex-start; }
+    .filter-left{ width:100%; gap:8px; }
+    .filter-group label{ font-size:13px; margin-bottom:6px; }
+    .filter-group select{ width:115px; height:34px; font-size:13px; }
+    .filter-right{ width:100%; justify-content:flex-end; }
+    .btn-filter,.btn-reset{ height:36px; font-size:14px; padding:0 16px; }
+    #map{ height:330px !important; }
+    .map-legend-box{ width:175px; padding:10px 12px 6px; }
+    .map-legend-box h6{ font-size:13px; }
+    .legend-item{ font-size:10px; margin-bottom:7px; }
+    .legend-color{ width:19px; height:19px; }
+    .label-desa{ font-size:10px; padding:3px 6px; }
+    .popup-informasi{ min-width:180px; font-size:12px; }
+    .detail-card{ padding:14px; }
+    .detail-header{ flex-direction:column; align-items:flex-start; gap:10px; }
+    .detail-header h5{ font-size:18px; }
+    .detail-period{ font-size:15px; }
+    .detail-inner{ padding:24px 18px 32px; }
+    .detail-top{ flex-direction:column; gap:16px; margin-bottom:26px; }
+    .detail-top h3{ font-size:21px; }
+    .detail-label{ font-size:15px; }
+    .detail-top h4{ font-size:17px; }
+    .badge-risk{ font-size:14px; padding:7px 14px; }
+    .chart-title{ font-size:19px; }
+    .ranking-chart{ width:100%; min-width:100%; }
+    .rank-name{ width:115px; font-size:11px; letter-spacing:2px; padding-right:10px; }
+    .rank-bar-area{ height:30px; }
+    .rank-bar{ height:22px; line-height:22px; }
+    .btn-kembali{ width:100%; padding:10px 20px; }
+    .aqi-mini-box{ left:203px; }
+    .aqi-popup-box{ left:203px; width:290px; }
 }
 
 /* =========================
    FUNFACT
 ========================= */
-
 .funfact-section{
     margin-top:60px;
     margin-bottom:80px;
@@ -1931,29 +1650,16 @@ function buildDataDetailByYear(tahunDetail){
     max-width:720px;
 }
 
-.funfact-link{
-    text-decoration:none;
-}
+.funfact-link{ text-decoration:none; }
 
 .funfact-card{
     position:relative;
-
     margin:70px auto 0;
-
     max-width:700px;
-
-    background:linear-gradient(
-        90deg,
-        #12c7d3,
-        #007b84
-    );
-
+    background:linear-gradient(90deg,#12c7d3,#007b84);
     border-radius:30px;
-
     padding:55px 40px 35px;
-
     transition:.3s ease;
-
     box-shadow:0 12px 30px rgba(0,0,0,0.12);
 }
 
@@ -1962,152 +1668,69 @@ function buildDataDetailByYear(tahunDetail){
     box-shadow:0 18px 40px rgba(0,0,0,0.16);
 }
 
-/* ICON */
 .funfact-icon{
     position:absolute;
-
     top:-55px;
     left:50%;
-
     transform:translateX(-50%);
-
     width:110px;
     height:110px;
-
     background:#12bcc8;
-
     border-radius:50%;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     color:white;
-
     font-size:48px;
-
     box-shadow:0 10px 24px rgba(0,0,0,0.14);
 }
 
-.funfact-content{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:30px;
-}
-
-.funfact-text{
-    flex:1;
-}
-
-.funfact-text h3{
-    color:white;
-    font-size:32px;
-    font-weight:800;
-    margin-bottom:18px;
-}
-
-.funfact-text p{
-    color:white;
-    font-size:20px;
-    line-height:1.8;
-}
-
-.funfact-image img{
-    width:220px;
-    border-radius:18px;
-    object-fit:cover;
-}
+.funfact-content{ display:flex; align-items:center; justify-content:space-between; gap:30px; }
+.funfact-text{ flex:1; }
+.funfact-text h3{ color:white; font-size:32px; font-weight:800; margin-bottom:18px; }
+.funfact-text p { color:white; font-size:20px; line-height:1.8; }
+.funfact-image img{ width:220px; border-radius:18px; object-fit:cover; }
 
 /* =========================
    HEADER BERITA
 ========================= */
-
-.berita-header{
-    margin-bottom:40px;
-}
-
-.berita-header h2{
-    font-size:30px;
-    font-weight:800;
-    color:#111;
-    margin-bottom:5px;
-}
-
-.berita-header p{
-    color:#7d7d7d;
-    font-size:17px;
-    line-height:1.7;
-    max-width:720px;
-}
-
+.berita-header{ margin-bottom:40px; }
+.berita-header h2{ font-size:30px; font-weight:800; color:#111; margin-bottom:5px; }
+.berita-header p { color:#7d7d7d; font-size:17px; line-height:1.7; max-width:720px; }
 
 /* =========================
-   JARAK MAP KE GRAFIK
+   GRAFIK
 ========================= */
 #grafik{
     margin-top:40px;
-}
-
-
-/* =========================
-   GRAFIK INTERAKTIF DETAIL
-========================= */
-#grafik{
-    margin-top:40px;
-
     background:#eaf9fb;
     border-radius:18px;
-
     padding:24px;
 }
 
-#grafik .section-header{
-    margin-bottom:18px;
-}
-
-#grafik .section-header h5{
-    font-size:28px;
-    font-weight:800;
-    color:#0d3440;
-    margin-bottom:6px;
-}
-
-#grafik .section-header .sub{
-    font-size:14px;
-    color:#60727d;
-}
+#grafik .section-header{ margin-bottom:18px; }
+#grafik .section-header h5{ font-size:28px; font-weight:800; color:#0d3440; margin-bottom:6px; }
+#grafik .section-header .sub{ font-size:14px; color:#60727d; }
 
 .chart-frame{
     width:100%;
     height:720px;
-
     overflow:hidden;
-
     border-radius:18px;
-
     background:#ffffff;
-
     padding:18px;
-
     box-shadow:0 4px 14px rgba(0,0,0,0.08);
 }
 
 .chart-frame iframe{
     width:100%;
     height:100%;
-
     border:none;
     border-radius:14px;
-
     background:transparent;
 }
 
-#artikelSection{
-    margin-left:0px;
-    margin-right:0px;
-}
-
+#artikelSection{ margin-left:0px; margin-right:0px; }
 </style>
 
    <!-- CHART -->
@@ -2220,14 +1843,12 @@ $totalBerita = $queryBerita->getNumRows();
 
                 if ($gambar !== '' && strtolower($gambar) !== 'null') {
 
-                    // CEK APAKAH URL INTERNET
                     if (filter_var($gambar, FILTER_VALIDATE_URL)) {
 
                         $gambarFix = $gambar;
 
                     } else {
 
-                        // FILE LOKAL
                         $pathFile = FCPATH . 'uploads/berita/' . $gambar;
 
                         if (file_exists($pathFile)) {
@@ -2324,139 +1945,20 @@ $totalBerita = $queryBerita->getNumRows();
 
 </section>
 <style>
-
-/* WRAPPER */
-.news-slider-admin{
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    margin-top: 20px;
-}
-
-/* TRACK */
-.news-track{
-    display:flex;
-    gap:20px;
-
-    overflow-x:auto;
-    scroll-behavior:smooth;
-
-    padding:10px 5px;
-
-    scrollbar-width:none;
-}
-
-.news-track::-webkit-scrollbar{
-    display:none;
-}
-
-/* CARD */
-.news-card{
-    min-width:320px;
-    max-width:320px;
-
-    background:#fff;
-    border-radius:18px;
-
-    overflow:hidden;
-
-    box-shadow:0 4px 14px rgba(0,0,0,0.08);
-
-    transition:0.3s;
-    flex-shrink:0;
-}
-
-.news-card:hover{
-    transform:translateY(-5px);
-}
-
-/* IMAGE */
-.news-card img{
-    width:100%;
-    height:180px;
-
-    object-fit:cover;
-    display:block;
-}
-
-/* CONTENT */
-.news-content{
-    padding:18px;
-}
-
-/* BADGE */
-.news-badge{
-    display:inline-block;
-
-    background:#dff7f8;
-    color:#13aab5;
-
-    font-size:12px;
-    font-weight:700;
-
-    padding:6px 12px;
-    border-radius:6px;
-
-    margin-bottom:12px;
-}
-
-/* TITLE */
-.news-content h5{
-    font-size:20px;
-    font-weight:700;
-
-    margin-bottom:10px;
-    color:#173b4d;
-}
-
-/* DESC */
-.news-content p{
-    font-size:14px;
-    color:#6c757d;
-
-    line-height:1.6;
-    margin-bottom:14px;
-}
-
-/* LINK */
-.news-link{
-    text-decoration:none;
-    color:#11b7c4;
-    font-weight:700;
-}
-
-/* BUTTON */
-.slide-btn{
-    position:absolute;
-    top:40%;
-
-    transform:translateY(-50%);
-
-    width:38px;
-    height:38px;
-
-    border:none;
-    border-radius:50%;
-
-    background:#12b8c5;
-    color:white;
-
-    font-size:18px;
-    font-weight:bold;
-
-    cursor:pointer;
-
-    z-index:10;
-}
-
-.prev-btn{
-    left:0;
-}
-
-.next-btn{
-    right:0;
-}
-
+.news-slider-admin{ position:relative; width:100%; overflow:hidden; margin-top:20px; }
+.news-track{ display:flex; gap:20px; overflow-x:auto; scroll-behavior:smooth; padding:10px 5px; scrollbar-width:none; }
+.news-track::-webkit-scrollbar{ display:none; }
+.news-card{ min-width:320px; max-width:320px; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.08); transition:0.3s; flex-shrink:0; }
+.news-card:hover{ transform:translateY(-5px); }
+.news-card img{ width:100%; height:180px; object-fit:cover; display:block; }
+.news-content{ padding:18px; }
+.news-badge{ display:inline-block; background:#dff7f8; color:#13aab5; font-size:12px; font-weight:700; padding:6px 12px; border-radius:6px; margin-bottom:12px; }
+.news-content h5{ font-size:20px; font-weight:700; margin-bottom:10px; color:#173b4d; }
+.news-content p{ font-size:14px; color:#6c757d; line-height:1.6; margin-bottom:14px; }
+.news-link{ text-decoration:none; color:#11b7c4; font-weight:700; }
+.slide-btn{ position:absolute; top:40%; transform:translateY(-50%); width:38px; height:38px; border:none; border-radius:50%; background:#12b8c5; color:white; font-size:18px; font-weight:bold; cursor:pointer; z-index:10; }
+.prev-btn{ left:0; }
+.next-btn{ right:0; }
 </style>
 
 <!-- FUNFACT -->
@@ -2481,14 +1983,12 @@ $totalBerita = $queryBerita->getNumRows();
 
         <div class="funfact-card">
 
-            <!-- ICON -->
             <div class="funfact-icon">
                 <i class="bi bi-lungs-fill"></i>
             </div>
 
             <div class="funfact-content">
 
-                <!-- TEXT -->
                 <div class="funfact-text">
 
                     <h3>
@@ -2501,7 +2001,6 @@ $totalBerita = $queryBerita->getNumRows();
 
                 </div>
 
-                <!-- IMAGE -->
                 <div class="funfact-image">
 
                     <img
