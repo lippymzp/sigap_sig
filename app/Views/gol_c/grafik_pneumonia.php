@@ -312,19 +312,15 @@ $dataWilayah = $queryWilayah->getResultArray();
                 <option value="2026">2026</option>
 
             </select>
-            <select id="filterUmur2" class="dropdown-btn">
 
+    <select id="filterUmur2" class="dropdown-btn">
     <option value="">Pilih Usia</option>
-    <option value="0-12 Bulan">< 0-12 Bulan</option>
-    <option value="1-5 Tahun">1 - 5 tahun</option>
-    <option value="6-11 Tahun">6 - 11 tahun</option>
-    <option value="12-16 Tahun">12 - 16 tahun</option>
-    <option value="17-25 Tahun">17 - 25 tahun</option>
-    <option value="25-35 Tahun">26 - 35 tahun</option>
-    <option value="36-45 Tahun">36 - 45 tahun</option>
-    <option value="46-55 Tahun">46 - 55 tahun</option>
-    <option value="56-65 Tahun">56 - 65 tahun</option>
-    <option value=">65 Tahun">> 65 tahun</option>
+        <option value="<1 Tahun">&lt;1 Tahun</option>
+        <option value="1-5 Tahun">1-5 Tahun</option>
+        <option value="5-9 Tahun">5-9 Tahun</option>
+        <option value="10-18 Tahun">10-18 Tahun</option>
+        <option value="19-59 Tahun">19-59 Tahun</option>
+        <option value=">60 Tahun">&gt;60 Tahun</option>
 
 </select>
 

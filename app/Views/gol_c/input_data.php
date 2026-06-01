@@ -885,16 +885,12 @@ body{
                             <label>Usia</label>
                             <select name="usia" class="form-control" id="usia">
                                 <option value="">Pilih Usia</option>
-                                <option value="0-12 Bulan">0-12 Bulan</option>
-                                <option value="1-5 Tahun">1-5 Tahun</option>
-                                <option value="6-11 Tahun">6-11 Tahun</option>
-                                <option value="12-16 Tahun">12-16 Tahun</option>
-                                <option value="17-25 Tahun">17-25 Tahun</option>
-                                <option value="26-35 Tahun">26-35 Tahun</option>
-                                <option value="36-45 Tahun">36-45 Tahun</option>
-                                <option value="46-55 Tahun">46-55 Tahun</option>
-                                <option value="56-65 Tahun">56-65 Tahun</option>
-                                <option value=">65 Tahun">>65 Tahun</option>
+                            <option value="<1 Tahun">&lt;1 Tahun</option>
+                            <option value="1-5 Tahun">1-5 Tahun</option>
+                            <option value="5-9 Tahun">5-9 Tahun</option>
+                            <option value="10-18 Tahun">10-18 Tahun</option>
+                            <option value="19-59 Tahun">19-59 Tahun</option>
+                            <option value=">60 Tahun">&gt;60 Tahun</option>
                             </select>
                         </div>
 
