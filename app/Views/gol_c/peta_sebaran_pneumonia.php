@@ -210,6 +210,20 @@ document.addEventListener("DOMContentLoaded", function () {
     var geoJsonData;
     var currentDataFinal = {};
 
+    var POPULASI = {
+        "sukamakmur"  : 12351,
+        "mangaran"    : 14255,
+        "manggaran"   : 14255,
+        "pancakarya"  : 12899,
+        "ajung"       : 19339,
+        "klompangan"  : 11201,
+        "klompongan"  : 11201,
+        "wirowongso"  : 11142,
+        "rowoindah"   : 5935
+    };
+
+    var K_PREVALENSI = 100;
+
     function fixNama(nama){
         return (nama || "")
             .toString()
@@ -353,10 +367,28 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 }
 
-    function kategoriKasus(total){
-        if(total >= 45){
+    function hitungPrevalensi(totalKasus, keyDesa){
+        var populasi = POPULASI[keyDesa];
+
+        if(!populasi || populasi <= 0){
+            return null;
+        }
+
+        return (totalKasus / populasi) * K_PREVALENSI;
+    }
+
+    function kategoriDariPrevalensi(prev, totalKasus){
+        if(prev === null){
+            return "nodata";
+        }
+
+        if(totalKasus === 0){
+            return "nodata";
+        }
+
+        if(prev >= 0.90){
             return "tinggi";
-        }else if(total >= 25){
+        }else if(prev >= 0.40){
             return "sedang";
         }else{
             return "rendah";
@@ -372,7 +404,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return "#ffff00";
         }
 
-        return "#42a447";
+        if(kategori === "rendah"){
+            return "#42a447";
+        }
+
+        return "#d9d9d9";
     }
 
     function textKategori(kategori){
@@ -384,7 +420,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return "Sedang";
         }
 
-        return "Rendah";
+        if(kategori === "rendah"){
+            return "Rendah";
+        }
+
+        return "Tidak Ada Data";
     }
 
     function buildDataFinal(){
@@ -426,6 +466,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     nama: desaAsli,
                     total: 0,
                     kasusBaru: 0,
+                    prevalensi: 0,
+                    populasi: POPULASI[desaKey] || null,
                     kategori: "rendah"
                 };
             }
@@ -437,7 +479,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         for(var key in hasil){
-            hasil[key].kategori = kategoriKasus(hasil[key].total);
+            var prevalensi = hitungPrevalensi(hasil[key].total, key);
+
+            hasil[key].prevalensi = prevalensi;
+            hasil[key].populasi = POPULASI[key] || null;
+            hasil[key].kategori = kategoriDariPrevalensi(prevalensi, hasil[key].total);
         }
 
         if(kategoriFilter){
@@ -662,16 +708,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 var item = dataFinal[key];
 
                 var total = item ? item.total : 0;
-                var kategori = item ? item.kategori : "rendah";
+                var kategori = item ? item.kategori : "nodata";
+                var prevalensi = item ? item.prevalensi : null;
+                var populasi = item ? item.populasi : (POPULASI[key] || null);
+
+                var prevalensiTeks = (prevalensi !== null && prevalensi !== undefined)
+                    ? prevalensi.toFixed(2) + "%"
+                    : "Tidak tersedia";
+
+                var populasiTeks = populasi
+                    ? populasi.toLocaleString("id-ID") + " jiwa"
+                    : "Data tidak tersedia";
+
                 var statusData = item ? "" : `<br><span class="popup-empty">Data tidak ditemukan</span>`;
 
                 var isiPopup = `
                     <div class="popup-informasi">
-                        <b>Informasi :</b><br>
-                        <span>Desa : ${nama}</span><br>
-                        <span>Jumlah Kasus : ${total}</span><br>
+                        <b>Informasi Epidemiologi :</b><br>
+                        <span>Desa : <b>${nama}</b></span><br>
+                        <span>Jumlah Kasus : <b>${total}</b></span><br>
+                        <span>Jumlah Penduduk : <b>${populasiTeks}</b></span><br>
+                        <span>Prevalensi : <b style="color:#0aa9b5;">${prevalensiTeks}</b></span><br>
                         <span>
-                            Tingkat Kasus :
+                            Tingkat Risiko :
                             <b class="popup-${kategori}">${textKategori(kategori)}</b>
                         </span>
                         ${statusData}
@@ -752,9 +811,9 @@ function hitungKasusBaruAktif(){
     function updateSummaryCard(){
 
         var ranking = Object.values(currentDataFinal)
-            .sort(function(a, b){
-                return b.total - a.total;
-            });
+        .sort(function(a, b){
+            return (b.prevalensi || 0) - (a.prevalensi || 0);
+        });
 
         var totalSemua = 0;
 
@@ -762,7 +821,20 @@ function hitungKasusBaruAktif(){
             totalSemua += parseInt(item.total || 0);
         });
 
-        var kategori = kategoriKasus(totalSemua);
+        var totalPopulasiAjung = 0;
+
+        for(var keyPop in POPULASI){
+            if(["mangaran","klompongan"].includes(keyPop)){
+                continue;
+            }
+            totalPopulasiAjung += POPULASI[keyPop];
+        }
+
+        var prevalensiAjung = totalPopulasiAjung > 0
+            ? (totalSemua / totalPopulasiAjung) * K_PREVALENSI
+            : null;
+
+        var kategori = kategoriDariPrevalensi(prevalensiAjung, totalSemua);
         var kasusBaruAktif = hitungKasusBaruAktif();
 
         setText("summaryTotalKasus", totalSemua + " kasus");
@@ -813,12 +885,12 @@ function hitungKasusBaruAktif(){
             return;
         }
 
-        var max = ranking[0].total || 1;
+        var max = ranking[0].prevalensi || 1;
         var html = "";
 
         ranking.forEach(function(item){
 
-            var width = (item.total / max) * 100;
+            var width = ((item.prevalensi || 0) / max) * 100;
             var kategori = item.kategori;
 
             html += `
@@ -829,7 +901,7 @@ function hitungKasusBaruAktif(){
 
                     <div class="summary-rank-bar-area">
                         <div class="summary-rank-bar ${kategori}" style="width:${width}%;">
-                            <span>${item.total}</span>
+                            <span>${(item.prevalensi || 0).toFixed(2)}%</span>
                         </div>
                     </div>
                 </div>
@@ -1247,6 +1319,11 @@ function hitungKasusBaruAktif(){
     color:#15803d;
 }
 
+.badge-risk.nodata{
+    background:#f3f4f6;
+    color:#6b7280;
+}
+
 .summary-chart-title{
     font-size:15px;
     font-weight:800;
@@ -1318,6 +1395,7 @@ function hitungKasusBaruAktif(){
 .popup-tinggi{ color:red !important; }
 .popup-sedang{ color:#d77b00 !important; }
 .popup-rendah{ color:green !important; }
+.popup-nodata{ color:#888 !important; }
 
 .popup-empty{
     color:#d62828;

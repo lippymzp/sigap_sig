@@ -1387,8 +1387,8 @@ if(empty($tahunList)){
                             <p class="detail-label">Jumlah Penduduk</p>
                             <h4 id="detailPenduduk">- jiwa</h4>
 
-                            <p class="detail-label">Point Prevalence Rate</p>
-                            <h4 id="detailPPR" style="color:#0aa9b5;">0 per 100.000</h4>
+                            <p class="detail-label">Prevalensi</p>
+                            <h4 id="detailPPR" style="color:#0aa9b5;">0%</h4>
 
                             <p class="detail-label" id="detailBulanLabel">Kasus Baru</p>
                             <h4 id="detailKasusBaru">0 kasus</h4>
@@ -1397,7 +1397,7 @@ if(empty($tahunList)){
                         <span id="detailKategori" class="badge-risk rendah">Rendah</span>
                     </div>
 
-                    <h4 class="chart-title">10 Wilayah dengan PPR Tertinggi</h4>
+                    <h4 class="chart-title">10 Wilayah dengan Prevalensi Tertinggi</h4>
 
                     <div id="rankingChart" class="ranking-chart"></div>
 
@@ -1436,8 +1436,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "rowoindah"   : 5935
     };
 
-    /* Konstanta PPR (k = 100.000) */
-    var K_PPR = 100000;
+    /* Konstanta Prevalensi biasa (persen) */
+    var K_PREVALENSI = 100;
 
     /*
      * THRESHOLD DINAMIS - Quantile 3 Kelas (Natural Breaks sederhana)
@@ -1630,27 +1630,31 @@ document.addEventListener("DOMContentLoaded", function () {
        FUNGSI HITUNG PPR
        PPR = (Jumlah Penderita / Jumlah Penduduk) x 100.000
     ============================================================ */
-    function hitungPPR(totalKasus, keyDesa){
+    function hitungPrevalensi(totalKasus, keyDesa){
         var populasi = POPULASI[keyDesa];
+
         if(!populasi || populasi <= 0){
-            return null; /* populasi tidak diketahui */
+            return null;
         }
-        return (totalKasus / populasi) * K_PPR;
+
+        return (totalKasus / populasi) * K_PREVALENSI;
     }
 
     /* ============================================================
        FUNGSI KATEGORI BERDASARKAN PPR
     ============================================================ */
-    function kategoriDariPPR(ppr){
-        if(ppr === null){
+    function kategoriDariPrevalensi(prev, totalKasus){
+        if(prev === null){
             return "nodata";
         }
-        if(ppr === 0){
-            return "rendah";
+
+        if(totalKasus === 0){
+            return "nodata";
         }
-        if(_thresholdTinggi !== null && ppr >= _thresholdTinggi){
+
+        if(prev >= 0.90){
             return "tinggi";
-        }else if(_thresholdSedang !== null && ppr >= _thresholdSedang){
+        }else if(prev >= 0.40){
             return "sedang";
         }else{
             return "rendah";
@@ -1714,15 +1718,11 @@ document.addEventListener("DOMContentLoaded", function () {
         /* Hitung PPR dulu semua, lalu hitung threshold quantile, baru kategori */
         /* Langkah 1: hitung semua nilai PPR */
         for(var key in hasil){
-            var ppr = hitungPPR(hasil[key].total, key);
-            hasil[key].ppr      = ppr;
+            var prevalensi = hitungPrevalensi(hasil[key].total, key);
+
+            hasil[key].ppr      = prevalensi;
             hasil[key].populasi = POPULASI[key] || null;
-        }
-        /* Langkah 2: hitung threshold quantile dari distribusi PPR aktual */
-        hitungThresholdQuantile(hasil);
-        /* Langkah 3: tentukan kategori berdasarkan threshold dinamis */
-        for(var key in hasil){
-            hasil[key].kategori = kategoriDariPPR(hasil[key].ppr);
+            hasil[key].kategori = kategoriDariPrevalensi(prevalensi, hasil[key].total);
         }
 
         currentDataFinal = hasil;
@@ -1925,7 +1925,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 var kategori = item ? item.kategori : "nodata";
                 var populasi = item ? item.populasi : (POPULASI[key] || null);
 
-                var pprTeks  = (ppr !== null) ? ppr.toFixed(2) + " / 100.000" : "Tidak tersedia";
+                var pprTeks  = (ppr !== null) ? ppr.toFixed(2) + "%" : "Tidak tersedia";
                 var popTeks  = populasi ? populasi.toLocaleString("id-ID") + " jiwa" : "Data tidak tersedia";
 
                 var statusData = (!item || !POPULASI[key])
@@ -1938,7 +1938,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span>Desa : <b>${nama}</b></span><br>
                         <span>Jumlah Kasus : <b>${total}</b></span><br>
                         <span>Jumlah Penduduk : <b>${popTeks}</b></span><br>
-                        <span>PPR : <b style="color:#0aa9b5;">${pprTeks}</b></span><br>
+                        <span>Prevalensi : <b style="color:#0aa9b5;">${pprTeks}</b></span><br>
                         <span>
                             Tingkat Risiko :
                             <b class="popup-${kategori}">${textKategori(kategori)}</b>
@@ -2040,13 +2040,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         /* Hitung PPR dulu semua, lalu threshold quantile, baru kategori */
         for(var key in hasil){
-            var ppr = hitungPPR(hasil[key].total, key);
-            hasil[key].ppr      = ppr;
+            var prevalensi = hitungPrevalensi(hasil[key].total, key);
+
+            hasil[key].ppr      = prevalensi;
             hasil[key].populasi = POPULASI[key] || null;
-        }
-        hitungThresholdQuantile(hasil);
-        for(var key in hasil){
-            hasil[key].kategori = kategoriDariPPR(hasil[key].ppr);
+            hasil[key].kategori = kategoriDariPrevalensi(prevalensi, hasil[key].total);
         }
 
         return hasil;
@@ -2085,7 +2083,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detailPenduduk").innerText = populasiTeks;
 
         var pprTeks = (item.ppr !== null && item.ppr !== undefined)
-            ? item.ppr.toFixed(2) + " / 100.000 penduduk"
+            ? item.ppr.toFixed(3) + "%"
             : "Tidak tersedia";
         document.getElementById("detailPPR").innerText = pprTeks;
 
@@ -2135,7 +2133,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("detailPenduduk").innerText = populasiTeks;
 
         var pprTeks = (item.ppr !== null && item.ppr !== undefined)
-            ? item.ppr.toFixed(2) + " / 100.000 penduduk"
+            ? item.ppr.toFixed(3) + "%"
             : "Tidak tersedia";
         document.getElementById("detailPPR").innerText = pprTeks;
 
@@ -2176,7 +2174,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ranking.forEach(function(item){
             var width    = (item.ppr / maxPPR) * 100;
             var kategori = item.kategori;
-            var pprLabel = item.ppr.toFixed(1);
+            var pprLabel = item.ppr.toFixed(3) + "%";
             var barClass = (kategori === "nodata") ? "rendah" : kategori;
 
             html += `
